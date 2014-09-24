@@ -2,11 +2,30 @@ package com.edit.reach.app;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.swedspot.automotiveapi.AutomotiveSignal;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.swedspot.automotiveapi.AutomotiveListener;
 
 
 public class MainActivity extends Activity {
+
+    private AutomotiveListener hej = new AutomotiveListener() {
+        @Override
+        public void receive(AutomotiveSignal automotiveSignal) {
+
+        }
+
+        @Override
+        public void timeout(int i) {
+
+        }
+
+        @Override
+        public void notAllowed(int i) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
