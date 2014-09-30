@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">REACH</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="label_pretrip">Pre Trip</string>
+    <string name="pretrip_welcome">This is where it all begins...</string>
 
 </resources>

@@ -1,36 +1,26 @@
 package com.edit.reach.app;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.swedspot.automotiveapi.AutomotiveSignal;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.swedspot.automotiveapi.AutomotiveListener;
+import android.view.View;
+import android.widget.ImageButton;
+import com.edit.reach.app.notMoving.preTrip.PreTripActivity;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements View.OnClickListener {
 
-    private AutomotiveListener hej = new AutomotiveListener() {
-        @Override
-        public void receive(AutomotiveSignal automotiveSignal) {
-
-        }
-
-        @Override
-        public void timeout(int i) {
-
-        }
-
-        @Override
-        public void notAllowed(int i) {
-
-        }
-    };
+	private ImageButton getStartedButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+		getStartedButton = (ImageButton) findViewById(R.id.get_started_button);
+		getStartedButton.setOnClickListener(this);
     }
 
 
@@ -52,4 +42,13 @@ public class MainActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+	@Override
+	public void onClick(View view) {
+		if (view == getStartedButton) {
+			Intent intent = new Intent(this, PreTripActivity.class);
+			startActivity(intent);
+		}
+	}
+
 }

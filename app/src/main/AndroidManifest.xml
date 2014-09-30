@@ -16,6 +16,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+                android:name=".notMoving.preTrip.PreTripActivity"
+                android:label="@string/label_pretrip">
+        </activity>
+
     </application>
 
 </manifest>
