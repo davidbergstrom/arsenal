@@ -9,6 +9,9 @@ import android.location.Location;
  */
 public interface IMilestone {
 
+	/**
+	 * Category is an enum class to identify a milestones type.
+	 */
 	public enum Category{
 		RESTAURANT, RESTAREA, GASSTATION
 
@@ -16,18 +19,19 @@ public interface IMilestone {
 
 	/**
 	 * Returns the name of the milestone
-	 * @return String, the milestones name
+	 * @return the milestones name
 	 */
 	public String getName();
 
 	/**
 	 * Returns the description of the milestone
-	 * @return String, 
+	 * @return the milestones description
 	 */
 	public String getDescription();
 
 	/**
-	 *
+	 * Returns the category of the milestone
+	 * @return the milestones category
 	 */
 	public Category getCategory();
 
@@ -39,15 +43,14 @@ public interface IMilestone {
 
 	/**
 	 * Returns the rank of the milestone between 0 - 5.
-	 * @return rank, <= 0 rank <= 5
+	 * @return the milestones rank, 0 <= rank <= 5
 	 */
 	public int getRank();
 
 	/**
-	 *
-	 * @return
+	 * Returns the location of the milestone
+	 * @return the milestones location
 	 */
 	public Location getLocation();
-
 
 }

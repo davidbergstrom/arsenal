@@ -7,7 +7,7 @@ import java.util.List;
  * Class containing all logic for handling map actions.
  */
 public class Map {
-	private List<Milestone> milestones;
+	private List<IMilestone> milestones;
 
 	public Map(){
 
