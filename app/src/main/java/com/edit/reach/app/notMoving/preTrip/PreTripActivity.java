@@ -1,6 +1,5 @@
 package com.edit.reach.app.notMoving.preTrip;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,14 +7,14 @@ import android.view.MenuItem;
 import com.edit.reach.app.R;
 
 /**
- * Created by simonlarssontakman on 2014-09-29.
+ * Created by davidbergstrom on 2014-09-29.
  */
 public class PreTripActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_pretrip);
+		setContentView(R.layout.activity_pre_trip);
 	}
 
 
