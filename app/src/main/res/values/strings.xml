@@ -4,6 +4,9 @@
     <string name="app_name">REACH</string>
     <string name="action_settings">Settings</string>
     <string name="label_pretrip">Pre Trip</string>
-    <string name="pretrip_welcome">This is where it all begins...</string>
+    <string name="set_route_text">Set route here...</string>
+    <string name="edit_route_text">Edit route here...</string>
+    <string name="title_section1">Set Route</string>
+    <string name="title_section2">Edit Route</string>
 
 </resources>

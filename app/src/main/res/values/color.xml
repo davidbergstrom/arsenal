@@ -3,5 +3,6 @@
 
     <color name="main_background">#212121</color>
     <color name="h1">#575757</color>
+    <color name="page_strip">#575757</color>
 
 </resources>

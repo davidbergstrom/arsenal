@@ -12,13 +12,13 @@ import com.edit.reach.app.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SetRouteFragment.OnFragmentInteractionListener} interface
+ * {@link EditRouteFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link SetRouteFragment#newInstance} factory method to
+ * Use the {@link EditRouteFragment#newInstance} factory method to
  * create an instance of this fragment.
  *
  */
-public class SetRouteFragment extends Fragment {
+public class EditRouteFragment extends Fragment {
 
     private static final String ARG_POSITION = "Tab position";
 
@@ -30,18 +30,18 @@ public class SetRouteFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param position Position of Fragment Tab.
-     * @return A new instance of fragment SetRouteFragment.
+     * @param position Position of the Tab.
+     * @return A new instance of fragment EditRouteFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SetRouteFragment newInstance(int position) {
-        SetRouteFragment fragment = new SetRouteFragment();
+    public static EditRouteFragment newInstance(int position) {
+        EditRouteFragment fragment = new EditRouteFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
-    public SetRouteFragment() {
+    public EditRouteFragment() {
         // Required empty public constructor
     }
 
@@ -56,7 +56,7 @@ public class SetRouteFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_set_route, container, false);
+		View view = inflater.inflate(R.layout.fragment_edit_route, container, false);
 		return view;
     }
 
