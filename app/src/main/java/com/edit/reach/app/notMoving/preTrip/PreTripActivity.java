@@ -2,6 +2,7 @@ package com.edit.reach.app.notMoving.preTrip;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.edit.reach.app.R;
@@ -10,6 +11,8 @@ import com.edit.reach.app.R;
  * Created by davidbergstrom on 2014-09-29.
  */
 public class PreTripActivity extends Activity {
+
+	private ViewPager mViewPager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
