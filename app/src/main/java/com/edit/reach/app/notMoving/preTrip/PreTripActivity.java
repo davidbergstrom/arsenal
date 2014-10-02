@@ -13,15 +13,12 @@ import android.support.v4.app.Fragment;
 import android.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import com.edit.reach.app.R;
 
 public class PreTripActivity extends FragmentActivity implements TabListener,
-		EditRouteFragment.OnFragmentInteractionListener, SetRouteFragment.OnFragmentInteractionListener {
+		EditRouteFragment.OnEditRouteInteractionListener, SetRouteFragment.OnSetRouteInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -31,7 +28,7 @@ public class PreTripActivity extends FragmentActivity implements TabListener,
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    SectionsPagerAdapter mSectionsPagerAdapter;
+    PreTripPagerAdapter mPreTripPagerAdapter;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -49,11 +46,11 @@ public class PreTripActivity extends FragmentActivity implements TabListener,
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mPreTripPagerAdapter = new PreTripPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setAdapter(mPreTripPagerAdapter);
 
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
@@ -66,18 +63,17 @@ public class PreTripActivity extends FragmentActivity implements TabListener,
         });
 
         // For each of the sections in the app, add a tab to the action bar.
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+        for (int i = 0; i < mPreTripPagerAdapter.getCount(); i++) {
             // Create a tab with text corresponding to the page title defined by
             // the adapter. Also specify this Activity object, which implements
             // the TabListener interface, as the callback (listener) for when
             // this tab is selected.
             actionBar.addTab(
                     actionBar.newTab()
-                            .setText(mSectionsPagerAdapter.getPageTitle(i))
+                            .setText(mPreTripPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -113,7 +109,13 @@ public class PreTripActivity extends FragmentActivity implements TabListener,
     public void onTabReselected(Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
-	public void onFragmentInteraction(Uri uri) {
+	@Override
+	public void onSetRouteInteraction(Uri uri) {
+		;
+	}
+
+	@Override
+	public void onEditRouteInteraction(Uri uri) {
 		;
 	}
 
@@ -121,9 +123,9 @@ public class PreTripActivity extends FragmentActivity implements TabListener,
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class PreTripPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        public PreTripPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 

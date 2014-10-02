@@ -12,7 +12,7 @@ import com.edit.reach.app.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link EditRouteFragment.OnFragmentInteractionListener} interface
+ * {@link EditRouteFragment.OnEditRouteInteractionListener} interface
  * to handle interaction events.
  * Use the {@link EditRouteFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -24,7 +24,7 @@ public class EditRouteFragment extends Fragment {
 
     private int mPosition;
 
-    private OnFragmentInteractionListener mListener;
+    private OnEditRouteInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -63,7 +63,7 @@ public class EditRouteFragment extends Fragment {
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onEditRouteInteraction(uri);
         }
     }
 
@@ -71,7 +71,7 @@ public class EditRouteFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnEditRouteInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -94,9 +94,9 @@ public class EditRouteFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnEditRouteInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void onEditRouteInteraction(Uri uri);
     }
 
 }

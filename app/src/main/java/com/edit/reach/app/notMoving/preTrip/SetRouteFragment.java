@@ -12,7 +12,7 @@ import com.edit.reach.app.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SetRouteFragment.OnFragmentInteractionListener} interface
+ * {@link com.edit.reach.app.notMoving.preTrip.SetRouteFragment.OnSetRouteInteractionListener} interface
  * to handle interaction events.
  * Use the {@link SetRouteFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -24,7 +24,7 @@ public class SetRouteFragment extends Fragment {
 
     private int mPosition;
 
-    private OnFragmentInteractionListener mListener;
+    private OnSetRouteInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -63,7 +63,7 @@ public class SetRouteFragment extends Fragment {
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onSetRouteInteraction(uri);
         }
     }
 
@@ -71,7 +71,7 @@ public class SetRouteFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnSetRouteInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -94,9 +94,9 @@ public class SetRouteFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnSetRouteInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void onSetRouteInteraction(Uri uri);
     }
 
 }
