@@ -48,7 +48,7 @@ public class JSONParser {
             e.printStackTrace();
         }
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8); //iso-8859-1
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
 			StringBuilder builder = new StringBuilder();
 			for (String line = null; (line = reader.readLine()) != null;) {
 				builder.append(line).append("\n");
@@ -61,6 +61,5 @@ public class JSONParser {
         }
         Log.d("JSON_RUTA", json);
         return json;
-
     }
 }
