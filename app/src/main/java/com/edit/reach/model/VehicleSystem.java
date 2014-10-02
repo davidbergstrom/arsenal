@@ -20,7 +20,7 @@ import java.util.Observable;
  * Project: REACH
  * Date: 2014-09-27
  * Time: 19:28
- * Last Edit: 2014-10-01
+ * Last Edit: 2014-10-02
  */
 class VehicleSystem extends Observable {
 
@@ -37,7 +37,6 @@ class VehicleSystem extends Observable {
 	private Uint8 timeRelativeWorkingState = new Uint8(-1);
 
 	private SCSInteger distanceToService = new SCSInteger(-1);
-
 	private SCSInteger totalVehicleDistance;
 
 	private SCSDouble totalFuelUsed;
@@ -46,11 +45,8 @@ class VehicleSystem extends Observable {
 
 	private Uint16 totalWeight;
 
-	private SCSString vehicleIdNumber;
-
 	private long driveStartTime = -1;
 	private long driveStopTime = -1;
-	private long downTime = -1;
 
 	private List<Integer> signalIDs;
 
@@ -88,7 +84,6 @@ class VehicleSystem extends Observable {
 					isMoving = (Uint8)(automotiveSignal.getData());
 
 					if(isRegistered(AutomotiveSignalId.FMS_VEHICLE_MOTION) && prevIsMoving.getIntValue() != isMoving.getIntValue()) {
-						// TODO setTime();
 						setChanged();
 						notifyObservers(AutomotiveSignalId.FMS_VEHICLE_MOTION);
 					}
@@ -165,6 +160,8 @@ class VehicleSystem extends Observable {
 					Uint8 prevWorkingState = workingState;
 					workingState = (Uint8)automotiveSignal.getData();
 
+					setTime(prevWorkingState.getIntValue(), workingState.getIntValue());
+
 					if(isRegistered(AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE) && prevWorkingState.getIntValue() != workingState.getIntValue()) {
 						setChanged();
 						notifyObservers(AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE);
@@ -180,11 +177,6 @@ class VehicleSystem extends Observable {
 						setChanged();
 						notifyObservers(AutomotiveSignalId.FMS_DRIVER_1_TIME_REL_STATES);
 					}
-					break;
-
-				// The identification number of the vehicle
-				case AutomotiveSignalId.FMS_VEHICLE_IDENTIFICATION_NUMBER:
-					vehicleIdNumber = (SCSString)automotiveSignal.getData();
 					break;
 
 				// Total hours of operation
@@ -227,21 +219,23 @@ class VehicleSystem extends Observable {
 	private final AutomotiveManager manager = AutomotiveFactory.createAutomotiveManagerInstance(automotiveCertificate, automotiveListener, driverDistractionListener);
 
 	/* --- CONSTANTS --- */
-	private static final long GIGA_CONSTANT = (long)Math.pow(10,9);
-	private static final long APPROVED_STOP = 900;
-	private static final long TO_MINUTES = 60;
-	private static final long THRESHOLD = GIGA_CONSTANT*APPROVED_STOP;
+	private static final double NANOSECONDS_TO_MINUTES = (Math.pow(10,-9))/60.0;
+
+	// TODO should be determined dynamically.
+	private static final int TEMP_TANK_SIZE_IN_LITERS = 600;
+
+	private static final int LEGAL_UPTIME = 270;
 
 	// TODO
 	/** Default empty constructor.
 	 */
-	public VehicleSystem() {
+	VehicleSystem() {
 	}
 
 	/** Constructor that registers listeners for ID:s given as parameter.
 	 * @param identities The signal ID:s to be listened to.
 	 */
-	public VehicleSystem(List<Integer> identities) {
+	VehicleSystem(List<Integer> identities) {
 		signalIDs = identities;
 		this.registerListeners(signalIDs);
 	}
@@ -249,7 +243,7 @@ class VehicleSystem extends Observable {
 	/** Register listeners for identities in the list.
 	 * @param identities the ID:s for the signals to be listened to.
 	 */
-	public void registerListeners(List<Integer> identities) {
+	void registerListeners(List<Integer> identities) {
 		if(signalIDs != null) {
 			Iterator<Integer> it = identities.iterator();
 			while(it.hasNext()) {
@@ -270,7 +264,7 @@ class VehicleSystem extends Observable {
 	/** Unregister listeners for ID:s in the list.
 	 * @param identities the ID:S for the signals to be unregistered from listening.
 	 */
-	public void unregisterListeners(List<Integer> identities) {
+	void unregisterListeners(List<Integer> identities) {
 		Iterator<Integer> it = identities.iterator();
 		while(it.hasNext()) {
 			if(signalIDs.contains(it.next())) {
@@ -281,9 +275,9 @@ class VehicleSystem extends Observable {
 	}
 
 	/** Gets the amount of fuel in the vehicles tank.
-	 * @return A float with Precent of fuel left in tank.
+	 * @return A float with Percent of fuel left in tank.
 	 */
-	public float getFuelLevel() {
+	float getFuelLevel() {
 		if(!isRegistered(AutomotiveSignalId.FMS_FUEL_LEVEL_1)) {
 			manager.requestValue(AutomotiveSignalId.FMS_FUEL_LEVEL_1);
 		}
@@ -293,7 +287,7 @@ class VehicleSystem extends Observable {
 	/** Returns if the vehicle is moving or not.
 	 * @return false if not moving, true if moving
 	 */
-	public boolean isMoving() {
+	boolean isMoving() {
 		if(!isRegistered(AutomotiveSignalId.FMS_VEHICLE_MOTION)) {
 			manager.requestValue(AutomotiveSignalId.FMS_VEHICLE_MOTION);
 		}
@@ -304,7 +298,7 @@ class VehicleSystem extends Observable {
 	/** The Fuel consumed by the engine in Liters per Hour
 	 * @return a float with the consumption in L/h
 	 */
-	public float getInstantFuelConsumption() {
+	float getInstantFuelConsumption() {
 		if(!isRegistered(AutomotiveSignalId.FMS_FUEL_RATE)) {
 			manager.requestValue(AutomotiveSignalId.FMS_FUEL_RATE);
 		}
@@ -314,7 +308,7 @@ class VehicleSystem extends Observable {
 	/** The fuel economy at current velocity in km/l
 	 * @return a float with the current economy in km/l
 	 */
-	public float getInstantFuelEconomy() {
+	float getInstantFuelEconomy() {
 		if(!isRegistered(AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY)) {
 			manager.requestValue(AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY);
 		}
@@ -324,7 +318,7 @@ class VehicleSystem extends Observable {
 	/** The distance in km to next service.
 	 * @return a int with the number of km to next service.
 	 */
-	public int getDistanceToService() {
+	int getDistanceToService() {
 		if(!isRegistered(AutomotiveSignalId.FMS_SERVICE_DISTANCE)) {
 			manager.requestValue(AutomotiveSignalId.FMS_SERVICE_DISTANCE);
 		}
@@ -334,7 +328,7 @@ class VehicleSystem extends Observable {
 	/** The speed of the vehicle.
 	 * @return a float with the current speed of the vehicle in km/h
 	 */
-	public float getVehicleSpeed() {
+	float getVehicleSpeed() {
 		// TODO Check that tachograph is working properly. If not, take wheel speed.
 		if(!isRegistered(AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED)) {
 			manager.requestValue(AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED);
@@ -345,21 +339,53 @@ class VehicleSystem extends Observable {
 	/** The moving direction of the vehicle.
 	 * @return a int with 0 if moving forward and 1 if moving reverse.
 	 */
-	public int getMovingDirection() {
+	int getMovingDirection() {
 		if(!isRegistered(AutomotiveSignalId.FMS_DIRECTION_INDICATOR)) {
 			manager.requestValue(AutomotiveSignalId.FMS_DIRECTION_INDICATOR);
 		}
 		return movingDirection.getIntValue();
 	}
 
-	/** If the vehicle has an inserted driverscard.
+	/** If the vehicle has an inserted driver card.
 	 * @return true if a card is inserted. False otherwise
 	 */
-	public boolean hasDriverCard() {
+	boolean hasDriverCard() {
 		if(!isRegistered(AutomotiveSignalId.FMS_DRIVER_1_CARD)) {
 			manager.requestValue(AutomotiveSignalId.FMS_DRIVER_1_CARD);
 		}
 		return (card.getIntValue() != 0);
+	}
+
+	/** Returns the total fuel used by the vehicle.
+	 * @return the total liters the truck as consumed as a double.
+	 */
+	double getTotalFuelUsed() {
+		manager.requestValue(AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED);
+		return totalFuelUsed.getDoubleValue();
+	}
+
+	/** Returns the total vehicle distance travelled.
+	 * @return the total distance in meters as an int
+	 */
+	int getTotalDistanceTravelled() {
+		manager.requestValue(AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED);
+		return totalVehicleDistance.getIntValue();
+	}
+
+	/** Returns the total weight of the vehicle and attached trailers.
+	 * @return the weight in kg as an int
+	 */
+	int getVehicleWeight() {
+		manager.requestValue(AutomotiveSignalId.FMS_GROSS_COMBINATION_VEHICLE_WEIGHT);
+		return totalWeight.getIntValue();
+	}
+
+	/** Returns the total hours of operation of the vehicle.
+	 * @return the number of hours the vehicle has been in operation as a long.
+	 */
+	long getTotalOperationHours() {
+		manager.requestValue(AutomotiveSignalId.FMS_ENGINE_TOTAL_HOURS_OF_OPERATION);
+		return totalHoursOfOperation.getLongValue();
 	}
 
 	/** Returns the state of the driver.
@@ -371,7 +397,7 @@ class VehicleSystem extends Observable {
 				- 6: Error
 				- 7: Not available
 	 */
-	public int getWorkingState() {
+	int getWorkingState() {
 		if(!isRegistered(AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE)) {
 			manager.requestValue(AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE);
 		}
@@ -390,57 +416,53 @@ class VehicleSystem extends Observable {
 				- 14: Error
 				- 15: Not available
 	 */
-	public int getTimeRelativeWorkingState() {
+	int getTimeRelativeWorkingState() {
 		if(!isRegistered(AutomotiveSignalId.FMS_DRIVER_1_TIME_REL_STATES)) {
 			manager.requestValue(AutomotiveSignalId.FMS_DRIVER_1_TIME_REL_STATES);
 		}
 		return (timeRelativeWorkingState.getIntValue());
 	}
 
-	// TODO Make method
+	// TODO The tank size is not correct
 	/** Estimates how long until a refuel is recommended.
 	 * @return how many km until a stop for fueling is recommended. +- 10km
 	 */
-	public double getEstimatedKilometersUntilRefuel() {
-		if(!isMoving()) {
-
+	double getEstimatedKilometersUntilRefuel() {
+		// If not driving the truck
+		if(getWorkingState() != 3) {
+			double averageFuelConsumptionPerKilometer = getTotalFuelUsed() / ((double)getTotalDistanceTravelled()*Math.pow(10,-3));
+			double currentLitersInTank = getFuelLevel()*Math.pow(1,-3)*TEMP_TANK_SIZE_IN_LITERS;
+			return currentLitersInTank/averageFuelConsumptionPerKilometer;
+		} else if(getWorkingState() == 3) {
+			// TODO do dynamic calculation
+			return 0.0;
 		} else {
-
+			// TODO
+			return 0;
 		}
-		return 0.0;
 	}
 
-	// TODO Make method
-	/** Estimates how long until a timestop is recommended.
-	 * @return how many km until a stop for time is recommended. +- 10km
+	// TODO correct?
+	/** Method that returns the number of minutes until a stop i required.
+	 * @return 270 if currently in a break, Positive number with minutes left, if drive longer than legal.
 	 */
-	public double getEstimatedKilometersUntilTimeStop() {
-		if(!isMoving()) {
-
+	double getTimeUntilTimeStop() {
+		if(getWorkingState() != 3) {
+			return LEGAL_UPTIME;
+		} else if(getWorkingState() == 3) {
+			return LEGAL_UPTIME-((System.nanoTime() - driveStartTime) * NANOSECONDS_TO_MINUTES);
 		} else {
-
+			// TODO
+			return 0;
 		}
-		return 0.0;
 	}
 
-	// Method that sets and determines start, stop and downTime.
-	// TODO how to use this method?
-	private void setTime() {
-		if(this.isMoving()) {
-			long tempStartTime = System.nanoTime();
-			if(driveStopTime != -1) {
-				downTime = tempStartTime - driveStopTime;
-				if(downTime >= THRESHOLD) {
-					driveStartTime = tempStartTime;
-				} else {
-					// Stop was too short. Do not change starttime.
-				}
-			} else {
-				driveStartTime = tempStartTime;
-			}
-
-		} else {
-			this.driveStopTime = System.nanoTime();
+	// Method that sets and determines start- and stop time
+	private void setTime(int prevValue, int currentValue) {
+		if(prevValue != 3 & currentValue == 3) {
+			driveStartTime = System.nanoTime();
+		} else if(prevValue == 3 && currentValue != 3) {
+			driveStopTime = System.nanoTime();
 		}
 	}
 

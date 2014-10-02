@@ -16,7 +16,7 @@ import java.util.Observer;
  * Time: 19:27
  * Last Edit: 2014-10-01
  */
-// TODO Everything that has to do with the stationairy view
+// TODO Everything that has to do with the stationary view
 // TODO Run this class in separate thread.
 public class NavigationModel implements Observer {
 
@@ -29,6 +29,7 @@ public class NavigationModel implements Observer {
 		List<Integer> signalList = new ArrayList<Integer>();
 		vehicleSystem = new VehicleSystem();
 		vehicleSystem.addObserver(this);
+
 	}
 
 	/** Do not call this method. It is called automatically when the observable changes.
