@@ -10,17 +10,21 @@ import android.widget.ImageButton;
 import com.edit.reach.app.stationary.StationaryActivity;
 
 
+
 public class MainActivity extends Activity implements View.OnClickListener {
 
 	private ImageButton getStartedButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
 		getStartedButton = (ImageButton) findViewById(R.id.get_started_button);
 		getStartedButton.setOnClickListener(this);
+
     }
 
 
@@ -28,6 +32,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
         return true;
     }
 
