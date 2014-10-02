@@ -17,8 +17,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.edit.reach.app.notMoving.preTrip.PreTripActivity"
-            android:label="@string/label_pretrip" >
+            android:name=".stationary.StationaryActivity"
+            android:label="@string/label_stationary" >
         </activity>
     </application>
 

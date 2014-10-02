@@ -1,4 +1,4 @@
-package com.edit.reach.app.notMoving.preTrip;
+package com.edit.reach.app.stationary;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -12,7 +12,7 @@ import com.edit.reach.app.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link com.edit.reach.app.notMoving.preTrip.SetRouteFragment.OnSetRouteInteractionListener} interface
+ * {@link com.edit.reach.app.stationary.SetRouteFragment.OnSetRouteInteractionListener} interface
  * to handle interaction events.
  * Use the {@link SetRouteFragment#newInstance} factory method to
  * create an instance of this fragment.

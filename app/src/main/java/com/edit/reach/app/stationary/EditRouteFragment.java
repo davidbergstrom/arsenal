@@ -1,4 +1,4 @@
-package com.edit.reach.app.notMoving.preTrip;
+package com.edit.reach.app.stationary;
 
 import android.app.Activity;
 import android.net.Uri;
