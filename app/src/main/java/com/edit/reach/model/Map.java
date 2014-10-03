@@ -157,4 +157,17 @@ public class Map {
 
 		}
 	}
+
+    private void decodeAddress(JSONObject address) {
+
+        LatLng latLng = null;
+
+        try {
+            JSONObject location = address.getJSONObject("location");
+            latLng = new LatLng(location.getDouble("lat"), location.getDouble("lng"));
+
+        } catch (JSONException ignored) {
+
+        }
+    }
 }

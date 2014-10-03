@@ -34,7 +34,7 @@ public class NavigationUtils {
 		return url;
 	}
 
-	public String makeURL (String address){
+	public static String makeURL(String address){
 		String location = address.replaceAll(" ", "+").toLowerCase();
 		String url = "https://maps.googleapis.com/maps/api/geocode/json";
 		url += "?address=" + location;
