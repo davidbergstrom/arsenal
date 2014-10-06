@@ -1,0 +1,44 @@
+<resources>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Settings for driver -->
+    <string name="pref_header_driver">Driver</string>
+
+    <string name="pref_title_food">Eating place</string>
+    <string-array name="pref_food_titles">
+        <item>Restaurant</item>
+        <item>Truck</item>
+        <item>Rest Area</item>
+    </string-array>
+    <string-array name="pref_food_values">
+        <item>restaurant</item>
+        <item>truck</item>
+        <item>restarea</item>
+    </string-array>
+
+    <!-- Settings for truck -->
+    <string name="pref_header_truck">Truck</string>
+
+    <string name="pref_title_truck_height">Height (m)</string>
+
+    <!-- Settings for route -->
+    <string name="pref_header_route">Route</string>
+
+    <string name="pref_title_route_type">Type</string>
+    <string-array name="pref_route_type_titles">
+        <item>Fast</item>
+        <item>Scenic</item>
+        <item>Economical</item>
+    </string-array>
+    <string-array name="pref_route_type_values">
+        <item>fast</item>
+        <item>scenic</item>
+        <item>economical</item>
+    </string-array>
+
+    <string name="pref_title_allow_more_pauses">Allow more pauses</string>
+    <string name="pre_summary_allow_more_pauses">Allow number of pauses to increase when editing a route</string>
+
+</resources>
