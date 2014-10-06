@@ -8,8 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import com.edit.reach.app.stationary.MultiPaneActivity;
-import com.edit.reach.app.stationary.StationaryActivity;
-
 
 
 public class MainActivity extends Activity implements View.OnClickListener {

@@ -5,7 +5,6 @@
     <string name="app_name">REACH</string>
     <string name="action_settings">Settings</string>
 
-
     <!-- Route Fragment -->
     <string name="tv_fragment_route">This is where Simon\'s design will show...</string>
     <string name="et_from">From</string>

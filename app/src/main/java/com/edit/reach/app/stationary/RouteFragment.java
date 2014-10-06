@@ -70,17 +70,19 @@ public class RouteFragment extends Fragment {
         if (getArguments() != null) {
             mId = getArguments().getString(ARG_ID);
         }
-        btGetRoute = (Button) getView().findViewById(R.id.bt_get_route);
+       /* btGetRoute = (Button) getView().findViewById(R.id.bt_get_route);
         btGetRouteOnClick();
         btAddDestination = (Button)getView().findViewById(R.id.bt_add_destination);
-        btAddDestinationOnClick();
+        btAddDestinationOnClick();*/
     }
 
     public void btGetRouteOnClick(){
         btGetRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 System.out.println("getRoute banananananaz")
+
             }
         });
     }
