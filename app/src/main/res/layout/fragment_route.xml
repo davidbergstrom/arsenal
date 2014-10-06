@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                >
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+        >
 
     <!-- Lägg till fler layouter för att få en TextView bredvid +-knappen -->
     <LinearLayout
             android:orientation="vertical"
-            android:background="@color/main_background"
+            android:background="@color/background_main"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             >
 
 
-
+        <!-- När du trycker på den här knappen kommer du att få en rutt -->
         <Button
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -24,28 +25,29 @@
                 android:layout_marginStart="50dp"
                 android:layout_marginEnd="50dp"
                 android:layout_marginBottom="0dp"
-                android:id="@+id/get-route"
+                android:id="@+id/bt_get_route"
                 android:text="Get Route"
+
 
 
                 />
 
         <EditText
-            android:id="@+id/from"
-            android:inputType="textAutoComplete"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginBottom="0dp"
-            android:hint="@string/pretrip_from"
-            />
+                android:id="@+id/from"
+                android:inputType="textAutoComplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="0dp"
+                android:hint="@string/et_from"
+                />
 
 
 
         <Button
-                android:id="@+id/add-destination"
+                android:id="@+id/bt_add_destination"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="10dp"
@@ -53,6 +55,7 @@
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="0dp"
                 android:text="Add destination +"
+
 
                 />
 
@@ -68,11 +71,11 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="0dp"
-                android:hint="@string/pretrip_to"
+                android:hint="@string/et_to"
                 />
 
 
-            </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
             android:layout_width="0dp"
@@ -80,7 +83,8 @@
             android:layout_weight="3"
             >
 
-            </LinearLayout>
+    </LinearLayout>
 
 
 </LinearLayout>
+

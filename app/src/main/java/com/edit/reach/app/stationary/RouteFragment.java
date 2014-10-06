@@ -1,80 +1,131 @@
 package com.edit.reach.app.stationary;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import android.widget.Button;
+import android.widget.EditText;
 import com.edit.reach.app.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link com.edit.reach.app.stationary.SetRouteFragment.OnSetRouteInteractionListener} interface
+ * {@link RouteFragment.OnRouteInteractionListener} interface
  * to handle interaction events.
- * Use the {@link SetRouteFragment#newInstance} factory method to
+ * Use the {@link RouteFragment#newInstance} factory method to
  * create an instance of this fragment.
  *
  */
-public class SetRouteFragment extends Fragment {
+public class RouteFragment extends Fragment {
 
-    private static final String ARG_POSITION = "Tab position";
+    private static final String ARG_ID = "Route";
 
-    private int mPosition;
+    private String mId;
 
-    private OnSetRouteInteractionListener mListener;
+    private Button btGetRoute;
+    private Button btAddDestination;
+
+    private List<EditText> editTextList = new ArrayList<EditText>();
+
+
+
+
+
+
+    private OnRouteInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param position Position of Fragment Tab.
-     * @return A new instance of fragment SetRouteFragment.
+     * @param id Id of the fragment
+     * @return A new instance of fragment EditRouteFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SetRouteFragment newInstance(int position) {
-        SetRouteFragment fragment = new SetRouteFragment();
+    public static RouteFragment newInstance(String id) {
+        RouteFragment fragment = new RouteFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_POSITION, position);
+        args.putString(ARG_ID, id);
         fragment.setArguments(args);
         return fragment;
     }
-    public SetRouteFragment() {
+    public RouteFragment() {
         // Required empty public constructor
     }
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPosition = getArguments().getInt(ARG_POSITION);
+            mId = getArguments().getString(ARG_ID);
         }
+        btGetRoute = (Button) getView().findViewById(R.id.bt_get_route);
+        btGetRouteOnClick();
+        btAddDestination = (Button)getView().findViewById(R.id.bt_add_destination);
+        btAddDestinationOnClick();
     }
+
+    public void btGetRouteOnClick(){
+        btGetRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+    }
+
+    public void btAddDestinationOnClick(){
+        btAddDestination.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_set_route, container, false);
+		View view = inflater.inflate(R.layout.fragment_route, container, false);
 		return view;
     }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onSetRouteInteraction(uri);
+            mListener.onRouteInteraction(uri);
+
+
         }
+    }
+
+    private EditText editText(int _intID){
+        EditText editText = new EditText(g);
+        editText.setId(_intID);
+        editText.setHint("By");
+        editText.setWidth(180);
+        editTextList.add(editText);
+        return editText;
+
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnSetRouteInteractionListener) activity;
+            mListener = (OnRouteInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -97,9 +148,12 @@ public class SetRouteFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnSetRouteInteractionListener {
+    public interface OnRouteInteractionListener {
         // TODO: Update argument type and name
-        public void onSetRouteInteraction(Uri uri);
+        public void onRouteInteraction(Uri uri);
     }
+
+
+
 
 }

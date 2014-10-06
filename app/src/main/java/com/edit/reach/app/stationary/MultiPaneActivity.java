@@ -1,39 +1,24 @@
-package com.edit.reach.app;
+package com.edit.reach.app.stationary;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
-import com.edit.reach.app.stationary.MultiPaneActivity;
-import com.edit.reach.app.stationary.StationaryActivity;
+import com.edit.reach.app.R;
 
+public class MultiPaneActivity extends FragmentActivity implements MapFragment.OnMapInteractionListener,
+	RouteFragment.OnRouteInteractionListener {
 
-
-public class MainActivity extends Activity implements View.OnClickListener {
-
-	private ImageButton getStartedButton;
-
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_main);
-
-		getStartedButton = (ImageButton) findViewById(R.id.get_started_button);
-		getStartedButton.setOnClickListener(this);
-
+        setContentView(R.layout.activity_multi_pane);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-
+        getMenuInflater().inflate(R.menu.multi_pane, menu);
         return true;
     }
 
@@ -50,11 +35,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
 	@Override
-	public void onClick(View view) {
-		if (view == getStartedButton) {
-			Intent intent = new Intent(this, MultiPaneActivity.class);
-			startActivity(intent);
-		}
+	public void onMapInteraction(Uri uri) {
+
 	}
 
+	@Override
+	public void onRouteInteraction(Uri uri) {
+
+	}
 }
