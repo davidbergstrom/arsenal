@@ -18,7 +18,8 @@ import android.view.MenuItem;
 import com.edit.reach.app.R;
 
 public class StationaryActivity extends FragmentActivity implements TabListener,
-		EditRouteFragment.OnEditRouteInteractionListener, SetRouteFragment.OnSetRouteInteractionListener {
+		RouteFragment.OnRouteInteractionListener, SetRouteFragment.OnSetRouteInteractionListener,
+		MapFragment.OnMapInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -115,7 +116,12 @@ public class StationaryActivity extends FragmentActivity implements TabListener,
 	}
 
 	@Override
-	public void onEditRouteInteraction(Uri uri) {
+	public void onMapInteraction(Uri uri) {
+		;
+	}
+
+	@Override
+	public void onRouteInteraction(Uri uri) {
 		;
 	}
 
@@ -136,9 +142,9 @@ public class StationaryActivity extends FragmentActivity implements TabListener,
 
 			switch (position) {
 				case 0:
-					return SetRouteFragment.newInstance(position);
+					return RouteFragment.newInstance("Route");
 				case 1:
-					return EditRouteFragment.newInstance(position);
+					return MapFragment.newInstance("Map");
 			}
 			return null;
         }

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="main_background">#212121</color>
+    <color name="background_main">#212121</color>
+    <color name="background_map">#C7C7C7</color>
+    <color name="background_route">#212121</color>
     <color name="h1">#575757</color>
+
+    <color name="text_fragment_route">#AAAAAA</color>
+    <color name="text_fragment_map">#777777</color>
 
 </resources>
