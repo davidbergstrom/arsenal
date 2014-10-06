@@ -1,26 +1,25 @@
 package com.edit.reach.app;
-
-import android.graphics.PointF;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * A square representing a geographical area.
  */
 public class BoundingBox {
-    PointF bottomLeft;
-    PointF topRight;
+    LatLng bottomLeft;
+    LatLng topRight;
 
-    public BoundingBox(PointF center, Float sideLength) {
-        float d = sideLength / 2;
+    public BoundingBox(LatLng center, double sideLength) {
+        double d = sideLength / 2;
 
-        bottomLeft = new PointF(center.x - d, center.y - d);
-        topRight = new PointF(center.x + d, center.x + d);
+        bottomLeft = new LatLng(center.latitude - d, center.longitude - d);
+        topRight = new LatLng(center.latitude + d, center.longitude + d);
     }
 
-    PointF getBottomLeft() {
+    LatLng getBottomLeft() {
        return bottomLeft;
     }
 
-    PointF getTopRight() {
+    LatLng getTopRight() {
         return topRight;
     }
 }
