@@ -4,14 +4,6 @@
     <!-- Application strings -->
     <string name="app_name">REACH</string>
     <string name="action_settings">Settings</string>
-    <string name="label_stationary">Stationary</string>
-    <string name="set_route_text">Set route here...</string>
-    <string name="edit_route_text">Edit route here...</string>
-    <string name="title_section1">Set Route</string>
-    <string name="title_section2">Edit Route</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_map">MapActivity</string>
-    <string name="hello_world">Hello world!</string>
 
     <!-- Route Fragment -->
     <string name="tv_fragment_route">This is where Simon\'s design will show...</string>
