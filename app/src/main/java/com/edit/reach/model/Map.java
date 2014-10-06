@@ -40,39 +40,56 @@ public class Map {
 	}
 
     /**
-     * Create a route
-     * @param destination
+     * Create and set a route with a destination. The origin will be taken from GPS.
+     * @param destination, the destination of the route
      */
-    public void setDestination(LatLng destination){
+    public void setRoute(LatLng destination){
+        if(currentRoute != null){
+            currentRoute.remove();
+        }
         Location myLocation = map.getMyLocation();
         LatLng currentPosition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
         String url = NavigationUtils.makeURL(currentPosition, destination, null, true);
         new connectAsyncTask(url).execute();
     }
 
-
+    /**
+     * Create and set a route with the origin and destination.
+     * @param origin, the origin of the route
+     * @param destination, the destination of the route
+     */
     public void setRoute(LatLng origin, LatLng destination){
+        if(currentRoute != null){
+            currentRoute.remove();
+        }
         String url = NavigationUtils.makeURL(origin, destination, null, true);
         new connectAsyncTask(url).execute();
     }
 
+    /**
+     * Create and set a route with another route and new milestones
+     * @param route, the old route to base the new one on
+     * @param milestones, the milestones to include
+     */
     public void setRoute(Route route, List<IMilestone> milestones){
-        //String url = NavigationUtils.makeURL(origin, destination, null, true);
-        // new connectAsyncTask(url).execute();
-    }
-
-    public void setRoute(LatLng source, LatLng dest, List<LatLng> wayPoints){
         if(currentRoute != null){
             currentRoute.remove();
         }
-        String url = NavigationUtils.makeURL(source, dest, wayPoints, true);
-        new connectAsyncTask(url).execute();
+        //String url = NavigationUtils.makeURL(source, dest, wayPoints, true);
+        //new connectAsyncTask(url).execute();
     }
 
+    /**
+     * Get the current route.
+     * @return the route the map is currently on
+     */
     public Route getRoute() {
         return null;
     }
 
+    /**
+     * Start the current route.
+     */
 	public void startRoute(){
         Location myLocation = map.getMyLocation();
         LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
@@ -89,6 +106,9 @@ public class Map {
         handler.postDelayed(navigationRunnable, UPDATE_INTERVAL);
 	}
 
+    /**
+     * Stop the current route.
+     */
 	public void stopRoute(){
         handler.removeCallbacks(navigationRunnable);
         if(currentRoute != null){
@@ -97,19 +117,26 @@ public class Map {
         map.getUiSettings().setAllGesturesEnabled(true);
 	}
 
+    /**
+     * Start an overview of the current route.
+     */
     public void startOverview(){
 
     }
 
+    /**
+     * Stop the current overview
+     */
     public void stopOverview(){
 
     }
 
-	public IMilestone getMilestone(IMilestone.Category category, double kmFromCurrentPosition){
+
+	/*public IMilestone getMilestone(IMilestone.Category category, double kmFromCurrentPosition){
 		return null;
 	}
 
-	public List<IMilestone> getAllMilstones(double kmFromCurrentPosition){
+	public List<IMilestone> getAllMilestones(double kmFromCurrentPosition){
 		return null;
 	}
 
@@ -123,7 +150,7 @@ public class Map {
 
 	public void removeAllMilestones(){
 		milestones.clear();
-	}
+	}*/
 
 	private Runnable navigationRunnable = new Runnable() {
 		@Override

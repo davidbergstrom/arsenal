@@ -24,6 +24,11 @@ public class Route {
     private Circle endPointCircle;
     private Circle pointer; // Should this be an individual class (following a route)?
 
+    public Route(LatLng origin, LatLng destination){
+        String url = NavigationUtils.makeURL(origin, destination, null, true);
+        //new connectAsyncTask(url).execute();
+    }
+
     public Route(JSONObject route) throws JSONException {
         legs = new ArrayList<Leg>();
         // Set route start and end locations as variables with getters
