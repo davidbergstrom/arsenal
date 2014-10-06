@@ -22,7 +22,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="4dp"
-            android:hint="From"
+            android:hint="@string/pretrip_from"
             />
     <EditText
             android:id="@+id/to"
@@ -33,7 +33,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="4dp"
-            android:hint="To"
+            android:hint="@string/pretrip_to"
             />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

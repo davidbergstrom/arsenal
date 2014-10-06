@@ -8,5 +8,7 @@
     <string name="edit_route_text">Edit route here...</string>
     <string name="title_section1">Set Route</string>
     <string name="title_section2">Edit Route</string>
+    <string name="pretrip_from">From</string>
+    <string name="pretrip_to">To</string>
 
 </resources>

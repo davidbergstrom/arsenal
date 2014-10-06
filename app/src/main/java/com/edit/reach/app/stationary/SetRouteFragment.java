@@ -45,6 +45,8 @@ public class SetRouteFragment extends Fragment {
         // Required empty public constructor
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +61,7 @@ public class SetRouteFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_set_route, container, false);
 		return view;
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
