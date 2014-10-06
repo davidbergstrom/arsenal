@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import org.json.JSONArray;
@@ -20,49 +22,88 @@ import java.util.List;
  * Class containing all logic for handling map actions.
  */
 public class Map {
-	private GoogleMap map;
-	private Handler handler = new Handler();
-	private List<IMilestone> milestones;
-	private Route currentRoute;
+    private GoogleMap map;
+    private Handler handler = new Handler();
+    private List<IMilestone> milestones;
+    private Route currentRoute;
+    private Location lastLocation;
+    private Circle pointer;
+    private static int UPDATE_INTERVAL = 300;
 
+    /**
+     * Construct a Map by providing a google map
+     * @param map, the GoogleMap to use
+     */
 	public Map(GoogleMap map){
 		this.map = map;
 		this.milestones = new ArrayList<IMilestone>();
 	}
 
-	public void setDestination(LatLng destination){
-		Location myLocation = map.getMyLocation();
-		LatLng currentPosition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-		String url = NavigationUtils.makeURL(currentPosition, destination, null, true);
-		new connectAsyncTask(url).execute();
-	}
+    /**
+     * Create a route
+     * @param destination
+     */
+    public void setDestination(LatLng destination){
+        Location myLocation = map.getMyLocation();
+        LatLng currentPosition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+        String url = NavigationUtils.makeURL(currentPosition, destination, null, true);
+        new connectAsyncTask(url).execute();
+    }
 
-	public void setRoute(LatLng source, LatLng dest, List<LatLng> wayPoints){
-		if(currentRoute != null){
-			currentRoute.remove();
-		}
-		String url = NavigationUtils.makeURL(source, dest, wayPoints, true);
-		new connectAsyncTask(url).execute();
-	}
+
+    public void setRoute(LatLng origin, LatLng destination){
+        String url = NavigationUtils.makeURL(origin, destination, null, true);
+        new connectAsyncTask(url).execute();
+    }
+
+    public void setRoute(Route route, List<IMilestone> milestones){
+        //String url = NavigationUtils.makeURL(origin, destination, null, true);
+        // new connectAsyncTask(url).execute();
+    }
+
+    public void setRoute(LatLng source, LatLng dest, List<LatLng> wayPoints){
+        if(currentRoute != null){
+            currentRoute.remove();
+        }
+        String url = NavigationUtils.makeURL(source, dest, wayPoints, true);
+        new connectAsyncTask(url).execute();
+    }
+
+    public Route getRoute() {
+        return null;
+    }
 
 	public void startRoute(){
-		Location myLocation = map.getMyLocation();
-		LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+        Location myLocation = map.getMyLocation();
+        LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
 
-		this.moveCameraTo(position);
-		this.zoomCameraTo(18);
+        CameraPosition currentPlace = new CameraPosition.Builder().target(position).tilt(65.5f).zoom(18).build();
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
-		handler.post(navigationRunnable);
+        // Disable all interactions the user is not allowed to do.
+        map.getUiSettings().setScrollGesturesEnabled(false);
+        map.getUiSettings().setTiltGesturesEnabled(false);
+        map.getUiSettings().setCompassEnabled(false);
+        map.getUiSettings().setRotateGesturesEnabled(false);
+
+        handler.postDelayed(navigationRunnable, UPDATE_INTERVAL);
 	}
 
 	public void stopRoute(){
-		handler.removeCallbacks(navigationRunnable);
-		currentRoute.remove();
+        handler.removeCallbacks(navigationRunnable);
+        if(currentRoute != null){
+            currentRoute.remove();
+        }
+        map.getUiSettings().setAllGesturesEnabled(true);
 	}
 
-	public void setMilestones(List<IMilestone> listOfMilestones){
+    public void startOverview(){
 
-	}
+    }
+
+    public void stopOverview(){
+
+    }
 
 	public IMilestone getMilestone(IMilestone.Category category, double kmFromCurrentPosition){
 		return null;
@@ -84,29 +125,24 @@ public class Map {
 		milestones.clear();
 	}
 
-	private void zoomCameraTo(int zoomLevel){
-		map.moveCamera(CameraUpdateFactory.zoomTo(zoomLevel));
-	}
-
-	private void moveCameraTo(LatLng position){
-		map.moveCamera(CameraUpdateFactory.newLatLng(position));
-	}
-
 	private Runnable navigationRunnable = new Runnable() {
 		@Override
 		public void run() {
-			Location myLocation = map.getMyLocation();
-			LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            Location myLocation = map.getMyLocation();
+            LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
 
-			// Move arrow to the current position on the route
-			if(currentRoute != null){
-				currentRoute.goTo(position);
-			}
+            // Move arrow to the current position on the route
+            if(currentRoute != null && !myLocation.equals(lastLocation)){
+                LatLng pointerLocation = currentRoute.goTo(map, position);
 
-			// Move the camera to the current position
-			moveCameraTo(position);
+                // float bearing = currentRoute.getBearing();
 
-			handler.postDelayed(this, 400);
+                // Move the camera to the current position
+                //moveCameraTo(pointerLocation);
+            }
+
+            lastLocation = myLocation;
+            handler.postDelayed(this, UPDATE_INTERVAL);
 		}
 	};
 
