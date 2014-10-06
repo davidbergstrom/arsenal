@@ -2,9 +2,7 @@ package com.edit.reach.model;
 
 import android.graphics.Color;
 import android.text.Html;
-import com.aga.mapstestapp.utils.NavigationUtils;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.*;
 import com.google.android.gms.maps.model.Circle;import com.google.android.gms.maps.model.CircleOptions;import com.google.android.gms.maps.model.LatLng;import com.google.android.gms.maps.model.Polyline;import com.google.android.gms.maps.model.PolylineOptions;import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
