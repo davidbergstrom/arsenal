@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import com.edit.reach.app.R;
 
 import java.util.ArrayList;
@@ -79,7 +80,7 @@ public class RouteFragment extends Fragment {
         btGetRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                System.out.println("getRoute banananananaz")
             }
         });
     }
@@ -112,13 +113,21 @@ public class RouteFragment extends Fragment {
     }
 
     private EditText editText(int _intID){
-        EditText editText = new EditText(g);
+        EditText editText = new EditText(getActivity());
         editText.setId(_intID);
         editText.setHint("By");
         editText.setWidth(180);
         editTextList.add(editText);
         return editText;
 
+    }
+
+    private LinearLayout linearLayout (int _intID){
+        LinearLayout ll = new LinearLayout(getActivity());
+        ll.setId(_intID);
+
+
+        return ll;
     }
 
     @Override
