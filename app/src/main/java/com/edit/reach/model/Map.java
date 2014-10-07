@@ -122,9 +122,18 @@ public class Map {
      * Stop the current route.
      */
 	public void stopRoute(){
+        Location myLocation = map.getMyLocation();
+        if(myLocation != null){
+            LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+
+            CameraPosition currentPlace = new CameraPosition.Builder().target(position).tilt(0).zoom(5).build();
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
+        }
+
         handler.removeCallbacks(navigationRunnable);
         if(currentRoute != null){
             currentRoute.remove();
+            currentRoute = null;
         }
         map.getUiSettings().setAllGesturesEnabled(true);
 	}
