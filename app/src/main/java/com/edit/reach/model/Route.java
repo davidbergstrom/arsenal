@@ -73,10 +73,9 @@ public class Route {
      */
     public Route(LatLng origin, LatLng destination){
         this();
-        String stringUrl = NavigationUtils.makeURL(origin, destination, null, true);
         URL url = null;
         try {
-            url = new URL(stringUrl);
+            url = NavigationUtils.makeURL(origin, destination, null, true);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

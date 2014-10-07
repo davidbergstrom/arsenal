@@ -2,6 +2,8 @@ package com.edit.reach.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,35 +17,40 @@ public class NavigationUtils {
 
 	}
 
-	public static String makeURL(LatLng source, LatLng dest, List<LatLng> waypoints, boolean routeOptimization){
-		String url = "http://maps.googleapis.com/maps/api/directions/json";
-		url += "?origin=" + Double.toString(source.latitude) + "," + Double.toString(source.longitude);// from
-		url += "&destination=" + Double.toString(dest.latitude) + "," + Double.toString(dest.longitude);// to
+    public static URL makeURL(LatLng source, LatLng dest, List<LatLng> waypoints, boolean routeOptimization) throws MalformedURLException {
+        String url = "http://maps.googleapis.com/maps/api/directions/json";
+        url += "?origin=" + Double.toString(source.latitude) + "," + Double.toString(source.longitude);// from
+        url += "&destination=" + Double.toString(dest.latitude) + "," + Double.toString(dest.longitude);// to
 
-		if(waypoints != null && waypoints.size() != 0) {
-			url += "&waypoints=optimize:" + routeOptimization;
+        if(waypoints != null && waypoints.size() != 0) {
+            url += "&waypoints=optimize:" + routeOptimization;
 
-			for (LatLng stop : waypoints) {
-				url += "|" + Double.toString(stop.latitude) + "," + Double.toString(stop.longitude);
-			}
+            for (LatLng stop : waypoints) {
+                url += "|" + Double.toString(stop.latitude) + "," + Double.toString(stop.longitude);
+            }
 
-		}
+        }
 
-		url += "&sensor=false&mode=driving&alternatives=true&language=EN";
+        url += "&sensor=false&mode=driving&alternatives=true&language=EN";
 
-		return url;
-	}
+        URL http = new URL(url);
 
-	public static String makeURL(String address){
-		String location = address.replaceAll(" ", "+").toLowerCase();
-		String url = "https://maps.googleapis.com/maps/api/geocode/json";
-		url += "?address=" + location;
-		url += "&key=AIzaSyCqs-SMMT3_BIzMsPr-wsWqsJTthTgFUb8";
+        return http;
+    }
 
-		return url;
-	}
+    public static URL makeURL(String address) throws MalformedURLException {
+        String location = address.replaceAll(" ", "+").toLowerCase();
+        String url = "https://maps.googleapis.com/maps/api/geocode/json";
+        url += "?address=" + location;
+        url += "&key=AIzaSyCqs-SMMT3_BIzMsPr-wsWqsJTthTgFUb8";
 
-	public static List<LatLng> decodePoly(String encoded) {
+        URL http = new URL(url);
+
+        return http;
+    }
+
+
+    public static List<LatLng> decodePoly(String encoded) {
 
 		List<LatLng> poly = new ArrayList<LatLng>();
 		int index = 0, len = encoded.length();
