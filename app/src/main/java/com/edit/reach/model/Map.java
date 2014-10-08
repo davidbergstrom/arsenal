@@ -5,13 +5,11 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import com.edit.reach.app.Remote;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +38,13 @@ public class Map {
         public void onInitialization() {
             Log.d(logClass, "Drawing Route");
             currentRoute.draw(map);
+        }
+
+        public void onPauseSelect(LatLng pauseLt){
+            // Ranking.getMilestones
+            // map.paintMlestones;
+            //
+
         }
     };
 
@@ -155,7 +160,19 @@ public class Map {
         CameraPosition currentPlace = new CameraPosition.Builder().target(routeMiddle).zoom(10).build();
         map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
+        // List<LatLng> pauses = currentRoute.getPauses();
+        // List<IMilestone> pelM = Ranking.getMilestones(pauses.get(0));
+
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                return false;
+            }
+        });
         // TODO Show the add milestones view
+
+
+
     }
 
     /**
@@ -189,7 +206,7 @@ public class Map {
 
     public List getAddressFromSearch(String input){
 
-        List<String> addresList;
+        List<String> addresList = null;
         URL url = NavigationUtils.makeURL(input);
         //Remote.get(url, routeHandler);
 
