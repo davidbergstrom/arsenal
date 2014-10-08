@@ -27,10 +27,9 @@ import java.util.List;
  */
 public class Route {
     private List<Leg> legs;
-    private Circle endPointCircle;
-    private Circle pointer; // Should this be an individual class (following a route)?
-    private LatLng origin;
-    private LatLng destination;
+    private Circle endPointCircle, pointer; // Should this be an individual class (following a route)?
+    private LatLng origin, destination;
+    private String originAddress, destinationAddress;
     private boolean initialized = false;
     private List<RouteListener> listeners;
     private List<IMilestone> milestones;
@@ -115,6 +114,8 @@ public class Route {
      */
     public Route(LatLng origin, LatLng destination){
         this();
+        this.origin = origin;
+        this.destination = destination;
         URL url = NavigationUtils.makeURL(origin, destination, null, true);
         Remote.get(url, routeHandler);
     }
@@ -126,8 +127,39 @@ public class Route {
      */
     public Route(String origin, String destination){
         this();
+        this.originAddress = origin;
+        this.destinationAddress = destination;
         URL url = NavigationUtils.makeURL(origin);
         Remote.get(url, orginHandler);
+    }
+
+    /**
+     * Set a new destination to this route. This will cause the route to erase itself, reinitialize and
+     * can't be used until done loading.
+     * @param destination, the new destination
+     */
+    public void setDestination(LatLng destination){
+        this.remove();
+        this.destination = destination;
+        initialized = false;
+        URL url = NavigationUtils.makeURL(this.origin, destination, null, true);
+        Remote.get(url, routeHandler);
+    }
+
+    /**
+     * Get the destination of the route
+     * @return the latitude longitude of the route
+     */
+    public LatLng getDestination(){
+        return destination;
+    }
+
+    /**
+     * Get the origin of the route
+     * @return the latitude longitude of the route
+     */
+    public LatLng getOrigin(){
+        return origin;
     }
 
     /**
@@ -187,9 +219,12 @@ public class Route {
         for(Leg leg : legs){
             leg.erase();
         }
-        this.removeListeners();
-        this.endPointCircle.remove();
-        this.pointer.remove();
+        if(endPointCircle != null){
+            endPointCircle.remove();
+        }
+        if(pointer != null){
+            pointer.remove();
+        }
     }
 
     /**
@@ -213,8 +248,8 @@ public class Route {
                     LatLng subStep = step.subSteps.get(i);
                     LatLng subStepTwo = step.subSteps.get(i + 1);
 
-                    double distance1 = getDistance(subStep, location);
-                    double distance2 = getDistance(location, subStepTwo);
+                    double distance1 = NavigationUtils.getDistance(subStep, location);
+                    double distance2 = NavigationUtils.getDistance(location, subStepTwo);
 
                     if(distance2 <= distance1){
                         nearestLocation = subStepTwo;
@@ -259,6 +294,14 @@ public class Route {
         return nearestLocation;
     }
 
+    public LatLng getPointerLocation(){
+        if(pointer != null){
+            return pointer.getCenter();
+        }else{
+            return null;
+        }
+    }
+
     /**
      * Determines if the route has been initialized.
      * @return true if the route has been initialized, false otherwise.
@@ -288,15 +331,6 @@ public class Route {
         }
     }
 
-    private double getDistance(LatLng firstPosition, LatLng secondPosition){
-        int R = 6371; // Earths radius in km
-        double a = Math.pow(Math.sin(Math.toRadians(secondPosition.latitude-firstPosition.latitude)/2), 2) +
-                Math.cos(secondPosition.latitude) * Math.cos(firstPosition.latitude) *
-                        Math.pow(Math.sin(Math.toRadians(secondPosition.longitude-firstPosition.longitude)/2), 2);
-
-        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    }
-
     private static double finalBearing(double lat1, double long1, double lat2, double long2){
         double degToRad = Math.PI / 180.0;
         double phi1 = lat1 * degToRad;
@@ -308,10 +342,6 @@ public class Route {
                 Math.cos(phi1)*Math.sin(phi2) - Math.sin(phi1)*Math.cos(phi2)*Math.cos(lam2-lam1)) * 180/Math.PI;
 
         return (bearing + 180.0) % 360;
-    }
-
-    public void setOrigin(LatLng origin) {
-        this.origin = origin;
     }
 
     /**

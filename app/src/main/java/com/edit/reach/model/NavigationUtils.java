@@ -100,4 +100,13 @@ public class NavigationUtils {
 
 		return poly;
 	}
+
+    public static double getDistance(LatLng firstPosition, LatLng secondPosition){
+        int R = 6371; // Earths radius in km
+        double a = Math.pow(Math.sin(Math.toRadians(secondPosition.latitude-firstPosition.latitude)/2), 2) +
+                Math.cos(secondPosition.latitude) * Math.cos(firstPosition.latitude) *
+                        Math.pow(Math.sin(Math.toRadians(secondPosition.longitude-firstPosition.longitude)/2), 2);
+
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
 }

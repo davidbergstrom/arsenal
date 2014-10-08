@@ -30,7 +30,6 @@ public class Map {
     private Handler handler = new Handler();
     private Route currentRoute;
     private Location lastLocation;
-    private Circle pointer;
     private static int UPDATE_INTERVAL = 300;
     private String logClass = "Map";
 
@@ -48,21 +47,27 @@ public class Map {
     private Runnable navigationRunnable = new Runnable() {
         @Override
         public void run() {
-            Location myLocation = map.getMyLocation();
-            LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            if(currentRoute != null && currentRoute.isInitialized()){
+                Location myLocation = map.getMyLocation();
+                LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
 
-            // Move arrow to the current position on the route
-            if(currentRoute != null && !myLocation.equals(lastLocation)){
-                LatLng pointerLocation = currentRoute.goTo(map, position);
+                // Move arrow to the current position on the route
 
-                // float bearing = currentRoute.getBearing();
+                if(currentRoute != null && !myLocation.equals(lastLocation)) {
 
-                // Move the camera to the current position
-                //moveCameraTo(pointerLocation);
+                    currentRoute.goTo(map, position);
+
+                    // float bearing = currentRoute.getBearing();
+
+                    // Move the camera to the current position
+                    //moveCameraTo(pointerLocation);
+
+                }
+                handler.postDelayed(this, UPDATE_INTERVAL);
+                lastLocation = myLocation;
+            }else{
+                Log.d(logClass, "Current route null or not initialized!");
             }
-
-            lastLocation = myLocation;
-            handler.postDelayed(this, UPDATE_INTERVAL);
         }
     };
 
@@ -143,14 +148,21 @@ public class Map {
      * Start an overview of the current route.
      */
     public void startOverview(){
+        LatLng routeOrigin = currentRoute.getOrigin();
+        LatLng routeDestination = currentRoute.getDestination();
+        LatLng routeMiddle = new LatLng((routeOrigin.latitude+routeDestination.latitude)/2, (routeOrigin.longitude+routeDestination.longitude)/2);
 
+        CameraPosition currentPlace = new CameraPosition.Builder().target(routeMiddle).zoom(10).build();
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
+
+        // TODO Show the add milestones view
     }
 
     /**
      * Stop the current overview
      */
     public void stopOverview(){
-
+        // TODO Should be 3 views: Overview, Navigation, Standard.
     }
 
     /**
@@ -158,8 +170,9 @@ public class Map {
      * @param timeIntoRoute, driving time to the milestones.
      */
     public void getMilestones(double timeIntoRoute){
-
+        // TODO Ask the route how far it is to the time specified.
     }
+
 
     private void decodeAddress(JSONObject address) {
 
