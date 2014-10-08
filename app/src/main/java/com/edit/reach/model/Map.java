@@ -5,6 +5,7 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import com.edit.reach.app.Remote;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -171,5 +172,14 @@ public class Map {
         } catch (JSONException ignored) {
 
         }
+    }
+
+    public List getAddressFromSearch(String input){
+
+        List<String> addresList;
+        URL url = NavigationUtils.makeURL(input);
+        //Remote.get(url, routeHandler);
+
+        return addresList;
     }
 }

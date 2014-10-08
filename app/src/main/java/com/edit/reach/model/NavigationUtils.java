@@ -17,15 +17,22 @@ public class NavigationUtils {
 
 	}
 
-    public static URL makeURL(LatLng source, LatLng dest, List<LatLng> waypoints, boolean routeOptimization) throws MalformedURLException {
+    public static URL makeURL(LatLng source, LatLng dest, List<IMilestone> milestones, boolean routeOptimization) {
+
+        List<LatLng> wayPoints = new ArrayList<LatLng>();
+
+        for (IMilestone i : milestones) {
+            wayPoints.add(i.getLocation());
+        }
+
         String url = "http://maps.googleapis.com/maps/api/directions/json";
         url += "?origin=" + Double.toString(source.latitude) + "," + Double.toString(source.longitude);// from
         url += "&destination=" + Double.toString(dest.latitude) + "," + Double.toString(dest.longitude);// to
 
-        if(waypoints != null && waypoints.size() != 0) {
+        if(wayPoints != null && wayPoints.size() != 0) {
             url += "&waypoints=optimize:" + routeOptimization;
 
-            for (LatLng stop : waypoints) {
+            for (LatLng stop : wayPoints) {
                 url += "|" + Double.toString(stop.latitude) + "," + Double.toString(stop.longitude);
             }
 
@@ -33,18 +40,28 @@ public class NavigationUtils {
 
         url += "&sensor=false&mode=driving&alternatives=true&language=EN";
 
-        URL http = new URL(url);
+        URL http = null;
+        try {
+            http = new URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
         return http;
     }
 
-    public static URL makeURL(String address) throws MalformedURLException {
+    public static URL makeURL(String address) {
         String location = address.replaceAll(" ", "+").toLowerCase();
         String url = "https://maps.googleapis.com/maps/api/geocode/json";
         url += "?address=" + location;
         url += "&key=AIzaSyCqs-SMMT3_BIzMsPr-wsWqsJTthTgFUb8";
 
-        URL http = new URL(url);
+        URL http = null;
+        try {
+            http = new URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
         return http;
     }

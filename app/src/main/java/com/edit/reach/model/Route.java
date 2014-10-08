@@ -29,6 +29,8 @@ public class Route {
     private List<Leg> legs;
     private Circle endPointCircle;
     private Circle pointer; // Should this be an individual class (following a route)?
+    private LatLng origin;
+    private LatLng destination;
     private boolean initialized = false;
     private List<RouteListener> listeners;
     private List<IMilestone> milestones;
@@ -57,6 +59,46 @@ public class Route {
         }
     };
 
+    private ResponseHandler orginHandler = new ResponseHandler() {
+        @Override
+        public void onGetSuccess(JSONObject json) {
+            try {
+                JSONArray originArray = json.getJSONArray("results");
+                JSONObject address = originArray.getJSONObject(0);
+                JSONObject location = address.getJSONObject("location");
+                origin = (new LatLng(location.getDouble("lat"), location.getDouble("lng")));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onGetFail() {
+
+        }
+    };
+
+    private ResponseHandler destinationHandler = new ResponseHandler() {
+        @Override
+        public void onGetSuccess(JSONObject json) {
+            try {
+                JSONArray destinationArray = json.getJSONArray("results");
+                JSONObject address = destinationArray.getJSONObject(0);
+                JSONObject location = address.getJSONObject("location");
+                origin = (new LatLng(location.getDouble("lat"), location.getDouble("lng")));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onGetFail() {
+
+        }
+    };
+
     /**
      * Create an empty route.
      */
@@ -73,13 +115,19 @@ public class Route {
      */
     public Route(LatLng origin, LatLng destination){
         this();
-        URL url = null;
-        try {
-            url = NavigationUtils.makeURL(origin, destination, null, true);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        URL url = NavigationUtils.makeURL(origin, destination, null, true);
         Remote.get(url, routeHandler);
+    }
+
+    /**
+     * Create a route with the provided origin and destination.
+     * @param origin, the start of the route
+     * @param destination, the end of the route
+     */
+    public Route(String origin, String destination){
+        this();
+        URL url = NavigationUtils.makeURL(origin);
+        Remote.get(url, orginHandler);
     }
 
     /**
@@ -260,6 +308,10 @@ public class Route {
                 Math.cos(phi1)*Math.sin(phi2) - Math.sin(phi1)*Math.cos(phi2)*Math.cos(lam2-lam1)) * 180/Math.PI;
 
         return (bearing + 180.0) % 360;
+    }
+
+    public void setOrigin(LatLng origin) {
+        this.origin = origin;
     }
 
     /**
