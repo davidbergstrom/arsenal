@@ -11,9 +11,8 @@ import java.util.Observer;
  * Project: REACH
  * Date: 2014-09-27
  * Time: 19:27
- * Last Edit: 2014-10-02
+ * Last Edit: 2014-10-08
  */
-// TODO Everything that has to do with the stationary view
 // TODO Run this class in separate thread.
 public class NavigationModel implements Observer {
 
@@ -23,6 +22,7 @@ public class NavigationModel implements Observer {
 	/** Constructor...
 	 */
 	public NavigationModel() {
+		Log.d("NavigationModel", "Navmodel created");
 		vehicleSystem = new VehicleSystem();
 		vehicleSystem.addObserver(this);
 	}
@@ -33,22 +33,19 @@ public class NavigationModel implements Observer {
 	 */
 	@Override
 	public void update(Observable observable, Object data) {
-		if(data.getClass() == SIGNAL_TYPE.LOW_FUEL.getClass()) {
-			// TODO, do stuff. Vehicle is low on fuel.
-			vehicleSystem.getKilometersUntilRefuel();
 
-		} else if (data.getClass() == SIGNAL_TYPE.SHORT_TIME.getClass()) {
-			// TODO, do stuff. Vehicle is short on time.
-			vehicleSystem.getTimeUntilForcedBreak();
-
-		} else if (data.getClass() == SIGNAL_TYPE.SHORT_TO_SERVICE.getClass()) {
-			// TODO, do stuff. Vehicle needs service soon.
-			vehicleSystem.getKilometersUntilService();
-
-		} else if (data.getClass() == SIGNAL_TYPE.VEHICLE_STOPPED_OR_STARTED.getClass()) {
-			// TODO, do stuff. Vehicle started or stopped.
-			vehicleSystem.getVehicleState();
-
+		if(data == SIGNAL_TYPE.LOW_FUEL) {
+			Log.d("UPDATE", "TYPE: LOW_FUEL");
+			Log.d("GET", "Km to refuel: " + vehicleSystem.getKilometersUntilRefuel());
+		} else if (data == SIGNAL_TYPE.SHORT_TIME) {
+			Log.d("UPDATE", "TYPE: SHORT_TIME");
+			Log.d("GET", "Time until rest: " +  vehicleSystem.getTimeUntilForcedRest());
+		} else if (data == SIGNAL_TYPE.SHORT_TO_SERVICE) {
+			Log.d("UPDATE", "TYPE: SHORT_TO_SERVICE");
+			Log.d("GET", "Km to service: " + vehicleSystem.getKilometersUntilService());
+		} else if (data == SIGNAL_TYPE.VEHICLE_STOPPED_OR_STARTED) {
+			Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
+			Log.d("GET", "Vehicle State: " + vehicleSystem.getVehicleState());
 		} else {
 			Log.d("TYPE ERROR", "Type error in update");
 		}
