@@ -1,25 +1,14 @@
 package com.edit.reach.model;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import com.edit.reach.app.Remote;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.*;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +30,13 @@ public class Map {
         public void onInitialization() {
             Log.d(logClass, "Drawing Route");
             currentRoute.draw(map);
+        }
+
+        public void onPauseSelect(LatLng pauseLt){
+            // Ranking.getMilestones
+            // map.paintMlestones;
+            //
+
         }
     };
 
@@ -160,6 +156,16 @@ public class Map {
         // TODO Loop through the milestone and add them as markers to the map.
 
         // TODO start the route overview (painting the overview inside Route)
+        // List<LatLng> pauses = currentRoute.getPauses();
+        // List<IMilestone> pelM = Ranking.getMilestones(pauses.get(0));
+
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                return false;
+            }
+        });
+        // TODO Show the add milestones view
     }
 
     /**

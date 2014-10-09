@@ -33,6 +33,7 @@ public class Route {
     private boolean initialized = false;
     private List<RouteListener> listeners;
     private List<IMilestone> milestones;
+    private List<IMilestone> prelMilestones;
     private ResponseHandler routeHandler = new ResponseHandler() {
         @Override
         public void onGetSuccess(JSONObject json) {
@@ -67,6 +68,9 @@ public class Route {
                 JSONObject location = address.getJSONObject("location");
                 origin = (new LatLng(location.getDouble("lat"), location.getDouble("lng")));
 
+                URL url = NavigationUtils.makeURL(destinationAddress);
+                Remote.get(url, destinationHandler);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -85,7 +89,10 @@ public class Route {
                 JSONArray destinationArray = json.getJSONArray("results");
                 JSONObject address = destinationArray.getJSONObject(0);
                 JSONObject location = address.getJSONObject("location");
-                origin = (new LatLng(location.getDouble("lat"), location.getDouble("lng")));
+                destination = (new LatLng(location.getDouble("lat"), location.getDouble("lng")));
+
+                URL url = NavigationUtils.makeURL(origin, destination, null, true);
+                Remote.get(url, routeHandler);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -131,6 +138,18 @@ public class Route {
         this.destinationAddress = destination;
         URL url = NavigationUtils.makeURL(origin);
         Remote.get(url, orginHandler);
+    }
+
+    /**
+     *
+     * @param timeInToRoute, in seconds
+     */
+    public void addPause(int timeInToRoute) {
+
+    }
+
+    public void removeAllPauses() {
+
     }
 
     /**
@@ -210,6 +229,26 @@ public class Route {
                 .radius(10)
                 .strokeColor(Color.RED)
                 .fillColor(Color.BLUE));
+    }
+
+    public void drawOverview(GoogleMap map){
+        for(Leg leg : legs){
+            leg.draw(map);
+        }
+        // Add an end point
+        this.endPointCircle = map.addCircle(new CircleOptions()
+                .center(legs.get(legs.size()-1).endLocation)
+                .radius(10)
+                .strokeColor(Color.RED)
+                .fillColor(Color.BLUE));
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                return false;
+            }
+        });
+        //todo add startpoint and pauses
     }
 
     /**
@@ -401,6 +440,7 @@ public class Route {
      */
     private class Step{
         public int distance;
+        private int duration;
         public LatLng startLocation;
         public LatLng endLocation;
         public String instructions;
@@ -413,6 +453,7 @@ public class Route {
             try {
                 distance = Integer.decode(stepJSON.getJSONObject("distance").getString("value"));
                 startLocation = stepJSON.getJSONObject("start_location");
+                duration = Integer.decode(stepJSON.getJSONObject("duration").getString("value"));
                 this.startLocation = new LatLng(startLocation.getDouble("lat"), startLocation.getDouble("lng"));
                 endLocation = stepJSON.getJSONObject("end_location");
                 this.endLocation = new LatLng(endLocation.getDouble("lat"), endLocation.getDouble("lng"));
