@@ -9,8 +9,8 @@ public class WorldTruckerEndpoints {
     private WorldTruckerEndpoints() {
     }
 
-    public static URL getMilestonesURL(BoundingBox bbox, int[] categories) throws MalformedURLException {
-        String urlString = "tip?bbox=" + bbox + "&categories=" + categories;
+    public static URL getMilestonesURL(BoundingBox bbox) throws MalformedURLException {
+        String urlString = "tip?bbox=" + bbox + "&categories=";
         return createURL(urlString);
     }
 

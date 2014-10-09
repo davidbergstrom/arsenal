@@ -22,4 +22,15 @@ public class BoundingBox {
     LatLng getTopRight() {
         return topRight;
     }
+
+    @Override
+    public String toString() {
+        String bboxParams = "";
+        bboxParams += bottomLeft.latitude + ", ";
+        bboxParams += bottomLeft.longitude + ", ";
+        bboxParams += topRight.latitude + ", ";
+        bboxParams += topRight.longitude;
+
+        return bboxParams;
+    }
 }
