@@ -1,0 +1,19 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+    <ListPreference
+        android:key="route_type"
+        android:title="@string/pref_title_route_type"
+        android:entries="@array/pref_route_type_titles"
+        android:entryValues="@array/pref_route_type_values"
+        android:defaultValue="180"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null" />
+
+    <CheckBoxPreference
+        android:key="allow_more_pauses"
+        android:title="@string/pref_title_allow_more_pauses"
+        android:summary="@string/pre_summary_allow_more_pauses"
+        android:defaultValue="false" />
+
+</PreferenceScreen>
