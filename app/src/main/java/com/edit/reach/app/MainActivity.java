@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.swedspot.automotiveapi.AutomotiveSignal;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.google.android.gms.maps.model.LatLng;
 import com.swedspot.automotiveapi.AutomotiveListener;
 import org.json.JSONObject;
 
@@ -31,27 +32,22 @@ public class MainActivity extends Activity implements ResponseHandler {
 
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         try {
-            URL url = new URL("https://api.worldtrucker.com/v1/tip?bbox=26.23952479477298%2C-94.9609375%2C57.77762234415841%2C12.96875&categories=");
-            Remote.get(url, this);
+            LatLng centralPoint = new LatLng(26.239523556, 3.45);
+            Double sideLength = 20.2;
+            BoundingBox bbox = new BoundingBox(centralPoint, sideLength);
 
+            URL url = WorldTruckerEndpoints.getMilestonesURL(bbox);
+            Remote.get(url, this);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void onGetSuccess(JSONObject json) {
-
-    }
-
-    public void onGetFail() {
-
     }
 
     @Override
