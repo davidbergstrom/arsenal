@@ -88,6 +88,7 @@ public class Map {
         if(currentRoute.isInitialized()){
             Log.d(logClass, "Route is initialized");
             currentRoute.draw(map);
+            currentRoute.drawOverview(map);
         }else{
             Log.d(logClass, "Route is NOT initialized");
             currentRoute.addListener(routeListener);
@@ -153,11 +154,14 @@ public class Map {
         map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
         // TODO Get pauses from route, ask ranking which milestones are in those places.
+        List<LatLng> pauses = currentRoute.getPauses();
         // TODO Loop through the milestone and add them as markers to the map.
+        List<IMilestone> pelM = Ranking.getMilestones(pauses.get(0));
 
-        // TODO start the route overview (painting the overview inside Route)
-        // List<LatLng> pauses = currentRoute.getPauses();
-        // List<IMilestone> pelM = Ranking.getMilestones(pauses.get(0));
+        for (IMilestone i : pelM) {
+            map.addMarker(new MarkerOptions()
+            .position(i.getLocation()));
+        }
 
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
