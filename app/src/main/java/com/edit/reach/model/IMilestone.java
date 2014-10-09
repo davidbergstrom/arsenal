@@ -1,6 +1,7 @@
 package com.edit.reach.model;
 
 import android.location.Location;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by Joakim Berntsson on 2014-09-29.
@@ -51,6 +52,6 @@ public interface IMilestone {
 	 * Returns the location of the milestone
 	 * @return the milestones location
 	 */
-	public Location getLocation();
+	public LatLng getLocation();
 
 }
