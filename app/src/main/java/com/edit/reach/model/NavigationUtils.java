@@ -14,6 +14,9 @@ import java.util.List;
 public class NavigationUtils {
     public static final double areaZoomSide = 0.1; // In degrees
 
+    /** Radius for the pauses */
+    public static final int radiusInKm = 5;
+
 	private NavigationUtils(){
 
 	}
