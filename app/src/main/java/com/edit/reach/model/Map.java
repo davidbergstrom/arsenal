@@ -186,7 +186,7 @@ public class Map {
         //map.addMarker(new MarkerOptions().)
 
         // TODO This should be done in the activity.
-        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+        /*map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {
                 return null;
@@ -200,7 +200,7 @@ public class Map {
                 //Button b = new Button(this);
 
 
-                /*b.setOnClickListener(new View.OnClickListener() {
+                b.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //IMilestone m = currentRoute.matchMilestone(p);
@@ -208,10 +208,10 @@ public class Map {
 
                         // When finished and user selected "Submit/Start nav" then : map.getRoute.addMilestones(listOfPrelM);
                     }
-                });*/
+                });
                 return null;
             }
-        });
+        });*/
     }
 
     public List getAddressFromSearch(String input){
