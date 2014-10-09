@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:background="@color/background_main">
+
+    <fragment
+            android:id="@+id/fragment_route"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            class="com.edit.reach.stationary.RouteFragment"
+            tools:layout="@layout/fragment_route">
+    </fragment>
+
+    <!--<fragment
+            android:id="@+id/fragment_map"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            class="com.edit.reach.stationary.MapFragment"
+            tools:layout="@layout/fragment_map">
+    </fragment>-->
+
+	<fragment android:layout_width="0dp"
+	          android:layout_height="match_parent"
+	          android:id="@+id/map"
+	          android:layout_weight="3"
+	          tools:context="com.edit.reach.stationary.MultiPaneActivity"
+	          android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+</LinearLayout>

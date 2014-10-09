@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Application strings -->
     <string name="app_name">REACH</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Route Fragment -->
+    <string name="tv_fragment_route">This is where Simon\'s design will show...</string>
+    <string name="et_from">From</string>
+    <string name="et_to">To</string>
+
+    <!-- Map Fragment -->
+    <string name="tv_fragment_map">This is where the map will show...</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_multi_pane">MultiPaneActivity</string>
 
 </resources>

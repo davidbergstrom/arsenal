@@ -23,9 +23,9 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
-        <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" >
+	    <activity
+            android:name="com.edit.reach.stationary.MultiPaneActivity"
+            android:label="@string/title_activity_multi_pane" >
         </activity>
 
         <meta-data
