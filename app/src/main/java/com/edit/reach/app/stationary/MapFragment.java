@@ -74,7 +74,7 @@ public class MapFragment extends Fragment {
 			mListener = (OnMapInteractionListener) activity;
 		} catch (ClassCastException e) {
 			throw new ClassCastException(activity.toString()
-					+ " must implement OnFragmentInteractionListener");
+					+ " must implement OnMapInteractionListener");
 		}
 	}
 

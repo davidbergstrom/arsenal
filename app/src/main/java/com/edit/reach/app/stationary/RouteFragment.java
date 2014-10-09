@@ -38,11 +38,6 @@ public class RouteFragment extends Fragment {
 
     private List<EditText> editTextList = new ArrayList<EditText>();
 
-
-
-
-
-
     private OnRouteInteractionListener mListener;
 
     /**
@@ -81,7 +76,7 @@ public class RouteFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                System.out.println("getRoute banananananaz")
+                System.out.println("getRoute banananananaz");
 
             }
         });
@@ -95,8 +90,6 @@ public class RouteFragment extends Fragment {
             }
         });
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -139,7 +132,7 @@ public class RouteFragment extends Fragment {
             mListener = (OnRouteInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnRouteInteractionListener");
         }
     }
 

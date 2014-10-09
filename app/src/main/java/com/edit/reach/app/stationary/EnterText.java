@@ -14,7 +14,6 @@ public class EnterText extends Activity {
 
     private List<EditText> editTextList = new ArrayList<EditText>();
 
-
     private EditText editText(int _intID){
         EditText editText = new EditText(this);
         editText.setId(_intID);
