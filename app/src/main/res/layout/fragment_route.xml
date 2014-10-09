@@ -4,6 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="horizontal"
+
         >
 
     <!-- Lägg till fler layouter för att få en TextView bredvid +-knappen -->
@@ -25,13 +26,14 @@
                 android:layout_marginBottom="0dp"
                 android:id="@+id/bt_get_route"
                 android:text="Get Route"
+                android:textColor="@color/text_fragment_route"
 
 
 
                 />
 
         <EditText
-                android:id="@+id/from"
+                android:id="@+id/etFrom"
                 android:inputType="textAutoComplete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -39,6 +41,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="0dp"
+                android:textColor="@color/text_fragment_route"
                 android:hint="@string/et_from"
                 />
 
@@ -53,6 +56,7 @@
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="0dp"
                 android:text="Add destination +"
+                android:textColor="@color/text_fragment_route"
 
 
                 />
@@ -61,7 +65,7 @@
 
 
         <EditText
-                android:id="@+id/to"
+                android:id="@+id/etTo"
                 android:inputType="textAutoComplete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -69,7 +73,35 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="0dp"
+                android:textColor="@color/text_fragment_route"
                 android:hint="@string/et_to"
+                />
+
+        <EditText
+                android:id="@+id/etToTest"
+                android:inputType="textAutoComplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="0dp"
+                android:textColor="@color/text_fragment_route"
+                android:hint="@string/et_to"
+                />
+
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="0dp"
+                android:text="Find nearest route"
+                android:textColor="@color/text_fragment_route"
+                android:id="@+id/btSubmitNearestRoute"
+
+
                 />
 
 

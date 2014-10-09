@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/background_main"
+                >
+<!-- Same size at the ImageButtons & and non-scaled pictures -->
+    <ImageButton
+            android:id="@+id/Restaurant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/Toilet"
+            android:src="@drawable/driving_restaurant"
+
+            />
+
+    <ImageButton
+            android:id="@+id/Toilet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/driving_toilet"
+
+            />
+
+    <ImageButton
+        android:id="@+id/RestArea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Restaurant"
+        android:layout_toRightOf="@+id/Gas"
+        android:src="@drawable/driving_restarea"
+
+        />
+
+    <ImageButton
+            android:id="@+id/Gas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/Toilet"
+            android:src="@drawable/driving_gas"
+
+            />
+
+</RelativeLayout>
