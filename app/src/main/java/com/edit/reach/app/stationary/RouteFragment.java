@@ -88,7 +88,7 @@ public class RouteFragment extends Fragment {
             }
 
 
-            //Send : strFrom, strTo, listOfVia to map-Activity
+            //Send : strFrom, strTo, strListOfVia to map-Activity
 
         }
     };

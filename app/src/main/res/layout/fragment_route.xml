@@ -16,22 +16,6 @@
             >
 
 
-        <!-- När du trycker på den här knappen kommer du att få en rutt -->
-        <Button
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="0dp"
-                android:id="@+id/bt_get_route"
-                android:text="Get Route"
-                android:textColor="@color/text_fragment_route"
-
-
-
-                />
-
         <EditText
                 android:id="@+id/etFrom"
                 android:inputType="textAutoComplete"
@@ -44,24 +28,6 @@
                 android:textColor="@color/text_fragment_route"
                 android:hint="@string/et_from"
                 />
-
-
-
-        <Button
-                android:id="@+id/bt_add_destination"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="0dp"
-                android:text="Add destination +"
-                android:textColor="@color/text_fragment_route"
-
-
-                />
-
-
 
 
         <EditText
@@ -77,17 +43,18 @@
                 android:hint="@string/et_to"
                 />
 
-        <EditText
-                android:id="@+id/etToTest"
-                android:inputType="textAutoComplete"
+        <Button
+                android:id="@+id/bt_add_destination"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="0dp"
+                android:text="Add destination +"
                 android:textColor="@color/text_fragment_route"
-                android:hint="@string/et_to"
+
+
                 />
 
         <Button
