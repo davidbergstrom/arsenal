@@ -13,7 +13,7 @@ public class RankingSystem implements ResponseHandler {
 
     MilestonesReceiver milestonesReceiver;
 
-    private RankingSystem(MilestonesReceiver milestonesReceiver) {
+    public RankingSystem(MilestonesReceiver milestonesReceiver) {
         this.milestonesReceiver = milestonesReceiver;
     }
 
