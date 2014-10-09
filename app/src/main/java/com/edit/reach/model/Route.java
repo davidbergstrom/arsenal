@@ -215,6 +215,14 @@ public class Route {
         }
     }
 
+    public List<LatLng> getPauses(){
+        List<LatLng> pausesLocations = new ArrayList<LatLng>();
+        for(Pause p : pauses){
+            pausesLocations.add(p.center);
+        }
+        return pausesLocations;
+    }
+
     /**
      * Remove all pausesLocations from this route.
      */

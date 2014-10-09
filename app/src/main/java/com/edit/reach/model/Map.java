@@ -34,11 +34,11 @@ public class Map implements MilestonesReceiver {
             startOverview();
         }
 
-        public void onPauseSelect(LatLng pauseLt){
+        @Override
+        public void onPauseAdded(LatLng pauseLocation) {
             // Ranking.getMilestones
             // map.paintMlestones;
             //
-
         }
     };
 
