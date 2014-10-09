@@ -59,7 +59,7 @@ public class Route {
         }
     };
 
-    private ResponseHandler orginHandler = new ResponseHandler() {
+    private ResponseHandler originHandler = new ResponseHandler() {
         @Override
         public void onGetSuccess(JSONObject json) {
             try {
@@ -137,7 +137,7 @@ public class Route {
         this.originAddress = origin;
         this.destinationAddress = destination;
         URL url = NavigationUtils.makeURL(origin);
-        Remote.get(url, orginHandler);
+        Remote.get(url, originHandler);
     }
 
     /**
