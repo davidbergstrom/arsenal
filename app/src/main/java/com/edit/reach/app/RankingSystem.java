@@ -1,6 +1,6 @@
 package com.edit.reach.app;
 
-import com.edit.reach.model.Milestone;
+import com.edit.reach.model.IMilestone;
 import com.edit.reach.model.MilestonesReceiver;
 import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONObject;
@@ -31,7 +31,7 @@ public class RankingSystem implements ResponseHandler {
 
     @Override
     public void onGetSuccess(JSONObject json) {
-        ArrayList<Milestone> milestones = new ArrayList<Milestone>();
+        ArrayList<IMilestone> milestones = new ArrayList<IMilestone>();
         milestonesReceiver.onMilestonesRecieved(milestones);
     }
 
