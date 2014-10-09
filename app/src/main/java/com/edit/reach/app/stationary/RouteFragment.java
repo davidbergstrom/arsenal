@@ -1,6 +1,7 @@
 package com.edit.reach.app.stationary;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,10 +13,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import com.edit.reach.app.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 
 /**
@@ -30,13 +33,11 @@ import java.util.List;
 public class RouteFragment extends Fragment {
 
     private static final String ARG_ID = "Route";
-
     private String mId;
 
-    private Button btGetRoute;
-    private Button btAddDestination;
-
-    private List<EditText> editTextList = new ArrayList<EditText>();
+    private EditText etFrom;
+    private EditText etTo;
+    private List<EditText> etListOfVia;
 
     private OnRouteInteractionListener mListener;
 
@@ -65,36 +66,50 @@ public class RouteFragment extends Fragment {
         if (getArguments() != null) {
             mId = getArguments().getString(ARG_ID);
         }
-       /* btGetRoute = (Button) getView().findViewById(R.id.bt_get_route);
-        btGetRouteOnClick();
-        btAddDestination = (Button)getView().findViewById(R.id.bt_add_destination);
-        btAddDestinationOnClick();*/
     }
 
-    public void btGetRouteOnClick(){
-        btGetRoute.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+    private View.OnClickListener addDestinationListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
 
-                System.out.println("getRoute banananananaz");
+            editText();
 
+        }
+    };
+
+    private View.OnClickListener getNearestRouteListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            String strFrom = etFrom.getText().toString();
+            String strTo = etTo.getText().toString();
+            List<String> strListOfVia = new ArrayList<String>();
+            for(EditText et: etListOfVia){
+                strListOfVia.add(et.getText().toString());
             }
-        });
-    }
 
-    public void btAddDestinationOnClick(){
-        btAddDestination.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-            }
-        });
-    }
+            //Send : strFrom, strTo, listOfVia to map-Activity
+
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_route, container, false);
+
+        etFrom = (EditText) view.findViewById(R.id.etFrom);
+        etTo = (EditText) view.findViewById(R.id.etTo);
+
+
+        etListOfVia = new ArrayList<EditText>();
+
+        Button btGetNearestRoute = (Button) view.findViewById(R.id.btSubmitNearestRoute);
+        btGetNearestRoute.setOnClickListener(getNearestRouteListener);
+        Button btAddDestination = (Button) view.findViewById(R.id.bt_add_destination);
+        btAddDestination.setOnClickListener(addDestinationListener);
+
+
 		return view;
     }
 
@@ -107,16 +122,17 @@ public class RouteFragment extends Fragment {
         }
     }
 
-    private EditText editText(int _intID){
+    //Kan behövas för att dynamiskt lägga till fler textfält för del-destinationer
+    private EditText editText(){
         EditText editText = new EditText(getActivity());
-        editText.setId(_intID);
         editText.setHint("By");
         editText.setWidth(180);
-        editTextList.add(editText);
+        etListOfVia.add(editText);
         return editText;
 
     }
 
+    //Kan behövas för att dynamiskt lägga till fler textfält för del-destinationer
     private LinearLayout linearLayout (int _intID){
         LinearLayout ll = new LinearLayout(getActivity());
         ll.setId(_intID);
