@@ -14,7 +14,6 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.Integer;import java.lang.Math;import java.lang.String;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -27,14 +26,14 @@ import java.util.List;
  */
 public class Route {
     private List<Leg> legs;
-    private Circle endPointCircle, pointer; // Should this be an individual class (following a route)?
+    private Circle endPointCircle, startPointCircle, pointer; // Should this be an individual class (following a route)?
     private LatLng origin, destination;
     private String originAddress, destinationAddress;
     private int distanceInKm, durationInSeconds;
     private boolean initialized = false;
     private List<RouteListener> listeners;
     private List<IMilestone> milestones, prelMilestones;
-    private List<LatLng> pauses;
+    private List<Pause> pauses;
     private ResponseHandler routeHandler = new ResponseHandler() {
         @Override
         public void onGetSuccess(JSONObject json) {
@@ -115,7 +114,7 @@ public class Route {
         listeners = new ArrayList<RouteListener>();
         legs = new ArrayList<Leg>();
         milestones = new ArrayList<IMilestone>();
-        pauses = new ArrayList<LatLng>();
+        pauses = new ArrayList<Pause>();
     }
 
     /**
@@ -180,7 +179,7 @@ public class Route {
         }
 
         if(pauseLocation != null){
-            pauses.add(pauseLocation);
+            pauses.add(new Pause(pauseLocation));
 
             for(RouteListener l : listeners){
                 l.onPauseAdded(pauseLocation);
@@ -208,7 +207,7 @@ public class Route {
         }
 
         if(pauseLocation != null){
-            pauses.add(pauseLocation);
+            pauses.add(new Pause(pauseLocation));
 
             for(RouteListener l : listeners){
                 l.onPauseAdded(pauseLocation);
@@ -217,15 +216,22 @@ public class Route {
     }
 
     /**
-     * Remove all pauses from this route.
+     * Remove all pausesLocations from this route.
      */
     public void removeAllPauses() {
+        for(Pause p : pauses){
+            p.erase();
+        }
         pauses.clear();
     }
 
+    /**
+     * Draw all pauses.
+     * @param map, the GoogleMap to draw on
+     */
     public void drawPauses(GoogleMap map){
-        for(LatLng pauseLocation : pauses){
-            map.addCircle(new CircleOptions().center(pauseLocation).)
+        for(Pause pause : pauses){
+            pause.draw(map);
         }
     }
 
@@ -318,14 +324,13 @@ public class Route {
                 .radius(10)
                 .strokeColor(Color.RED)
                 .fillColor(Color.BLUE));
-        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
 
-                return false;
-            }
-        });
-        //todo add startpoint and pauses
+        this.startPointCircle = map.addCircle(new CircleOptions()
+                .center(legs.get(0).startLocation)
+                .radius(10)
+                .strokeColor(Color.BLUE)
+                .fillColor(Color.YELLOW));
+
     }
 
     /**
@@ -408,14 +413,6 @@ public class Route {
 
         }
         return nearestLocation;
-    }
-
-    public LatLng getPointerLocation(){
-        if(pointer != null){
-            return pointer.getCenter();
-        }else{
-            return null;
-        }
     }
 
     /**
@@ -573,6 +570,33 @@ public class Route {
          */
         public void erase(){
             polyline.remove();
+        }
+    }
+
+    /**
+     * Class that represents a pause.
+     */
+    private class Pause{
+        private LatLng center;
+        private Circle circle;
+
+        public Pause(LatLng center){
+            this.center = center;
+        }
+
+        /**
+         * Draw the pause as a circle
+         * @param map, the map to draw it on
+         */
+        public void draw(GoogleMap map){
+            this.circle = map.addCircle(new CircleOptions().center(center).radius(NavigationUtils.RADIUS_IN_KM*1000).fillColor(Color.BLUE));
+        }
+
+        /**
+         * Erase the pause from all of the maps it has been drawn on
+         */
+        public void erase(){
+            circle.remove();
         }
     }
 }

@@ -12,10 +12,12 @@ import java.util.List;
  * Static class for navigation utilities.
  */
 public class NavigationUtils {
-    public static final double areaZoomSide = 0.1; // In degrees
 
     /** Radius for the pauses */
-    public static final int radiusInKm = 5;
+    public static final double RADIUS_IN_DEGREES = 0.1;
+
+    /** Radius for the pauses */
+    public static final int RADIUS_IN_KM = (int) getDistance(new LatLng(0,0), new LatLng(0,RADIUS_IN_DEGREES));
 
 	private NavigationUtils(){
 
