@@ -1,17 +1,18 @@
 package com.edit.reach.model;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import com.edit.reach.app.Remote;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -155,7 +156,10 @@ public class Map {
         CameraPosition currentPlace = new CameraPosition.Builder().target(routeMiddle).zoom(10).build();
         map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
-        // TODO Show the add milestones view
+        // TODO Get pauses from route, ask ranking which milestones are in those places.
+        // TODO Loop through the milestone and add them as markers to the map.
+
+        // TODO start the route overview (painting the overview inside Route)
     }
 
     /**
@@ -167,29 +171,46 @@ public class Map {
 
     /**
      * Get all milestones a certain amount of time into the current route.
-     * @param timeIntoRoute, driving time to the milestones.
+     * @param timeIntoRoute, driving time to the milestones in seconds.
      */
-    public void getMilestones(double timeIntoRoute){
+    public void getMilestones(int timeIntoRoute){
         // TODO Ask the route how far it is to the time specified.
-    }
+        // LatLng position = currentRoute.getLatLngAtTime(timeIntoRoute); Should return a location that is in a "safe" distance from the real location
+        // Ranking.getMilestones(position, 2); 2 is the degrees
+        //map.addMarker(new MarkerOptions().)
+
+        // TODO This should be done in the activity.
+        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                LatLng p = marker.getPosition();
+                //View v = getLayoutInflater().inflate();
+
+                //Button b = new Button(this);
 
 
-    private void decodeAddress(JSONObject address) {
+                /*b.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //IMilestone m = currentRoute.matchMilestone(p);
+                        //listOfPrelM.add(m); // Add to list
 
-        LatLng latLng = null;
-
-        try {
-            JSONObject location = address.getJSONObject("location");
-            latLng = new LatLng(location.getDouble("lat"), location.getDouble("lng"));
-
-        } catch (JSONException ignored) {
-
-        }
+                        // When finished and user selected "Submit/Start nav" then : map.getRoute.addMilestones(listOfPrelM);
+                    }
+                });*/
+                return null;
+            }
+        });
     }
 
     public List getAddressFromSearch(String input){
-
-        List<String> addresList;
+        // TODO Fix or delete!
+        List<String> addresList = null;
         URL url = NavigationUtils.makeURL(input);
         //Remote.get(url, routeHandler);
 

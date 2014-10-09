@@ -12,6 +12,7 @@ import java.util.List;
  * Static class for navigation utilities.
  */
 public class NavigationUtils {
+    public static final double areaZoomSide = 0.1; // In degrees
 
 	private NavigationUtils(){
 
