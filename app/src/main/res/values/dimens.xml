@@ -3,4 +3,15 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+	<!-- Left fragment default padding -->
+	<dimen name="fragment_left_top_padding">20dp</dimen>
+	<dimen name="fragment_left_bottom_padding">20dp</dimen>
+	<dimen name="fragment_left_left_padding">10dp</dimen>
+	<dimen name="fragment_left_right_padding">10dp</dimen>
+
+	<!-- Text size MilestonesFragment -->
+	<dimen name="fragment_milestones_label">22dp</dimen>
+	<dimen name="fragment_milestones_from_to">22dp</dimen>
+	<dimen name="fragment_milestones_list_item">28dp</dimen>
+
 </resources>
