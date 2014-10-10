@@ -32,19 +32,6 @@ public class Milestone implements IMilestone {
 
     }
 
-    private Category setCategory(int i) {
-        switch (i) {
-            case 1:
-            case 2:
-                return Category.RESTAURANT;
-            break;
-            case 3:
-                return Category.GASSTATION;
-            break;
-
-        }
-    }
-
     /**
      * Returns the name of the milestone
      *
