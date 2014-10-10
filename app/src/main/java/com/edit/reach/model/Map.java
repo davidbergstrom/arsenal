@@ -4,18 +4,20 @@ import android.location.Location;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import com.edit.reach.app.RankingSystem;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.*;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Joakim Berntsson on 2014-09-29.
  * Class containing all logic for handling map actions.
  */
-public class Map {
+public class Map implements MilestonesReceiver {
     private GoogleMap map;
     private Handler handler = new Handler();
     private Route currentRoute;
@@ -29,14 +31,14 @@ public class Map {
         @Override
         public void onInitialization() {
             Log.d(logClass, "Drawing Route");
-            currentRoute.draw(map);
+            startOverview();
         }
 
-        public void onPauseSelect(LatLng pauseLt){
+        @Override
+        public void onPauseAdded(LatLng pauseLocation) {
             // Ranking.getMilestones
             // map.paintMlestones;
             //
-
         }
     };
 
@@ -88,6 +90,7 @@ public class Map {
         if(currentRoute.isInitialized()){
             Log.d(logClass, "Route is initialized");
             currentRoute.draw(map);
+            currentRoute.drawOverview(map);
         }else{
             Log.d(logClass, "Route is NOT initialized");
             currentRoute.addListener(routeListener);
@@ -152,66 +155,15 @@ public class Map {
         CameraPosition currentPlace = new CameraPosition.Builder().target(routeMiddle).zoom(10).build();
         map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
-        // TODO Get pauses from route, ask ranking which milestones are in those places.
-        // TODO Loop through the milestone and add them as markers to the map.
+        RankingSystem rankingSystem = new RankingSystem(this);
 
-        // TODO start the route overview (painting the overview inside Route)
-        // List<LatLng> pauses = currentRoute.getPauses();
-        // List<IMilestone> pelM = Ranking.getMilestones(pauses.get(0));
+        List<LatLng> pauses = currentRoute.getPauses();
 
-        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                return false;
-            }
-        });
-        // TODO Show the add milestones view
-    }
+        for (LatLng i : pauses) {
+            rankingSystem.getMilestones(i, NavigationUtils.RADIUS_IN_DEGREES);
+        }
 
-    /**
-     * Stop the current overview
-     */
-    public void stopOverview(){
-        // TODO Should be 3 views: Overview, Navigation, Standard.
-    }
-
-    /**
-     * Get all milestones a certain amount of time into the current route.
-     * @param timeIntoRoute, driving time to the milestones in seconds.
-     */
-    public void getMilestones(int timeIntoRoute){
-        // TODO Ask the route how far it is to the time specified.
-        // LatLng position = currentRoute.getLatLngAtTime(timeIntoRoute); Should return a location that is in a "safe" distance from the real location
-        // Ranking.getMilestones(position, 2); 2 is the degrees
-        //map.addMarker(new MarkerOptions().)
-
-        // TODO This should be done in the activity.
-        /*map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-            @Override
-            public View getInfoWindow(Marker marker) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-                LatLng p = marker.getPosition();
-                //View v = getLayoutInflater().inflate();
-
-                //Button b = new Button(this);
-
-
-                b.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //IMilestone m = currentRoute.matchMilestone(p);
-                        //listOfPrelM.add(m); // Add to list
-
-                        // When finished and user selected "Submit/Start nav" then : map.getRoute.addMilestones(listOfPrelM);
-                    }
-                });
-                return null;
-            }
-        });*/
+        currentRoute.drawOverview(map);
     }
 
     public List getAddressFromSearch(String input){
@@ -221,5 +173,20 @@ public class Map {
         //Remote.get(url, routeHandler);
 
         return addresList;
+    }
+
+    @Override
+    public void onMilestonesRecieved(ArrayList<IMilestone> milestones) {
+        for (IMilestone i : milestones) {
+            map.addMarker(new MarkerOptions()
+                    .position(i.getLocation())
+                    .title(i.getName())
+                    .snippet(i.getDescription() + "\nRating: " + i.getRank() + "/5"));
+        }
+    }
+
+    @Override
+    public void onMilestonesGetFailed() {
+
     }
 }
