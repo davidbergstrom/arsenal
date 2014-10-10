@@ -2,6 +2,7 @@ package com.edit.reach.model;
 
 import android.util.Log;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -37,6 +38,11 @@ public class NavigationModel implements Observer {
 		newRoute.addListener(new RouteListener() {
 			@Override
 			public void onInitialization() {
+
+			}
+
+			@Override
+			public void onPauseAdded(LatLng pauseLocation) {
 
 			}
 		});

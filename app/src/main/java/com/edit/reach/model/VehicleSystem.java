@@ -215,15 +215,17 @@ class VehicleSystem extends Observable implements Runnable {
 	@Override
 	public void run() {
 		// TODO Only fuel_level is checked at first run. The other values have to change before they are detected. Why?
-		manager.register(AutomotiveSignalId.FMS_FUEL_LEVEL_1);
-		manager.register(AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE);
-		manager.register(AutomotiveSignalId.FMS_FUEL_RATE);
-		manager.register(AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY);
-		manager.register(AutomotiveSignalId.FMS_SERVICE_DISTANCE);
-		manager.register(AutomotiveSignalId.FMS_VEHICLE_MOTION);
-		manager.register(AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED);
-		manager.register(AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED);
-		manager.register(AutomotiveSignalId.FMS_HIGH_RESOLUTION_TOTAL_VEHICLE_DISTANCE);;
+		manager.register(
+			AutomotiveSignalId.FMS_FUEL_LEVEL_1,
+			AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE,
+			AutomotiveSignalId.FMS_FUEL_RATE,
+			AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY,
+			AutomotiveSignalId.FMS_SERVICE_DISTANCE,
+			AutomotiveSignalId.FMS_VEHICLE_MOTION,
+			AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED,
+			AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED,
+			AutomotiveSignalId.FMS_HIGH_RESOLUTION_TOTAL_VEHICLE_DISTANCE
+		);
 	}
 
 	// ****** PACKAGE GET-METHODS ****** //
