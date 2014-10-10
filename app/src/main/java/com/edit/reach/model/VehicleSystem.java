@@ -1,6 +1,7 @@
 package com.edit.reach.model;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.swedspot.automotiveapi.AutomotiveSignal;
 import android.swedspot.automotiveapi.AutomotiveSignalId;
 import android.swedspot.scs.data.*;
@@ -54,6 +55,8 @@ class VehicleSystem extends Observable implements Runnable {
 	// A thread for listening to the vehicle signals.
 	private Thread vehicleSignals;
 
+	private Handler signalHandler;
+
 
 	/* --- CONSTANTS --- */
 
@@ -82,155 +85,146 @@ class VehicleSystem extends Observable implements Runnable {
 		vehicleSignals.start();
 	}
 
+
+
 	@Override
 	public void run() {
-		Log.d("THREAD", "Thread in VehicleSystem run: " + Thread.currentThread().getName());
-		final AutomotiveCertificate automotiveCertificate = new AutomotiveCertificate(new byte[0]);
+		AutomotiveFactory.createAutomotiveManagerInstance(
+				new AutomotiveCertificate(new byte[0]),
+				new AutomotiveListener() {
+					@Override
+					public void receive(AutomotiveSignal automotiveSignal) {
 
-		// TODO What to do here?
-		final DriverDistractionListener driverDistractionListener = new DriverDistractionListener() {
-			@Override
-			public void levelChanged(DriverDistractionLevel driverDistractionLevel) {
-			}
-		};
+						// Switch between incoming signals
+						switch (automotiveSignal.getSignalId()) {
 
-		final AutomotiveListener automotiveListener = new AutomotiveListener() {
+							// How much fuel is left in tank.
+							case AutomotiveSignalId.FMS_FUEL_LEVEL_1:
+								SCSFloat prevFuelLevel = fuelLevel;
+								fuelLevel = (SCSFloat) (automotiveSignal.getData());
 
-			@Override
-			public void receive(AutomotiveSignal automotiveSignal) {
+								// Call methods to determine critical states
+								determineLowFuel(prevFuelLevel.getFloatValue(), fuelLevel.getFloatValue());
+								determineShortTime();
 
-				// Switch between incoming signals
-				switch (automotiveSignal.getSignalId()) {
+								Log.d("Signal: FUEL", "Fuellevel: " + fuelLevel.getFloatValue());
+								break;
 
-					// How much fuel is left in tank.
-					case AutomotiveSignalId.FMS_FUEL_LEVEL_1:
-						SCSFloat prevFuelLevel = fuelLevel;
-						fuelLevel = (SCSFloat) (automotiveSignal.getData());
+							// Working state of driver
+							case AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE:
+								Uint8 prevWorkState = workingState;
+								workingState = (Uint8) automotiveSignal.getData();
 
-						// Call methods to determine critical states
-						determineLowFuel(prevFuelLevel.getFloatValue(), fuelLevel.getFloatValue());
-						determineShortTime();
+								// If trucker just started driving
+								if (workingState.getIntValue() == 3 && prevWorkState.getIntValue() != 3) {
+									// Set starttime
+									startTime = System.nanoTime();
+									timeHasBeenNotified = false;
+								}
 
-						Log.d("Signal: FUEL", "Fuellevel: " + fuelLevel.getFloatValue());
-						break;
+								// Call method to determine critical states
+								determineIfStoppedOrStarted(prevWorkState.getIntValue(), workingState.getIntValue());
 
-					// Working state of driver
-					case AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE:
-						Uint8 prevWorkState = workingState;
-						workingState = (Uint8) automotiveSignal.getData();
+								Log.d("Signal: W-STATE", "State: " + workingState.getIntValue());
+								break;
 
-						// If trucker just started driving
-						if(workingState.getIntValue() == 3 && prevWorkState.getIntValue() != 3) {
-							// Set starttime
-							startTime = System.nanoTime();
-							timeHasBeenNotified = false;
+							// Distance to service
+							case AutomotiveSignalId.FMS_SERVICE_DISTANCE:
+								SCSInteger prevDistanceToService = distanceToService;
+								distanceToService = (SCSInteger) (automotiveSignal.getData());
+
+								// Call method to determine critical states
+								determineCloseToService(prevDistanceToService.getIntValue(), distanceToService.getIntValue());
+
+								Log.d("Signal: Distance-To-Service", "Distance: " + distanceToService.getIntValue());
+								break;
+
+							// Is vehicle moving
+							case AutomotiveSignalId.FMS_VEHICLE_MOTION:
+								isMoving = (Uint8) (automotiveSignal.getData());
+
+								Log.d("Signal: Motion", "Motion " + isMoving.getIntValue());
+								break;
+
+							// Instantaneous Fuel consumption
+							case AutomotiveSignalId.FMS_FUEL_RATE:
+								instantFuelConsumption = (SCSFloat) automotiveSignal.getData();
+
+								Log.d("Signal: FuelRate", "Fuel rate " + instantFuelConsumption.getFloatValue());
+								break;
+
+							// Instantaneous Fuel economy
+							case AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY:
+								instantFuelEconomy = (SCSFloat) automotiveSignal.getData();
+
+								Log.d("Signal: FuelEconomy", "Fuel economy " + instantFuelEconomy.getFloatValue());
+								break;
+
+							// Vehicle speed (Tachograph)
+							case AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED:
+								vehicleSpeed = ((SCSFloat) automotiveSignal.getData());
+
+								Log.d("Signal: VehicleSpeed", "Vehicle speed " + vehicleSpeed.getFloatValue());
+								break;
+
+							// Has a driver
+							case AutomotiveSignalId.FMS_DRIVER_1_CARD:
+								card = (Uint8) automotiveSignal.getData();
+
+								Log.d("Signal: Card", "Card state " + card.getIntValue());
+								break;
+
+							// Total fuel used
+							case AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED:
+								totalFuelUsed = (SCSDouble) automotiveSignal.getData();
+
+								Log.d("Signal: TotalFuelUsed", "Total fuel used " + totalFuelUsed.getDoubleValue());
+								break;
+
+							// Total vehicle distance
+							case AutomotiveSignalId.FMS_HIGH_RESOLUTION_TOTAL_VEHICLE_DISTANCE:
+								totalVehicleDistance = (SCSLong) automotiveSignal.getData();
+
+								Log.d("Signal: TotalDistance", "Total distance " + totalVehicleDistance.getLongValue());
+								break;
+
+							// Total weight of the vehicle
+							case AutomotiveSignalId.FMS_GROSS_COMBINATION_VEHICLE_WEIGHT:
+								totalWeight = (Uint16) automotiveSignal.getData();
+
+								Log.d("Signal: Vehicle weight", "Weight " + totalWeight.getIntValue());
+								break;
+
+							default:
+								break;
 						}
+					}
 
-						// Call method to determine critical states
-						determineIfStoppedOrStarted(prevWorkState.getIntValue(), workingState.getIntValue());
+					@Override
+					public void timeout(int i) {
+						Log.d("TIMEOUT", "Signal ID: " + i);
+					}
 
-						Log.d("Signal: W-STATE", "State: " + workingState.getIntValue());
-						break;
-
-					// Distance to service
-					case AutomotiveSignalId.FMS_SERVICE_DISTANCE:
-						SCSInteger prevDistanceToService = distanceToService;
-						distanceToService = (SCSInteger) (automotiveSignal.getData());
-
-						// Call method to determine critical states
-						determineCloseToService(prevDistanceToService.getIntValue(), distanceToService.getIntValue());
-
-						Log.d("Signal: Distance-To-Service", "Distance: " + distanceToService.getIntValue());
-						break;
-
-					// Is vehicle moving
-					case AutomotiveSignalId.FMS_VEHICLE_MOTION:
-						isMoving = (Uint8) (automotiveSignal.getData());
-
-						Log.d("Signal: Motion", "Motion " + isMoving.getIntValue());
-						break;
-
-					// Instantaneous Fuel consumption
-					case AutomotiveSignalId.FMS_FUEL_RATE:
-						instantFuelConsumption = (SCSFloat) automotiveSignal.getData();
-
-						Log.d("Signal: FuelRate", "Fuel rate " + instantFuelConsumption.getFloatValue());
-						break;
-
-					// Instantaneous Fuel economy
-					case AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY:
-						instantFuelEconomy = (SCSFloat) automotiveSignal.getData();
-
-						Log.d("Signal: FuelEconomy", "Fuel economy " + instantFuelEconomy.getFloatValue());
-						break;
-
-					// Vehicle speed (Tachograph)
-					case AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED:
-						vehicleSpeed = ((SCSFloat) automotiveSignal.getData());
-
-						Log.d("Signal: VehicleSpeed", "Vehicle speed " + vehicleSpeed.getFloatValue());
-						break;
-
-					// Has a driver
-					case AutomotiveSignalId.FMS_DRIVER_1_CARD:
-						card = (Uint8) automotiveSignal.getData();
-
-						Log.d("Signal: Card", "Card state " + card.getIntValue());
-						break;
-
-					// Total fuel used
-					case AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED:
-						totalFuelUsed = (SCSDouble) automotiveSignal.getData();
-
-						Log.d("Signal: TotalFuelUsed", "Total fuel used " + totalFuelUsed.getDoubleValue());
-						break;
-
-					// Total vehicle distance
-					case AutomotiveSignalId.FMS_HIGH_RESOLUTION_TOTAL_VEHICLE_DISTANCE:
-						totalVehicleDistance = (SCSLong)automotiveSignal.getData();
-
-						Log.d("Signal: TotalDistance", "Total distance " + totalVehicleDistance.getLongValue() );
-						break;
-
-					// Total weight of the vehicle
-					case AutomotiveSignalId.FMS_GROSS_COMBINATION_VEHICLE_WEIGHT:
-						totalWeight = (Uint16) automotiveSignal.getData();
-
-						Log.d("Signal: Vehicle weight", "Weight " + totalWeight.getIntValue());
-						break;
-
-					default:
-						break;
-				}
-			}
-
-			@Override
-			public void timeout(int i) {
-				Log.d("TIMEOUT", "Signal ID: " + i);
-			}
-
-			@Override
-			public void notAllowed(int i) {
-				Log.d("NOTALLOWED", "Signal ID: " + i);
-			}
-		};
-
-		// The Automotive manager.
-		AutomotiveManager manager = AutomotiveFactory.createAutomotiveManagerInstance(automotiveCertificate, automotiveListener, driverDistractionListener);
-
-
-		// TODO Only fuel_level is checked at first run. The other values have to change before they are detected. Why?
-		manager.register(
-				AutomotiveSignalId.FMS_FUEL_LEVEL_1,
-				AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE,
-				AutomotiveSignalId.FMS_FUEL_RATE,
-				AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY,
-				AutomotiveSignalId.FMS_SERVICE_DISTANCE,
-				AutomotiveSignalId.FMS_VEHICLE_MOTION,
-				AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED,
-				AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED,
-				AutomotiveSignalId.FMS_HIGH_RESOLUTION_TOTAL_VEHICLE_DISTANCE
-		);
+					@Override
+					public void notAllowed(int i) {
+						Log.d("NOTALLOWED", "Signal ID: " + i);
+					}
+				},
+				new DriverDistractionListener() {
+					@Override
+					public void levelChanged(DriverDistractionLevel driverDistractionLevel) {
+					}
+				})
+				.register(
+						AutomotiveSignalId.FMS_FUEL_LEVEL_1,
+						AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE,
+						AutomotiveSignalId.FMS_FUEL_RATE,
+						AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY,
+						AutomotiveSignalId.FMS_SERVICE_DISTANCE,
+						AutomotiveSignalId.FMS_VEHICLE_MOTION,
+						AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED,
+						AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED,
+						AutomotiveSignalId.FMS_HIGH_RESOLUTION_TOTAL_VEHICLE_DISTANCE);
 	}
 
 	long getLegalUptimeInseconds() {

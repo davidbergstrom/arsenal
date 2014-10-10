@@ -18,21 +18,31 @@ import java.util.Observer;
  * Time: 19:27
  * Last Edit: 2014-10-10
  */
-// TODO Run this class in separate thread.
 public class NavigationModel implements Runnable, Observer {
 
 	private VehicleSystem vehicleSystem;
 	private Map map;
-	private Handler pipelineHandler;
+
 	private Handler mainHandler;
+
+	private Handler pipelineHandler;
 	private Thread pipelineThread;
 
+	/* --- CONSTANTS --- */
+	private static final String PIPELINE_THREAD_NAME = "PipelineThread";
+
+	/** Constructor
+	 * @param googleMap a GoogleMap
+	 * @param mainHandler a handler created on the main Looper thread.
+	 */
 	public NavigationModel(GoogleMap googleMap, Handler mainHandler) {
-		pipelineThread = new Thread(this, "PipelineThread");
+		pipelineThread = new Thread(this, PIPELINE_THREAD_NAME);
 		pipelineThread.start();
-		map = new Map(googleMap);
+
 		vehicleSystem = new VehicleSystem();
 		vehicleSystem.addObserver(this);
+
+		map = new Map(googleMap);
 		this.mainHandler = mainHandler;
 	}
 
@@ -48,7 +58,7 @@ public class NavigationModel implements Runnable, Observer {
 	}
 
 	/** Returns a IMilestone matching the lat and longitude.
-	 * @param latLng
+	 * @param latLng a LatLng with the latitude and longitude.
 	 * @return a IMilestone, null if no milestone is not found.
 	 */
 	public synchronized IMilestone getMatchedMilestone(final LatLng latLng) {
@@ -95,15 +105,19 @@ public class NavigationModel implements Runnable, Observer {
 			@Override
 			public void run() {
 				Log.d("THREAD", "Thread in update: " + Thread.currentThread().getName());
+
 				if(data == SIGNAL_TYPE.LOW_FUEL) {
 					Log.d("UPDATE", "TYPE: LOW_FUEL");
 					Log.d("GET", "Km to refuel: " + vehicleSystem.getKilometersUntilRefuel());
+
 				} else if (data == SIGNAL_TYPE.SHORT_TIME) {
 					Log.d("UPDATE", "TYPE: SHORT_TIME");
 					Log.d("GET", "Time until rest: " + vehicleSystem.getTimeUntilForcedRest());
+
 				} else if (data == SIGNAL_TYPE.SHORT_TO_SERVICE) {
 					Log.d("UPDATE", "TYPE: SHORT_TO_SERVICE");
 					Log.d("GET", "Km to service: " + vehicleSystem.getKilometersUntilService());
+
 				} else if (data == SIGNAL_TYPE.VEHICLE_STOPPED_OR_STARTED) {
 					Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
 					Log.d("GET", "Vehicle State: " + vehicleSystem.getVehicleState());
@@ -111,6 +125,7 @@ public class NavigationModel implements Runnable, Observer {
 					message.obj = vehicleSystem.getVehicleState();
 					message.what = 1;
 					mainHandler.sendMessage(message);
+
 				} else {
 					Log.d("TYPE ERROR", "Type error in update");
 				}
