@@ -1,5 +1,6 @@
 package com.edit.reach.model;
 
+import android.os.Handler;
 import android.swedspot.automotiveapi.AutomotiveSignal;
 import android.swedspot.automotiveapi.AutomotiveSignalId;
 import android.swedspot.scs.data.*;

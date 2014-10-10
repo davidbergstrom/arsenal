@@ -1,5 +1,8 @@
 package com.edit.reach.model;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -20,7 +23,6 @@ public class NavigationModel implements Observer {
 
 	private VehicleSystem vehicleSystem;
 	private Map map;
-
 
 	public NavigationModel(GoogleMap googleMap) {
 		map = new Map(googleMap);
