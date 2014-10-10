@@ -4,6 +4,8 @@ import android.location.Location;
 import android.os.Handler;
 import android.util.Log;
 import com.edit.reach.app.RankingSystem;
+import com.edit.reach.app.Remote;
+import com.edit.reach.app.ResponseHandler;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.*;
@@ -35,6 +37,7 @@ public class Map {
 
     // All the markers on the map
     private List<Marker> markersOnMap;
+    private List<IMilestone> milestonesOnMap;
 
     // Class name for logging
     private String logClass = "Map";
@@ -76,6 +79,7 @@ public class Map {
     private MilestonesReceiver milestonesReceiver = new MilestonesReceiver() {
         @Override
         public void onMilestonesRecieved(ArrayList<IMilestone> milestones) {
+            milestonesOnMap.addAll(milestones);
             for (IMilestone i : milestones) {
                 markersOnMap.add(map.addMarker(new MarkerOptions()
                         .position(i.getLocation())
@@ -126,6 +130,7 @@ public class Map {
 		this.map = map;
         handler = new Handler();
         markersOnMap = new ArrayList<Marker>();
+        milestonesOnMap = new ArrayList<IMilestone>();
         state = State.NONE;
 	}
 
@@ -233,13 +238,29 @@ public class Map {
         }
     }
 
-    public List getAddressFromSearch(String input){
-        // TODO Fix or delete!
-        List<String> addresList = null;
-        URL url = NavigationUtils.makeURL(input);
-        //Remote.get(url, routeHandler);
+    /**
+     * Returns the Milestone at the specified coordinate.
+     * @param location, the LatLng to find a milestone on
+     * @return the milestone, null if there is no milestones at that coordinate
+     */
+    public IMilestone getMilestone(LatLng location){
+        for(IMilestone milestone : milestonesOnMap){
+            if(milestone.getLocation().equals(location)){
+                return milestone;
+            }
+        }
+        return null;
+    }
 
-        return addresList;
+    /**
+     * Make a request for suggestions of addresses based on the partOfAddress provided. The
+     * results will be provided to the handler specified as a JSON object.
+     * @param partOfAddress, a part of the address wanted
+     * @param handler, the handler to handle the results
+     */
+    public void requestAddressSuggestion(String partOfAddress, ResponseHandler handler){
+        URL url = NavigationUtils.makeURL(partOfAddress);
+        Remote.get(url, handler);
     }
 
     // Removes all markers from the map
@@ -247,6 +268,7 @@ public class Map {
         for(Marker marker : markersOnMap){
             marker.remove();
         }
+        milestonesOnMap.clear();
         markersOnMap.clear();
     }
 }

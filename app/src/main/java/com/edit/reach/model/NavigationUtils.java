@@ -35,7 +35,7 @@ public class NavigationUtils {
         url += "?origin=" + Double.toString(source.latitude) + "," + Double.toString(source.longitude);// from
         url += "&destination=" + Double.toString(dest.latitude) + "," + Double.toString(dest.longitude);// to
 
-        if(wayPoints != null && wayPoints.size() != 0) {
+        if(wayPoints.size() != 0) {
             url += "&waypoints=optimize:" + routeOptimization;
 
             for (LatLng stop : wayPoints) {

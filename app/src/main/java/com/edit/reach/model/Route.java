@@ -31,22 +31,27 @@ public class Route {
     private LatLng origin, destination;
     private String originAddress, destinationAddress;
     private long distanceInKm, durationInSeconds;
-    private boolean initialized = false;
+    private boolean initialized;
     private List<RouteListener> listeners;
     private List<IMilestone> milestones, prelMilestones;
     private List<Pause> pauses;
+
+    /** Handler for receiving a route as JSON Object */
     private ResponseHandler routeHandler = new ResponseHandler() {
         @Override
         public void onGetSuccess(JSONObject json) {
             try {
                 JSONArray routeArray = json.getJSONArray("routes");
                 JSONObject route = routeArray.getJSONObject(0);
-                distanceInKm = route.getLong("distance") / 1000;
-                durationInSeconds = route.getLong("duration");
+                distanceInKm = 0;
+                durationInSeconds = 0;
                 JSONArray arrayLegs = route.getJSONArray("legs");
                 for(int i = 0; i < arrayLegs.length(); i++) {
                     JSONObject legJSON = arrayLegs.getJSONObject(0);
-                    legs.add(new Leg(legJSON));
+                    Leg newLeg = new Leg(legJSON);
+                    distanceInKm += newLeg.distance / 1000;
+                    durationInSeconds += newLeg.duration;
+                    legs.add(newLeg);
                 }
                 alertListeners(); // Notify the observers that the route has been initialized
                 Log.d("Route", "Notified Observers");
@@ -62,13 +67,15 @@ public class Route {
         }
     };
 
+    /** Handler for receiving the origin address as a JSON Object */
     private ResponseHandler originHandler = new ResponseHandler() {
         @Override
         public void onGetSuccess(JSONObject json) {
             try {
                 JSONArray originArray = json.getJSONArray("results");
                 JSONObject address = originArray.getJSONObject(0);
-                JSONObject location = address.getJSONObject("location");
+                JSONObject geometry = address.getJSONObject("geometry");
+                JSONObject location = geometry.getJSONObject("location");
                 origin = (new LatLng(location.getDouble("lat"), location.getDouble("lng")));
 
                 URL url = NavigationUtils.makeURL(destinationAddress);
@@ -85,16 +92,18 @@ public class Route {
         }
     };
 
+    /** Handler for receiving the destination address as a JSON Object */
     private ResponseHandler destinationHandler = new ResponseHandler() {
         @Override
         public void onGetSuccess(JSONObject json) {
             try {
                 JSONArray destinationArray = json.getJSONArray("results");
                 JSONObject address = destinationArray.getJSONObject(0);
-                JSONObject location = address.getJSONObject("location");
+                JSONObject geometry = address.getJSONObject("geometry");
+                JSONObject location = geometry.getJSONObject("location");
                 destination = (new LatLng(location.getDouble("lat"), location.getDouble("lng")));
 
-                URL url = NavigationUtils.makeURL(origin, destination, null, true);
+                URL url = NavigationUtils.makeURL(origin, destination, new ArrayList<IMilestone>(), true);
                 Remote.get(url, routeHandler);
 
             } catch (JSONException e) {
@@ -116,6 +125,7 @@ public class Route {
         legs = new ArrayList<Leg>();
         milestones = new ArrayList<IMilestone>();
         pauses = new ArrayList<Pause>();
+        initialized = false;
     }
 
     /**
@@ -127,7 +137,7 @@ public class Route {
         this();
         this.origin = origin;
         this.destination = destination;
-        URL url = NavigationUtils.makeURL(origin, destination, null, true);
+        URL url = NavigationUtils.makeURL(origin, destination, new ArrayList<IMilestone>(), true);
         Remote.get(url, routeHandler);
     }
 
@@ -253,7 +263,7 @@ public class Route {
         this.erase();
         this.destination = destination;
         initialized = false;
-        URL url = NavigationUtils.makeURL(this.origin, destination, null, true);
+        URL url = NavigationUtils.makeURL(this.origin, destination, new ArrayList<IMilestone>(), true);
         Remote.get(url, routeHandler);
     }
 
@@ -280,6 +290,9 @@ public class Route {
     public void addMilestone(IMilestone milestone){
         milestones.add(milestone);
         // Recalculate the route
+        initialized = false;
+        URL url = NavigationUtils.makeURL(origin, destination, milestones, true);
+        Remote.get(url, routeHandler);
     }
 
     /**
@@ -289,6 +302,9 @@ public class Route {
     public void addMilestones(List<IMilestone> milestones){
         this.milestones.addAll(milestones);
         // Recalculate the route
+        initialized = false;
+        URL url = NavigationUtils.makeURL(origin, destination, milestones, true);
+        Remote.get(url, routeHandler);
     }
 
     /**
@@ -298,6 +314,9 @@ public class Route {
     public void removeMilestone(IMilestone milestone){
         milestones.remove(milestone);
         // Recalculate the route
+        initialized = false;
+        URL url = NavigationUtils.makeURL(origin, destination, milestones, true);
+        Remote.get(url, routeHandler);
     }
 
     /**
@@ -305,20 +324,10 @@ public class Route {
      */
     public void removeAllMilestones(){
         milestones.clear();
-    }
-
-    /**
-     * Returns the Milestone at the specified coordinate.
-     * @param latLng, the location to find a milestone on
-     * @return the milestone, null if there is no milestones at that coordinate
-     */
-    public IMilestone getMilestone(LatLng latLng){
-        for(IMilestone milestone : milestones){
-            if(milestone.getLocation().equals(latLng)){
-                return milestone;
-            }
-        }
-        return null;
+        // Recalculate the route
+        initialized = false;
+        URL url = NavigationUtils.makeURL(origin, destination, milestones, true);
+        Remote.get(url, routeHandler);
     }
 
     /**
@@ -482,19 +491,16 @@ public class Route {
         public List<Step> steps;
         public long distance;	// Metres
         public long duration;	// Seconds
-        public LatLng startLocation;
-        public LatLng endLocation;
+        public LatLng startLocation, endLocation;
 
         Leg(JSONObject legJSON){
             steps = new ArrayList<Step>();
-            JSONObject startPosition;
-            JSONObject endPosition;
             try {
                 distance = legJSON.getJSONObject("distance").getLong("value");
                 duration = legJSON.getJSONObject("duration").getLong("value");
-                startPosition = legJSON.getJSONObject("start_location");
+                JSONObject startPosition = legJSON.getJSONObject("start_location");
                 this.startLocation = new LatLng(startPosition.getDouble("lat"), startPosition.getDouble("lng"));
-                endPosition = legJSON.getJSONObject("end_location");
+                JSONObject endPosition = legJSON.getJSONObject("end_location");
                 this.endLocation = new LatLng(endPosition.getDouble("lat"), endPosition.getDouble("lng"));
 
                 JSONArray stepsArray = legJSON.getJSONArray("steps");
@@ -531,23 +537,19 @@ public class Route {
      * Class that represent every step of the directions. It store distance, location and instructions
      */
     private class Step{
-        public int distance;
-        private int duration;
-        public LatLng startLocation;
-        public LatLng endLocation;
+        public int distance, duration;
+        public LatLng startLocation, endLocation;
         public String instructions;
         private Polyline polyline;
         public List<LatLng> subSteps;
 
         Step(JSONObject stepJSON){
-            JSONObject startLocation;
-            JSONObject endLocation;
             try {
                 distance = Integer.decode(stepJSON.getJSONObject("distance").getString("value"));
-                startLocation = stepJSON.getJSONObject("start_location");
+                JSONObject startLocation = stepJSON.getJSONObject("start_location");
                 duration = Integer.decode(stepJSON.getJSONObject("duration").getString("value"));
                 this.startLocation = new LatLng(startLocation.getDouble("lat"), startLocation.getDouble("lng"));
-                endLocation = stepJSON.getJSONObject("end_location");
+                JSONObject endLocation = stepJSON.getJSONObject("end_location");
                 this.endLocation = new LatLng(endLocation.getDouble("lat"), endLocation.getDouble("lng"));
                 try {
                     instructions = URLDecoder.decode(Html.fromHtml(stepJSON.getString("html_instructions")).toString(), "UTF-8");
@@ -570,7 +572,6 @@ public class Route {
          * @param map, the map to draw on
          */
         public void draw(GoogleMap map){
-            //map.addMarker(new MarkerOptions().position(startLocation).title(distance+"m").snippet(instructions));
             polyline = map.addPolyline(new PolylineOptions().addAll(subSteps).width(12).color(Color.parseColor("#4411EE")));
         }
 
@@ -607,6 +608,7 @@ public class Route {
          * @param map, the map to draw it on
          */
         public void draw(GoogleMap map){
+            this.erase();
             this.circle = map.addCircle(new CircleOptions().center(center).radius(NavigationUtils.RADIUS_IN_KM*1000).fillColor(Color.BLUE));
         }
 
