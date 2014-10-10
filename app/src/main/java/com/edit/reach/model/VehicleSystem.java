@@ -49,7 +49,7 @@ class VehicleSystem extends Observable implements Runnable {
 	// Time that vehicle started driving.
 	private long startTime = 0;
 
-	// Kepps track if navigationModel has been notified for "short time".
+	// Keeps track if navigationModel has been notified for "short time".
 	private boolean timeHasBeenNotified = false;
 
 	// A thread for listening to the vehicle signals.
@@ -244,12 +244,12 @@ class VehicleSystem extends Observable implements Runnable {
 		}
 	}
 
-	// ****** PACKAGE GET-METHODS ****** //
+	// ****** GET-METHODS ****** //
 
 	/** Method that returns the legal uptime in seconds constant
 	 * @return A long with the max legal uptime in seconds.
 	 */
-	long getLegalUptimeInseconds() {
+	long getLegalUptimeInSeconds() {
 		return LEGAL_UPTIME_IN_SECONDS;
 	}
 
@@ -337,7 +337,6 @@ class VehicleSystem extends Observable implements Runnable {
 			Log.d("getKilometersUntilService", "Nullpointer, distanceToService not initialized");
 			throw new NullPointerException("Variable not initialized");
 		}
-
 	}
 
 	// ********** PRIVATE METHODS THAT NOTIFY OBSERVERS ********** //
@@ -366,7 +365,6 @@ class VehicleSystem extends Observable implements Runnable {
 
 	// Notify observers if the state of the driver has changed
 	private void determineIfStoppedOrStarted(int prevState, int curState) {
-		Log.d("THREAD", "Thread in VehicleSystem RUN: " + Thread.currentThread().getName());
 		if(prevState != curState && curState != -1) {
 			setChanged();
 			notifyObservers(SIGNAL_TYPE.VEHICLE_STOPPED_OR_STARTED);

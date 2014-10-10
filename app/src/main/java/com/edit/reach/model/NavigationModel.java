@@ -78,10 +78,10 @@ public class NavigationModel implements Runnable, Observer {
 					public void onInitialization() {
 						map.getRoute().addPause(vehicleSystem.getKilometersUntilRefuel());
 						long routeTime = map.getRoute().getDuration();
-						long nmbrOfPauses = routeTime/vehicleSystem.getLegalUptimeInseconds();
+						long nmbrOfPauses = routeTime/vehicleSystem.getLegalUptimeInSeconds();
 
 						for(int i = 1; i < nmbrOfPauses; i++) {
-							map.getRoute().addPause(i*vehicleSystem.getLegalUptimeInseconds());
+							map.getRoute().addPause(i*vehicleSystem.getLegalUptimeInSeconds());
 						}
 					}
 
@@ -121,6 +121,8 @@ public class NavigationModel implements Runnable, Observer {
 				} else if (data == SIGNAL_TYPE.VEHICLE_STOPPED_OR_STARTED) {
 					Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
 					Log.d("GET", "Vehicle State: " + vehicleSystem.getVehicleState());
+
+					// TODO Just for testing right now.
 					Message message = Message.obtain(mainHandler);
 					message.obj = vehicleSystem.getVehicleState();
 					message.what = 1;
