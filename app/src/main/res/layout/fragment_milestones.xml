@@ -26,7 +26,7 @@
 				android:layout_height="wrap_content"
 		        android:textColor="@color/text_fragment_milestones_label"
 		        android:textSize="@dimen/fragment_milestones_label"
-                android:text="TextView i fragment_milestones SUCCESS"
+                android:text="TextView i fragment_milestones SUC"
 
 				/>
 
@@ -46,8 +46,9 @@
 
 
 				/>
-
+        <!-- Kommenterade ut raden nedan på grund av problem vid körning, var tidigare vid ListView:n ovan -->
        <!-- android:entries="@color/text_fragment_milestones_list" -->
+
         <!-- Label for end point "to" -->
 		<TextView
 				android:id="@+id/tv_label_to"

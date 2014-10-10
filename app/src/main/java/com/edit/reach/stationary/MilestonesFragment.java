@@ -11,8 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.edit.reach.app.R;
+import com.edit.reach.model.IMilestone;
+import com.edit.reach.model.Milestone;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,8 +36,9 @@ public class MilestonesFragment extends Fragment {
 
 	private String mFrom;
 	private String mTo;
-	private ArrayList <String> mMilestonesList;
-	private ArrayList <String> mMilestonesType;
+	private List <Milestone> mMilestones;
+
+    private MilestonesListAdapter mlAdapter;
 
 	private TextView mFromTextView;
 	private TextView mToTextView;
@@ -72,11 +77,10 @@ public class MilestonesFragment extends Fragment {
         if (getArguments() != null) {
             mFrom = getArguments().getString(ARG_FROM);
 			mTo = getArguments().getString(ARG_TO);
-			mMilestonesList = getArguments().getStringArrayList(ARG_LIST);
-			mMilestonesType = getArguments().getStringArrayList(ARG_TYPE);
-
 			mFromTextView.setText(mFrom);
 			mToTextView.setText(mTo);
+            mlAdapter = new MilestonesListAdapter(this.getActivity());
+            mMilestones = new ArrayList<Milestone>();
 
 			//mMilestonesListView.setAdapter(new MilestonesListAdapter(this.getActivity(), mMilestonesList, mMilestonesType));
 
@@ -100,6 +104,17 @@ public class MilestonesFragment extends Fragment {
         if (mListener != null) {
             mListener.onMilestonesInteraction(uri);
         }
+    }
+    private void addToList(){
+        HashMap<String, String> map1 = new HashMap<String, String>();
+        for(IMilestone milestone: mMilestones){
+            String name = milestone.getName();
+            String type = milestone.getCategory().toString();
+            map1.put(name, type);
+        }
+
+            mlAdapter.addMilestone(map1);
+
     }
 
     @Override

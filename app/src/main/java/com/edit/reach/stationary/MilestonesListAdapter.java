@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.edit.reach.app.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by iDavid on 2014-10-09.
@@ -19,17 +20,21 @@ import java.util.ArrayList;
 public class MilestonesListAdapter extends BaseAdapter {
 
 	private final Activity activity;
-	private final ArrayList<String> milestonesNames;
-	private final ArrayList<String> milestonesTypes;
+
 	private static LayoutInflater inflater = null;
 	private final Context context;
 
-	public MilestonesListAdapter(Activity activity, ArrayList<String> milestonesNames, ArrayList<String> milestonesTypes) {
+
+	public MilestonesListAdapter(Activity activity) {
 		this.activity = activity;
-		this.milestonesNames = milestonesNames;
-		this.milestonesTypes = milestonesTypes;
 		this.context = activity;
 	}
+
+    public void addMilestone(HashMap <String, String> hm){
+        for(int i = 0; i < hm.size(); i++){
+            hm.get(i);
+        }
+    }
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -38,7 +43,8 @@ public class MilestonesListAdapter extends BaseAdapter {
 		View rowView;
 
 		rowView = inflater.inflate(R.layout.list_milestones_item, null);
-		holder.textView = (TextView) rowView.findViewById(R.id.list_milestones_item);
+        /*
+        holder.textView = (TextView) rowView.findViewById(R.id.list_milestones_item);
 		holder.imageView = (ImageView) rowView.findViewById(R.id.list_milestones_image);
 
 		holder.textView.setText(milestonesNames.get(position));
@@ -53,6 +59,8 @@ public class MilestonesListAdapter extends BaseAdapter {
 			holder.imageView.setImageResource(R.drawable.ic_launcher);
 		}
 
+
+        */
 		rowView.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -66,15 +74,20 @@ public class MilestonesListAdapter extends BaseAdapter {
 
 	}
 
+
+
 	@Override
 	public int getCount() {
-		return milestonesNames.size();
+		//return milestonesNames.size();
+        return 0;
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return milestonesNames.get(position);
+		//return milestonesNames.get(position);
+        return null;
 	}
+
 
 	@Override
 	public long getItemId(int position) {

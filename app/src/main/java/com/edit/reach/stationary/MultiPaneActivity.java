@@ -129,10 +129,10 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
             MilestonesFragment milestonesFragment = new MilestonesFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
 
-            /*
+
             Route r = (Route)o;
             nvm.setRoute(r);
-            */
+
 
         }
 	}
