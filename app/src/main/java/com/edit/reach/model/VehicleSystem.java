@@ -25,7 +25,7 @@ enum SIGNAL_TYPE {
  * Project: REACH
  * Date: 2014-09-27
  * Time: 19:28
- * Last Edit: 2014-10-08
+ * Last Edit: 2014-10-10
  */
 class VehicleSystem extends Observable implements Runnable {
 
@@ -190,11 +190,11 @@ class VehicleSystem extends Observable implements Runnable {
 	// TODO This is a fictitious tank size
 	private static final int TEMP_TANK_SIZE_IN_LITERS = 600;
 
-	// Multiply with this to convert nanoseconds to minutes.
-	private static final double NANOSECONDS_TO_MINUTES = 1*(Math.pow(10,-9))/60.0;
+	// Multiply with this to convert nanoseconds to seconds.
+	private static final double NANOSECONDS_TO_SECONDS = 1*(Math.pow(10,-9));
 
-	// The maximum number of minutes to drive before a 45 minute break.
-	private static final int LEGAL_UPTIME_IN_MINUTES = 270;
+	// The maximum number of seconds to drive before a 45 minute break.
+	private static final long LEGAL_UPTIME_IN_SECONDS = 16200;
 
 	// Threshold for low fuel
 	private static final float FUEL_THRESHOLD = 10f;
@@ -203,7 +203,7 @@ class VehicleSystem extends Observable implements Runnable {
 	private static final int SERVICE_THRESHOLD = 100;
 
 	// Threshold for short on time.
-	private static final int TIME_THRESHOLD = 15;
+	private static final long TIME_THRESHOLD = 900;
 
 	/** Constructor.
 	 */
@@ -226,6 +226,10 @@ class VehicleSystem extends Observable implements Runnable {
 			AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED,
 			AutomotiveSignalId.FMS_HIGH_RESOLUTION_TOTAL_VEHICLE_DISTANCE
 		);
+	}
+
+	long getLegalUptimeInseconds() {
+		return LEGAL_UPTIME_IN_SECONDS;
 	}
 
 	// ****** PACKAGE GET-METHODS ****** //
@@ -280,21 +284,21 @@ class VehicleSystem extends Observable implements Runnable {
 	}
 
 	// TODO, do the math
-	/** Method that returns the number of minutes until a stop is required.
+	/** Method that returns the number of seconds until a stop is required.
 	 * @return
 	 270 if currently in a break
-	 Positive number with minutes left if driving
+	 Positive number with seconds left if driving
 	 Negative number if drive longer than legal.
 	 */
 	double getTimeUntilForcedRest() {
 		try {
 			if (getVehicleState() == 1) {
-				return (LEGAL_UPTIME_IN_MINUTES - ((System.nanoTime() - startTime) * NANOSECONDS_TO_MINUTES));
+				return (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS));
 			} else if (getVehicleState() == 2) {
 				// TODO What to do when not moving but in drive?
-				return (LEGAL_UPTIME_IN_MINUTES - ((System.nanoTime() - startTime) * NANOSECONDS_TO_MINUTES));
+				return (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS));
 			} else {
-				return LEGAL_UPTIME_IN_MINUTES;
+				return LEGAL_UPTIME_IN_SECONDS;
 			}
 		} catch (NullPointerException e) {
 			e.printStackTrace();
@@ -321,9 +325,9 @@ class VehicleSystem extends Observable implements Runnable {
 	// ********** PRIVATE METHODS THAT NOTIFY OBSERVERS ********** //
 
 	private void determineShortTime() {
-		Log.d("Time", (LEGAL_UPTIME_IN_MINUTES - ((System.nanoTime() - startTime) * NANOSECONDS_TO_MINUTES)) + "");
+		Log.d("Time", (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS)) + "");
 		if(workingState.getIntValue() == 3) {
-			if ((LEGAL_UPTIME_IN_MINUTES - ((System.nanoTime() - startTime) * NANOSECONDS_TO_MINUTES)) < TIME_THRESHOLD) {
+			if ((LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS)) < TIME_THRESHOLD) {
 				if (!timeHasBeenNotified) {
 					setChanged();
 					notifyObservers(SIGNAL_TYPE.SHORT_TIME);

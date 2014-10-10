@@ -13,7 +13,7 @@ import java.util.Observer;
  * Project: REACH
  * Date: 2014-09-27
  * Time: 19:27
- * Last Edit: 2014-10-08
+ * Last Edit: 2014-10-10
  */
 // TODO Run this class in separate thread.
 public class NavigationModel implements Observer {
@@ -21,29 +21,41 @@ public class NavigationModel implements Observer {
 	private VehicleSystem vehicleSystem;
 	private Map map;
 
-	/** Constructor
-	 */
+
 	public NavigationModel(GoogleMap googleMap) {
 		map = new Map(googleMap);
 		vehicleSystem = new VehicleSystem();
 		vehicleSystem.addObserver(this);
 	}
 
-	public Map getMap() {
-		return map;
+	/** Returns a IMilestone matching the lat and longitude.
+	 * @param latLng
+	 * @return a IMilestone, null if no milestone is not found.
+	 */
+	public IMilestone getMatchedMilestone(LatLng latLng) {
+		return map.getRoute().getMilestone(latLng);
 	}
 
-	public void setRoute(Route newRoute) {
+	/** Sets the route in the map.
+	 * @param newRoute the route to be set.
+	 */
+	public void setRoute(final Route newRoute) {
 		map.setRoute(newRoute);
 		newRoute.addListener(new RouteListener() {
 			@Override
 			public void onInitialization() {
+				map.getRoute().addPause(vehicleSystem.getKilometersUntilRefuel());
+				long routeTime = map.getRoute().getDuration();
+				long nmbrOfPauses = routeTime/vehicleSystem.getLegalUptimeInseconds();
 
+				for(int i = 1; i < nmbrOfPauses; i++) {
+					map.getRoute().addPause(i*vehicleSystem.getLegalUptimeInseconds());
+				}
 			}
 
 			@Override
 			public void onPauseAdded(LatLng pauseLocation) {
-
+				// TODO what here?
 			}
 		});
 	}
