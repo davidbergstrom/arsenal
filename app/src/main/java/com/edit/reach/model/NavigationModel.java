@@ -62,7 +62,7 @@ public class NavigationModel implements Runnable, Observer {
 	 * @return a IMilestone, null if no milestone is not found.
 	 */
 	public synchronized IMilestone getMatchedMilestone(final LatLng latLng) {
-		return map.getRoute().getMilestone(latLng);
+		return map.getMilestone(latLng);
 	}
 
 	/** Sets the route in the map.
