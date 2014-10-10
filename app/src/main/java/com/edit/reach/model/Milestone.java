@@ -1,8 +1,50 @@
 package com.edit.reach.model;
 
 import com.google.android.gms.maps.model.LatLng;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Milestone implements IMilestone {
+
+    String name;
+    String description;
+    Category category;
+    int rank;
+    LatLng location;
+
+    public Milestone(JSONObject json) throws JSONException {
+        JSONObject properties = json.getJSONObject("properties");
+
+        name = properties.getString("name");
+        description = properties.getString("description");
+        int rank = properties.getInt("ranking");
+
+        int categoryGroup = properties.getInt("category");
+
+        category = Category.RESTAREA;
+
+        JSONObject geometry = json.getJSONObject("geometry");
+        JSONArray coordinates = geometry.getJSONArray("coordinates");
+        double latitude = coordinates.getDouble(0);
+        double longitude = coordinates.getDouble(1);
+        location = new LatLng(latitude, longitude);
+
+    }
+
+    private Category setCategory(int i) {
+        switch (i) {
+            case 1:
+            case 2:
+                return Category.RESTAURANT;
+            break;
+            case 3:
+                return Category.GASSTATION;
+            break;
+
+        }
+    }
+
     /**
      * Returns the name of the milestone
      *
@@ -10,7 +52,7 @@ public class Milestone implements IMilestone {
      */
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     /**
@@ -20,7 +62,7 @@ public class Milestone implements IMilestone {
      */
     @Override
     public String getDescription() {
-        return null;
+        return description;
     }
 
     /**
@@ -30,7 +72,7 @@ public class Milestone implements IMilestone {
      */
     @Override
     public Category getCategory() {
-        return null;
+        return category;
     }
 
     /**
@@ -50,7 +92,7 @@ public class Milestone implements IMilestone {
      */
     @Override
     public int getRank() {
-        return 0;
+        return rank;
     }
 
     /**
@@ -60,6 +102,6 @@ public class Milestone implements IMilestone {
      */
     @Override
     public LatLng getLocation() {
-        return null;
+        return location;
     }
 }
