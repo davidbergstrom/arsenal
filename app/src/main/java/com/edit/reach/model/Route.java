@@ -307,6 +307,20 @@ public class Route {
     }
 
     /**
+     * Returns the Milestone at the specified coordinate.
+     * @param latLng, the location to find a milestone on
+     * @return the milestone, null if there is no milestones at that coordinate
+     */
+    public IMilestone getMilestone(LatLng latLng){
+        for(IMilestone milestone : milestones){
+            if(milestone.getLocation().equals(latLng)){
+                return milestone;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Draw this route on the map provided
      * @param map, the map to draw the route on
      */
