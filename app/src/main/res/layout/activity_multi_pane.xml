@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:background="@color/background_main">
 
-    <fragment
+  <!--  <fragment
             android:id="@+id/fragment_route"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -13,6 +13,18 @@
             class="com.edit.reach.stationary.RouteFragment"
             tools:layout="@layout/fragment_route">
     </fragment>
+
+    -->
+
+    <FrameLayout
+            android:id="@+id/container_fragment_left"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            >
+
+            </FrameLayout>
 
     <!--<fragment
             android:id="@+id/fragment_map"

@@ -1,31 +1,53 @@
 package com.edit.reach.stationary;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import com.edit.reach.app.R;
 import com.edit.reach.model.NavigationModel;
 import com.edit.reach.model.Route;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MultiPaneActivity extends FragmentActivity implements MapFragment.OnMapInteractionListener,
-	RouteFragment.OnRouteInteractionListener {
+	RouteFragment.OnRouteInteractionListener, MilestonesFragment.OnMilestonesInteractionListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     private NavigationModel nvm;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_pane);
+
+        //Create a FragmentManager and add a Fragment to it
+        if(findViewById(R.id.container_fragment_left) != null){
+            if(savedInstanceState != null){
+                return;
+            }
+            RouteFragment routeFragment = new RouteFragment();
+            routeFragment.setArguments(getIntent().getExtras());
+            getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, routeFragment).commit();
+        }
+
         setUpMapIfNeeded();
+
         nvm = new NavigationModel(mMap);
+
+
     }
 
     @Override
@@ -37,7 +59,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
+     * call {@link } once when {@link #mMap} is not null.
      * <p>
      * If it isn't installed {@link SupportMapFragment} (and
      * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
@@ -57,19 +79,21 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
                     .getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
-                setUpMap();
+                mMap.setMyLocationEnabled(true);
+                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                    @Override
+                    public View getInfoWindow(Marker marker) {
+                        return null;
+                    }
+
+                    @Override
+                    public View getInfoContents(Marker marker) {
+
+                        return null;
+                    }
+                });
             }
         }
-    }
-
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
-    private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 
 	@Override
@@ -99,10 +123,22 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 	@Override
 	public void onRouteInteraction(Object o) {
         if(o.getClass() == Route.class){
+            Log.d("Kuk", "Made it to on routeInteraction");
+
+            //fragment_container goes from RouteFragment -> MilestonesFragment
+            MilestonesFragment milestonesFragment = new MilestonesFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
+
+            /*
             Route r = (Route)o;
             nvm.setRoute(r);
+            */
+
         }
 	}
 
+    @Override
+    public void onMilestonesInteraction(Object o) {
 
+    }
 }
