@@ -488,10 +488,10 @@ public class Route {
      * Class that represents a leg
      */
     private class Leg{
-        public List<Step> steps;
-        public long distance;	// Metres
-        public long duration;	// Seconds
-        public LatLng startLocation, endLocation;
+        List<Step> steps;
+        long distance;	// Metres
+        long duration;	// Seconds
+        LatLng startLocation, endLocation;
 
         Leg(JSONObject legJSON){
             steps = new ArrayList<Step>();
@@ -517,7 +517,7 @@ public class Route {
          * Draw this leg on the provided map
          * @param map, the map to draw on
          */
-        public void draw(GoogleMap map){
+        void draw(GoogleMap map){
             for(Step step : steps){
                 step.draw(map);
             }
@@ -526,7 +526,7 @@ public class Route {
         /**
          * Erase the leg from all of its maps
          */
-        public void erase(){
+        void erase(){
             for(Step step : steps){
                 step.erase();
             }
@@ -537,11 +537,11 @@ public class Route {
      * Class that represent every step of the directions. It store distance, location and instructions
      */
     private class Step{
-        public int distance, duration;
-        public LatLng startLocation, endLocation;
-        public String instructions;
+        int distance, duration;
+        LatLng startLocation, endLocation;
+        String instructions;
         private Polyline polyline;
-        public List<LatLng> subSteps;
+        List<LatLng> subSteps;
 
         Step(JSONObject stepJSON){
             try {
@@ -571,7 +571,7 @@ public class Route {
          * Draw the step on the provided map
          * @param map, the map to draw on
          */
-        public void draw(GoogleMap map){
+        void draw(GoogleMap map){
             polyline = map.addPolyline(new PolylineOptions().addAll(subSteps).width(12).color(Color.parseColor("#4411EE")));
         }
 
@@ -579,7 +579,7 @@ public class Route {
          * Redraw the step on the provided map
          * @param map
          */
-        public void redraw(GoogleMap map){
+        void redraw(GoogleMap map){
             this.erase();
             polyline = map.addPolyline(new PolylineOptions().addAll(subSteps).width(12).color(Color.parseColor("#4411EE")));
         }
@@ -587,7 +587,7 @@ public class Route {
         /**
          * Erase the step from all of its maps
          */
-        public void erase(){
+        void erase(){
             polyline.remove();
         }
     }
@@ -599,7 +599,7 @@ public class Route {
         private LatLng center;
         private Circle circle;
 
-        public Pause(LatLng center){
+        Pause(LatLng center){
             this.center = center;
         }
 
@@ -607,7 +607,7 @@ public class Route {
          * Draw the pause as a circle
          * @param map, the map to draw it on
          */
-        public void draw(GoogleMap map){
+        void draw(GoogleMap map){
             this.erase();
             this.circle = map.addCircle(new CircleOptions().center(center).radius(NavigationUtils.RADIUS_IN_KM*1000).fillColor(Color.BLUE));
         }
@@ -615,7 +615,7 @@ public class Route {
         /**
          * Erase the pause from all of the maps it has been drawn on
          */
-        public void erase(){
+        void erase(){
             circle.remove();
         }
     }
