@@ -11,19 +11,17 @@ import java.util.List;
  * Created by Joakim Berntsson on 2014-10-01.
  * Static class for navigation utilities.
  */
-public class NavigationUtils {
+class NavigationUtils {
 
     /** Radius for the pauses */
-    public static final double RADIUS_IN_DEGREES = 0.1;
+    static final double RADIUS_IN_DEGREES = 0.1;
 
     /** Radius for the pauses */
-    public static final int RADIUS_IN_KM = (int) getDistance(new LatLng(0,0), new LatLng(0,RADIUS_IN_DEGREES));
+    static final int RADIUS_IN_KM = (int) getDistance(new LatLng(0,0), new LatLng(0,RADIUS_IN_DEGREES));
 
-	private NavigationUtils(){
+	private NavigationUtils(){}
 
-	}
-
-    public static URL makeURL(LatLng source, LatLng dest, List<IMilestone> milestones, boolean routeOptimization) {
+    static URL makeURL(LatLng origin, LatLng destination, List<IMilestone> milestones, boolean routeOptimization) {
 
         List<LatLng> wayPoints = new ArrayList<LatLng>();
 
@@ -32,8 +30,8 @@ public class NavigationUtils {
         }
 
         String url = "http://maps.googleapis.com/maps/api/directions/json";
-        url += "?origin=" + Double.toString(source.latitude) + "," + Double.toString(source.longitude);// from
-        url += "&destination=" + Double.toString(dest.latitude) + "," + Double.toString(dest.longitude);// to
+        url += "?origin=" + Double.toString(origin.latitude) + "," + Double.toString(origin.longitude);// from
+        url += "&destination=" + Double.toString(destination.latitude) + "," + Double.toString(destination.longitude);// to
 
         if(wayPoints.size() != 0) {
             url += "&waypoints=optimize:" + routeOptimization;
@@ -56,7 +54,7 @@ public class NavigationUtils {
         return http;
     }
 
-    public static URL makeURL(String address) {
+    static URL makeURL(String address) {
         String location = address.replaceAll(" ", "+").toLowerCase();
         String url = "https://maps.googleapis.com/maps/api/geocode/json";
         url += "?address=" + location;
@@ -73,7 +71,7 @@ public class NavigationUtils {
     }
 
 
-    public static List<LatLng> decodePoly(String encoded) {
+    static List<LatLng> decodePoly(String encoded) {
 
 		List<LatLng> poly = new ArrayList<LatLng>();
 		int index = 0, len = encoded.length();
@@ -107,7 +105,7 @@ public class NavigationUtils {
 		return poly;
 	}
 
-    public static double getDistance(LatLng firstPosition, LatLng secondPosition){
+    static double getDistance(LatLng firstPosition, LatLng secondPosition){
         int R = 6371; // Earths radius in km
         double a = Math.pow(Math.sin(Math.toRadians(secondPosition.latitude-firstPosition.latitude)/2), 2) +
                 Math.cos(secondPosition.latitude) * Math.cos(firstPosition.latitude) *
@@ -116,7 +114,7 @@ public class NavigationUtils {
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     }
 
-    public static double finalBearing(double lat1, double long1, double lat2, double long2){
+    static double finalBearing(double lat1, double long1, double lat2, double long2){
         double degToRad = Math.PI / 180.0;
         double phi1 = lat1 * degToRad;
         double phi2 = lat2 * degToRad;

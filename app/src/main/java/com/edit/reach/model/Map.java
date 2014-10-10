@@ -18,7 +18,7 @@ import java.util.List;
  * Created by Joakim Berntsson on 2014-09-29.
  * Class containing all logic for handling map actions.
  */
-public class Map {
+class Map {
 
     // Constant, the refresh rate of the navigation loop in milliseconds
     private final int UPDATE_INTERVAL = 300;
@@ -126,7 +126,7 @@ public class Map {
      * Construct a Map by providing a google map
      * @param map, the GoogleMap to use
      */
-	public Map(GoogleMap map){
+	Map(GoogleMap map){
 		this.map = map;
         handler = new Handler();
         markersOnMap = new ArrayList<Marker>();
@@ -138,7 +138,7 @@ public class Map {
      * Set the current route to the provided route, this will also initiate an overview of the route.
      * @param newRoute, the new route
      */
-    public void setRoute(Route newRoute){
+    void setRoute(Route newRoute){
         if(currentRoute != null){
             currentRoute.erase();
         }
@@ -151,28 +151,28 @@ public class Map {
      * Get the current route.
      * @return the route the map is currently on
      */
-    public Route getRoute() {
+    Route getRoute() {
         return currentRoute;
     }
 
     /**
      * Start the current route.
      */
-	public void startNavigation(){
+	void startNavigation(){
         setState(State.NAVIGATION);
 	}
 
     /**
      * Stop the current route.
      */
-	public void stopNavigation(){
+	void stopNavigation(){
         setState(State.NONE);
 	}
 
     /**
      * Start an overview of the current route.
      */
-    public void startOverview(){
+    void startOverview(){
         setState(State.OVERVIEW);
     }
 
@@ -243,7 +243,7 @@ public class Map {
      * @param location, the LatLng to find a milestone on
      * @return the milestone, null if there is no milestones at that coordinate
      */
-    public IMilestone getMilestone(LatLng location){
+    IMilestone getMilestone(LatLng location){
         for(IMilestone milestone : milestonesOnMap){
             if(milestone.getLocation().equals(location)){
                 return milestone;
@@ -258,7 +258,7 @@ public class Map {
      * @param partOfAddress, a part of the address wanted
      * @param handler, the handler to handle the results
      */
-    public void requestAddressSuggestion(String partOfAddress, ResponseHandler handler){
+    void requestAddressSuggestion(String partOfAddress, ResponseHandler handler){
         URL url = NavigationUtils.makeURL(partOfAddress);
         Remote.get(url, handler);
     }
