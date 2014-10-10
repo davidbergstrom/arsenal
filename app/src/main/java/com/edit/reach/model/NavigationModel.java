@@ -61,7 +61,7 @@ public class NavigationModel implements Runnable, Observer {
 	 * @param latLng a LatLng with the latitude and longitude.
 	 * @return a IMilestone, null if no milestone is not found.
 	 */
-	public synchronized IMilestone getMatchedMilestone(final LatLng latLng) {
+	public IMilestone getMatchedMilestone(final LatLng latLng) {
 		return map.getMilestone(latLng);
 	}
 
