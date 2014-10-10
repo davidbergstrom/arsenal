@@ -32,6 +32,7 @@ public class NavigationModel implements Runnable, Observer {
 		pipelineThread.start();
 		map = new Map(googleMap);
 		vehicleSystem = new VehicleSystem();
+		vehicleSystem.addObserver(this);
 		this.mainHandler = mainHandler;
 	}
 
@@ -93,6 +94,7 @@ public class NavigationModel implements Runnable, Observer {
 		pipelineHandler.post(new Runnable() {
 			@Override
 			public void run() {
+				Log.d("THREAD", "Thread in update: " + Thread.currentThread().getName());
 				if(data == SIGNAL_TYPE.LOW_FUEL) {
 					Log.d("UPDATE", "TYPE: LOW_FUEL");
 					Log.d("GET", "Km to refuel: " + vehicleSystem.getKilometersUntilRefuel());
@@ -105,6 +107,10 @@ public class NavigationModel implements Runnable, Observer {
 				} else if (data == SIGNAL_TYPE.VEHICLE_STOPPED_OR_STARTED) {
 					Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
 					Log.d("GET", "Vehicle State: " + vehicleSystem.getVehicleState());
+					Message message = Message.obtain(mainHandler);
+					message.obj = vehicleSystem.getVehicleState();
+					message.what = 1;
+					mainHandler.sendMessage(message);
 				} else {
 					Log.d("TYPE ERROR", "Type error in update");
 				}

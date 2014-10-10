@@ -78,12 +78,13 @@ class VehicleSystem extends Observable implements Runnable {
 	/** Constructor.
 	 */
 	VehicleSystem() {
-		vehicleSignals = new Thread(VehicleSystem.this, "VehicleSignals");
+		vehicleSignals = new Thread(VehicleSystem.this, "VehicleSignalsThread");
 		vehicleSignals.start();
 	}
 
 	@Override
 	public void run() {
+		Log.d("THREAD", "Thread in VehicleSystem run: " + Thread.currentThread().getName());
 		final AutomotiveCertificate automotiveCertificate = new AutomotiveCertificate(new byte[0]);
 
 		// TODO What to do here?
@@ -94,6 +95,7 @@ class VehicleSystem extends Observable implements Runnable {
 		};
 
 		final AutomotiveListener automotiveListener = new AutomotiveListener() {
+
 			@Override
 			public void receive(AutomotiveSignal automotiveSignal) {
 
@@ -351,6 +353,7 @@ class VehicleSystem extends Observable implements Runnable {
 
 	// Notify observers if the state of the driver has changed
 	private void determineIfStoppedOrStarted(int prevState, int curState) {
+		Log.d("THREAD", "Thread in VehicleSystem RUN: " + Thread.currentThread().getName());
 		if(prevState != curState && curState != -1) {
 			setChanged();
 			notifyObservers(SIGNAL_TYPE.VEHICLE_STOPPED_OR_STARTED);
