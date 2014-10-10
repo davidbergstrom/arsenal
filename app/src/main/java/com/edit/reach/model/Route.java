@@ -26,10 +26,10 @@ import java.util.List;
  */
 public class Route {
     private List<Leg> legs;
-    private Circle endPointCircle, startPointCircle, pointer; // Should this be an individual class (following a route)?
+    private Circle endPointCircle, startPointCircle, pointer; // Should pointer be an individual class (following a route)?
     private LatLng origin, destination;
     private String originAddress, destinationAddress;
-    private int distanceInKm, durationInSeconds;
+    private long distanceInKm, durationInSeconds;
     private boolean initialized = false;
     private List<RouteListener> listeners;
     private List<IMilestone> milestones, prelMilestones;
@@ -40,8 +40,8 @@ public class Route {
             try {
                 JSONArray routeArray = json.getJSONArray("routes");
                 JSONObject route = routeArray.getJSONObject(0);
-                distanceInKm = route.getInt("distance") / 1000;
-                durationInSeconds = route.getInt("duration");
+                distanceInKm = route.getLong("distance") / 1000;
+                durationInSeconds = route.getLong("duration");
                 JSONArray arrayLegs = route.getJSONArray("legs");
                 for(int i = 0; i < arrayLegs.length(); i++) {
                     JSONObject legJSON = arrayLegs.getJSONObject(0);
@@ -147,7 +147,7 @@ public class Route {
      * Returns the approximated duration of the route.
      * @return number of seconds the route will take
      */
-    public int getDuration(){
+    public long getDuration(){
         return durationInSeconds;
     }
 
@@ -155,7 +155,7 @@ public class Route {
      * Returns the distance of the route.
      * @return the number of kilometres the route is
      */
-    public int getDistance(){
+    public long getDistance(){
         return distanceInKm;
     }
 

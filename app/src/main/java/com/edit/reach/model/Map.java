@@ -3,7 +3,6 @@ package com.edit.reach.model;
 import android.location.Location;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 import com.edit.reach.app.RankingSystem;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,6 +23,10 @@ public class Map implements MilestonesReceiver {
     private Location lastLocation;
     private static int UPDATE_INTERVAL = 300;
     private String logClass = "Map";
+    private State state;
+    private enum State{
+        OVERVIEW, NAVIGATION, NONE
+    }
 
     /** A listener for a route */
     private RouteListener routeListener = new RouteListener(){
@@ -36,6 +39,7 @@ public class Map implements MilestonesReceiver {
 
         @Override
         public void onPauseAdded(LatLng pauseLocation) {
+            currentRoute.drawPauses(map);
             // Ranking.getMilestones
             // map.paintMlestones;
             //
@@ -46,7 +50,7 @@ public class Map implements MilestonesReceiver {
     private Runnable navigationRunnable = new Runnable() {
         @Override
         public void run() {
-            if(currentRoute != null && currentRoute.isInitialized()){
+            if(state == State.NAVIGATION && currentRoute != null && currentRoute.isInitialized()){
                 Location myLocation = map.getMyLocation();
                 LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
 
@@ -76,10 +80,11 @@ public class Map implements MilestonesReceiver {
      */
 	public Map(GoogleMap map){
 		this.map = map;
+        state = State.NONE;
 	}
 
     /**
-     * Set the current route to the provided route
+     * Set the current route to the provided route, this will also initiate an overview of the route.
      * @param newRoute, the new route
      */
     public void setRoute(Route newRoute){
@@ -95,6 +100,7 @@ public class Map implements MilestonesReceiver {
             Log.d(logClass, "Route is NOT initialized");
             currentRoute.addListener(routeListener);
         }
+        setState(State.OVERVIEW);
     }
 
     /**
@@ -108,62 +114,69 @@ public class Map implements MilestonesReceiver {
     /**
      * Start the current route.
      */
-	public void startRoute(){
-        Location myLocation = map.getMyLocation();
-        LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-
-        CameraPosition currentPlace = new CameraPosition.Builder().target(position).tilt(65.5f).zoom(18).build();
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
-
-        // Disable all interactions the user is not allowed to do.
-        map.getUiSettings().setScrollGesturesEnabled(false);
-        map.getUiSettings().setTiltGesturesEnabled(false);
-        map.getUiSettings().setCompassEnabled(false);
-        map.getUiSettings().setRotateGesturesEnabled(false);
-
-        handler.postDelayed(navigationRunnable, UPDATE_INTERVAL);
+	public void startNavigation(){
+        setState(State.NAVIGATION);
 	}
 
     /**
      * Stop the current route.
      */
-	public void stopRoute(){
-        Location myLocation = map.getMyLocation();
-        if(myLocation != null){
+	public void stopNavigation(){
+        setState(State.NONE);
+	}
+
+    private void setState(State newState){
+        this.state = newState;
+        if(newState == State.OVERVIEW){
+            LatLng routeOrigin = currentRoute.getOrigin();
+            LatLng routeDestination = currentRoute.getDestination();
+            LatLng routeMiddle = new LatLng((routeOrigin.latitude+routeDestination.latitude)/2, (routeOrigin.longitude+routeDestination.longitude)/2);
+
+            CameraPosition currentPlace = new CameraPosition.Builder().target(routeMiddle).zoom(10).build();
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
+
+            RankingSystem rankingSystem = new RankingSystem(this);
+
+            List<LatLng> pauses = currentRoute.getPauses();
+
+            for (LatLng i : pauses) {
+                rankingSystem.getMilestones(i, NavigationUtils.RADIUS_IN_DEGREES);
+            }
+
+            map.getUiSettings().setAllGesturesEnabled(true);
+
+            currentRoute.drawOverview(map);
+        }else if(newState == State.NAVIGATION){
+            Location myLocation = map.getMyLocation();
             LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
 
-            CameraPosition currentPlace = new CameraPosition.Builder().target(position).tilt(0).zoom(5).build();
+            CameraPosition currentPlace = new CameraPosition.Builder().target(position).tilt(65.5f).zoom(18).build();
             map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
-        }
 
-        handler.removeCallbacks(navigationRunnable);
-        if(currentRoute != null){
-            currentRoute.remove();
-            currentRoute = null;
+            // Disable all interactions the user is not allowed to do.
+            map.getUiSettings().setScrollGesturesEnabled(false);
+            map.getUiSettings().setTiltGesturesEnabled(false);
+            map.getUiSettings().setCompassEnabled(false);
+            map.getUiSettings().setRotateGesturesEnabled(false);
+
+            handler.postDelayed(navigationRunnable, UPDATE_INTERVAL);
+        }else{
+            Location myLocation = map.getMyLocation();
+            if(myLocation != null){
+                LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+
+                CameraPosition currentPlace = new CameraPosition.Builder().target(position).tilt(0).zoom(5).build();
+                map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
+            }
+            map.getUiSettings().setAllGesturesEnabled(true);
         }
-        map.getUiSettings().setAllGesturesEnabled(true);
-	}
+    }
 
     /**
      * Start an overview of the current route.
      */
     public void startOverview(){
-        LatLng routeOrigin = currentRoute.getOrigin();
-        LatLng routeDestination = currentRoute.getDestination();
-        LatLng routeMiddle = new LatLng((routeOrigin.latitude+routeDestination.latitude)/2, (routeOrigin.longitude+routeDestination.longitude)/2);
-
-        CameraPosition currentPlace = new CameraPosition.Builder().target(routeMiddle).zoom(10).build();
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
-
-        RankingSystem rankingSystem = new RankingSystem(this);
-
-        List<LatLng> pauses = currentRoute.getPauses();
-
-        for (LatLng i : pauses) {
-            rankingSystem.getMilestones(i, NavigationUtils.RADIUS_IN_DEGREES);
-        }
-
-        currentRoute.drawOverview(map);
+        setState(State.OVERVIEW);
     }
 
     public List getAddressFromSearch(String input){
