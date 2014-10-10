@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.edit.reach.app.R;
+import com.edit.reach.model.NavigationModel;
+import com.edit.reach.model.Route;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -16,11 +18,14 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
+    private NavigationModel nvm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_pane);
         setUpMapIfNeeded();
+        nvm = new NavigationModel(mMap);
     }
 
     @Override
@@ -92,8 +97,11 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 	}
 
 	@Override
-	public void onRouteInteraction(Uri uri) {
-
+	public void onRouteInteraction(Object o) {
+        if(o.getClass() == Route.class){
+            Route r = (Route)o;
+            nvm.setRoute(r);
+        }
 	}
 
 

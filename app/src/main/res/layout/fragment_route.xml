@@ -10,9 +10,13 @@
     <!-- Lägg till fler layouter för att få en TextView bredvid +-knappen -->
     <LinearLayout
             android:orientation="vertical"
-            android:background="@color/background_main"
+            android:background="@color/background_fragment_left"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="@dimen/fragment_left_top_padding"
+            android:paddingBottom="@dimen/fragment_left_bottom_padding"
+            android:paddingLeft="@dimen/fragment_left_left_padding"
+            android:paddingRight="@dimen/fragment_left_right_padding"
             >
 
 

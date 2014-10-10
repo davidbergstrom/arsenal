@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import com.edit.reach.app.R;
+import com.edit.reach.model.NavigationModel;
+import com.edit.reach.model.Route;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,7 @@ public class RouteFragment extends Fragment {
 
     private static final String ARG_ID = "Route";
     private String mId;
+    private Route route;
 
     private EditText etFrom;
     private EditText etTo;
@@ -78,10 +81,16 @@ public class RouteFragment extends Fragment {
         public void onClick(View view) {
             String strFrom = etFrom.getText().toString();
             String strTo = etTo.getText().toString();
-            List<String> strListOfVia = new ArrayList<String>();
+            route = new Route(strFrom, strTo);
+            onSetRoute(route);
+
+
+           /* List<String> strListOfVia = new ArrayList<String>();
             for(EditText et: etListOfVia){
                 strListOfVia.add(et.getText().toString());
             }
+
+            */
 
 
             //Send : strFrom, strTo, strListOfVia to map-Activity
@@ -96,8 +105,6 @@ public class RouteFragment extends Fragment {
 
         etFrom = (EditText) view.findViewById(R.id.etFrom);
         etTo = (EditText) view.findViewById(R.id.etTo);
-
-
         etListOfVia = new ArrayList<EditText>();
 
         Button btGetNearestRoute = (Button) view.findViewById(R.id.btSubmitNearestRoute);
@@ -106,13 +113,14 @@ public class RouteFragment extends Fragment {
         btAddDestination.setOnClickListener(addDestinationListener);
 
 
+
 		return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+
+    public void onSetRoute(Route route) {
         if (mListener != null) {
-            mListener.onRouteInteraction(uri);
+            mListener.onRouteInteraction(route);
 
 
         }
@@ -166,8 +174,9 @@ public class RouteFragment extends Fragment {
      */
     public interface OnRouteInteractionListener {
         // TODO: Update argument type and name
-        public void onRouteInteraction(Uri uri);
+        public void onRouteInteraction(Object o);
     }
+
 
 
 

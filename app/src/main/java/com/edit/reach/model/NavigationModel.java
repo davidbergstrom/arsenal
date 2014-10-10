@@ -1,6 +1,7 @@
 package com.edit.reach.model;
 
 import android.util.Log;
+import com.google.android.gms.maps.GoogleMap;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -16,15 +17,29 @@ import java.util.Observer;
 // TODO Run this class in separate thread.
 public class NavigationModel implements Observer {
 
-	private final VehicleSystem vehicleSystem;
+	private VehicleSystem vehicleSystem;
+	private Map map;
 
-	// TODO
-	/** Constructor...
+	/** Constructor
 	 */
-	public NavigationModel() {
-		Log.d("NavigationModel", "Navmodel created");
+	public NavigationModel(GoogleMap googleMap) {
+		map = new Map(googleMap);
 		vehicleSystem = new VehicleSystem();
 		vehicleSystem.addObserver(this);
+	}
+
+	public Map getMap() {
+		return map;
+	}
+
+	public void setRoute(Route newRoute) {
+		map.setRoute(newRoute);
+		newRoute.addListener(new RouteListener() {
+			@Override
+			public void onInitialization() {
+
+			}
+		});
 	}
 
 	/** Do not call this method. It is called automatically when the observable changes.
@@ -33,13 +48,12 @@ public class NavigationModel implements Observer {
 	 */
 	@Override
 	public void update(Observable observable, Object data) {
-
 		if(data == SIGNAL_TYPE.LOW_FUEL) {
 			Log.d("UPDATE", "TYPE: LOW_FUEL");
 			Log.d("GET", "Km to refuel: " + vehicleSystem.getKilometersUntilRefuel());
 		} else if (data == SIGNAL_TYPE.SHORT_TIME) {
 			Log.d("UPDATE", "TYPE: SHORT_TIME");
-			Log.d("GET", "Time until rest: " +  vehicleSystem.getTimeUntilForcedRest());
+			Log.d("GET", "Time until rest: " + vehicleSystem.getTimeUntilForcedRest());
 		} else if (data == SIGNAL_TYPE.SHORT_TO_SERVICE) {
 			Log.d("UPDATE", "TYPE: SHORT_TO_SERVICE");
 			Log.d("GET", "Km to service: " + vehicleSystem.getKilometersUntilService());
@@ -49,6 +63,5 @@ public class NavigationModel implements Observer {
 		} else {
 			Log.d("TYPE ERROR", "Type error in update");
 		}
-
 	}
 }

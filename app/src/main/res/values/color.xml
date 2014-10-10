@@ -3,12 +3,17 @@
 
     <color name="background_main">#212121</color>
     <color name="background_map">#C7C7C7</color>
-    <color name="background_route">#212121</color>
+    <color name="background_fragment_left">#212121</color>
     <color name="h1">#575757</color>
 
     <color name="text_fragment_route">#E5E5E5</color>
     <color name="text_fragment_map">#777777</color>
     <color name="text_fragment_driving_route">#E5E5E5</color>
+
+	<!-- MilestonesFragment -->
+	<color name="text_fragment_milestones_label">#E5E5E5</color>
+	<color name="text_fragment_milestones_from_to">#E5E5E5</color>
+	<color name="text_fragment_milestones_list">#FFFFFF</color>
 
 
 </resources>

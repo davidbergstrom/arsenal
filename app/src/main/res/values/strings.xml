@@ -14,5 +14,6 @@
     <string name="tv_fragment_map">This is where the map will show...</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_multi_pane">MultiPaneActivity</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
