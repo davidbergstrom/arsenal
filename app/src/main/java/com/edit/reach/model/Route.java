@@ -13,7 +13,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.Integer;import java.lang.Math;import java.lang.String;
+import java.lang.Integer;
+import java.lang.String;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -249,7 +250,7 @@ public class Route {
      * @param destination, the new destination
      */
     public void setDestination(LatLng destination){
-        this.remove();
+        this.erase();
         this.destination = destination;
         initialized = false;
         URL url = NavigationUtils.makeURL(this.origin, destination, null, true);
@@ -321,10 +322,11 @@ public class Route {
     }
 
     /**
-     * Draw this route on the map provided
-     * @param map, the map to draw the route on
+     * Draw this route in navigation view on the map provided
+     * @param map, the map to draw on
      */
-    public void draw(GoogleMap map){
+    public void drawNavigation(GoogleMap map){
+        this.erase();
         for(Leg leg : legs){
             leg.draw(map);
         }
@@ -334,9 +336,16 @@ public class Route {
                 .radius(10)
                 .strokeColor(Color.RED)
                 .fillColor(Color.BLUE));
+
+        this.pointer = map.addCircle(new CircleOptions().center(legs.get(0).startLocation).fillColor(Color.GREEN).radius(8));
     }
 
+    /**
+     * Draw this route in an overview on the map provided
+     * @param map, the map to draw on
+     */
     public void drawOverview(GoogleMap map){
+        this.erase();
         for(Leg leg : legs){
             leg.draw(map);
         }
@@ -358,7 +367,7 @@ public class Route {
     /**
      * Remove this route from all of its maps
      */
-    public void remove(){
+    public void erase(){
         for(Leg leg : legs){
             leg.erase();
         }
@@ -367,6 +376,9 @@ public class Route {
         }
         if(pointer != null){
             pointer.remove();
+        }
+        if(startPointCircle != null){
+            startPointCircle.remove();
         }
     }
 
@@ -381,7 +393,7 @@ public class Route {
         Step stepToRedraw = legs.get(0).steps.get(0);
 
         // TODO: Remake recursive!
-        // TODO: This only works if the substeps are in a relatively straight line
+        // TODO: This only works if the sub steps are in a relatively straight line
         outerLoop:
         for(Iterator<Leg> iteratorLeg = legs.iterator(); iteratorLeg.hasNext(); ){
             Leg leg = iteratorLeg.next();
@@ -418,19 +430,16 @@ public class Route {
                 stepToRedraw.redraw(map);
             }
             if(pointer != null && !pointer.getCenter().equals(nearestLocation)){
-                pointer.remove();
-                pointer = map.addCircle(new CircleOptions().center(nearestLocation).fillColor(Color.GREEN).radius(8));
+                pointer.setCenter(nearestLocation);
                 // Calculate new bearing and rotate the camera
                 Step newStep = legs.get(0).steps.get(0);
-                float bearing = (float) finalBearing(newStep.startLocation.latitude, newStep.startLocation.longitude,
+                float bearing = (float) NavigationUtils.finalBearing(newStep.startLocation.latitude, newStep.startLocation.longitude,
                         newStep.endLocation.latitude, newStep.endLocation.longitude);
                 CameraPosition lastPosition = map.getCameraPosition();
                 CameraPosition currentPlace = new CameraPosition.Builder().target(nearestLocation).bearing(bearing)
                         .tilt(lastPosition.tilt).zoom(lastPosition.zoom).build();
 
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
-            }else if(pointer == null){
-                pointer = map.addCircle(new CircleOptions().center(nearestLocation).fillColor(Color.GREEN).radius(8));
             }
 
         }
@@ -466,26 +475,13 @@ public class Route {
         }
     }
 
-    private static double finalBearing(double lat1, double long1, double lat2, double long2){
-        double degToRad = Math.PI / 180.0;
-        double phi1 = lat1 * degToRad;
-        double phi2 = lat2 * degToRad;
-        double lam1 = long1 * degToRad;
-        double lam2 = long2 * degToRad;
-
-        double bearing = Math.atan2(Math.sin(lam2-lam1)*Math.cos(phi2),
-                Math.cos(phi1)*Math.sin(phi2) - Math.sin(phi1)*Math.cos(phi2)*Math.cos(lam2-lam1)) * 180/Math.PI;
-
-        return (bearing + 180.0) % 360;
-    }
-
     /**
      * Class that represents a leg
      */
     private class Leg{
         public List<Step> steps;
-        public int distance;	// Metres
-        public int duration;	// Seconds
+        public long distance;	// Metres
+        public long duration;	// Seconds
         public LatLng startLocation;
         public LatLng endLocation;
 
@@ -494,8 +490,8 @@ public class Route {
             JSONObject startPosition;
             JSONObject endPosition;
             try {
-                distance = Integer.decode(legJSON.getJSONObject("distance").getString("value"));
-                duration = Integer.decode(legJSON.getJSONObject("duration").getString("value"));
+                distance = legJSON.getJSONObject("distance").getLong("value");
+                duration = legJSON.getJSONObject("duration").getLong("value");
                 startPosition = legJSON.getJSONObject("start_location");
                 this.startLocation = new LatLng(startPosition.getDouble("lat"), startPosition.getDouble("lng"));
                 endPosition = legJSON.getJSONObject("end_location");

@@ -16,14 +16,30 @@ import java.util.List;
  * Created by Joakim Berntsson on 2014-09-29.
  * Class containing all logic for handling map actions.
  */
-public class Map implements MilestonesReceiver {
+public class Map {
+
+    // Constant, the refresh rate of the navigation loop in milliseconds
+    private final int UPDATE_INTERVAL = 300;
+
+    // The map which modifies the map view in the activity
     private GoogleMap map;
-    private Handler handler = new Handler();
+
+    // The handler for navigation loop
+    private Handler handler;
+
     private Route currentRoute;
     private Location lastLocation;
-    private static int UPDATE_INTERVAL = 300;
-    private String logClass = "Map";
+
+    // The state which is used internally in a state pattern
     private State state;
+
+    // All the markers on the map
+    private List<Marker> markersOnMap;
+
+    // Class name for logging
+    private String logClass = "Map";
+
+    /** Enum class for internal state pattern */
     private enum State{
         OVERVIEW, NAVIGATION, NONE
     }
@@ -34,15 +50,43 @@ public class Map implements MilestonesReceiver {
         @Override
         public void onInitialization() {
             Log.d(logClass, "Drawing Route");
-            startOverview();
+            // If the route has been initialized then draw it
+            if(state == State.OVERVIEW){
+                currentRoute.drawOverview(map);
+            }else if(state == State.NAVIGATION){
+                currentRoute.drawNavigation(map);
+            }
+
         }
 
         @Override
         public void onPauseAdded(LatLng pauseLocation) {
-            currentRoute.drawPauses(map);
-            // Ranking.getMilestones
-            // map.paintMlestones;
-            //
+            if(state == State.OVERVIEW){
+                // If the current state is overview, draw the pause circle and add the markers to the map
+                currentRoute.drawPauses(map);
+
+                RankingSystem rankingSystem = new RankingSystem(milestonesReceiver);
+                rankingSystem.getMilestones(pauseLocation, NavigationUtils.RADIUS_IN_DEGREES);
+            }
+
+        }
+    };
+
+    /** A class receiving milestones and adding them as markers  */
+    private MilestonesReceiver milestonesReceiver = new MilestonesReceiver() {
+        @Override
+        public void onMilestonesRecieved(ArrayList<IMilestone> milestones) {
+            for (IMilestone i : milestones) {
+                markersOnMap.add(map.addMarker(new MarkerOptions()
+                        .position(i.getLocation())
+                        .title(i.getName())
+                        .snippet(i.getDescription() + "\nRating: " + i.getRank() + "/5")));
+            }
+        }
+
+        @Override
+        public void onMilestonesGetFailed() {
+
         }
     };
 
@@ -80,6 +124,8 @@ public class Map implements MilestonesReceiver {
      */
 	public Map(GoogleMap map){
 		this.map = map;
+        handler = new Handler();
+        markersOnMap = new ArrayList<Marker>();
         state = State.NONE;
 	}
 
@@ -89,17 +135,10 @@ public class Map implements MilestonesReceiver {
      */
     public void setRoute(Route newRoute){
         if(currentRoute != null){
-            currentRoute.remove();
+            currentRoute.erase();
         }
         currentRoute = newRoute;
-        if(currentRoute.isInitialized()){
-            Log.d(logClass, "Route is initialized");
-            currentRoute.draw(map);
-            currentRoute.drawOverview(map);
-        }else{
-            Log.d(logClass, "Route is NOT initialized");
-            currentRoute.addListener(routeListener);
-        }
+        currentRoute.addListener(routeListener);
         setState(State.OVERVIEW);
     }
 
@@ -125,33 +164,48 @@ public class Map implements MilestonesReceiver {
         setState(State.NONE);
 	}
 
+    /**
+     * Start an overview of the current route.
+     */
+    public void startOverview(){
+        setState(State.OVERVIEW);
+    }
+
     private void setState(State newState){
         this.state = newState;
         if(newState == State.OVERVIEW){
             LatLng routeOrigin = currentRoute.getOrigin();
             LatLng routeDestination = currentRoute.getDestination();
             LatLng routeMiddle = new LatLng((routeOrigin.latitude+routeDestination.latitude)/2, (routeOrigin.longitude+routeDestination.longitude)/2);
-
             CameraPosition currentPlace = new CameraPosition.Builder().target(routeMiddle).zoom(10).build();
             map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
-            RankingSystem rankingSystem = new RankingSystem(this);
+            if(currentRoute.isInitialized()){
+                Log.d(logClass, "Route is initialized");
+                currentRoute.drawOverview(map);
+            }
 
+            RankingSystem rankingSystem = new RankingSystem(milestonesReceiver);
             List<LatLng> pauses = currentRoute.getPauses();
-
             for (LatLng i : pauses) {
                 rankingSystem.getMilestones(i, NavigationUtils.RADIUS_IN_DEGREES);
             }
 
             map.getUiSettings().setAllGesturesEnabled(true);
-
-            currentRoute.drawOverview(map);
         }else if(newState == State.NAVIGATION){
+            // Remove markers when navigation is starting
+            removeMarkers();
+
+            // Set camera to right tilt and zoom
             Location myLocation = map.getMyLocation();
             LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-
             CameraPosition currentPlace = new CameraPosition.Builder().target(position).tilt(65.5f).zoom(18).build();
             map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
+
+            if(currentRoute.isInitialized()){
+                Log.d(logClass, "Route is initialized");
+                currentRoute.drawNavigation(map);
+            }
 
             // Disable all interactions the user is not allowed to do.
             map.getUiSettings().setScrollGesturesEnabled(false);
@@ -159,8 +213,15 @@ public class Map implements MilestonesReceiver {
             map.getUiSettings().setCompassEnabled(false);
             map.getUiSettings().setRotateGesturesEnabled(false);
 
+            // Start navigation runnable
             handler.postDelayed(navigationRunnable, UPDATE_INTERVAL);
         }else{
+            // Remove markers when navigation is starting
+            removeMarkers();
+
+            // TODO Add what to show (maybe new draw?)
+            currentRoute.erase();
+
             Location myLocation = map.getMyLocation();
             if(myLocation != null){
                 LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
@@ -172,13 +233,6 @@ public class Map implements MilestonesReceiver {
         }
     }
 
-    /**
-     * Start an overview of the current route.
-     */
-    public void startOverview(){
-        setState(State.OVERVIEW);
-    }
-
     public List getAddressFromSearch(String input){
         // TODO Fix or delete!
         List<String> addresList = null;
@@ -188,18 +242,11 @@ public class Map implements MilestonesReceiver {
         return addresList;
     }
 
-    @Override
-    public void onMilestonesRecieved(ArrayList<IMilestone> milestones) {
-        for (IMilestone i : milestones) {
-            map.addMarker(new MarkerOptions()
-                    .position(i.getLocation())
-                    .title(i.getName())
-                    .snippet(i.getDescription() + "\nRating: " + i.getRank() + "/5"));
+    // Removes all markers from the map
+    private void removeMarkers(){
+        for(Marker marker : markersOnMap){
+            marker.remove();
         }
-    }
-
-    @Override
-    public void onMilestonesGetFailed() {
-
+        markersOnMap.clear();
     }
 }
