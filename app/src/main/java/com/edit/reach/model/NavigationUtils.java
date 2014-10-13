@@ -46,16 +46,9 @@ class NavigationUtils {
 
         url += "&mode=driving&alternatives=true&language=EN";
 
-        String encodedURL = null;
-        try {
-            encodedURL = URLEncoder.encode(url, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
         URL http = null;
         try {
-            http = new URL(encodedURL);
+            http = new URL(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -65,21 +58,21 @@ class NavigationUtils {
 
     static URL makeURL(String address) {
         String location = address.replaceAll(" ", "+").toLowerCase();
-        String url = "https://maps.googleapis.com/maps/api/geocode/json";
-        url += "?address=" + location;
-        url += "&key=AIzaSyCqs-SMMT3_BIzMsPr-wsWqsJTthTgFUb8";
 
-
-        String encodedURL = null;
+        String encodedLocation = null;
         try {
-            encodedURL = URLEncoder.encode(url, "UTF-8");
+            encodedLocation = URLEncoder.encode(location, "UTF-8"); //Converting the string to UTF-8
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
+        String url = "https://maps.googleapis.com/maps/api/geocode/json";
+        url += "?address=" + encodedLocation;
+        url += "&key=AIzaSyCqs-SMMT3_BIzMsPr-wsWqsJTthTgFUb8";
+
         URL http = null;
         try {
-            http = new URL(encodedURL);
+            http = new URL(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
