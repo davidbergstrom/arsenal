@@ -15,19 +15,13 @@ import com.swedspot.vil.policy.AutomotiveCertificate;
 
 import java.util.Observable;
 
-/** Enum with 4 different types of signals.
- */
-enum SIGNAL_TYPE {
-	LOW_FUEL, SHORT_TIME, SHORT_TO_SERVICE, VEHICLE_STOPPED_OR_STARTED
-}
-
 /**
  * Class that represents a VehicleSystem (Or a Vehicle).
  * Created by: Tim Kerschbaumer
  * Project: REACH
  * Date: 2014-09-27
  * Time: 19:28
- * Last Edit: 2014-10-10
+ * Last Edit: 2014-10-13
  */
 class VehicleSystem extends Observable implements Runnable {
 
@@ -240,7 +234,7 @@ class VehicleSystem extends Observable implements Runnable {
 			signalHandler = new Handler();
 			Looper.loop();
 		} catch (Throwable t) {
-			Log.d("Thread error", "" + t);
+			Log.d("Error in signalThread: ", "" + t);
 		}
 	}
 
@@ -249,7 +243,7 @@ class VehicleSystem extends Observable implements Runnable {
 	/** Method that returns the legal uptime in seconds constant
 	 * @return A long with the max legal uptime in seconds.
 	 */
-	long getLegalUptimeInSeconds() {
+	static long getLegalUptimeInSeconds() {
 		return LEGAL_UPTIME_IN_SECONDS;
 	}
 
@@ -343,11 +337,12 @@ class VehicleSystem extends Observable implements Runnable {
 
 	private void determineShortTime() {
 		Log.d("Time", (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS)) + "");
+
 		if(workingState.getIntValue() == 3) {
 			if ((LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS)) < TIME_THRESHOLD) {
 				if (!timeHasBeenNotified) {
 					setChanged();
-					notifyObservers(SIGNAL_TYPE.SHORT_TIME);
+					notifyObservers(SignalType.SHORT_TIME);
 					timeHasBeenNotified = true;
 				}
 			}
@@ -359,7 +354,7 @@ class VehicleSystem extends Observable implements Runnable {
 	private void determineLowFuel(float prevFuelLevel, float fuelLevel) {
 		if(fuelLevel <= FUEL_THRESHOLD && prevFuelLevel > FUEL_THRESHOLD) {
 			setChanged();
-			notifyObservers(SIGNAL_TYPE.LOW_FUEL);
+			notifyObservers(SignalType.LOW_FUEL);
 		}
 	}
 
@@ -367,7 +362,7 @@ class VehicleSystem extends Observable implements Runnable {
 	private void determineIfStoppedOrStarted(int prevState, int curState) {
 		if(prevState != curState && curState != -1) {
 			setChanged();
-			notifyObservers(SIGNAL_TYPE.VEHICLE_STOPPED_OR_STARTED);
+			notifyObservers(SignalType.VEHICLE_STOPPED_OR_STARTED);
 		}
 	}
 
@@ -376,7 +371,7 @@ class VehicleSystem extends Observable implements Runnable {
 	private void determineCloseToService(int prevKmToService, int kmToService) {
 		if(kmToService <= SERVICE_THRESHOLD && prevKmToService > SERVICE_THRESHOLD) {
 			setChanged();
-			notifyObservers(SIGNAL_TYPE.SHORT_TO_SERVICE);
+			notifyObservers(SignalType.SHORT_TO_SERVICE);
 		}
 	}
 }
