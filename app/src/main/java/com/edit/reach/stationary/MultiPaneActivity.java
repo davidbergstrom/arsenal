@@ -122,6 +122,8 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
 	}
 
+
+
 	@Override
 	public void onRouteInteraction(Object o) {
         if(o.getClass() == Route.class){
@@ -132,12 +134,8 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 			// Test data for Milestones List
 			ArrayList <String> milestonesList = new ArrayList<String>();
 			ArrayList <String> milestonesType = new ArrayList<String>();
-			milestonesList.add(0, "McDonald's'");
-			milestonesList.add(1, "Statoil");
-			milestonesList.add(2, "Skeppsviken");
-			milestonesType.add(0, "RESTAURANT");
-			milestonesType.add(1, "GASSTATION");
-			milestonesType.add(2, "RESTAREA");
+
+
 
 			//fragment_container goes from RouteFragment -> MilestonesFragment
 			MilestonesFragment milestonesFragment = MilestonesFragment.newInstance("Stockholm", "Lund", milestonesList, milestonesType);

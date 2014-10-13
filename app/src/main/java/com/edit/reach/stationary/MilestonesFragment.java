@@ -10,10 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import com.edit.reach.app.R;
 import com.edit.reach.model.IMilestone;
+import com.edit.reach.model.Milestone;
 
 import java.util.ArrayList;
 
@@ -41,6 +44,7 @@ public class MilestonesFragment extends Fragment {
 	private ListView mMilestonesListView;
 	private	TextView mFromTextView;
 	private	TextView mToTextView;
+    private LinearLayout cardList;
 
     private OnMilestonesInteractionListener mListener;
 
@@ -85,9 +89,17 @@ public class MilestonesFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 		View view = inflater.inflate(R.layout.fragment_milestones, container, false);
-		mMilestonesListView = (ListView) view.findViewById(R.id.lv_milestones);
+		//mMilestonesListView = (ListView) view.findViewById(R.id.lv_milestones);
 		mFromTextView = (TextView) view.findViewById(R.id.tv_text_from);
 		mToTextView = (TextView) view.findViewById(R.id.tv_text_to);
+        cardList = (LinearLayout) view.findViewById(R.id.cardList);
+        MilestonesCard mc = new MilestonesCard(getActivity().getApplicationContext(), null);
+        mc.setMilestoneName("Simon äter bajs");
+        cardList.addView(mc, 0);
+        MilestonesCard apa = new MilestonesCard(getActivity().getApplicationContext(), null);
+        apa.setMilestoneName("Till frukost");
+        cardList.addView(apa, 1);
+
 
         return view;
     }
@@ -96,7 +108,7 @@ public class MilestonesFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		mMilestonesListView.setAdapter(new MilestonesListAdapter(this.getActivity(), mMilestonesList, mMilestonesType));
+		//mMilestonesListView.setAdapter(new MilestonesListAdapter(this.getActivity(), mMilestonesList, mMilestonesType));
 
 		Log.v("TEST", mFrom);
 
@@ -105,9 +117,18 @@ public class MilestonesFragment extends Fragment {
 	}
 
 	public void addMilestone(IMilestone milestone) {
-
+        MilestonesCard mc = new MilestonesCard(getActivity().getApplicationContext(), null);
+        mc.setMilestoneName(milestone.getName());
+        cardList.addView(mc);
 	}
+    /*
+    public void iterateAllMilestones(){
+        for(IMilestone milestone: mMilestone){
+            addMilestone(milestone);
+        }
+    }
 
+        */
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
