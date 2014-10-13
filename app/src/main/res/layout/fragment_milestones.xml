@@ -40,13 +40,23 @@
 
 				/>
 
-		<ListView
+		<!--<ListView
 				android:id="@+id/lv_milestones"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 
 
-				/>
+				/>-->
+
+		<ScrollView
+				android:id="@+id/list_of_milestones"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+
+				</ScrollView>
+
+
+
         <!-- Kommenterade ut raden nedan på grund av problem vid körning, var tidigare vid ListView:n ovan -->
        <!-- android:entries="@color/text_fragment_milestones_list" -->
 

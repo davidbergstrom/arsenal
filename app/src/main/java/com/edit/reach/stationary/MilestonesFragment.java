@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.edit.reach.app.R;
+import com.edit.reach.model.IMilestone;
+
 import java.util.ArrayList;
 
 /**
@@ -100,8 +102,9 @@ public class MilestonesFragment extends Fragment {
 
 		mFromTextView.setText(mFrom);
 		mToTextView.setText(mTo);
+	}
 
-
+	public void addMilestone(IMilestone milestone) {
 
 	}
 
