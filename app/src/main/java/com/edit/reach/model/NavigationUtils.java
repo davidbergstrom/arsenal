@@ -2,8 +2,10 @@ package com.edit.reach.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,11 +44,18 @@ class NavigationUtils {
 
         }
 
-        url += "&sensor=false&mode=driving&alternatives=true&language=EN";
+        url += "&mode=driving&alternatives=true&language=EN";
+
+        String encodedURL = null;
+        try {
+            encodedURL = URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         URL http = null;
         try {
-            http = new URL(url);
+            http = new URL(encodedURL);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -60,9 +69,17 @@ class NavigationUtils {
         url += "?address=" + location;
         url += "&key=AIzaSyCqs-SMMT3_BIzMsPr-wsWqsJTthTgFUb8";
 
+
+        String encodedURL = null;
+        try {
+            encodedURL = URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
         URL http = null;
         try {
-            http = new URL(url);
+            http = new URL(encodedURL);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
