@@ -1,13 +1,13 @@
 package com.edit.reach.tests;
 
 import android.util.Log;
-import com.edit.reach.model.SuggestionListener;
-import com.edit.reach.model.SuggestionSystem;
+import com.edit.reach.model.interfaces.SuggestionListener;
+import com.edit.reach.utils.SuggestionUtil;
 import junit.framework.TestCase;
 
 import java.util.List;
 
-public class SuggestionSystemTest extends TestCase {
+public class SuggestionUtilTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
@@ -28,7 +28,7 @@ public class SuggestionSystemTest extends TestCase {
             }
         };
 
-        SuggestionSystem ss = new SuggestionSystem(suggestionListener);
+        SuggestionUtil ss = new SuggestionUtil(suggestionListener);
         ss.searchForAddresses("New Y");
         Thread.sleep(5000);
         Log.d("TestClass", "Test done");

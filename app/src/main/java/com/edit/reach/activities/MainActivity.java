@@ -1,4 +1,4 @@
-package com.edit.reach.app;
+package com.edit.reach.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,7 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import com.edit.reach.stationary.MultiPaneActivity;
+import com.edit.reach.app.R;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {

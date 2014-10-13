@@ -1,14 +1,14 @@
 package com.edit.reach.model;
 
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import com.edit.reach.app.MainActivity;
-import com.edit.reach.app.RankingSystem;
-import com.edit.reach.app.Remote;
-import com.edit.reach.app.ResponseHandler;
+import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.model.interfaces.MilestonesReceiver;
+import com.edit.reach.model.interfaces.RouteListener;
+import com.edit.reach.system.Remote;
+import com.edit.reach.system.ResponseHandler;
+import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.*;
@@ -75,8 +75,8 @@ public class Map {
                 //map.addCircle(new CircleOptions().center(pauseLocation).fillColor(Color.RED).radius(1000));
                 currentRoute.drawPauses(map);
                 Log.d("Map", "Getting milestones");
-                RankingSystem rankingSystem = new RankingSystem(milestonesReceiver);
-                rankingSystem.getMilestones(pauseLocation, 100);
+                Ranking ranking = new Ranking(milestonesReceiver);
+                ranking.getMilestones(pauseLocation, 100);
             }
 
         }
@@ -198,10 +198,10 @@ public class Map {
                 currentRoute.drawOverview(map);
             }
 
-            RankingSystem rankingSystem = new RankingSystem(milestonesReceiver);
+            Ranking ranking = new Ranking(milestonesReceiver);
             List<LatLng> pauses = currentRoute.getPauses();
             for (LatLng i : pauses) {
-                rankingSystem.getMilestones(i, NavigationUtils.RADIUS_IN_DEGREES);
+                ranking.getMilestones(i, NavigationUtil.RADIUS_IN_DEGREES);
             }
 
             map.getUiSettings().setAllGesturesEnabled(true);
@@ -275,7 +275,7 @@ public class Map {
      * @param handler, the handler to handle the results
      */
     void requestAddressSuggestion(String partOfAddress, ResponseHandler handler){
-        URL url = NavigationUtils.makeURL(partOfAddress);
+        URL url = NavigationUtil.makeURL(partOfAddress);
         Remote.get(url, handler);
     }
 

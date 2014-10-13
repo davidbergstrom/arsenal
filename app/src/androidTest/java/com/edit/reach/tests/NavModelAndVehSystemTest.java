@@ -5,7 +5,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import com.edit.reach.model.NavigationModel;
-import com.edit.reach.model.SignalType;
+import com.edit.reach.constants.SignalType;
 import junit.framework.TestCase;
 
 /* This test class depends on simulator values */

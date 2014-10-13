@@ -1,4 +1,4 @@
-package com.edit.reach.stationary;
+package com.edit.reach.fragments;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -73,8 +73,7 @@ public class MapFragment extends Fragment {
 		try {
 			mListener = (OnMapInteractionListener) activity;
 		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString()
-					+ " must implement OnMapInteractionListener");
+			throw new ClassCastException("Must implement OnMapInteractionListener");
 		}
 	}
 

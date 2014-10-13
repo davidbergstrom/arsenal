@@ -1,9 +1,11 @@
-package com.edit.reach.app;
+package com.edit.reach.model;
 
 import android.util.Log;
-import com.edit.reach.model.IMilestone;
-import com.edit.reach.model.Milestone;
-import com.edit.reach.model.MilestonesReceiver;
+import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.model.interfaces.MilestonesReceiver;
+import com.edit.reach.system.Remote;
+import com.edit.reach.system.ResponseHandler;
+import com.edit.reach.system.WorldTruckerEndpoints;
 import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,11 +15,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class RankingSystem implements ResponseHandler {
+public class Ranking implements ResponseHandler {
 
     MilestonesReceiver milestonesReceiver;
 
-    public RankingSystem(MilestonesReceiver milestonesReceiver) {
+    public Ranking(MilestonesReceiver milestonesReceiver) {
         this.milestonesReceiver = milestonesReceiver;
     }
 

@@ -1,4 +1,4 @@
-package com.edit.reach.stationary;
+package com.edit.reach.activities;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +10,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import com.edit.reach.app.R;
+import com.edit.reach.fragments.MapFragment;
+import com.edit.reach.fragments.MilestonesFragment;
+import com.edit.reach.fragments.RouteFragment;
 import com.edit.reach.model.NavigationModel;
 import com.edit.reach.model.Route;
 import com.google.android.gms.maps.GoogleMap;

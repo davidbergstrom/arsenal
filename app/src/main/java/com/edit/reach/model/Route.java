@@ -3,8 +3,11 @@ package com.edit.reach.model;
 import android.graphics.Color;
 import android.text.Html;
 import android.util.Log;
-import com.edit.reach.app.Remote;
-import com.edit.reach.app.ResponseHandler;
+import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.model.interfaces.RouteListener;
+import com.edit.reach.system.Remote;
+import com.edit.reach.system.ResponseHandler;
+import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.*;
@@ -80,7 +83,7 @@ public class Route {
                 origin = (new LatLng(location.getDouble("lat"), location.getDouble("lng")));
                 Log.d(DEBUG_TAG, "Origin coordinate retrieved.");
 
-                URL url = NavigationUtils.makeURL(destinationAddress);
+                URL url = NavigationUtil.makeURL(destinationAddress);
                 Remote.get(url, destinationHandler);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -105,7 +108,7 @@ public class Route {
                 destination = (new LatLng(location.getDouble("lat"), location.getDouble("lng")));
                 Log.d(DEBUG_TAG, "Destination coordinate retrieved.");
 
-                URL url = NavigationUtils.makeURL(origin, destination, new ArrayList<IMilestone>(), true);
+                URL url = NavigationUtil.makeURL(origin, destination, new ArrayList<IMilestone>(), true);
                 Remote.get(url, routeHandler);
 
             } catch (JSONException e) {
@@ -139,7 +142,7 @@ public class Route {
         this();
         this.origin = origin;
         this.destination = destination;
-        URL url = NavigationUtils.makeURL(origin, destination, new ArrayList<IMilestone>(), true);
+        URL url = NavigationUtil.makeURL(origin, destination, new ArrayList<IMilestone>(), true);
         Remote.get(url, routeHandler);
     }
 
@@ -152,7 +155,7 @@ public class Route {
         this();
         this.originAddress = origin;
         this.destinationAddress = destination;
-        URL url = NavigationUtils.makeURL(origin);
+        URL url = NavigationUtil.makeURL(origin);
         Remote.get(url, originHandler);
     }
 
@@ -165,7 +168,7 @@ public class Route {
         this();
         this.origin = origin;
         this.destinationAddress = destination;
-        URL url = NavigationUtils.makeURL(destinationAddress);
+        URL url = NavigationUtil.makeURL(destinationAddress);
         Remote.get(url, destinationHandler);
     }
 
@@ -291,7 +294,7 @@ public class Route {
         this.erase();
         this.destination = destination;
         initialized = false;
-        URL url = NavigationUtils.makeURL(this.origin, destination, new ArrayList<IMilestone>(), true);
+        URL url = NavigationUtil.makeURL(this.origin, destination, new ArrayList<IMilestone>(), true);
         Remote.get(url, routeHandler);
     }
 
@@ -319,7 +322,7 @@ public class Route {
         milestones.add(milestone);
         // Recalculate the route
         initialized = false;
-        URL url = NavigationUtils.makeURL(origin, destination, milestones, true);
+        URL url = NavigationUtil.makeURL(origin, destination, milestones, true);
         Remote.get(url, routeHandler);
     }
 
@@ -331,7 +334,7 @@ public class Route {
         this.milestones.addAll(milestones);
         // Recalculate the route
         initialized = false;
-        URL url = NavigationUtils.makeURL(origin, destination, milestones, true);
+        URL url = NavigationUtil.makeURL(origin, destination, milestones, true);
         Remote.get(url, routeHandler);
     }
 
@@ -343,7 +346,7 @@ public class Route {
         milestones.remove(milestone);
         // Recalculate the route
         initialized = false;
-        URL url = NavigationUtils.makeURL(origin, destination, milestones, true);
+        URL url = NavigationUtil.makeURL(origin, destination, milestones, true);
         Remote.get(url, routeHandler);
     }
 
@@ -354,7 +357,7 @@ public class Route {
         milestones.clear();
         // Recalculate the route
         initialized = false;
-        URL url = NavigationUtils.makeURL(origin, destination, milestones, true);
+        URL url = NavigationUtil.makeURL(origin, destination, milestones, true);
         Remote.get(url, routeHandler);
     }
 
@@ -450,8 +453,8 @@ public class Route {
                     LatLng subStep = step.subSteps.get(i);
                     LatLng subStepTwo = step.subSteps.get(i + 1);
 
-                    double distance1 = NavigationUtils.getDistance(subStep, location);
-                    double distance2 = NavigationUtils.getDistance(location, subStepTwo);
+                    double distance1 = NavigationUtil.getDistance(subStep, location);
+                    double distance2 = NavigationUtil.getDistance(location, subStepTwo);
 
                     if(distance2 <= distance1){
                         nearestLocation = subStepTwo;
@@ -480,8 +483,8 @@ public class Route {
                 pointer.setCenter(nearestLocation);
                 // Calculate new bearing and rotate the camera
                 Step newStep = legs.get(0).steps.get(0);
-                float bearing = (float) NavigationUtils.finalBearing(newStep.startLocation.latitude, newStep.startLocation.longitude,
-                        newStep.endLocation.latitude, newStep.endLocation.longitude);
+                float bearing = (float) NavigationUtil.finalBearing(newStep.startLocation.latitude, newStep.startLocation.longitude,
+		                newStep.endLocation.latitude, newStep.endLocation.longitude);
                 CameraPosition lastPosition = map.getCameraPosition();
                 CameraPosition currentPlace = new CameraPosition.Builder().target(nearestLocation).bearing(bearing)
                         .tilt(lastPosition.tilt).zoom(lastPosition.zoom).build();
@@ -599,7 +602,7 @@ public class Route {
                 }
                 JSONObject polyline = stepJSON.getJSONObject("polyline");
                 String encodedString = polyline.getString("points");
-                subSteps = NavigationUtils.decodePoly(encodedString);
+                subSteps = NavigationUtil.decodePoly(encodedString);
 
             } catch (JSONException e) {
                 // TODO Auto-generated catch block

@@ -1,4 +1,4 @@
-package com.edit.reach.model;
+package com.edit.reach.constants;
 
 /**
  * Created by: Tim Kerschbaumer

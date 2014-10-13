@@ -1,4 +1,4 @@
-package com.edit.reach.model;
+package com.edit.reach.system;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -6,6 +6,8 @@ import android.swedspot.automotiveapi.AutomotiveSignal;
 import android.swedspot.automotiveapi.AutomotiveSignalId;
 import android.swedspot.scs.data.*;
 import android.util.Log;
+import com.edit.reach.constants.MovingState;
+import com.edit.reach.constants.SignalType;
 import com.swedspot.automotiveapi.AutomotiveFactory;
 import com.swedspot.automotiveapi.AutomotiveListener;
 import com.swedspot.automotiveapi.AutomotiveManager;
@@ -25,7 +27,7 @@ import java.util.Observable;
  * Time: 19:28
  * Last Edit: 2014-10-13
  */
-class VehicleSystem extends Observable implements Runnable {
+public class VehicleSystem extends Observable implements Runnable {
 	/* --- Instance Variables --- */
 	private SCSLong totalVehicleDistance;
 	private SCSDouble totalFuelUsed;
@@ -218,7 +220,7 @@ class VehicleSystem extends Observable implements Runnable {
 
 	/** Constructor.
 	 */
-	VehicleSystem() {
+	public VehicleSystem() {
 		vehicleSignals = new Thread(VehicleSystem.this, "VehicleSignalsThread");
 		vehicleSignals.start();
 
@@ -263,14 +265,14 @@ class VehicleSystem extends Observable implements Runnable {
 	/** Class Method that returns the legal uptime in seconds constant
 	 * @return A long with the max legal uptime in seconds.
 	 */
-	static long getLegalUptimeInSeconds() {
+	public static long getLegalUptimeInSeconds() {
 		return LEGAL_UPTIME_IN_SECONDS;
 	}
 
 	/** Estimates how long until a refuel is recommended.
 	 * @return how many km until a stop for fueling is recommended.
 	 */
-	synchronized double getKilometersUntilRefuel() {
+	public synchronized double getKilometersUntilRefuel() {
 		try {
 			if (getVehicleState() == MovingState.DRIVE_AND_MOVING) {
 				// TODO, Evaluate for drive and moving state
@@ -296,7 +298,7 @@ class VehicleSystem extends Observable implements Runnable {
 	Positive number with seconds left if driving
 	Negative number if drive longer than legal.
 	 */
-	synchronized double getTimeUntilForcedRest() {
+	public synchronized double getTimeUntilForcedRest() {
 		try {
 			if (getVehicleState() == MovingState.DRIVE_AND_MOVING) {
 				return (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS));
@@ -315,7 +317,7 @@ class VehicleSystem extends Observable implements Runnable {
 	/** Method that returns the number om kilometers until service is recommended.
 	 * @return how many km until a stop for service is recommended.
 	 */
-	synchronized int getKilometersUntilService() {
+	public synchronized int getKilometersUntilService() {
 		try {
 			return distanceToService.getIntValue();
 		} catch (NullPointerException e) {
@@ -327,7 +329,7 @@ class VehicleSystem extends Observable implements Runnable {
 	/** Method that returns the current state of the vehicle.
 	 * @return a constant int value from class MovingState.
 	 */
-	synchronized int getVehicleState() {
+	public synchronized int getVehicleState() {
 		try {
 			if (isMoving.getIntValue() == 1 && workingState.getIntValue() == 3) {
 				// Is in drive and vehicle is moving.

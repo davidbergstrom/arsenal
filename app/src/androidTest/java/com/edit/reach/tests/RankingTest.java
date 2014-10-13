@@ -1,15 +1,15 @@
 package com.edit.reach.tests;
 
 import android.util.Log;
-import com.edit.reach.app.RankingSystem;
-import com.edit.reach.model.IMilestone;
-import com.edit.reach.model.MilestonesReceiver;
+import com.edit.reach.model.Ranking;
+import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.model.interfaces.MilestonesReceiver;
 import com.google.android.gms.maps.model.LatLng;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
 
-public class RankingSystemTest extends TestCase {
+public class RankingTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
@@ -17,7 +17,7 @@ public class RankingSystemTest extends TestCase {
 
     public void testGetMilestones() {
         Log.d("RankingTest", "Running test 1");
-        RankingSystem r1 = new RankingSystem(new MilestonesReceiver() {
+        Ranking r1 = new Ranking(new MilestonesReceiver() {
             @Override
             public void onMilestonesRecieved(ArrayList<IMilestone> milestones) {
                 Log.d("RankingTest", "Success");

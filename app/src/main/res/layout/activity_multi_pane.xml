@@ -39,7 +39,7 @@
 	          android:layout_height="match_parent"
 	          android:id="@+id/map"
 	          android:layout_weight="3"
-	          tools:context="com.edit.reach.stationary.MultiPaneActivity"
+	          tools:context="com.edit.reach.activities.MultiPaneActivity"
 	          android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
 </LinearLayout>

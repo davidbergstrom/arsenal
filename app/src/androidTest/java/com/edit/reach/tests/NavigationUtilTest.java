@@ -1,17 +1,14 @@
 package com.edit.reach.tests;
 
 import android.test.suitebuilder.annotation.SmallTest;
-import com.edit.reach.model.NavigationUtils;
-import com.google.android.gms.maps.model.LatLng;
+import com.edit.reach.utils.NavigationUtil;
 import junit.framework.TestCase;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
-public class NavigationUtilsTest extends TestCase {
+public class NavigationUtilTest extends TestCase {
 
-    NavigationUtils navigationUtils;
+    NavigationUtil navigationUtil;
 
     public void setUp() throws Exception {
         super.setUp();
@@ -37,7 +34,7 @@ public class NavigationUtilsTest extends TestCase {
 
     @SmallTest
     public void testMakeURL2() throws Exception {
-        URL actual = navigationUtils.makeURL("Soldathemsgatan 20, 41528, Göteborg");
+        URL actual = navigationUtil.makeURL("Soldathemsgatan 20, 41528, Göteborg");
         URL expected = new URL("https://maps.googleapis.com/maps/api/geocode/json?address=soldathemsgatan+20,+41528,+göteborg&key=AIzaSyCqs-SMMT3_BIzMsPr-wsWqsJTthTgFUb8");
         assertEquals(expected,actual);
     }

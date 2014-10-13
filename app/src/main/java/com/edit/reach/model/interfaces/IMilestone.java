@@ -1,4 +1,4 @@
-package com.edit.reach.model;
+package com.edit.reach.model.interfaces;
 
 import android.location.Location;
 import com.google.android.gms.maps.model.LatLng;
@@ -15,7 +15,6 @@ public interface IMilestone {
 	 */
 	public enum Category{
 		RESTAURANT, RESTAREA, GASSTATION
-
 	}
 
 	/**

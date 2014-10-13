@@ -1,9 +1,9 @@
-package com.edit.reach.model;
+package com.edit.reach.utils;
 
 import android.util.Log;
-import com.edit.reach.app.Remote;
-import com.edit.reach.app.ResponseHandler;
-import com.edit.reach.model.SuggestionListener;
+import com.edit.reach.model.interfaces.SuggestionListener;
+import com.edit.reach.system.Remote;
+import com.edit.reach.system.ResponseHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,12 +15,12 @@ import java.util.List;
 /**
  * Created by Nordmark on 2014-10-13.
  */
-public class SuggestionSystem implements ResponseHandler {
+public class SuggestionUtil implements ResponseHandler {
 
     private SuggestionListener suggestionListener;
     private String searchString;
 
-    public SuggestionSystem(SuggestionListener suggestionListener) {
+    public SuggestionUtil(SuggestionListener suggestionListener) {
         this.suggestionListener = suggestionListener;
     }
 
@@ -61,7 +61,7 @@ public class SuggestionSystem implements ResponseHandler {
 
     public void searchForAddresses(String str) {
         searchString = str;
-        URL url = NavigationUtils.makeURL(str);
+        URL url = NavigationUtil.makeURL(str);
         Remote.get(url, this);
     }
 }

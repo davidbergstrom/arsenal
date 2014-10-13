@@ -1,4 +1,4 @@
-package com.edit.reach.stationary;
+package com.edit.reach.views.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,11 +8,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.edit.reach.app.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by iDavid on 2014-10-09.

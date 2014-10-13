@@ -1,4 +1,4 @@
-package com.edit.reach.app;
+package com.edit.reach.model;
 import com.google.android.gms.maps.model.LatLng;
 
 /**

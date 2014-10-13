@@ -1,33 +1,31 @@
-package com.edit.reach.model;
+package com.edit.reach.utils;
 
-import com.edit.reach.app.Remote;
-import com.edit.reach.app.ResponseHandler;
+import com.edit.reach.model.interfaces.IMilestone;
 import com.google.android.gms.maps.model.LatLng;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.List;
 
 /**
  * Created by Joakim Berntsson on 2014-10-01.
  * Static class for navigation utilities.
  */
-public class NavigationUtils {
+public class NavigationUtil {
+	/* TODO Hey guys please refactor this class.
+		Have one class with the URL-stuff. And one class for the computation stuff.
+	 */
 
     /** Radius for the pauses */
-    static final double RADIUS_IN_DEGREES = 1000;
+    public static final double RADIUS_IN_DEGREES = 1000;
 
     /** Radius for the pauses */
-    static final int RADIUS_IN_KM = (int) getDistance(new LatLng(0,0), new LatLng(0,RADIUS_IN_DEGREES));
+    public static final int RADIUS_IN_KM = (int) getDistance(new LatLng(0,0), new LatLng(0,RADIUS_IN_DEGREES));
 
-	private NavigationUtils(){}
+	private NavigationUtil(){}
 
     public static URL makeURL(LatLng origin, LatLng destination, List<IMilestone> milestones, boolean routeOptimization) {
 
@@ -86,7 +84,7 @@ public class NavigationUtils {
         return http;
     }
 
-    static List<LatLng> decodePoly(String encoded) {
+    public static List<LatLng> decodePoly(String encoded) {
 
 		List<LatLng> poly = new ArrayList<LatLng>();
 		int index = 0, len = encoded.length();
@@ -120,7 +118,7 @@ public class NavigationUtils {
 		return poly;
 	}
 
-    static double getDistance(LatLng firstPosition, LatLng secondPosition){
+    public static double getDistance(LatLng firstPosition, LatLng secondPosition){
         int R = 6371; // Earths radius in km
         double a = Math.pow(Math.sin(Math.toRadians(secondPosition.latitude-firstPosition.latitude)/2), 2) +
                 Math.cos(secondPosition.latitude) * Math.cos(firstPosition.latitude) *
@@ -129,7 +127,7 @@ public class NavigationUtils {
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     }
 
-    static double finalBearing(double lat1, double long1, double lat2, double long2){
+    public static double finalBearing(double lat1, double long1, double lat2, double long2){
         double degToRad = Math.PI / 180.0;
         double phi1 = lat1 * degToRad;
         double phi2 = lat2 * degToRad;

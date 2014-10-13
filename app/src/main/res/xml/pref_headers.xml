@@ -3,15 +3,15 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="com.edit.reach.app.SettingsActivity$DriverPreferenceFragment"
+        android:fragment="com.edit.reach.activities.SettingsActivity$DriverPreferenceFragment"
         android:title="@string/pref_header_driver" />
 
     <header
-        android:fragment="com.edit.reach.app.SettingsActivity$TruckPreferenceFragment"
+        android:fragment="com.edit.reach.activities.SettingsActivity$TruckPreferenceFragment"
         android:title="@string/pref_header_truck" />
 
     <header
-        android:fragment="com.edit.reach.app.SettingsActivity$RoutePreferenceFragment"
+        android:fragment="com.edit.reach.activities.SettingsActivity$RoutePreferenceFragment"
         android:title="@string/pref_header_route" />
 
 </preference-headers>

@@ -1,4 +1,4 @@
-package com.edit.reach.model;
+package com.edit.reach.model.interfaces;
 
 import java.util.ArrayList;
 

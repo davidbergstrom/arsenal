@@ -1,4 +1,4 @@
-package com.edit.reach.app;
+package com.edit.reach.activities;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -11,6 +11,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import com.edit.reach.app.R;
 
 
 import java.util.List;

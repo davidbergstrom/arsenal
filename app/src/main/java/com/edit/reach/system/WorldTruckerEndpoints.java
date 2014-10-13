@@ -1,4 +1,6 @@
-package com.edit.reach.app;
+package com.edit.reach.system;
+
+import com.edit.reach.model.BoundingBox;
 
 import java.net.MalformedURLException;
 import java.net.URL;

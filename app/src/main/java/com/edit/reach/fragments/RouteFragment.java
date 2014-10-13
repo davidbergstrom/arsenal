@@ -1,7 +1,6 @@
-package com.edit.reach.stationary;
+package com.edit.reach.fragments;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import com.edit.reach.app.R;
-import com.edit.reach.model.NavigationModel;
 import com.edit.reach.model.Route;
 
 import java.util.ArrayList;
@@ -148,8 +146,7 @@ public class RouteFragment extends Fragment {
         try {
             mListener = (OnRouteInteractionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnRouteInteractionListener");
+            throw new ClassCastException("Must implement OnRouteInteractionListener");
         }
     }
 
