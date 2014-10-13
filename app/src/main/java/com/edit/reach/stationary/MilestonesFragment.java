@@ -3,14 +3,20 @@ package com.edit.reach.stationary;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import com.edit.reach.app.R;
+import com.edit.reach.model.IMilestone;
+import com.edit.reach.model.Milestone;
 
 import java.util.ArrayList;
 
@@ -33,12 +39,12 @@ public class MilestonesFragment extends Fragment {
 	private String mFrom;
 	private String mTo;
 	private ArrayList <String> mMilestonesList;
-	private ArrayList <String> mMilestonesType;
-
-	private TextView mFromTextView;
-	private TextView mToTextView;
+    private ArrayList <String> mMilestonesType;
 
 	private ListView mMilestonesListView;
+	private	TextView mFromTextView;
+	private	TextView mToTextView;
+    private LinearLayout cardList;
 
     private OnMilestonesInteractionListener mListener;
 
@@ -72,15 +78,10 @@ public class MilestonesFragment extends Fragment {
         if (getArguments() != null) {
             mFrom = getArguments().getString(ARG_FROM);
 			mTo = getArguments().getString(ARG_TO);
-			mMilestonesList = getArguments().getStringArrayList(ARG_LIST);
+            mMilestonesList = getArguments().getStringArrayList(ARG_LIST);
 			mMilestonesType = getArguments().getStringArrayList(ARG_TYPE);
-
-			mFromTextView.setText(mFrom);
-			mToTextView.setText(mTo);
-
-			mMilestonesListView.setAdapter(new MilestonesListAdapter(this.getActivity(), mMilestonesList, mMilestonesType));
-
         }
+
     }
 
     @Override
@@ -88,20 +89,65 @@ public class MilestonesFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 		View view = inflater.inflate(R.layout.fragment_milestones, container, false);
-		mMilestonesListView = (ListView) view.findViewById(R.id.lv_milestones);
+		//mMilestonesListView = (ListView) view.findViewById(R.id.lv_milestones);
 		mFromTextView = (TextView) view.findViewById(R.id.tv_text_from);
 		mToTextView = (TextView) view.findViewById(R.id.tv_text_to);
+        cardList = (LinearLayout) view.findViewById(R.id.cardList);
+        MilestonesCard mc = new MilestonesCard(getActivity().getApplicationContext(), null);
+        mc.setMilestoneName("Simon äter bajs");
+        cardList.addView(mc, 0);
+        MilestonesCard apa = new MilestonesCard(getActivity().getApplicationContext(), null);
+        apa.setMilestoneName("Till frukost");
+        cardList.addView(apa, 1);
+
 
         return view;
     }
 
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+		//mMilestonesListView.setAdapter(new MilestonesListAdapter(this.getActivity(), mMilestonesList, mMilestonesType));
+
+		Log.v("TEST", mFrom);
+
+		mFromTextView.setText(mFrom);
+		mToTextView.setText(mTo);
+	}
+
+	public void addMilestone(IMilestone milestone) {
+        MilestonesCard mc = new MilestonesCard(getActivity().getApplicationContext(), null);
+        mc.setMilestoneName(milestone.getName());
+        cardList.addView(mc);
+	}
+    /*
+    public void iterateAllMilestones(){
+        for(IMilestone milestone: mMilestone){
+            addMilestone(milestone);
+        }
+    }
+
+        */
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onMilestonesInteraction(uri);
         }
     }
+    /*
+    private void addToList(){
+        HashMap<String, String> map1 = new HashMap<String, String>();
+        for(IMilestone milestone: mMilestones){
+            String name = milestone.getName();
+            String type = milestone.getCategory().toString();
+            map1.put(name, type);
+        }
 
+            mlAdapter.addMilestone(map1);
+
+    }
+    */
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -131,7 +177,7 @@ public class MilestonesFragment extends Fragment {
      */
     public interface OnMilestonesInteractionListener {
         // TODO: Update argument type and name
-        public void onMilestonesInteraction(Uri uri);
+        public void onMilestonesInteraction(Object o);
     }
 
 }
