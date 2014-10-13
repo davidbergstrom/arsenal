@@ -13,6 +13,8 @@ import com.swedspot.vil.distraction.DriverDistractionLevel;
 import com.swedspot.vil.distraction.DriverDistractionListener;
 import com.swedspot.vil.policy.AutomotiveCertificate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -39,6 +41,9 @@ class VehicleSystem extends Observable implements Runnable {
 	private SCSFloat fuelLevel = new SCSFloat(-1f);
 	private Uint8 isMoving = new Uint8(-1);
 	private Uint8 workingState = new Uint8(-1);
+
+	private List<SCSFloat> instantFuelEconomyList = new ArrayList<SCSFloat>();
+	private List<SCSFloat> instantFuelConsumptionList = new ArrayList<SCSFloat>();
 
 	// Time that vehicle started driving.
 	private long startTime = 0;
@@ -115,6 +120,7 @@ class VehicleSystem extends Observable implements Runnable {
 						// Instantaneous Fuel consumption
 						case AutomotiveSignalId.FMS_FUEL_RATE:
 							instantFuelConsumption = (SCSFloat) automotiveSignal.getData();
+							instantFuelConsumptionList.add(instantFuelConsumption);
 
 							Log.d("Signal: FuelRate", "Fuel rate " + instantFuelConsumption.getFloatValue());
 							break;
@@ -122,6 +128,7 @@ class VehicleSystem extends Observable implements Runnable {
 						// Instantaneous Fuel economy
 						case AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY:
 							instantFuelEconomy = (SCSFloat) automotiveSignal.getData();
+							instantFuelEconomyList.add(instantFuelEconomy);
 
 							Log.d("Signal: FuelEconomy", "Fuel economy " + instantFuelEconomy.getFloatValue());
 							break;
@@ -240,7 +247,7 @@ class VehicleSystem extends Observable implements Runnable {
 
 	// ****** GET-METHODS ****** //
 
-	/** Method that returns the legal uptime in seconds constant
+	/** Static Method that returns the legal uptime in seconds constant
 	 * @return A long with the max legal uptime in seconds.
 	 */
 	static long getLegalUptimeInSeconds() {
@@ -296,7 +303,6 @@ class VehicleSystem extends Observable implements Runnable {
 		}
 	}
 
-	// TODO, do the math
 	/** Method that returns the number of seconds until a stop is required.
 	 * @return
 	270 if currently in a break

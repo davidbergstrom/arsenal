@@ -7,7 +7,6 @@ public class NavigationModelTest extends TestCase {
 
 	public void setUp() throws Exception {
 		super.setUp();
-		NavigationModel m = new NavigationModel();
 	}
 
 	public void testUpdate() throws Exception {
