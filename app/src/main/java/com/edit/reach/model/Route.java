@@ -35,6 +35,7 @@ public class Route {
     private List<RouteListener> listeners;
     private List<IMilestone> milestones, prelMilestones;
     private List<Pause> pauses;
+    private String DEBUG_TAG = "Route";
 
     /** Handler for receiving a route as JSON Object */
     private ResponseHandler routeHandler = new ResponseHandler() {
@@ -53,8 +54,8 @@ public class Route {
                     durationInSeconds += newLeg.duration;
                     legs.add(newLeg);
                 }
+                Log.d(DEBUG_TAG, "Has been initialized.");
                 alertListeners(); // Notify the observers that the route has been initialized
-                Log.d("Route", "Notified Observers");
                 initialized = true;
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -77,10 +78,10 @@ public class Route {
                 JSONObject geometry = address.getJSONObject("geometry");
                 JSONObject location = geometry.getJSONObject("location");
                 origin = (new LatLng(location.getDouble("lat"), location.getDouble("lng")));
+                Log.d(DEBUG_TAG, "Origin coordinate retrieved.");
 
                 URL url = NavigationUtils.makeURL(destinationAddress);
                 Remote.get(url, destinationHandler);
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -102,6 +103,7 @@ public class Route {
                 JSONObject geometry = address.getJSONObject("geometry");
                 JSONObject location = geometry.getJSONObject("location");
                 destination = (new LatLng(location.getDouble("lat"), location.getDouble("lng")));
+                Log.d(DEBUG_TAG, "Destination coordinate retrieved.");
 
                 URL url = NavigationUtils.makeURL(origin, destination, new ArrayList<IMilestone>(), true);
                 Remote.get(url, routeHandler);
@@ -155,6 +157,19 @@ public class Route {
     }
 
     /**
+     * Create a route with a coordinate origin and a string address.
+     * @param origin, the coordinate of the start point
+     * @param destination, the destination address
+     */
+    public Route(LatLng origin, String destination){
+        this();
+        this.origin = origin;
+        this.destinationAddress = destination;
+        URL url = NavigationUtils.makeURL(destinationAddress);
+        Remote.get(url, destinationHandler);
+    }
+
+    /**
      * Returns the approximated duration of the route.
      * @return number of seconds the route will take
      */
@@ -174,18 +189,27 @@ public class Route {
      * Adds a rest pause the specified number of seconds into the route
      * @param secondsIntoRoute, in seconds
      */
-    public void addPause(int secondsIntoRoute) {
-        int realSecondsIntoRoute = 0;
+    public void addPause(long secondsIntoRoute) {
+        long realSecondsIntoRoute = 0;
+        long lastRealSecondsIntoRoute = 0;
         LatLng pauseLocation = null;
-
+        LatLng lastPauseLocation = null;
         outerLoop:
         for(Leg leg : legs){
             for(Step step : leg.steps){
                 realSecondsIntoRoute += step.duration;
+                //Log.d(DEBUG_TAG, "Real: "+realSecondsIntoRoute);
                 if(realSecondsIntoRoute >= secondsIntoRoute){
-                    pauseLocation = step.startLocation;
+                    if(realSecondsIntoRoute - secondsIntoRoute > lastRealSecondsIntoRoute - secondsIntoRoute){
+                        pauseLocation = step.startLocation;
+
+                    }else{
+                        pauseLocation = lastPauseLocation;
+                    }
                     break outerLoop;
                 }
+                lastRealSecondsIntoRoute = realSecondsIntoRoute;
+                lastPauseLocation = step.startLocation;
             }
         }
 
@@ -193,9 +217,11 @@ public class Route {
             pauses.add(new Pause(pauseLocation));
 
             for(RouteListener l : listeners){
+                // TODO Change onPauseAdded to give a pause instead of latlng
                 l.onPauseAdded(pauseLocation);
             }
         }
+        Log.d(DEBUG_TAG, "Pause added " + realSecondsIntoRoute + " seconds into the route. Because: " +secondsIntoRoute);
     }
 
     /**
@@ -224,6 +250,7 @@ public class Route {
                 l.onPauseAdded(pauseLocation);
             }
         }
+        Log.d(DEBUG_TAG, "Pause added " + realKmIntoRoute + " km into the route.");
     }
 
     public List<LatLng> getPauses(){
@@ -249,6 +276,7 @@ public class Route {
      * @param map, the GoogleMap to draw on
      */
     public void drawPauses(GoogleMap map){
+        Log.d(DEBUG_TAG, "Drawing pauses "+pauses.size());
         for(Pause pause : pauses){
             pause.draw(map);
         }
@@ -347,6 +375,7 @@ public class Route {
                 .fillColor(Color.BLUE));
 
         this.pointer = map.addCircle(new CircleOptions().center(legs.get(0).startLocation).fillColor(Color.GREEN).radius(8));
+        Log.d(DEBUG_TAG, "Drawing route in navigation mode.");
     }
 
     /**
@@ -355,22 +384,25 @@ public class Route {
      */
     public void drawOverview(GoogleMap map){
         this.erase();
+        Log.d("Route", "Drawing overview!");
+        drawPauses(map);
         for(Leg leg : legs){
             leg.draw(map);
         }
         // Add an end point
         this.endPointCircle = map.addCircle(new CircleOptions()
                 .center(legs.get(legs.size()-1).endLocation)
-                .radius(10)
+                .radius(20)
                 .strokeColor(Color.RED)
                 .fillColor(Color.BLUE));
 
         this.startPointCircle = map.addCircle(new CircleOptions()
                 .center(legs.get(0).startLocation)
-                .radius(10)
+                .radius(20)
                 .strokeColor(Color.BLUE)
                 .fillColor(Color.YELLOW));
 
+        Log.d(DEBUG_TAG, "Drawing route in overview mode.");
     }
 
     /**
@@ -379,6 +411,9 @@ public class Route {
     public void erase(){
         for(Leg leg : legs){
             leg.erase();
+        }
+        for(Pause pause : pauses){
+            pause.erase();
         }
         if(endPointCircle != null){
             endPointCircle.remove();
@@ -389,6 +424,7 @@ public class Route {
         if(startPointCircle != null){
             startPointCircle.remove();
         }
+        Log.d(DEBUG_TAG, "Erased route.");
     }
 
     /**
@@ -398,6 +434,8 @@ public class Route {
      * @return the estimated location on the route
      */
     public LatLng goTo(GoogleMap map, LatLng location){
+        Log.d(DEBUG_TAG, "Move pointer to "+location.toString()+".");
+
         LatLng nearestLocation = legs.get(0).steps.get(0).subSteps.get(0);
         Step stepToRedraw = legs.get(0).steps.get(0);
 
@@ -436,7 +474,7 @@ public class Route {
 
         }else{
             if(stepToRedraw != null){
-                stepToRedraw.redraw(map);
+                stepToRedraw.draw(map);
             }
             if(pointer != null && !pointer.getCenter().equals(nearestLocation)){
                 pointer.setCenter(nearestLocation);
@@ -494,6 +532,7 @@ public class Route {
         LatLng startLocation, endLocation;
 
         Leg(JSONObject legJSON){
+            Log.d(DEBUG_TAG, "Creating leg.");
             steps = new ArrayList<Step>();
             try {
                 distance = legJSON.getJSONObject("distance").getLong("value");
@@ -534,7 +573,7 @@ public class Route {
     }
 
     /**
-     * Class that represent every step of the directions. It store distance, location and instructions
+     * Class that represent every step of the directions. It stores distance, duration, location and instructions
      */
     private class Step{
         int distance, duration;
@@ -544,6 +583,7 @@ public class Route {
         List<LatLng> subSteps;
 
         Step(JSONObject stepJSON){
+            Log.d(DEBUG_TAG, "Creating step.");
             try {
                 distance = Integer.decode(stepJSON.getJSONObject("distance").getString("value"));
                 JSONObject startLocation = stepJSON.getJSONObject("start_location");
@@ -572,14 +612,6 @@ public class Route {
          * @param map, the map to draw on
          */
         void draw(GoogleMap map){
-            polyline = map.addPolyline(new PolylineOptions().addAll(subSteps).width(12).color(Color.parseColor("#4411EE")));
-        }
-
-        /**
-         * Redraw the step on the provided map
-         * @param map
-         */
-        void redraw(GoogleMap map){
             this.erase();
             polyline = map.addPolyline(new PolylineOptions().addAll(subSteps).width(12).color(Color.parseColor("#4411EE")));
         }
@@ -588,7 +620,9 @@ public class Route {
          * Erase the step from all of its maps
          */
         void erase(){
-            polyline.remove();
+            if(polyline != null){
+                polyline.remove();
+            }
         }
     }
 
@@ -608,15 +642,19 @@ public class Route {
          * @param map, the map to draw it on
          */
         void draw(GoogleMap map){
+            Log.d("Pause", "Drawing Pause at "+center.toString());
             this.erase();
-            this.circle = map.addCircle(new CircleOptions().center(center).radius(NavigationUtils.RADIUS_IN_KM*1000).fillColor(Color.BLUE));
+            this.circle = map.addCircle(new CircleOptions().center(center).fillColor(Color.RED).radius(4000));
+            //this.circle = map.addCircle(new CircleOptions().center(center).radius(100).fillColor(Color.RED).strokeColor(Color.RED).visible(true));
         }
 
         /**
          * Erase the pause from all of the maps it has been drawn on
          */
         void erase(){
-            circle.remove();
+            if(circle != null){
+                circle.remove();
+            }
         }
     }
 }

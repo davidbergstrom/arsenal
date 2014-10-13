@@ -13,13 +13,9 @@ import com.swedspot.vil.distraction.DriverDistractionLevel;
 import com.swedspot.vil.distraction.DriverDistractionListener;
 import com.swedspot.vil.policy.AutomotiveCertificate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
-
-/** Enum with 4 different types of signals.
- */
-enum SIGNAL_TYPE {
-	LOW_FUEL, SHORT_TIME, SHORT_TO_SERVICE, VEHICLE_STOPPED_OR_STARTED
-}
 
 /**
  * Class that represents a VehicleSystem (Or a Vehicle).
@@ -27,10 +23,9 @@ enum SIGNAL_TYPE {
  * Project: REACH
  * Date: 2014-09-27
  * Time: 19:28
- * Last Edit: 2014-10-10
+ * Last Edit: 2014-10-13
  */
 class VehicleSystem extends Observable implements Runnable {
-
 	/* --- Instance Variables --- */
 	private SCSFloat instantFuelConsumption;
 	private SCSFloat instantFuelEconomy;
@@ -45,6 +40,9 @@ class VehicleSystem extends Observable implements Runnable {
 	private SCSFloat fuelLevel = new SCSFloat(-1f);
 	private Uint8 isMoving = new Uint8(-1);
 	private Uint8 workingState = new Uint8(-1);
+
+	private List<SCSFloat> instantFuelEconomyList = new ArrayList<SCSFloat>();
+	private List<SCSFloat> instantFuelConsumptionList = new ArrayList<SCSFloat>();
 
 	// Time that vehicle started driving.
 	private long startTime = 0;
@@ -121,6 +119,7 @@ class VehicleSystem extends Observable implements Runnable {
 						// Instantaneous Fuel consumption
 						case AutomotiveSignalId.FMS_FUEL_RATE:
 							instantFuelConsumption = (SCSFloat) automotiveSignal.getData();
+							instantFuelConsumptionList.add(instantFuelConsumption);
 
 							Log.d("Signal: FuelRate", "Fuel rate " + instantFuelConsumption.getFloatValue());
 							break;
@@ -128,6 +127,7 @@ class VehicleSystem extends Observable implements Runnable {
 						// Instantaneous Fuel economy
 						case AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY:
 							instantFuelEconomy = (SCSFloat) automotiveSignal.getData();
+							instantFuelEconomyList.add(instantFuelEconomy);
 
 							Log.d("Signal: FuelEconomy", "Fuel economy " + instantFuelEconomy.getFloatValue());
 							break;
@@ -240,16 +240,16 @@ class VehicleSystem extends Observable implements Runnable {
 			signalHandler = new Handler();
 			Looper.loop();
 		} catch (Throwable t) {
-			Log.d("Thread error", "" + t);
+			Log.d("Error in signalThread: ", "" + t);
 		}
 	}
 
 	// ****** GET-METHODS ****** //
 
-	/** Method that returns the legal uptime in seconds constant
+	/** Static Method that returns the legal uptime in seconds constant
 	 * @return A long with the max legal uptime in seconds.
 	 */
-	long getLegalUptimeInSeconds() {
+	static long getLegalUptimeInSeconds() {
 		return LEGAL_UPTIME_IN_SECONDS;
 	}
 
@@ -302,7 +302,6 @@ class VehicleSystem extends Observable implements Runnable {
 		}
 	}
 
-	// TODO, do the math
 	/** Method that returns the number of seconds until a stop is required.
 	 * @return
 	270 if currently in a break
@@ -343,11 +342,12 @@ class VehicleSystem extends Observable implements Runnable {
 
 	private void determineShortTime() {
 		Log.d("Time", (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS)) + "");
+
 		if(workingState.getIntValue() == 3) {
 			if ((LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS)) < TIME_THRESHOLD) {
 				if (!timeHasBeenNotified) {
 					setChanged();
-					notifyObservers(SIGNAL_TYPE.SHORT_TIME);
+					notifyObservers(SignalType.SHORT_TIME);
 					timeHasBeenNotified = true;
 				}
 			}
@@ -359,7 +359,7 @@ class VehicleSystem extends Observable implements Runnable {
 	private void determineLowFuel(float prevFuelLevel, float fuelLevel) {
 		if(fuelLevel <= FUEL_THRESHOLD && prevFuelLevel > FUEL_THRESHOLD) {
 			setChanged();
-			notifyObservers(SIGNAL_TYPE.LOW_FUEL);
+			notifyObservers(SignalType.LOW_FUEL);
 		}
 	}
 
@@ -367,7 +367,7 @@ class VehicleSystem extends Observable implements Runnable {
 	private void determineIfStoppedOrStarted(int prevState, int curState) {
 		if(prevState != curState && curState != -1) {
 			setChanged();
-			notifyObservers(SIGNAL_TYPE.VEHICLE_STOPPED_OR_STARTED);
+			notifyObservers(SignalType.VEHICLE_STOPPED_OR_STARTED);
 		}
 	}
 
@@ -376,7 +376,7 @@ class VehicleSystem extends Observable implements Runnable {
 	private void determineCloseToService(int prevKmToService, int kmToService) {
 		if(kmToService <= SERVICE_THRESHOLD && prevKmToService > SERVICE_THRESHOLD) {
 			setChanged();
-			notifyObservers(SIGNAL_TYPE.SHORT_TO_SERVICE);
+			notifyObservers(SignalType.SHORT_TO_SERVICE);
 		}
 	}
 }

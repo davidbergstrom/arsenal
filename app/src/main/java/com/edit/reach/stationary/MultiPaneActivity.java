@@ -23,12 +23,12 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     private NavigationModel nvm;
+
+	// A handler for the UI thread. The Handler recieves messages from other thread.
 	private Handler mainHandler = new Handler(Looper.getMainLooper()) {
 		@Override
 		public void handleMessage(Message message) {
-			Object mess = message.obj;
-			Log.d("RECIEVED", (Integer)mess + "");
-			Log.d("THREAD", "Thread in MultiPane: " + Thread.currentThread().getName());
+			// TODO how to handle messages sent to UI thread.
 		}
 	};
 
@@ -69,7 +69,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
                     .getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
-                setUpMap();
+                mMap.setMyLocationEnabled(true);
             }
         }
     }
