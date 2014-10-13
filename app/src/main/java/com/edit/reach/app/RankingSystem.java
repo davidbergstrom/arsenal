@@ -1,5 +1,6 @@
 package com.edit.reach.app;
 
+import android.util.Log;
 import com.edit.reach.model.IMilestone;
 import com.edit.reach.model.Milestone;
 import com.edit.reach.model.MilestonesReceiver;
@@ -26,8 +27,10 @@ public class RankingSystem implements ResponseHandler {
 
         try {
             URL url = WorldTruckerEndpoints.getMilestonesURL(bbox);
+            Log.d("RankingTest", "getMileStones");
             Remote.get(url, this);
         } catch (MalformedURLException e) {
+            Log.d("RankingTest", "Exception");
             e.printStackTrace();
         }
     }
@@ -35,6 +38,7 @@ public class RankingSystem implements ResponseHandler {
     @Override
     public void onGetSuccess(JSONObject json) {
         ArrayList<IMilestone> milestones = new ArrayList<IMilestone>();
+        Log.d("RankingTest", "Inside onGetSucces (REMOTE)");
 
         try {
             JSONObject paging = json.getJSONObject("paging");
@@ -48,17 +52,17 @@ public class RankingSystem implements ResponseHandler {
                     milestones.add(milestone);
                 }
             }
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+/*        Log.d("RankingTest", "This is where I want to return the milestones");*/
         milestonesReceiver.onMilestonesRecieved(milestones);
     }
 
     @Override
     public void onGetFail() {
-
+        Log.d("RankingTest", "This is where I fail!");
+        milestonesReceiver.onMilestonesGetFailed();
     }
 }
