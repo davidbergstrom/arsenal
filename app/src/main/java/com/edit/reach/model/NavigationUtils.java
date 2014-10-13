@@ -2,8 +2,10 @@ package com.edit.reach.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +44,7 @@ class NavigationUtils {
 
         }
 
-        url += "&sensor=false&mode=driving&alternatives=true&language=EN";
+        url += "&mode=driving&alternatives=true&language=EN";
 
         URL http = null;
         try {
@@ -56,8 +58,16 @@ class NavigationUtils {
 
     static URL makeURL(String address) {
         String location = address.replaceAll(" ", "+").toLowerCase();
+
+        String encodedLocation = null;
+        try {
+            encodedLocation = URLEncoder.encode(location, "UTF-8"); //Converting the string to UTF-8
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
         String url = "https://maps.googleapis.com/maps/api/geocode/json";
-        url += "?address=" + location;
+        url += "?address=" + encodedLocation;
         url += "&key=AIzaSyCqs-SMMT3_BIzMsPr-wsWqsJTthTgFUb8";
 
         URL http = null;
