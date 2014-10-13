@@ -26,7 +26,6 @@ import java.util.Observable;
  * Last Edit: 2014-10-13
  */
 class VehicleSystem extends Observable implements Runnable {
-
 	/* --- Instance Variables --- */
 	private SCSFloat instantFuelConsumption;
 	private SCSFloat instantFuelEconomy;
