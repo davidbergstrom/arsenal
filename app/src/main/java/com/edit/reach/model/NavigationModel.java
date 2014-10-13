@@ -68,26 +68,41 @@ public class NavigationModel implements Runnable, Observer {
 	/** Sets the route in the map.
 	 * @param newRoute the route to be set.
 	 */
+    private RouteListener r = new RouteListener() {
+        @Override
+        public void onInitialization() {
+            Log.d("NavModel", "Adding pauses.");
+            //map.getRoute().addPause(vehicleSystem.getKilometersUntilRefuel());
+            long routeTime = map.getRoute().getDuration();
+            long nmbrOfPauses = routeTime/VehicleSystem.getLegalUptimeInSeconds();
+
+            for(int i = 1; i < nmbrOfPauses; i++) {
+                Log.d("NavModel", "Adding pause: ");
+                map.getRoute().addPause(i*VehicleSystem.getLegalUptimeInSeconds());
+            }
+        }
+
+        @Override
+        public void onPauseAdded(LatLng pauseLocation) {
+            // TODO what here?
+        }
+    };
 	public void setRoute(final Route newRoute) {
+        newRoute.addListener(r);
+
 		map.setRoute(newRoute);
+        if(newRoute.isInitialized()){
+            Log.d("NavModel", "Adding pauses.");
+            long routeTime = map.getRoute().getDuration();
+            long nmbrOfPauses = routeTime/VehicleSystem.getLegalUptimeInSeconds();
 
-		newRoute.addListener(new RouteListener() {
-			@Override
-			public void onInitialization() {
-				map.getRoute().addPause(vehicleSystem.getKilometersUntilRefuel());
-				long routeTime = map.getRoute().getDuration();
-				long nmbrOfPauses = routeTime/VehicleSystem.getLegalUptimeInSeconds();
+            for(int i = 1; i < nmbrOfPauses; i++) {
+                Log.d("NavModel", "Adding pause...");
+                map.getRoute().addPause(i*VehicleSystem.getLegalUptimeInSeconds());
+            }
+        }
 
-				for(int i = 1; i < nmbrOfPauses; i++) {
-					map.getRoute().addPause(i*VehicleSystem.getLegalUptimeInSeconds());
-				}
-			}
 
-			@Override
-			public void onPauseAdded(LatLng pauseLocation) {
-				// TODO what here?
-			}
-		});
 	}
 
 	/** Do not call this method. It is called automatically when the observable changes.
