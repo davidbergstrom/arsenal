@@ -70,15 +70,17 @@ public class NavigationModel implements Runnable, Observer {
 	 */
 	public void setRoute(final Route newRoute) {
 		map.setRoute(newRoute);
-
-		newRoute.addListener(new RouteListener() {
+        newRoute.addListener(new RouteListener() {
 			@Override
 			public void onInitialization() {
-				map.getRoute().addPause(vehicleSystem.getKilometersUntilRefuel());
+				Log.d("NavModel", "Adding pauses.");
+				//map.getRoute().addPause(vehicleSystem.getKilometersUntilRefuel());
+
 				long routeTime = map.getRoute().getDuration();
 				long nmbrOfPauses = routeTime/VehicleSystem.getLegalUptimeInSeconds();
 
 				for(int i = 1; i < nmbrOfPauses; i++) {
+					Log.d("NavModel", "Adding pause: ");
 					map.getRoute().addPause(i*VehicleSystem.getLegalUptimeInSeconds());
 				}
 			}
