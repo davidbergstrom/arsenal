@@ -116,18 +116,34 @@ public class NavigationModel implements Runnable, Observer {
 					Log.d("UPDATE", "TYPE: LOW_FUEL");
 					Log.d("GET", "Km to refuel: " + vehicleSystem.getKilometersUntilRefuel());
 
+					// TODO
+					message.obj = vehicleSystem.getKilometersUntilRefuel();
+					message.what = SignalType.LOW_FUEL;
+					mainHandler.sendMessage(message);
+
 				} else if ((Integer)data == SignalType.SHORT_TIME) {
 					Log.d("UPDATE", "TYPE: SHORT_TIME");
 					Log.d("GET", "Time until rest: " + vehicleSystem.getTimeUntilForcedRest());
+
+					// TODO
+					message.obj = vehicleSystem.getTimeUntilForcedRest();
+					message.what = SignalType.SHORT_TIME;
+					mainHandler.sendMessage(message);
 
 				} else if ((Integer)data == SignalType.SHORT_TO_SERVICE) {
 					Log.d("UPDATE", "TYPE: SHORT_TO_SERVICE");
 					Log.d("GET", "Km to service: " + vehicleSystem.getKilometersUntilService());
 
+					// TODO
+					message.obj = vehicleSystem.getKilometersUntilService();
+					message.what = SignalType.SHORT_TO_SERVICE;
+					mainHandler.sendMessage(message);
+
 				} else if ((Integer)data == SignalType.VEHICLE_STOPPED_OR_STARTED) {
 					Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
 					Log.d("GET", "Vehicle State: " + vehicleSystem.getVehicleState());
 
+					// TODO
 					message.obj = vehicleSystem.getVehicleState();
 					message.what = SignalType.VEHICLE_STOPPED_OR_STARTED;
 					mainHandler.sendMessage(message);
