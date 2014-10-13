@@ -13,6 +13,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 public class MultiPaneActivity extends FragmentActivity implements MapFragment.OnMapInteractionListener,
 	RouteFragment.OnRouteInteractionListener {
 

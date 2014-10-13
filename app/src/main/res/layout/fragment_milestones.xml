@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="horizontal"
+              android:orientation="vertical"
 
 		>
 
@@ -25,6 +25,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 		        android:textColor="@color/text_fragment_milestones_label"
+		        android:text="Label From"
 		        android:textSize="@dimen/fragment_milestones_label"
 
 				/>
@@ -34,6 +35,7 @@
 				android:id="@+id/tv_text_from"
 				android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
+		        android:text="Text From"
 		        android:textSize="@dimen/fragment_milestones_from_to"
 
 				/>
@@ -53,6 +55,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:textColor="@color/text_fragment_milestones_label"
+				android:text="Label To"
 				android:textSize="@dimen/fragment_milestones_label"
 
 				/>
@@ -62,6 +65,7 @@
 				android:id="@+id/tv_text_to"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:text="Text To"
 				android:textSize="@dimen/fragment_milestones_from_to"
 
 				/>

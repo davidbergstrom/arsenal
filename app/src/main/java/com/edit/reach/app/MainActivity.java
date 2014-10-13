@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import com.edit.reach.stationary.MilestonesActivity;
 import com.edit.reach.stationary.MultiPaneActivity;
 
 
@@ -48,7 +49,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 	@Override
 	public void onClick(View view) {
 		if (view == getStartedButton) {
-			Intent intent = new Intent(this, MultiPaneActivity.class);
+			Intent intent = new Intent(this, MilestonesActivity.class);
 			startActivity(intent);
 		}
 	}

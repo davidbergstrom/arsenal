@@ -34,12 +34,16 @@ public class MilestonesListAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
-		Holder holder = new Holder();
-		View rowView;
+		if (convertView == null) {
+			LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			convertView = layoutInflater.inflate(R.layout.list_milestones_item, null);
+		}
 
-		rowView = inflater.inflate(R.layout.list_milestones_item, null);
-		holder.textView = (TextView) rowView.findViewById(R.id.list_milestones_item);
-		holder.imageView = (ImageView) rowView.findViewById(R.id.list_milestones_image);
+		Holder holder = new Holder();
+
+		convertView = inflater.inflate(R.layout.list_milestones_item, null);
+		holder.textView = (TextView) convertView.findViewById(R.id.list_milestones_item);
+		holder.imageView = (ImageView) convertView.findViewById(R.id.list_milestones_image);
 
 		holder.textView.setText(milestonesNames.get(position));
 
@@ -53,7 +57,7 @@ public class MilestonesListAdapter extends BaseAdapter {
 			holder.imageView.setImageResource(R.drawable.ic_launcher);
 		}
 
-		rowView.setOnClickListener(new View.OnClickListener() {
+		convertView.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -62,7 +66,7 @@ public class MilestonesListAdapter extends BaseAdapter {
 			}
 		});
 
-		return rowView;
+		return convertView;
 
 	}
 

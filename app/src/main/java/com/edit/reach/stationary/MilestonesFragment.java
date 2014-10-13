@@ -35,10 +35,9 @@ public class MilestonesFragment extends Fragment {
 	private ArrayList <String> mMilestonesList;
 	private ArrayList <String> mMilestonesType;
 
-	private TextView mFromTextView;
-	private TextView mToTextView;
-
 	private ListView mMilestonesListView;
+	private	TextView mFromTextView;
+	private	TextView mToTextView;
 
     private OnMilestonesInteractionListener mListener;
 
@@ -74,13 +73,8 @@ public class MilestonesFragment extends Fragment {
 			mTo = getArguments().getString(ARG_TO);
 			mMilestonesList = getArguments().getStringArrayList(ARG_LIST);
 			mMilestonesType = getArguments().getStringArrayList(ARG_TYPE);
-
-			mFromTextView.setText(mFrom);
-			mToTextView.setText(mTo);
-
-			mMilestonesListView.setAdapter(new MilestonesListAdapter(this.getActivity(), mMilestonesList, mMilestonesType));
-
         }
+
     }
 
     @Override
@@ -92,8 +86,23 @@ public class MilestonesFragment extends Fragment {
 		mFromTextView = (TextView) view.findViewById(R.id.tv_text_from);
 		mToTextView = (TextView) view.findViewById(R.id.tv_text_to);
 
-        return view;
+        return inflater.inflate(R.layout.fragment_milestones, container, false);
     }
+
+	public void changeFragmentContent() {
+		Fragment fragment = getFragmentManager().findFragmentById(R.layout.fragment_milestones);
+		((TextView) fragment.getView().findViewById(R.id.tv_text_from)).setText(mFrom);
+		((TextView) fragment.getView().findViewById(R.id.tv_text_to)).setText(mTo);
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+		mMilestonesListView.setAdapter(new MilestonesListAdapter(this.getActivity(), mMilestonesList, mMilestonesType));
+		changeFragmentContent();
+
+	}
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
