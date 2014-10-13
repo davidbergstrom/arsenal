@@ -1,19 +1,25 @@
 package com.edit.reach.model;
 
+import com.edit.reach.app.Remote;
+import com.edit.reach.app.ResponseHandler;
 import com.google.android.gms.maps.model.LatLng;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
 
 /**
  * Created by Joakim Berntsson on 2014-10-01.
  * Static class for navigation utilities.
  */
-class NavigationUtils {
+public class NavigationUtils {
 
     /** Radius for the pauses */
     static final double RADIUS_IN_DEGREES = 1000;
@@ -23,7 +29,7 @@ class NavigationUtils {
 
 	private NavigationUtils(){}
 
-    static URL makeURL(LatLng origin, LatLng destination, List<IMilestone> milestones, boolean routeOptimization) {
+    public static URL makeURL(LatLng origin, LatLng destination, List<IMilestone> milestones, boolean routeOptimization) {
 
         List<LatLng> wayPoints = new ArrayList<LatLng>();
 
@@ -56,7 +62,7 @@ class NavigationUtils {
         return http;
     }
 
-    static URL makeURL(String address) {
+    public static URL makeURL(String address) {
         String location = address.replaceAll(" ", "+").toLowerCase();
 
         String encodedLocation = null;
@@ -79,7 +85,6 @@ class NavigationUtils {
 
         return http;
     }
-
 
     static List<LatLng> decodePoly(String encoded) {
 

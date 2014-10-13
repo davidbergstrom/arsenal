@@ -7,8 +7,11 @@ package com.edit.reach.model;
  * Time: 16:16
  */
 
-/** Enum with 4 different types of signals.
+/** Class with static ints containing ID:s for different types of signals.
  */
-enum SignalType {
-		LOW_FUEL, SHORT_TIME, SHORT_TO_SERVICE, VEHICLE_STOPPED_OR_STARTED
+public class SignalType {
+	public static final int LOW_FUEL = 201;
+	public static final int SHORT_TIME = 202;
+	public static final int SHORT_TO_SERVICE = 203;
+	public static final int VEHICLE_STOPPED_OR_STARTED = 204;
 }

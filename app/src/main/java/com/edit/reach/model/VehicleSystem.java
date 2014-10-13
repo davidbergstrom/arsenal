@@ -13,6 +13,8 @@ import com.swedspot.vil.distraction.DriverDistractionLevel;
 import com.swedspot.vil.distraction.DriverDistractionListener;
 import com.swedspot.vil.policy.AutomotiveCertificate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -24,21 +26,25 @@ import java.util.Observable;
  * Last Edit: 2014-10-13
  */
 class VehicleSystem extends Observable implements Runnable {
-
 	/* --- Instance Variables --- */
-	private SCSFloat instantFuelConsumption;
-	private SCSFloat instantFuelEconomy;
-	private SCSFloat vehicleSpeed;
-
-	private Uint8 card;
 	private SCSLong totalVehicleDistance;
 	private SCSDouble totalFuelUsed;
-	private Uint16 totalWeight;
 
-	private SCSInteger distanceToService = new SCSInteger(-1);
+	private SCSFloat instantFuelConsumption = new SCSFloat(0f);
+	private SCSFloat instantFuelEconomy = new SCSFloat(0f);
 	private SCSFloat fuelLevel = new SCSFloat(-1f);
+
 	private Uint8 isMoving = new Uint8(-1);
 	private Uint8 workingState = new Uint8(-1);
+	private SCSInteger distanceToService = new SCSInteger(-1);
+
+	private List<SCSFloat> instantFuelEconomyList = new ArrayList<SCSFloat>();
+	private List<SCSFloat> instantFuelConsumptionList = new ArrayList<SCSFloat>();
+
+	// Will these be used?
+	private SCSFloat vehicleSpeed;
+	private Uint8 card;
+	private Uint16 totalWeight;
 
 	// Time that vehicle started driving.
 	private long startTime = 0;
@@ -115,6 +121,7 @@ class VehicleSystem extends Observable implements Runnable {
 						// Instantaneous Fuel consumption
 						case AutomotiveSignalId.FMS_FUEL_RATE:
 							instantFuelConsumption = (SCSFloat) automotiveSignal.getData();
+							instantFuelConsumptionList.add(instantFuelConsumption);
 
 							Log.d("Signal: FuelRate", "Fuel rate " + instantFuelConsumption.getFloatValue());
 							break;
@@ -122,6 +129,7 @@ class VehicleSystem extends Observable implements Runnable {
 						// Instantaneous Fuel economy
 						case AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY:
 							instantFuelEconomy = (SCSFloat) automotiveSignal.getData();
+							instantFuelEconomyList.add(instantFuelEconomy);
 
 							Log.d("Signal: FuelEconomy", "Fuel economy " + instantFuelEconomy.getFloatValue());
 							break;
@@ -214,6 +222,18 @@ class VehicleSystem extends Observable implements Runnable {
 		vehicleSignals = new Thread(VehicleSystem.this, "VehicleSignalsThread");
 		vehicleSignals.start();
 
+		// Requests values because of bug in registervalues.
+		automotiveManager.requestValue(
+				AutomotiveSignalId.FMS_FUEL_LEVEL_1,
+				AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE,
+				AutomotiveSignalId.FMS_FUEL_RATE,
+				AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY,
+				AutomotiveSignalId.FMS_SERVICE_DISTANCE,
+				AutomotiveSignalId.FMS_VEHICLE_MOTION,
+				AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED,
+				AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED,
+				AutomotiveSignalId.FMS_HIGH_RESOLUTION_TOTAL_VEHICLE_DISTANCE);
+
 		// Register Listeners
 		automotiveManager.register(
 				AutomotiveSignalId.FMS_FUEL_LEVEL_1,
@@ -240,7 +260,7 @@ class VehicleSystem extends Observable implements Runnable {
 
 	// ****** GET-METHODS ****** //
 
-	/** Method that returns the legal uptime in seconds constant
+	/** Class Method that returns the legal uptime in seconds constant
 	 * @return A long with the max legal uptime in seconds.
 	 */
 	static long getLegalUptimeInSeconds() {
@@ -252,51 +272,24 @@ class VehicleSystem extends Observable implements Runnable {
 	 */
 	synchronized double getKilometersUntilRefuel() {
 		try {
-			if (getVehicleState() == 1) {
+			if (getVehicleState() == MovingState.DRIVE_AND_MOVING) {
 				// TODO, Evaluate for drive and moving state
 				return 0;
-			} else if (getVehicleState() == 2) {
+			} else if (getVehicleState() == MovingState.DRIVE_BUT_NOT_MOVING) {
 				// TODO, Evaluate for drive but not moving state
 				return 0;
 			} else {
-				// TODO, a better calculation could be made
+				// TODO, a better calculation could be made. Tank size not real.
 				double averageFuelConsumptionPerKilometer = totalFuelUsed.getDoubleValue() / (totalVehicleDistance.getLongValue() * Math.pow(10, -3));
 				double currentLitersInTank = (fuelLevel.getFloatValue() * Math.pow(1, -3)) * TEMP_TANK_SIZE_IN_LITERS;
 				return currentLitersInTank / averageFuelConsumptionPerKilometer;
 			}
 		} catch (NullPointerException e) {
 			e.printStackTrace();
-			Log.d("getKilometersUntilRefuel", "totalFuelUsed or totalVehicleDistance not initialized");
-			throw new NullPointerException("Variable not initialized");
+			throw new NullPointerException("Nullpointer in getKilometersUntilRefuel: totalFuelUsed or totalVehicleDistance not initialized");
 		}
 	}
 
-	/** Method that returns the current state of the vehicle.
-	 * @return
-	1 - Vehicle is moving.
-	2 - Engine is on but vehicle is not moving.
-	3 - Engine is off and vehicle is not moving.
-	 */
-	synchronized int getVehicleState() {
-		try {
-			if (isMoving.getIntValue() == 1 && workingState.getIntValue() == 3) {
-				// Is in drive and vehicle is moving.
-				return 1;
-			} else if (isMoving.getIntValue() == 0 && workingState.getIntValue() == 3) {
-				// Is in drive but vehicle not moving.
-				return 2;
-			} else {
-				// Vehicle not in drive
-				return 3;
-			}
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-			Log.d("getVehicleState", "Nullpointer. isMoving or workingState not initialized");
-			throw new NullPointerException("Variable not initialized");
-		}
-	}
-
-	// TODO, do the math
 	/** Method that returns the number of seconds until a stop is required.
 	 * @return
 	270 if currently in a break
@@ -305,9 +298,9 @@ class VehicleSystem extends Observable implements Runnable {
 	 */
 	synchronized double getTimeUntilForcedRest() {
 		try {
-			if (getVehicleState() == 1) {
+			if (getVehicleState() == MovingState.DRIVE_AND_MOVING) {
 				return (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS));
-			} else if (getVehicleState() == 2) {
+			} else if (getVehicleState() == MovingState.DRIVE_BUT_NOT_MOVING) {
 				// TODO What to do when not moving but in drive?
 				return (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS));
 			} else {
@@ -315,8 +308,7 @@ class VehicleSystem extends Observable implements Runnable {
 			}
 		} catch (NullPointerException e) {
 			e.printStackTrace();
-			Log.d("getTimeUntilForcedRest", "Nullpointer. startTime not initialized");
-			throw new NullPointerException("Variable not initialized");
+			throw new NullPointerException("Nullpointer in getTimeUntilForcedRest: startTime not initialized");
 		}
 	}
 
@@ -328,8 +320,28 @@ class VehicleSystem extends Observable implements Runnable {
 			return distanceToService.getIntValue();
 		} catch (NullPointerException e) {
 			e.printStackTrace();
-			Log.d("getKilometersUntilService", "Nullpointer, distanceToService not initialized");
-			throw new NullPointerException("Variable not initialized");
+			throw new NullPointerException("Nullpointer in getKilometersUntilService: distanceToService not initialized");
+		}
+	}
+
+	/** Method that returns the current state of the vehicle.
+	 * @return a constant int value from class MovingState.
+	 */
+	synchronized int getVehicleState() {
+		try {
+			if (isMoving.getIntValue() == 1 && workingState.getIntValue() == 3) {
+				// Is in drive and vehicle is moving.
+				return MovingState.DRIVE_AND_MOVING;
+			} else if (isMoving.getIntValue() == 0 && workingState.getIntValue() == 3) {
+				// Is in drive but vehicle not moving.
+				return MovingState.DRIVE_BUT_NOT_MOVING;
+			} else {
+				// Vehicle not in drive
+				return MovingState.NOT_IN_DRIVE;
+			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+			throw new NullPointerException("Nullpointer in getVehicleState: isMoving or workingState not initialized");
 		}
 	}
 
