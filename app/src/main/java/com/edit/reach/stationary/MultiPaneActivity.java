@@ -40,8 +40,8 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
             if(savedInstanceState != null){
                 return;
             }
-            RouteFragment routeFragment = new RouteFragment();
-            routeFragment.setArguments(getIntent().getExtras());
+
+            RouteFragment routeFragment = RouteFragment.newInstance("Route");
             getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, routeFragment).commit();
         }
 
@@ -83,17 +83,17 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
             if (mMap != null) {
                 mMap.setMyLocationEnabled(true);
                 mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                    @Override
-                    public View getInfoWindow(Marker marker) {
-                        return null;
-                    }
+					@Override
+					public View getInfoWindow(Marker marker) {
+						return null;
+					}
 
-                    @Override
-                    public View getInfoContents(Marker marker) {
+					@Override
+					public View getInfoContents(Marker marker) {
 
-                        return null;
-                    }
-                });
+						return null;
+					}
+				});
             }
         }
     }
@@ -125,16 +125,23 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 	@Override
 	public void onRouteInteraction(Object o) {
         if(o.getClass() == Route.class){
-            Log.d("Kuk", "Made it to on routeInteraction");
-
-            //fragment_container goes from RouteFragment -> MilestonesFragment
-            MilestonesFragment milestonesFragment = new MilestonesFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
-
 
             Route r = (Route)o;
             nvm.setRoute(r);
 
+			// Test data for Milestones List
+			ArrayList <String> milestonesList = new ArrayList<String>();
+			ArrayList <String> milestonesType = new ArrayList<String>();
+			milestonesList.add(0, "McDonald's'");
+			milestonesList.add(1, "Statoil");
+			milestonesList.add(2, "Skeppsviken");
+			milestonesType.add(0, "RESTAURANT");
+			milestonesType.add(1, "GASSTATION");
+			milestonesType.add(2, "RESTAREA");
+
+			//fragment_container goes from RouteFragment -> MilestonesFragment
+			MilestonesFragment milestonesFragment = MilestonesFragment.newInstance("Stockholm", "Lund", milestonesList, milestonesType);
+			getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
 
         }
 	}

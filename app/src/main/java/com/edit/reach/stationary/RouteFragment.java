@@ -45,7 +45,7 @@ public class RouteFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param id Id of the fragment
-     * @return A new instance of fragment EditRouteFragment.
+     * @return A new instance of fragment RouteFragment.
      */
     // TODO: Rename and change types and number of parameters
     public static RouteFragment newInstance(String id) {
@@ -55,6 +55,7 @@ public class RouteFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     public RouteFragment() {
         // Required empty public constructor
     }
@@ -70,9 +71,7 @@ public class RouteFragment extends Fragment {
     private View.OnClickListener addDestinationListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
             editText();
-
         }
     };
 
@@ -111,8 +110,6 @@ public class RouteFragment extends Fragment {
         btGetNearestRoute.setOnClickListener(getNearestRouteListener);
         Button btAddDestination = (Button) view.findViewById(R.id.bt_add_destination);
         btAddDestination.setOnClickListener(addDestinationListener);
-
-
 
 		return view;
     }

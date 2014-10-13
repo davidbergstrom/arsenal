@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.edit.reach.app.R;
-import com.edit.reach.model.IMilestone;
-import com.edit.reach.model.Milestone;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -90,21 +87,21 @@ public class MilestonesFragment extends Fragment {
 		mFromTextView = (TextView) view.findViewById(R.id.tv_text_from);
 		mToTextView = (TextView) view.findViewById(R.id.tv_text_to);
 
-        return inflater.inflate(R.layout.fragment_milestones, container, false);
+        return view;
     }
-
-	public void changeFragmentContent() {
-		Fragment fragment = getFragmentManager().findFragmentById(R.layout.fragment_milestones);
-		((TextView) fragment.getView().findViewById(R.id.tv_text_from)).setText(mFrom);
-		((TextView) fragment.getView().findViewById(R.id.tv_text_to)).setText(mTo);
-	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
 		mMilestonesListView.setAdapter(new MilestonesListAdapter(this.getActivity(), mMilestonesList, mMilestonesType));
-		changeFragmentContent();
+
+		Log.v("TEST", mFrom);
+
+		mFromTextView.setText(mFrom);
+		mToTextView.setText(mTo);
+
+
 
 	}
 

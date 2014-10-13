@@ -27,7 +27,6 @@
 		        android:textColor="@color/text_fragment_milestones_label"
 		        android:text="Label From"
 		        android:textSize="@dimen/fragment_milestones_label"
-                android:text="TextView i fragment_milestones SUC"
 
 				/>
 

@@ -42,32 +42,20 @@ public class MilestonesListAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.list_milestones_item, null);
         }
 
-        Holder holder = new Holder();
+		TextView textView = (TextView) convertView.findViewById(R.id.list_milestones_item);
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.list_milestones_image);
 
-        convertView = inflater.inflate(R.layout.list_milestones_item, null);
-        holder.textView = (TextView) convertView.findViewById(R.id.list_milestones_item);
-        holder.imageView = (ImageView) convertView.findViewById(R.id.list_milestones_image);
-
-        holder.textView.setText(milestonesNames.get(position));
+        textView.setText(milestonesNames.get(position));
 
         if (milestonesTypes.get(position) == "RESTAURANT") {
-            holder.imageView.setImageResource(R.drawable.ic_launcher); // TODO Change icon
+            imageView.setImageResource(R.drawable.ic_launcher); // TODO Change icon
         } else if (milestonesTypes.get(position) == "RESTAREA") {
-            holder.imageView.setImageResource(R.drawable.ic_launcher); // TODO Change icon
+            imageView.setImageResource(R.drawable.ic_launcher); // TODO Change icon
         } else if (milestonesTypes.get(position) == "GASSTATION") {
-            holder.imageView.setImageResource(R.drawable.ic_launcher); // TODO Change icon
+            imageView.setImageResource(R.drawable.ic_launcher); // TODO Change icon
         } else {
-            holder.imageView.setImageResource(R.drawable.ic_launcher);
+            imageView.setImageResource(R.drawable.ic_launcher);
         }
-
-        convertView.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                ;
-            }
-        });
 
         return convertView;
 
@@ -86,12 +74,6 @@ public class MilestonesListAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return 0;
-    }
-
-    public class Holder
-    {
-        TextView textView;
-        ImageView imageView;
     }
 }
 
