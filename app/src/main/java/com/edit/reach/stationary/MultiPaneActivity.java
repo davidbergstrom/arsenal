@@ -1,8 +1,12 @@
 package com.edit.reach.stationary;
 
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.edit.reach.app.R;
@@ -20,12 +24,20 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
     private NavigationModel nvm;
 
+	// A handler for the UI thread. The Handler recieves messages from other thread.
+	private Handler mainHandler = new Handler(Looper.getMainLooper()) {
+		@Override
+		public void handleMessage(Message message) {
+			// TODO how to handle messages sent to UI thread.
+		}
+	};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_pane);
         setUpMapIfNeeded();
-        nvm = new NavigationModel(mMap);
+        nvm = new NavigationModel(mMap, mainHandler);
     }
 
     @Override
@@ -57,7 +69,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
                     .getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
-                setUpMap();
+                mMap.setMyLocationEnabled(true);
             }
         }
     }

@@ -1,10 +1,18 @@
 package com.edit.reach.model;
 
+import com.edit.reach.app.Remote;
+import com.edit.reach.app.ResponseHandler;
 import com.google.android.gms.maps.model.LatLng;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
 
 /**
@@ -14,16 +22,14 @@ import java.util.List;
 public class NavigationUtils {
 
     /** Radius for the pauses */
-    public static final double RADIUS_IN_DEGREES = 0.1;
+    static final double RADIUS_IN_DEGREES = 1000;
 
     /** Radius for the pauses */
-    public static final int RADIUS_IN_KM = (int) getDistance(new LatLng(0,0), new LatLng(0,RADIUS_IN_DEGREES));
+    static final int RADIUS_IN_KM = (int) getDistance(new LatLng(0,0), new LatLng(0,RADIUS_IN_DEGREES));
 
-	private NavigationUtils(){
+	private NavigationUtils(){}
 
-	}
-
-    public static URL makeURL(LatLng source, LatLng dest, List<IMilestone> milestones, boolean routeOptimization) {
+    public static URL makeURL(LatLng origin, LatLng destination, List<IMilestone> milestones, boolean routeOptimization) {
 
         List<LatLng> wayPoints = new ArrayList<LatLng>();
 
@@ -32,10 +38,10 @@ public class NavigationUtils {
         }
 
         String url = "http://maps.googleapis.com/maps/api/directions/json";
-        url += "?origin=" + Double.toString(source.latitude) + "," + Double.toString(source.longitude);// from
-        url += "&destination=" + Double.toString(dest.latitude) + "," + Double.toString(dest.longitude);// to
+        url += "?origin=" + Double.toString(origin.latitude) + "," + Double.toString(origin.longitude);// from
+        url += "&destination=" + Double.toString(destination.latitude) + "," + Double.toString(destination.longitude);// to
 
-        if(wayPoints != null && wayPoints.size() != 0) {
+        if(wayPoints.size() != 0) {
             url += "&waypoints=optimize:" + routeOptimization;
 
             for (LatLng stop : wayPoints) {
@@ -44,7 +50,7 @@ public class NavigationUtils {
 
         }
 
-        url += "&sensor=false&mode=driving&alternatives=true&language=EN";
+        url += "&mode=driving&alternatives=true&language=EN";
 
         URL http = null;
         try {
@@ -58,8 +64,16 @@ public class NavigationUtils {
 
     public static URL makeURL(String address) {
         String location = address.replaceAll(" ", "+").toLowerCase();
+
+        String encodedLocation = null;
+        try {
+            encodedLocation = URLEncoder.encode(location, "UTF-8"); //Converting the string to UTF-8
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
         String url = "https://maps.googleapis.com/maps/api/geocode/json";
-        url += "?address=" + location;
+        url += "?address=" + encodedLocation;
         url += "&key=AIzaSyCqs-SMMT3_BIzMsPr-wsWqsJTthTgFUb8";
 
         URL http = null;
@@ -72,8 +86,7 @@ public class NavigationUtils {
         return http;
     }
 
-
-    public static List<LatLng> decodePoly(String encoded) {
+    static List<LatLng> decodePoly(String encoded) {
 
 		List<LatLng> poly = new ArrayList<LatLng>();
 		int index = 0, len = encoded.length();
@@ -107,12 +120,25 @@ public class NavigationUtils {
 		return poly;
 	}
 
-    public static double getDistance(LatLng firstPosition, LatLng secondPosition){
+    static double getDistance(LatLng firstPosition, LatLng secondPosition){
         int R = 6371; // Earths radius in km
         double a = Math.pow(Math.sin(Math.toRadians(secondPosition.latitude-firstPosition.latitude)/2), 2) +
                 Math.cos(secondPosition.latitude) * Math.cos(firstPosition.latitude) *
                         Math.pow(Math.sin(Math.toRadians(secondPosition.longitude-firstPosition.longitude)/2), 2);
 
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
+
+    static double finalBearing(double lat1, double long1, double lat2, double long2){
+        double degToRad = Math.PI / 180.0;
+        double phi1 = lat1 * degToRad;
+        double phi2 = lat2 * degToRad;
+        double lam1 = long1 * degToRad;
+        double lam2 = long2 * degToRad;
+
+        double bearing = Math.atan2(Math.sin(lam2-lam1)*Math.cos(phi2),
+                Math.cos(phi1)*Math.sin(phi2) - Math.sin(phi1)*Math.cos(phi2)*Math.cos(lam2-lam1)) * 180/Math.PI;
+
+        return (bearing + 180.0) % 360;
     }
 }
