@@ -258,7 +258,7 @@ public class Map {
      * @param location, the LatLng to find a milestone on
      * @return the milestone, null if there is no milestones at that coordinate
      */
-    IMilestone getMilestone(LatLng location){
+    public IMilestone getMilestone(LatLng location){
         for(IMilestone milestone : milestonesOnMap){
             if(milestone.getLocation().equals(location)){
                 return milestone;
