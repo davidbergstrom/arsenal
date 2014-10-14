@@ -78,6 +78,11 @@ public class VehicleSystem extends Observable implements Runnable {
 							// Call methods to determine critical states
 							determineLowFuel(prevFuelLevel.getFloatValue(), fuelLevel.getFloatValue());
 
+							// TODO where to put this?
+							if(startTime != 0) {
+								determineShortTime();
+							}
+
 							Log.d("Signal: FUEL", "Fuellevel: " + fuelLevel.getFloatValue());
 							break;
 
