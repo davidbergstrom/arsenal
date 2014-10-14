@@ -104,6 +104,7 @@ public class RouteFragment extends Fragment {
         etTo = (EditText) view.findViewById(R.id.et_route_to);
         etListOfVia = new ArrayList<EditText>();
 
+
         Button btGetNearestRoute = (Button) view.findViewById(R.id.btSubmitNearestRoute);
         btGetNearestRoute.setOnClickListener(getNearestRouteListener);
 

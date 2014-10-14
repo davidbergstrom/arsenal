@@ -16,6 +16,7 @@ import com.edit.reach.app.R;
 import com.edit.reach.fragments.MapFragment;
 import com.edit.reach.fragments.MilestonesFragment;
 import com.edit.reach.fragments.RouteFragment;
+import com.edit.reach.model.Milestone;
 import com.edit.reach.model.NavigationModel;
 import com.edit.reach.model.Route;
 import com.edit.reach.model.interfaces.IMilestone;
@@ -138,13 +139,13 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
                         Log.d("MultiPaneActivity", "Milestone already in list, removing");
                         // Milestone already added
                         preliminaryMilestones.remove(milestone);
-                        //TODO milestonesFragment.removeMilestoneCard(milestone);
+                        milestonesFragment.removeMilestoneCard(milestone);
                         marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
                     }else{
                         Log.d("MultiPaneActivity", "Added milestone to list");
                         // Add milestone to list
                         preliminaryMilestones.add(milestone);
-                        milestonesFragment.addMilestone(milestone);
+                        milestonesFragment.addMilestoneCard(milestone);
                         marker.setIcon(BitmapDescriptorFactory.defaultMarker());
                     }
                 }else {
@@ -198,6 +199,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 			//fragment_container goes from RouteFragment -> MilestonesFragment
 			milestonesFragment = MilestonesFragment.newInstance("Stockholm", "Lund", milestonesList, milestonesType);
 			getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
+
 
         }
 	}
