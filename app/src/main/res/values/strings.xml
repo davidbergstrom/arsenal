@@ -25,5 +25,6 @@
 	<string name="et_milestones_text_to">Lund</string>
 	<string name="route_list_item">Route list item</string>
 	<string name="card_milestone_text">Milestone Card</string>
+	<string name="button_edit_route">EDIT ROUTE</string>
 
 </resources>
