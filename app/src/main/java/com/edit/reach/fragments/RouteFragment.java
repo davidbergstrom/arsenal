@@ -100,14 +100,12 @@ public class RouteFragment extends Fragment {
                              Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_route, container, false);
 
-        etFrom = (EditText) view.findViewById(R.id.etFrom);
-        etTo = (EditText) view.findViewById(R.id.etTo);
+        etFrom = (EditText) view.findViewById(R.id.et_route_from);
+        etTo = (EditText) view.findViewById(R.id.et_route_to);
         etListOfVia = new ArrayList<EditText>();
 
         Button btGetNearestRoute = (Button) view.findViewById(R.id.btSubmitNearestRoute);
         btGetNearestRoute.setOnClickListener(getNearestRouteListener);
-        Button btAddDestination = (Button) view.findViewById(R.id.bt_add_destination);
-        btAddDestination.setOnClickListener(addDestinationListener);
 
 		return view;
     }

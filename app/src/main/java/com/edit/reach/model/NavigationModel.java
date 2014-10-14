@@ -7,10 +7,13 @@ import android.util.Log;
 import com.edit.reach.constants.SignalType;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.RouteListener;
+import com.edit.reach.model.interfaces.SuggestionListener;
 import com.edit.reach.system.VehicleSystem;
+import com.edit.reach.utils.SuggestionUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -20,9 +23,9 @@ import java.util.Observer;
  * Project: REACH
  * Date: 2014-09-27
  * Time: 19:27
- * Last Edit: 2014-10-13
+ * Last Edit: 2014-10-14
  */
-public class NavigationModel implements Runnable, Observer {
+public class NavigationModel implements Runnable, Observer, SuggestionListener {
 
 	private VehicleSystem vehicleSystem;
 	private Map map;
@@ -30,6 +33,8 @@ public class NavigationModel implements Runnable, Observer {
 	private Handler mainHandler;
 	private Handler pipelineHandler;
 	private Thread pipelineThread;
+
+	private List<String> searchResults;
 
 	/* --- CONSTANTS --- */
 	private static final String PIPELINE_THREAD_NAME = "PipelineThread";
@@ -66,6 +71,21 @@ public class NavigationModel implements Runnable, Observer {
 		} catch (Throwable t) {
 			Log.d("Error in pipelineThread", t + "");
 		}
+	}
+
+	@Override
+	public void onGetSuccess(List<String> results) {
+		searchResults = results;
+	}
+
+	/** This method is used to match search result strings.
+	 * @param searchString the string to match a result with
+	 * @return a list of strings with results.
+	 */
+	public List<String> getMatchedStringResults(final String searchString) {
+		SuggestionUtil suggestionUtil = new SuggestionUtil(this);
+		suggestionUtil.searchForAddresses(searchString);
+		return searchResults;
 	}
 
 	/** Returns a IMilestone matching the lat and longitude.

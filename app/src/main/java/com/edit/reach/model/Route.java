@@ -5,7 +5,7 @@ import android.text.Html;
 import android.util.Log;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.RouteListener;
-import com.edit.reach.system.Remote;
+import com.edit.reach.system.*;
 import com.edit.reach.system.ResponseHandler;
 import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -83,7 +83,7 @@ public class Route {
                 origin = (new LatLng(location.getDouble("lat"), location.getDouble("lng")));
                 Log.d(DEBUG_TAG, "Origin coordinate retrieved.");
 
-                URL url = NavigationUtil.makeURL(destinationAddress);
+                URL url = GoogleMapsEndpoints.makeURL(destinationAddress);
                 Remote.get(url, destinationHandler);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -108,7 +108,7 @@ public class Route {
                 destination = (new LatLng(location.getDouble("lat"), location.getDouble("lng")));
                 Log.d(DEBUG_TAG, "Destination coordinate retrieved.");
 
-                URL url = NavigationUtil.makeURL(origin, destination, new ArrayList<IMilestone>(), true);
+                URL url = GoogleMapsEndpoints.makeURL(origin, destination, new ArrayList<IMilestone>(), true);
                 Remote.get(url, routeHandler);
 
             } catch (JSONException e) {
@@ -142,7 +142,7 @@ public class Route {
         this();
         this.origin = origin;
         this.destination = destination;
-        URL url = NavigationUtil.makeURL(origin, destination, new ArrayList<IMilestone>(), true);
+        URL url = GoogleMapsEndpoints.makeURL(origin, destination, new ArrayList<IMilestone>(), true);
         Remote.get(url, routeHandler);
     }
 
@@ -155,7 +155,7 @@ public class Route {
         this();
         this.originAddress = origin;
         this.destinationAddress = destination;
-        URL url = NavigationUtil.makeURL(origin);
+        URL url = GoogleMapsEndpoints.makeURL(origin);
         Remote.get(url, originHandler);
     }
 
@@ -168,7 +168,7 @@ public class Route {
         this();
         this.origin = origin;
         this.destinationAddress = destination;
-        URL url = NavigationUtil.makeURL(destinationAddress);
+        URL url = GoogleMapsEndpoints.makeURL(destinationAddress);
         Remote.get(url, destinationHandler);
     }
 
@@ -294,7 +294,7 @@ public class Route {
         this.erase();
         this.destination = destination;
         initialized = false;
-        URL url = NavigationUtil.makeURL(this.origin, destination, new ArrayList<IMilestone>(), true);
+        URL url = GoogleMapsEndpoints.makeURL(this.origin, destination, new ArrayList<IMilestone>(), true);
         Remote.get(url, routeHandler);
     }
 
@@ -322,7 +322,7 @@ public class Route {
         milestones.add(milestone);
         // Recalculate the route
         initialized = false;
-        URL url = NavigationUtil.makeURL(origin, destination, milestones, true);
+        URL url = GoogleMapsEndpoints.makeURL(origin, destination, milestones, true);
         Remote.get(url, routeHandler);
     }
 
@@ -334,7 +334,7 @@ public class Route {
         this.milestones.addAll(milestones);
         // Recalculate the route
         initialized = false;
-        URL url = NavigationUtil.makeURL(origin, destination, milestones, true);
+        URL url = GoogleMapsEndpoints.makeURL(origin, destination, milestones, true);
         Remote.get(url, routeHandler);
     }
 
@@ -346,7 +346,7 @@ public class Route {
         milestones.remove(milestone);
         // Recalculate the route
         initialized = false;
-        URL url = NavigationUtil.makeURL(origin, destination, milestones, true);
+        URL url = GoogleMapsEndpoints.makeURL(origin, destination, milestones, true);
         Remote.get(url, routeHandler);
     }
 
@@ -357,7 +357,7 @@ public class Route {
         milestones.clear();
         // Recalculate the route
         initialized = false;
-        URL url = NavigationUtil.makeURL(origin, destination, milestones, true);
+        URL url = GoogleMapsEndpoints.makeURL(origin, destination, milestones, true);
         Remote.get(url, routeHandler);
     }
 

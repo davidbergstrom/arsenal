@@ -6,6 +6,7 @@ import android.util.Log;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.MilestonesReceiver;
 import com.edit.reach.model.interfaces.RouteListener;
+import com.edit.reach.system.GoogleMapsEndpoints;
 import com.edit.reach.system.Remote;
 import com.edit.reach.system.ResponseHandler;
 import com.edit.reach.utils.NavigationUtil;
@@ -275,7 +276,7 @@ public class Map {
      * @param handler, the handler to handle the results
      */
     void requestAddressSuggestion(String partOfAddress, ResponseHandler handler){
-        URL url = NavigationUtil.makeURL(partOfAddress);
+        URL url = GoogleMapsEndpoints.makeURL(partOfAddress);
         Remote.get(url, handler);
     }
 
