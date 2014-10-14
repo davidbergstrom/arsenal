@@ -17,7 +17,9 @@ import java.util.ArrayList;
 
 public class Ranking implements ResponseHandler {
 
-    MilestonesReceiver milestonesReceiver;
+    private MilestonesReceiver milestonesReceiver;
+
+    private boolean isFinished;
 
     public Ranking(MilestonesReceiver milestonesReceiver) {
         this.milestonesReceiver = milestonesReceiver;
@@ -30,6 +32,7 @@ public class Ranking implements ResponseHandler {
         try {
             URL url = WorldTruckerEndpoints.getMilestonesURL(bbox);
             Log.d("RankingTest", "getMileStones");
+            Log.d("RankingTest", url.toString());
             Remote.get(url, this);
         } catch (MalformedURLException e) {
             Log.d("RankingTest", "Exception");
@@ -40,11 +43,11 @@ public class Ranking implements ResponseHandler {
     @Override
     public void onGetSuccess(JSONObject json) {
         ArrayList<IMilestone> milestones = new ArrayList<IMilestone>();
-        Log.d("RankingTest", "Inside onGetSucces (REMOTE)");
 
         try {
             JSONObject paging = json.getJSONObject("paging");
             int milestonesCount = paging.getInt("objectcount");
+
 
             if (milestonesCount > 0) {
                 JSONArray features = json.getJSONArray("features");
@@ -55,16 +58,19 @@ public class Ranking implements ResponseHandler {
                 }
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.d("RankingTest", e.getMessage());
         }
 
-/*        Log.d("RankingTest", "This is where I want to return the milestones");*/
         milestonesReceiver.onMilestonesRecieved(milestones);
+        isFinished = true;
+    }
+
+    public boolean isFinished() {
+        return isFinished;
     }
 
     @Override
     public void onGetFail() {
-        Log.d("RankingTest", "This is where I fail!");
         milestonesReceiver.onMilestonesGetFailed();
     }
 }
