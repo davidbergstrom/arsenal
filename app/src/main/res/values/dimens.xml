@@ -9,10 +9,10 @@
 	<dimen name="fragment_left_left_padding">10dp</dimen>
 	<dimen name="fragment_left_right_padding">10dp</dimen>
 
-	<!-- Text size MilestonesFragment -->
-	<dimen name="fragment_milestones_label">22dp</dimen>
-	<dimen name="fragment_milestones_from_to">22dp</dimen>
-	<dimen name="fragment_milestones_list_item">28dp</dimen>
+	<!-- MilestonesFragment -->
+	<dimen name="fragment_milestones_cards_holder_margin_top">20dp</dimen>
+	<dimen name="fragment_milestones_cards_holder_margin_bottom">20dp</dimen>
+	<dimen name="fragment_milestones_from_to">22sp</dimen>
 
 	<!-- Route Fragment -->
 	<dimen name="use_current_location_top">5dp</dimen>
@@ -20,10 +20,13 @@
 	<dimen name="use_current_location_left">10dp</dimen>
 	<dimen name="use_current_location_right">10dp</dimen>
 
+	<dimen name="route_list_item_margin_top">10dp</dimen>
+	<dimen name="route_list_item_margin_bottom">10dp</dimen>
+	<dimen name="route_list_item_margin_left">5dp</dimen>
+	<dimen name="route_list_item_margin_right">5dp</dimen>
+
 	<dimen name="image_my_location_margin_right">20dp</dimen>
-
 	<dimen name="text_my_location_margin_right">10dp</dimen>
-
 	<dimen name="button_get_route_top_margin">30dp</dimen>
 
 </resources>

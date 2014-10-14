@@ -14,9 +14,8 @@
     <color name="text_fragment_driving_route">#E5E5E5</color>
 
 	<!-- MilestonesFragment -->
-	<color name="text_fragment_milestones_label">#E5E5E5</color>
 	<color name="text_fragment_milestones_from_to">#E5E5E5</color>
-	<color name="text_fragment_milestones_list">#FFFFFF</color>
+	<color name="route_list_item">#E5E5E5</color>
 
 
 </resources>

@@ -20,4 +20,9 @@
     <string name="info_window_icon">milestone_category</string>
     <string name="info_window_clicktoadd">Click to add</string>
 
+	<!-- Milestones Fragment -->
+	<string name="et_milestones_text_from">Stockholm</string>
+	<string name="et_milestones_text_to">Lund</string>
+	<string name="route_list_item">Route list item</string>
+
 </resources>
