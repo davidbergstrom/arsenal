@@ -32,6 +32,8 @@ public class RouteFragment extends Fragment {
     private static final String ARG_ID = "Route";
     private String mId;
     private Route route;
+    private String strFrom;
+    private String strTo;
 
     private AutoCompleteTextView actFrom;
     private AutoCompleteTextView actTo;
@@ -80,24 +82,20 @@ public class RouteFragment extends Fragment {
     private View.OnClickListener getNearestRouteListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String strFrom = actFrom.getText().toString();
-            String strTo = actTo.getText().toString();
+            strFrom = actFrom.getText().toString();
+            strTo = actTo.getText().toString();
             route = new Route(strFrom, strTo);
             onSetRoute(route);
-
-
-           /* List<String> strListOfVia = new ArrayList<String>();
-            for(EditText et: etListOfVia){
-                strListOfVia.add(et.getText().toString());
-            }
-
-            */
-
-
-            //Send : strFrom, strTo, strListOfVia to map-Activity
-
         }
     };
+
+    public String getStrFrom(){
+        return strFrom;
+    }
+
+    public String getStrTo(){
+        return strTo;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -113,7 +111,7 @@ public class RouteFragment extends Fragment {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
 
-                Log.d("Anus", "korv");
+
                 return false;
             }
         });
@@ -141,8 +139,6 @@ public class RouteFragment extends Fragment {
     public void onSetRoute(Route route) {
         if (mListener != null) {
             mListener.onRouteInteraction(route);
-
-
         }
     }
 
@@ -153,7 +149,6 @@ public class RouteFragment extends Fragment {
         editText.setWidth(180);
         etListOfVia.add(editText);
         return editText;
-
     }
 
     //Kan behövas för att dynamiskt lägga till fler textfält för del-destinationer
@@ -161,9 +156,12 @@ public class RouteFragment extends Fragment {
         LinearLayout ll = new LinearLayout(getActivity());
         ll.setId(_intID);
 
-
         return ll;
     }
+
+	public void sendAutoCompleteList(ArrayList<String> resultList) {
+
+	}
 
     @Override
     public void onAttach(Activity activity) {

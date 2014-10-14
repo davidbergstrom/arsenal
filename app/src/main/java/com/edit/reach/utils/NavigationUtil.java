@@ -17,7 +17,7 @@ import java.util.List;
 public class NavigationUtil {
 
     /** Radius for the pauses */
-    public static final double RADIUS_IN_DEGREES = 1000;
+    public static final double RADIUS_IN_DEGREES = 0.1;
 
     /** Radius for the pauses */
     public static final int RADIUS_IN_KM = (int) getDistance(new LatLng(0,0), new LatLng(0,RADIUS_IN_DEGREES));

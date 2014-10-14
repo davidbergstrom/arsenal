@@ -76,7 +76,7 @@ public class Map {
                 //map.addCircle(new CircleOptions().center(pauseLocation).fillColor(Color.RED).radius(1000));
                 currentRoute.drawPauses(map);
                 Log.d("Map", "Getting milestones");
-                Ranking.getMilestones(milestonesReceiver, pauseLocation, 100);
+                Ranking.getMilestones(milestonesReceiver, pauseLocation, NavigationUtil.RADIUS_IN_DEGREES*2);
             }
 
         }
@@ -200,7 +200,7 @@ public class Map {
 
             List<LatLng> pauses = currentRoute.getPauses();
             for (LatLng i : pauses) {
-                Ranking.getMilestones(milestonesReceiver, i, NavigationUtil.RADIUS_IN_DEGREES);
+                Ranking.getMilestones(milestonesReceiver, i, NavigationUtil.RADIUS_IN_DEGREES*2);
             }
 
             map.getUiSettings().setAllGesturesEnabled(true);
