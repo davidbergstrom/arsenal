@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * Created by Nordmark on 2014-10-13.
+ * A class that gives location suggestions for a given search String.
  */
 public class SuggestionUtil implements ResponseHandler {
 
@@ -25,6 +26,7 @@ public class SuggestionUtil implements ResponseHandler {
         this.suggestionListener = suggestionListener;
     }
 
+    /** Handler for receiving the search result as a JSON Object */
     @Override
     public void onGetSuccess(JSONObject json) {
         try {
@@ -36,12 +38,13 @@ public class SuggestionUtil implements ResponseHandler {
                 JSONArray addressComponent = ((JSONObject)resultsArray.get(i)).getJSONArray("address_components");
 
                 for (int j = 0; j < addressComponent.length(); j++) {
-                    String potentialMatch = ((JSONObject)addressComponent.get(j)).getString("short_name");
+
+                    String potentialMatch = ((JSONObject)addressComponent.get(j)).getString("short_name").toLowerCase();
 
                     if (potentialMatch.contains(searchString)) {
 
                         resultList.add(potentialMatch);
-                        Log.d("Test", "" + "" + resultList.size());
+                        Log.d("TestClass", "" + "" + resultList.size());
 
                         break;
                     }
@@ -60,9 +63,13 @@ public class SuggestionUtil implements ResponseHandler {
 
     }
 
+    /**
+     * Search in the Google Geocode API for the given String
+     * @param str, search String
+     */
     public void searchForAddresses(String str) {
-        searchString = str;
-        URL url = GoogleMapsEndpoints.makeURL(str);
+        searchString = str.toLowerCase();
+        URL url = GoogleMapsEndpoints.makeURL(searchString);
         Remote.get(url, this);
     }
 }
