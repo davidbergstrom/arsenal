@@ -76,7 +76,7 @@ public class Map {
                 //map.addCircle(new CircleOptions().center(pauseLocation).fillColor(Color.RED).radius(1000));
                 currentRoute.drawPauses(map);
                 Log.d("Map", "Getting milestones");
-                Ranking.getMilestones(milestonesReceiver, pauseLocation, 100);
+                Ranking.getMilestones(milestonesReceiver, pauseLocation, 10);
             }
 
         }

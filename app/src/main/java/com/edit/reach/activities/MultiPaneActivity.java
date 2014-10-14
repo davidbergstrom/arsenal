@@ -27,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -188,6 +189,10 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
 	@Override
 	public void onRouteInteraction(Object o) {
+        if(o.getClass() == RouteFragment.class){
+
+        }
+
         if(o.getClass() == Route.class){
 
             Route r = (Route)o;

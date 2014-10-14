@@ -113,7 +113,7 @@ public class RouteFragment extends Fragment {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
 
-                Log.d("Anus", "korv");
+
                 return false;
             }
         });
