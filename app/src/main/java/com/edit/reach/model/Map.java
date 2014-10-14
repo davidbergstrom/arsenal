@@ -163,7 +163,7 @@ public class Map {
     /**
      * Start the current route.
      */
-	void startNavigation(){
+	public void startNavigation(){
         setState(State.NAVIGATION);
 	}
 
