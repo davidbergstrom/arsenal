@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 import junit.framework.TestCase;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.XML;
 
 import java.net.URL;
 import java.util.ArrayList;
