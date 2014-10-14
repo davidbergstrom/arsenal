@@ -1,7 +1,6 @@
 package com.edit.reach.system;
 
 import android.os.AsyncTask;
-import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,8 +19,6 @@ public class Remote {
     }
 
     private static class GetDataTask extends AsyncTask<URL, Void, String> {
-
-        private static final String DEBUG_TAG = "Remote";
         private ResponseHandler responseHandler;
 
         public GetDataTask(ResponseHandler responseHandler) {
@@ -39,8 +36,8 @@ public class Remote {
 
         @Override
         protected void onPostExecute(String result) {
+
             if (result != null) {
-                Log.d(DEBUG_TAG, result);
                 try {
                     JSONObject json = new JSONObject(result);
                     responseHandler.onGetSuccess(json);
