@@ -56,13 +56,13 @@ public class Ranking {
 
                     milestonesReceiver.onMilestonesRecieved(milestones);
 
-                    status = GetStatus.FINISHED;
+                    status = GetStatus.SUCCEEDED;
                 }
 
                 @Override
                 public void onGetFail() {
                     milestonesReceiver.onMilestonesGetFailed();
-                    status = GetStatus.FINISHED;
+                    status = GetStatus.FAILED;
                 }
             });
         } catch (MalformedURLException e) {
@@ -72,6 +72,10 @@ public class Ranking {
 
     public static GetStatus getStatus() {
         return status;
+    }
+
+    public static void reset() {
+        status = GetStatus.PENDING;
     }
 
 }
