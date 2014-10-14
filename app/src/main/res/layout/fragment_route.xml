@@ -57,8 +57,6 @@
 
 	    </RelativeLayout>
 
-
-
         <EditText
                 android:id="@+id/et_route_to"
                 android:inputType="textAutoComplete"
