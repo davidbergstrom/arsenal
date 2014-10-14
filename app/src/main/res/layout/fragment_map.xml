@@ -14,4 +14,5 @@
             android:gravity="center"
             android:textColor="@color/text_fragment_map"/>
 
+
 </RelativeLayout>
