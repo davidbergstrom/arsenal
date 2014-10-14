@@ -16,5 +16,7 @@
     <string name="title_activity_multi_pane">MultiPaneActivity</string>
 	<string name="title_activity_milestones">MilestonesActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="info_window_icon">milestone_category</string>
+    <string name="info_window_clicktoadd">Click to add</string>
 
 </resources>

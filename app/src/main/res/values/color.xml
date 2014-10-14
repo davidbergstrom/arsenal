@@ -5,6 +5,9 @@
     <color name="background_map">#C7C7C7</color>
     <color name="background_fragment_left">#212121</color>
     <color name="h1">#575757</color>
+    <color name="white">#F9F9F9</color>
+    <color name="volvo_blue">#213568</color>
+    <color name="background_info_window">#515151</color>
 
     <color name="text_fragment_route">#E5E5E5</color>
     <color name="text_fragment_map">#777777</color>
