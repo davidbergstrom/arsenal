@@ -13,8 +13,10 @@ import com.edit.reach.app.R;
 import com.edit.reach.fragments.MapFragment;
 import com.edit.reach.fragments.MilestonesFragment;
 import com.edit.reach.fragments.RouteFragment;
+import com.edit.reach.model.Milestone;
 import com.edit.reach.model.NavigationModel;
 import com.edit.reach.model.Route;
+import com.edit.reach.model.interfaces.IMilestone;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Marker;
@@ -142,8 +144,11 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
 			//fragment_container goes from RouteFragment -> MilestonesFragment
 			MilestonesFragment milestonesFragment = MilestonesFragment.newInstance("Stockholm", "Lund", milestonesList, milestonesType);
-			getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
-
+            milestonesFragment.addMilestoneCard("Goteborgs cafe", IMilestone.Category.RESTAREA);
+            milestonesFragment.addMilestoneCard("Lunds cafe", IMilestone.Category.GASSTATION);
+            milestonesFragment.addMilestoneCard("VBG cafe", IMilestone.Category.RESTAURANT);
+            milestonesFragment.addMilestoneCard("Uddevallas cafe", IMilestone.Category.RESTAREA);
+            getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
         }
 	}
 

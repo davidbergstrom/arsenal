@@ -13,10 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.edit.reach.app.R;
+import com.edit.reach.model.Milestone;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.views.widgets.MilestonesCard;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +40,8 @@ public class MilestonesFragment extends Fragment {
 	private String mTo;
 	private ArrayList <String> mMilestonesList;
     private ArrayList <String> mMilestonesType;
+
+    private static int n = 0;
 
 	private ListView mMilestonesListView;
 	private	TextView mFromTextView;
@@ -72,33 +76,23 @@ public class MilestonesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mFrom = getArguments().getString(ARG_FROM);
 			mTo = getArguments().getString(ARG_TO);
             mMilestonesList = getArguments().getStringArrayList(ARG_LIST);
 			mMilestonesType = getArguments().getStringArrayList(ARG_TYPE);
-        }
 
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
 		View view = inflater.inflate(R.layout.fragment_milestones, container, false);
 		//mMilestonesListView = (ListView) view.findViewById(R.id.lv_milestones);
 		mFromTextView = (TextView) view.findViewById(R.id.tv_text_from);
 		mToTextView = (TextView) view.findViewById(R.id.tv_text_to);
         cardList = (LinearLayout) view.findViewById(R.id.cardList);
-        MilestonesCard mc = new MilestonesCard(getActivity().getApplicationContext(), null);
-        mc.setMilestoneName("Simon äter bajs");
-        cardList.addView(mc, 0);
-        MilestonesCard apa = new MilestonesCard(getActivity().getApplicationContext(), null);
-        apa.setMilestoneName("Till frukost");
-        cardList.addView(apa, 1);
-
-
         return view;
     }
 
@@ -114,38 +108,43 @@ public class MilestonesFragment extends Fragment {
 		mToTextView.setText(mTo);
 	}
 
-	public void addMilestone(IMilestone milestone) {
-        MilestonesCard mc = new MilestonesCard(getActivity().getApplicationContext(), null);
-        mc.setMilestoneName(milestone.getName());
-        cardList.addView(mc);
-	}
-    /*
-    public void iterateAllMilestones(){
-        for(IMilestone milestone: mMilestone){
-            addMilestone(milestone);
-        }
-    }
 
-        */
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onMilestonesInteraction(uri);
         }
     }
-    /*
-    private void addToList(){
-        HashMap<String, String> map1 = new HashMap<String, String>();
-        for(IMilestone milestone: mMilestones){
-            String name = milestone.getName();
-            String type = milestone.getCategory().toString();
-            map1.put(name, type);
+
+    public void addMilestoneCard(String name, IMilestone.Category c){
+        MilestonesCard mc = new MilestonesCard(getActivity().getApplicationContext(), name, c);
+        cardList.addView(mc, n);
+        n++;
+    }
+
+    public void removeMilestoneCard(IMilestone milestone){
+        List<MilestonesCard> mcList = new ArrayList<MilestonesCard>();
+        for(int i =0; i < cardList.getChildCount(); i++){
+            View tmp = cardList.getChildAt(i);
+            if(tmp instanceof MilestonesCard){
+                MilestonesCard card = (MilestonesCard)cardList.getChildAt(i);
+                if(card.getMilestone().equals(milestone)){
+                    cardList.removeViewAt(i);
+                    break;
+                }
+            }
         }
 
-            mlAdapter.addMilestone(map1);
-
     }
-    */
+
+    public void addMilestoneCard(IMilestone milestone){
+        MilestonesCard mc = new MilestonesCard(getActivity().getApplicationContext(), milestone);
+        cardList.addView(mc, n);
+        n++;
+    }
+
+
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

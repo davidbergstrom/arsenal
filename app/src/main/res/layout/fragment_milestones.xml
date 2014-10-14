@@ -52,7 +52,11 @@
 				android:id="@+id/list_of_milestones"
 				android:layout_width="match_parent"
 				android:layout_height="fill_parent">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/cardList">
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/cardList">
 
 
 
