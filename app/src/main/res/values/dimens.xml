@@ -18,6 +18,8 @@
 	<dimen name="card_milestone_text_margin_left">20dp</dimen>
 	<dimen name="card_milestone_text">22sp</dimen>
 
+	<dimen name="button_edit_route_margin_top">50dp</dimen>
+
 	<!-- Route Fragment -->
 	<dimen name="use_current_location_top">5dp</dimen>
 	<dimen name="use_current_location_bottom">30dp</dimen>
