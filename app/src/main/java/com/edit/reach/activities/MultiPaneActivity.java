@@ -6,20 +6,28 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
+import android.text.InputFilter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import com.edit.reach.app.R;
 import com.edit.reach.fragments.MapFragment;
 import com.edit.reach.fragments.MilestonesFragment;
 import com.edit.reach.fragments.RouteFragment;
 import com.edit.reach.model.NavigationModel;
 import com.edit.reach.model.Route;
+import com.edit.reach.model.interfaces.IMilestone;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MultiPaneActivity extends FragmentActivity implements MapFragment.OnMapInteractionListener,
 	RouteFragment.OnRouteInteractionListener, MilestonesFragment.OnMilestonesInteractionListener {
@@ -28,7 +36,11 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
     private NavigationModel nvm;
 
-	// A handler for the UI thread. The Handler recieves messages from other thread.
+    private List<IMilestone> preliminaryMilestones;
+
+    private MilestonesFragment milestonesFragment;
+
+    // A handler for the UI thread. The Handler recieves messages from other thread.
 	private Handler mainHandler = new Handler(Looper.getMainLooper()) {
 		@Override
 		public void handleMessage(Message message) {
@@ -52,6 +64,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         }
 
         setUpMapIfNeeded();
+        preliminaryMilestones = new ArrayList<IMilestone>();
         nvm = new NavigationModel(mMap, mainHandler);
     }
 
@@ -84,21 +97,63 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
                     .getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
-                mMap.setMyLocationEnabled(true);
-                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-					@Override
-					public View getInfoWindow(Marker marker) {
-						return null;
-					}
-
-					@Override
-					public View getInfoContents(Marker marker) {
-
-						return null;
-					}
-				});
+                setupMap();
+            }else{
+                // TODO: Alert user that application wont work properly
             }
         }
+    }
+
+
+
+    private void setupMap(){
+        // Enable GoogleMap to track the user's location
+        mMap.setMyLocationEnabled(true);
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                View myContentsView = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+
+                TextView tvTitle = ((TextView)myContentsView.findViewById(R.id.title));
+                tvTitle.setText(marker.getTitle());
+                TextView tvSnippet = ((TextView)myContentsView.findViewById(R.id.snippet));
+                tvSnippet.setText(marker.getSnippet());
+
+                return myContentsView;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+
+                return null;
+            }
+        });
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                IMilestone milestone = nvm.getMatchedMilestone(marker.getPosition());
+                if(milestone != null){
+                    if(preliminaryMilestones.contains(milestone)){
+                        Log.d("MultiPaneActivity", "Milestone already in list, removing");
+                        // Milestone already added
+                        preliminaryMilestones.remove(milestone);
+                        //TODO milestonesFragment.removeMilestoneCard(milestone);
+                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                    }else{
+                        Log.d("MultiPaneActivity", "Added milestone to list");
+                        // Add milestone to list
+                        preliminaryMilestones.add(milestone);
+                        milestonesFragment.addMilestone(milestone);
+                        marker.setIcon(BitmapDescriptorFactory.defaultMarker());
+                    }
+                }else {
+                    Log.d("MultiPaneActivity", "Invalid milestone, removing");
+                    // Marker unavailable, remove it
+                    marker.remove();
+                }
+            }
+        });
     }
 
 	@Override
@@ -141,7 +196,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
 
 			//fragment_container goes from RouteFragment -> MilestonesFragment
-			MilestonesFragment milestonesFragment = MilestonesFragment.newInstance("Stockholm", "Lund", milestonesList, milestonesType);
+			milestonesFragment = MilestonesFragment.newInstance("Stockholm", "Lund", milestonesList, milestonesType);
 			getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
 
         }
