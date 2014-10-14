@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="@color/background_info_window"
+              android:paddingTop="8dp"
+              android:paddingBottom="8dp"
+              android:paddingLeft="14dp"
+              android:paddingRight="14dp">
+    <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:paddingBottom="5dp"
+            android:text="Rubrik"/>
+    <TextView
+            android:id="@+id/snippet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:maxLength="50"
+            android:maxWidth="130dp"
+            android:text="Beskrivning om den här grymma restaurangen!"/>
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="@color/volvo_blue"
+            android:paddingTop="10dp"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:text="@string/info_window_clicktoadd"
+            />
+
+</LinearLayout>
