@@ -73,6 +73,13 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 		}
 	}
 
+	/** Returns a map object.
+	 * @return a Map
+	 */
+	public Map getMap() {
+		return map;
+	}
+
 	@Override
 	public void onGetSuccess(List<String> results) {
 		searchResults = results;
@@ -86,14 +93,6 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 		SuggestionUtil suggestionUtil = new SuggestionUtil(this);
 		suggestionUtil.searchForAddresses(searchString);
 		return searchResults;
-	}
-
-	/** Returns a IMilestone matching the lat and longitude.
-	 * @param latLng a LatLng with the latitude and longitude.
-	 * @return a IMilestone, null if no milestone is not found.
-	 */
-	public IMilestone getMatchedMilestone(final LatLng latLng) {
-		return map.getMilestone(latLng);
 	}
 
 	// This method must run on UI thread because of google map objects in Map class.
