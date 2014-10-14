@@ -45,21 +45,12 @@
 				android:id="@+id/list_of_milestones"
 				android:layout_width="match_parent"
 				android:layout_height="fill_parent">
-<<<<<<< HEAD
-=======
-            <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/cardList">
-
-
->>>>>>> 6af0ff71ceb3c331af4b4f90800ac3bb66562a1b
 
             <LinearLayout
 		            android:id="@+id/cardList"
 		            android:layout_width="match_parent"
-		            android:layout_height="match_parent" >
+		            android:layout_height="match_parent"
+		            android:orientation="vertical">
             </LinearLayout>
 
 		</ScrollView>
@@ -84,9 +75,5 @@
 				android:textSize="@dimen/fragment_milestones_from_to"
 
 				/>
-
-
-	</LinearLayout>
-
 
 </LinearLayout>
