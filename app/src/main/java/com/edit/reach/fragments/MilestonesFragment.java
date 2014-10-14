@@ -58,16 +58,13 @@ public class MilestonesFragment extends Fragment {
      *
      * @param from Start point of Route.
 	 * @param to End point of Route.
-	 * @param milestonesList ArrayList of IMilestones.
      * @return A new instance of fragment MilestonesFragment.
      */
-    public static MilestonesFragment newInstance(String from, String to, ArrayList<String> milestonesList, ArrayList<String> milestonesType) {
+    public static MilestonesFragment newInstance(String from, String to) {
         MilestonesFragment fragment = new MilestonesFragment();
         Bundle args = new Bundle();
         args.putString(ARG_FROM, from);
 		args.putString(ARG_TO, to);
-		args.putStringArrayList(ARG_LIST, milestonesList);
-		args.putStringArrayList(ARG_TYPE, milestonesType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -91,7 +88,7 @@ public class MilestonesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_milestones, container, false);
-		mMilestonesListView = () view.findViewById(R.id.lv_milestones);
+		//mMilestonesListView = () view.findViewById(R.id.lv_milestones);
 		mFromTextView = (TextView) view.findViewById(R.id.tv_text_from);
 		mToTextView = (TextView) view.findViewById(R.id.tv_text_to);
         cardList = (LinearLayout) view.findViewById(R.id.cardList);
@@ -137,11 +134,9 @@ public class MilestonesFragment extends Fragment {
 
     public void addMilestoneCard(IMilestone milestone){
         MilestonesCard mc = new MilestonesCard(getActivity().getApplicationContext(), milestone);
-        cardList.addView(mc, n);
-        n++;
+        cardList.addView(mc);
+
     }
-
-
 
 
     @Override

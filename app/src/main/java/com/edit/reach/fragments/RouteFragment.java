@@ -32,6 +32,8 @@ public class RouteFragment extends Fragment {
     private static final String ARG_ID = "Route";
     private String mId;
     private Route route;
+    private String strFrom;
+    private String strTo;
 
     private AutoCompleteTextView actFrom;
     private AutoCompleteTextView actTo;
@@ -80,8 +82,8 @@ public class RouteFragment extends Fragment {
     private View.OnClickListener getNearestRouteListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String strFrom = actFrom.getText().toString();
-            String strTo = actTo.getText().toString();
+            strFrom = actFrom.getText().toString();
+            strTo = actTo.getText().toString();
             route = new Route(strFrom, strTo);
             onSetRoute(route);
 
@@ -98,6 +100,14 @@ public class RouteFragment extends Fragment {
 
         }
     };
+
+    public String getStrFrom(){
+        return strFrom;
+    }
+
+    public String getStrTo(){
+        return strTo;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

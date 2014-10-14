@@ -198,14 +198,9 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
             Route r = (Route)o;
             nvm.setRoute(r);
 
-			// Test data for Milestones List
-			ArrayList <String> milestonesList = new ArrayList<String>();
-			ArrayList <String> milestonesType = new ArrayList<String>();
-
-
-
 			//fragment_container goes from RouteFragment -> MilestonesFragment
-			milestonesFragment = MilestonesFragment.newInstance("Stockholm", "Lund", milestonesList, milestonesType);
+
+			milestonesFragment = MilestonesFragment.newInstance("Stockholm", "Lund");
 			getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
 
 
