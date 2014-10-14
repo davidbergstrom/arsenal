@@ -139,7 +139,7 @@ public class Map {
      * Set the current route to the provided route, this will also initiate an overview of the route.
      * @param newRoute, the new route
      */
-    public void setRoute(Route newRoute){
+    void setRoute(Route newRoute){
         Log.d(logClass, "Erasing old route and adding a new.");
         if(currentRoute != null){
             currentRoute.erase();
