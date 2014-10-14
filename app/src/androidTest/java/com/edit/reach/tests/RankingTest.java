@@ -41,6 +41,7 @@ public class RankingTest extends TestCase {
         while(Ranking.getStatus() == GetStatus.RUNNING) {
             // Waiting for Remote to finsih
         }
+
         Log.d("RankingTest", "testLargeRadius status is FINISHED");
 
         if (Ranking.getStatus() == GetStatus.SUCCEEDED) {
@@ -82,7 +83,6 @@ public class RankingTest extends TestCase {
 
             int results = milestonesLists.get(2).size();
 
-            assertEquals(0, results);
             if (results > 0) {
                 assertSame(Milestone.class, milestonesLists.get(1).get(0).getClass());
             } else {
