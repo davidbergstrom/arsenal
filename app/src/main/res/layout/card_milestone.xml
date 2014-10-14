@@ -22,7 +22,7 @@
 			android:layout_height="wrap_content"
 			android:layout_toStartOf="@+id/card_milestone_remove_icon"
 			android:layout_centerVertical="true"
-			android:src="@drawable/ic_launcher"
+			android:src="@drawable/milestone_restarea"
 			android:layout_marginRight="@dimen/card_milestone_icon_margin_right"/>
 
 	<ImageButton
