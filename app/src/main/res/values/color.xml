@@ -7,16 +7,17 @@
     <color name="h1">#575757</color>
     <color name="white">#F9F9F9</color>
     <color name="volvo_blue">#213568</color>
-    <color name="background_info_window">#515151</color>
+    <color name="background_info_window">#212121</color>
+	<color name="click_to_add">#6994AF</color>
 
     <color name="text_fragment_route">#E5E5E5</color>
     <color name="text_fragment_map">#777777</color>
     <color name="text_fragment_driving_route">#E5E5E5</color>
 
 	<!-- MilestonesFragment -->
-	<color name="text_fragment_milestones_label">#E5E5E5</color>
 	<color name="text_fragment_milestones_from_to">#E5E5E5</color>
-	<color name="text_fragment_milestones_list">#FFFFFF</color>
+	<color name="route_list_item">#E5E5E5</color>
+	<color name="card_milestone_text">#E5E5E5</color>
 
 
 </resources>

@@ -3,6 +3,7 @@ package com.edit.reach.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,23 +106,18 @@ public class RouteFragment extends Fragment {
 
         actFrom = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_route_from);
         actTo = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_route_to);
+
         etListOfVia = new ArrayList<EditText>();
         lMatchedStrings = new ArrayList<String>();
         actFrom.setOnKeyListener(new View.OnKeyListener() {
-            private int lastKeyTime;
-
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
 
-                actFrom.getText();
-
-
-                lastKeyTime = ;
-
+                Log.d("Anus", "korv");
                 return false;
             }
         });
-        tvMatchedListItem = (TextView) view.findViewById(R.id.root_listitem);
+        tvMatchedListItem = (TextView) view.findViewById(R.id.text_route_list_item);
         tbCurLoc = (ToggleButton) view.findViewById(R.id.toggle_my_location);
         tbCurLoc.setOnClickListener(new View.OnClickListener() {
             @Override

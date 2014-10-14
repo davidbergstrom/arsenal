@@ -22,8 +22,8 @@ public class MilestonesCard extends RelativeLayout {
     public MilestonesCard(Context context, IMilestone milestone) {
         super(context);
         inflate(getContext(), R.layout.card_milestone, this);
-        this.milestoneName = (TextView)findViewById(R.id.test);
-        this.imageView = (ImageView)findViewById(R.id.icon);
+        this.milestoneName = (TextView)findViewById(R.id.card_milestone_text);
+        this.imageView = (ImageView)findViewById(R.id.card_milestone_icon);
         this.milestone = milestone;
         setCategoryImage(milestone.getCategory());
         setMilestoneName(milestone.getName());
@@ -32,8 +32,8 @@ public class MilestonesCard extends RelativeLayout {
     public MilestonesCard(Context context, String name, IMilestone.Category c){
         super(context);
         inflate(getContext(), R.layout.card_milestone, this);
-        this.milestoneName = (TextView)findViewById(R.id.test);
-        this.imageView = (ImageView)findViewById(R.id.icon);
+        this.milestoneName = (TextView)findViewById(R.id.card_milestone_text);
+        this.imageView = (ImageView)findViewById(R.id.card_milestone_icon);
         setMilestoneName(name);
         setCategoryImage(c);
 
