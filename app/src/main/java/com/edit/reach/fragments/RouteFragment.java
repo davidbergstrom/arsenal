@@ -100,8 +100,8 @@ public class RouteFragment extends Fragment {
                              Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_route, container, false);
 
-        etFrom = (EditText) view.findViewById(R.id.et_route_from);
-        etTo = (EditText) view.findViewById(R.id.et_route_to);
+        etFrom = (EditText) view.findViewById(R.id.autocomplete_route_from);
+        etTo = (EditText) view.findViewById(R.id.autocomplete_route_to);
         etListOfVia = new ArrayList<EditText>();
         tbCurLoc = (ToggleButton) view.findViewById(R.id.toggle_my_location);
         tbCurLoc.setOnClickListener(new View.OnClickListener() {

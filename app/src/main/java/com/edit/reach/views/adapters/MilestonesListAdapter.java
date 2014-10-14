@@ -37,23 +37,12 @@ public class MilestonesListAdapter extends BaseAdapter {
 
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.list_milestones_item, null);
+            convertView = layoutInflater.inflate(R.layout.route_list_item, null);
         }
 
-		TextView textView = (TextView) convertView.findViewById(R.id.list_milestones_item);
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.list_milestones_image);
+		TextView textView = (TextView) convertView.findViewById(R.id.text_route_list_item);
 
         textView.setText(milestonesNames.get(position));
-
-        if (milestonesTypes.get(position) == "RESTAURANT") {
-            imageView.setImageResource(R.drawable.ic_launcher); // TODO Change icon
-        } else if (milestonesTypes.get(position) == "RESTAREA") {
-            imageView.setImageResource(R.drawable.ic_launcher); // TODO Change icon
-        } else if (milestonesTypes.get(position) == "GASSTATION") {
-            imageView.setImageResource(R.drawable.ic_launcher); // TODO Change icon
-        } else {
-            imageView.setImageResource(R.drawable.ic_launcher);
-        }
 
         return convertView;
 
