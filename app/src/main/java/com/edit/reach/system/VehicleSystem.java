@@ -224,6 +224,7 @@ public class VehicleSystem extends Observable implements Runnable {
 		vehicleSignals = new Thread(VehicleSystem.this, "VehicleSignalsThread");
 		vehicleSignals.start();
 
+		// TODO Needed?
 		// Requests values because of bug in register values.
 		automotiveManager.requestValue(
 				AutomotiveSignalId.FMS_FUEL_LEVEL_1,
@@ -276,16 +277,13 @@ public class VehicleSystem extends Observable implements Runnable {
 		try {
 			double currentLitersInTank = ((fuelLevel.getFloatValue()/100.0) * TEMP_TANK_SIZE_IN_LITERS);
 
-			if (getVehicleState() == MovingState.DRIVE_AND_MOVING) {
+			if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
 				float addedConsumption = 0;
 				for(SCSFloat consumption : instantFuelEconomyList) {
 					addedConsumption = addedConsumption + consumption.getFloatValue();
 				}
 				double meanFuelEconomy =  (double) addedConsumption / instantFuelEconomyList.size();
 				return (meanFuelEconomy * currentLitersInTank);
-			} else if (getVehicleState() == MovingState.DRIVE_BUT_NOT_MOVING) {
-				// TODO, Evaluate for drive but not moving state
-				return 0;
 			} else {
 				double averageFuelConsumptionPerKilometer = totalFuelUsed.getDoubleValue() / (totalVehicleDistance.getLongValue() * Math.pow(10, -3));
 				return currentLitersInTank / averageFuelConsumptionPerKilometer;
