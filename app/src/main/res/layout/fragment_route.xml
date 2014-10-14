@@ -32,29 +32,41 @@
 			    android:id="@+id/container_use_current_location"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
-		        android:paddingTop="@dimen/use_current_location_top"
-		        android:paddingBottom="@dimen/use_current_location_bottom"
-		        android:paddingLeft="@dimen/use_current_location_left"
-		        android:paddingRight="@dimen/use_current_location_right">
+		        android:layout_marginTop="@dimen/use_current_location_top"
+		        android:layout_marginBottom="@dimen/use_current_location_bottom"
+		        android:layout_marginLeft="@dimen/use_current_location_left"
+		        android:layout_marginRight="@dimen/use_current_location_right"
+			    >
+
+		    <!--<ImageView
+				    android:layout_width="30dp"
+				    android:layout_height="30dp"
+				    android:id="@+id/image_my_location"
+		            android:src="@drawable/my_location"
+
+				    />-->
 
 		    <TextView
 				    android:id="@+id/tv_use_current_location"
 				    android:layout_width="wrap_content"
 				    android:layout_height="wrap_content"
+				    android:layout_marginRight="@dimen/text_my_location_margin_right"
 				    android:layout_alignParentLeft="true"
+				    android:layout_centerVertical="true"
 				    android:text="@string/bt_current_location"
 				    android:textColor="@color/text_fragment_route"
-		            android:textSize="18dp"
+		            android:textSize="16dp"
 				    />
 
-		    <Switch
-				    android:id="@+id/switch_current_location"
+		    <ToggleButton
+				    android:id="@+id/toggle_my_location"
 				    android:layout_width="wrap_content"
 				    android:layout_height="wrap_content"
 				    android:layout_alignParentEnd="true"
 				    android:layout_gravity="end"
-                    />
 
+		            style="@android:style/Widget.Holo.Button.Borderless.Small"
+				    />
 
 	    </RelativeLayout>
 
@@ -72,7 +84,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/button_get_route_top_margin"
-                android:layout_gravity="start"
+                android:layout_gravity="center"
                 android:text="@string/bt_route_get_route"
                 android:textColor="@color/text_fragment_route"
                 style="?android:attr/borderlessButtonStyle"

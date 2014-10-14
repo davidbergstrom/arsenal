@@ -9,8 +9,7 @@
               android:paddingBottom="@dimen/fragment_left_bottom_padding"
               android:paddingLeft="@dimen/fragment_left_left_padding"
               android:paddingRight="@dimen/fragment_left_right_padding"
-
-		>
+			  >
 
 		<!-- Label for starting point "from" -->
 		<TextView
@@ -44,7 +43,7 @@
 		<ScrollView
 				android:id="@+id/list_of_milestones"
 				android:layout_width="match_parent"
-				android:layout_height="fill_parent">
+				android:layout_height="wrap_content">
 
             <LinearLayout
 		            android:id="@+id/cardList"
