@@ -137,7 +137,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                IMilestone milestone = nvm.getMatchedMilestone(marker.getPosition());
+                IMilestone milestone = nvm.getMap().getMilestone(marker.getPosition());
                 if(milestone != null){
                     if(preliminaryMilestones.contains(milestone)){
                         Log.d("MultiPaneActivity", "Milestone already in list, removing");
