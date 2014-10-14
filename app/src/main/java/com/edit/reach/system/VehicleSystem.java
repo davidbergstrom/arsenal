@@ -32,7 +32,6 @@ public class VehicleSystem extends Observable implements Runnable {
 	private SCSLong totalVehicleDistance;
 	private SCSDouble totalFuelUsed;
 
-	private SCSFloat instantFuelConsumption = new SCSFloat(0f);
 	private SCSFloat instantFuelEconomy = new SCSFloat(0f);
 	private SCSFloat fuelLevel = new SCSFloat(-1f);
 
@@ -120,18 +119,14 @@ public class VehicleSystem extends Observable implements Runnable {
 							Log.d("Signal: Motion", "Motion " + isMoving.getIntValue());
 							break;
 
-						// Instantaneous Fuel consumption
-						case AutomotiveSignalId.FMS_FUEL_RATE:
-							instantFuelConsumption = (SCSFloat) automotiveSignal.getData();
-							instantFuelConsumptionList.add(instantFuelConsumption);
-
-							Log.d("Signal: FuelRate", "Fuel rate " + instantFuelConsumption.getFloatValue());
-							break;
-
 						// Instantaneous Fuel economy
 						case AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY:
 							instantFuelEconomy = (SCSFloat) automotiveSignal.getData();
-							instantFuelEconomyList.add(instantFuelEconomy);
+
+							// Only add to fuelconsumption list if the vehicle is moving
+							if(isMoving.getIntValue() == 1) {
+								instantFuelEconomyList.add(instantFuelEconomy);
+							}
 
 							Log.d("Signal: FuelEconomy", "Fuel economy " + instantFuelEconomy.getFloatValue());
 							break;
@@ -274,16 +269,20 @@ public class VehicleSystem extends Observable implements Runnable {
 	 */
 	public synchronized double getKilometersUntilRefuel() {
 		try {
+			double currentLitersInTank = (fuelLevel.getFloatValue() * Math.pow(1, -3)) * TEMP_TANK_SIZE_IN_LITERS;
 			if (getVehicleState() == MovingState.DRIVE_AND_MOVING) {
-				// TODO, Evaluate for drive and moving state
-				return 0;
+				float addedConsumption = 0;
+				for(SCSFloat consumption : instantFuelConsumptionList) {
+					addedConsumption = addedConsumption + consumption.getFloatValue();
+				}
+				double meanFuelEconomy =  (double) addedConsumption / instantFuelConsumptionList.size();
+				return (meanFuelEconomy * currentLitersInTank);
 			} else if (getVehicleState() == MovingState.DRIVE_BUT_NOT_MOVING) {
 				// TODO, Evaluate for drive but not moving state
 				return 0;
 			} else {
-				// TODO, a better calculation could be made. Tank size not real.
+				// TODO Tank size not real.
 				double averageFuelConsumptionPerKilometer = totalFuelUsed.getDoubleValue() / (totalVehicleDistance.getLongValue() * Math.pow(10, -3));
-				double currentLitersInTank = (fuelLevel.getFloatValue() * Math.pow(1, -3)) * TEMP_TANK_SIZE_IN_LITERS;
 				return currentLitersInTank / averageFuelConsumptionPerKilometer;
 			}
 		} catch (NullPointerException e) {
@@ -350,8 +349,6 @@ public class VehicleSystem extends Observable implements Runnable {
 	// ********** PRIVATE METHODS THAT NOTIFY OBSERVERS ********** //
 
 	private void determineShortTime() {
-		Log.d("Time", (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS)) + "");
-
 		if(workingState.getIntValue() == 3) {
 			if ((LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS)) < TIME_THRESHOLD) {
 				if (!timeHasBeenNotified) {
@@ -363,7 +360,7 @@ public class VehicleSystem extends Observable implements Runnable {
 		}
 	}
 
-	// Only notifies observers if the previous fuellevel was above the threshould and the current fuellevel is below the threshould.
+	// Only notifies observers if the previous fuel level was above the threshold and the current fuel level is below the threshold.
 	// This to avoid multiple observer updates when fuel decreases.
 	private void determineLowFuel(float prevFuelLevel, float fuelLevel) {
 		if(fuelLevel <= FUEL_THRESHOLD && prevFuelLevel > FUEL_THRESHOLD) {
@@ -380,7 +377,7 @@ public class VehicleSystem extends Observable implements Runnable {
 		}
 	}
 
-	// Only notifies observers if the previous km to service was above the threshould and the current km to service is below the threshould.
+	// Only notifies observers if the previous km to service was above the threshold and the current km to service is below the threshold.
 	// This to avoid multiple observer updates when service decreases.
 	private void determineCloseToService(int prevKmToService, int kmToService) {
 		if(kmToService <= SERVICE_THRESHOLD && prevKmToService > SERVICE_THRESHOLD) {
