@@ -316,11 +316,27 @@ public class Route {
     }
 
     /**
+     * Returns the destination address.
+     * @return the address
+     */
+    public String getDestinationAddress(){
+        return destinationAddress;
+    }
+
+    /**
      * Get the origin of the route
      * @return the latitude longitude of the route
      */
     public LatLng getOrigin(){
         return origin;
+    }
+
+    /**
+     * Returns the origin address
+     * @return the address
+     */
+    public String getOriginAddress(){
+        return originAddress;
     }
 
     /**
