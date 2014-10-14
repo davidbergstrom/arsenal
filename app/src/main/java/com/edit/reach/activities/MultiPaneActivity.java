@@ -105,7 +105,10 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         }
     }
 
-
+    public List<String> addMatchedStringsToList(String input, List<String> strings){
+        strings = nvm.getMatchedStringResults(input);
+        return strings;
+    }
 
     private void setupMap(){
         // Enable GoogleMap to track the user's location
