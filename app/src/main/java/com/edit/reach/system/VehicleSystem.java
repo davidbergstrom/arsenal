@@ -207,7 +207,7 @@ public class VehicleSystem extends Observable implements Runnable {
 	private static final double NANOSECONDS_TO_SECONDS = 1.0/1000000000;
 
 	// The maximum number of seconds to drive before a 45 minute break.
-	private static final long LEGAL_UPTIME_IN_SECONDS = 40; // 16200
+	private static final long LEGAL_UPTIME_IN_SECONDS = 16200;
 
 	// Threshold for low fuel
 	private static final float FUEL_THRESHOLD = 10f;
@@ -216,7 +216,7 @@ public class VehicleSystem extends Observable implements Runnable {
 	private static final int SERVICE_THRESHOLD = 100;
 
 	// Threshold for short on time.
-	private static final long TIME_THRESHOLD = 10; // 900
+	private static final long TIME_THRESHOLD = 900;
 
 	/** Constructor.
 	 */
@@ -352,8 +352,6 @@ public class VehicleSystem extends Observable implements Runnable {
 
 	private void determineShortTime() {
 		if(workingState.getIntValue() == 3) {
-			Log.d("Time diff", ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS) + "");
-			Log.d("Time diff with legalUptime:", (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS) + ""));
 			if ((LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS)) < TIME_THRESHOLD) {
 				if (!timeHasBeenNotified) {
 					setChanged();
