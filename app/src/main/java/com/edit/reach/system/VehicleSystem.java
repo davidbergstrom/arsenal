@@ -39,7 +39,7 @@ public class VehicleSystem extends Observable implements Runnable {
 	private Uint8 workingState = new Uint8(-1);
 	private SCSInteger distanceToService = new SCSInteger(-1);
 
-	private List<SCSFloat> instantFuelEconomyList = new ArrayList<SCSFloat>();
+	private final List<SCSFloat> instantFuelEconomyList = new ArrayList<SCSFloat>();
 
 	// Will these be used?
 	private SCSFloat vehicleSpeed;
@@ -52,10 +52,10 @@ public class VehicleSystem extends Observable implements Runnable {
 	// Keeps track if navigationModel has been notified for "short time".
 	private boolean timeHasBeenNotified = false;
 
-	// A thread for listening to the vehicle signals.
-	private Thread vehicleSignals;
-
 	private Handler signalHandler;
+
+	// A thread for listening to the vehicle signals.
+	private final Thread vehicleSignals;
 
 	private	final AutomotiveCertificate automotiveCertificate = new AutomotiveCertificate(new byte[0]);
 

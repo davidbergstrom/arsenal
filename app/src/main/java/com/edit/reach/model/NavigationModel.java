@@ -26,39 +26,31 @@ import java.util.Observer;
  */
 public class NavigationModel implements Runnable, Observer, SuggestionListener {
 
-	private VehicleSystem vehicleSystem;
-	private Map map;
+	private final VehicleSystem vehicleSystem;
+	private final Map map;
+	private final Thread pipelineThread;
 
 	private Handler mainHandler;
 	private Handler pipelineHandler;
-	private Thread pipelineThread;
 
 	private List<String> searchResults;
 
 	/* --- CONSTANTS --- */
 	private static final String PIPELINE_THREAD_NAME = "PipelineThread";
 
-	/** Constructor that does not initialize map. Used for testing.
-	 * Other usage and calling for methods using map will result in NullPointer.
-	 * @param mainHandler a handler created on the main Looper thread.
-	 */
-	public NavigationModel(Handler mainHandler) {
-		pipelineThread = new Thread(this, PIPELINE_THREAD_NAME);
-		pipelineThread.start();
-
-		vehicleSystem = new VehicleSystem();
-		vehicleSystem.addObserver(this);
-
-		this.mainHandler = mainHandler;
-	}
-
 	/** Constructor
 	 * @param googleMap a GoogleMap
 	 * @param mainHandler a handler created on the main Looper thread.
 	 */
 	public NavigationModel(GoogleMap googleMap, Handler mainHandler) {
-		this(mainHandler);
-		map = new Map(googleMap);
+		this.pipelineThread = new Thread(this, PIPELINE_THREAD_NAME);
+		this.pipelineThread.start();
+
+		this.vehicleSystem = new VehicleSystem();
+		this.vehicleSystem.addObserver(this);
+
+		this.mainHandler = mainHandler;
+		this.map = new Map(googleMap);
 	}
 
 	@Override
