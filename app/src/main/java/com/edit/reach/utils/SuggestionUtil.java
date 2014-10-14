@@ -2,6 +2,7 @@ package com.edit.reach.utils;
 
 import android.util.Log;
 import com.edit.reach.model.interfaces.SuggestionListener;
+import com.edit.reach.system.GoogleMapsEndpoints;
 import com.edit.reach.system.Remote;
 import com.edit.reach.system.ResponseHandler;
 import org.json.JSONArray;
@@ -61,7 +62,7 @@ public class SuggestionUtil implements ResponseHandler {
 
     public void searchForAddresses(String str) {
         searchString = str;
-        URL url = NavigationUtil.makeURL(str);
+        URL url = GoogleMapsEndpoints.makeURL(str);
         Remote.get(url, this);
     }
 }
