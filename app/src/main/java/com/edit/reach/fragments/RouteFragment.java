@@ -84,18 +84,6 @@ public class RouteFragment extends Fragment {
             String strTo = actTo.getText().toString();
             route = new Route(strFrom, strTo);
             onSetRoute(route);
-
-
-           /* List<String> strListOfVia = new ArrayList<String>();
-            for(EditText et: etListOfVia){
-                strListOfVia.add(et.getText().toString());
-            }
-
-            */
-
-
-            //Send : strFrom, strTo, strListOfVia to map-Activity
-
         }
     };
 
@@ -141,8 +129,6 @@ public class RouteFragment extends Fragment {
     public void onSetRoute(Route route) {
         if (mListener != null) {
             mListener.onRouteInteraction(route);
-
-
         }
     }
 
@@ -153,7 +139,6 @@ public class RouteFragment extends Fragment {
         editText.setWidth(180);
         etListOfVia.add(editText);
         return editText;
-
     }
 
     //Kan behövas för att dynamiskt lägga till fler textfält för del-destinationer
@@ -161,9 +146,12 @@ public class RouteFragment extends Fragment {
         LinearLayout ll = new LinearLayout(getActivity());
         ll.setId(_intID);
 
-
         return ll;
     }
+
+	public void sendAutoCompleteList(ArrayList<String> resultList) {
+
+	}
 
     @Override
     public void onAttach(Activity activity) {

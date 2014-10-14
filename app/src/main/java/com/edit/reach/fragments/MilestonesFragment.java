@@ -12,11 +12,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
-import com.edit.reach.model.Milestone;
 import com.edit.reach.model.interfaces.IMilestone;
-import com.edit.reach.views.adapters.MilestonesListAdapter;
 import com.edit.reach.views.widgets.MilestonesCard;
 
 import java.util.ArrayList;
