@@ -199,7 +199,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
         if(o.getClass() == Route.class){
 
-            Route r = (Route)o;
+            final Route r = (Route)o;
             nvm.setRoute(r);
 
 			//fragment_container goes from RouteFragment -> MilestonesFragment
@@ -209,7 +209,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
                 @Override
                 public void onInitialization() {
                     // WHen route finished loading
-                    milestonesFragment = MilestonesFragment.newInstance("Stockholm", "Lund");
+                    milestonesFragment = MilestonesFragment.newInstance(r.getOriginAddress(), r.getDestinationAddress());
                     getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
                     ProgressBar spinner = (ProgressBar)findViewById(R.id.spinner);
                     spinner.setVisibility(View.GONE);
