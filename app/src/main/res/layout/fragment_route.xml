@@ -20,8 +20,8 @@
             android:layout_height="match_parent"
             >
 
-        <EditText
-                android:id="@+id/et_route_from"
+        <AutoCompleteTextView
+                android:id="@+id/autocomplete_route_from"
                 android:inputType="textAutoComplete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -72,8 +72,8 @@
 
 	    </RelativeLayout>
 
-        <EditText
-                android:id="@+id/et_route_to"
+        <AutoCompleteTextView
+                android:id="@+id/autocomplete_route_to"
                 android:inputType="textAutoComplete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

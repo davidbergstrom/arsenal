@@ -1,18 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="100dp"
-              android:background="@color/text_fragment_route">
-    <!-- TODO: Change dimensions when you add to fragment_milestone  -->
-    <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/icon"/>
-    <TextView
-            android:layout_width="400dp"
-            android:layout_height="50dp"
-            android:id="@+id/test"/>
+              android:background="@color/background_fragment_left">
+
+	<TextView
+			android:id="@+id/card_milestone_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentStart="true"
+			android:layout_centerVertical="true"
+			android:layout_marginLeft="@dimen/card_milestone_text_margin_left"
+			android:text="@string/card_milestone_text"
+			android:textColor="@color/card_milestone_text"
+			android:textSize="@dimen/card_milestone_text"/>
+
+	<ImageView
+			android:id="@+id/card_milestone_icon"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toStartOf="@+id/card_milestone_remove_icon"
+			android:layout_centerVertical="true"
+			android:src="@drawable/milestone_restarea"
+			android:layout_marginRight="@dimen/card_milestone_icon_margin_right"/>
+
+	<ImageButton
+			android:id="@+id/card_milestone_remove_icon"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentEnd="true"
+			android:layout_centerVertical="true"
+			android:src="@drawable/remove"
+			android:layout_marginRight="@dimen/card_milestone_icon_margin_right"
+			style="@android:style/Widget.Holo.Button.Borderless.Small"/>
+
 
 </RelativeLayout>

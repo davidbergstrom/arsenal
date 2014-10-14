@@ -3,12 +3,14 @@ package com.edit.reach.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.*;
+import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.model.Route;
 
@@ -31,10 +33,12 @@ public class RouteFragment extends Fragment {
     private String mId;
     private Route route;
 
-    private EditText etFrom;
-    private EditText etTo;
+    private AutoCompleteTextView actFrom;
+    private AutoCompleteTextView actTo;
     private ToggleButton tbCurLoc;
     private List<EditText> etListOfVia;
+    private List<String> lMatchedStrings;
+    private TextView tvMatchedListItem;
 
     private OnRouteInteractionListener mListener;
 
@@ -76,8 +80,8 @@ public class RouteFragment extends Fragment {
     private View.OnClickListener getNearestRouteListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String strFrom = etFrom.getText().toString();
-            String strTo = etTo.getText().toString();
+            String strFrom = actFrom.getText().toString();
+            String strTo = actTo.getText().toString();
             route = new Route(strFrom, strTo);
             onSetRoute(route);
 
@@ -100,19 +104,30 @@ public class RouteFragment extends Fragment {
                              Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_route, container, false);
 
-        etFrom = (EditText) view.findViewById(R.id.et_route_from);
-        etTo = (EditText) view.findViewById(R.id.et_route_to);
+        actFrom = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_route_from);
+        actTo = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_route_to);
+
         etListOfVia = new ArrayList<EditText>();
+        lMatchedStrings = new ArrayList<String>();
+        actFrom.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+
+                Log.d("Anus", "korv");
+                return false;
+            }
+        });
+        tvMatchedListItem = (TextView) view.findViewById(R.id.text_route_list_item);
         tbCurLoc = (ToggleButton) view.findViewById(R.id.toggle_my_location);
         tbCurLoc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(((ToggleButton) view).isChecked()){
-                    etFrom.setText("My Location");
-                    etFrom.setEnabled(false);
+                    actFrom.setText("My Location");
+                    actFrom.setEnabled(false);
                 } else {
-                    etFrom.setText("");
-                    etFrom.setEnabled(true);
+                    actFrom.setText("");
+                    actFrom.setEnabled(true);
                 }
             }
         });

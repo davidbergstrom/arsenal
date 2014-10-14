@@ -1,8 +1,10 @@
 package com.edit.reach.model;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.text.Html;
 import android.util.Log;
+import com.edit.reach.app.R;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.RouteListener;
 import com.edit.reach.system.*;
@@ -16,7 +18,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.Integer;
 import java.lang.String;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -30,7 +31,8 @@ import java.util.List;
  */
 public class Route {
     private List<Leg> legs;
-    private Circle endPointCircle, startPointCircle, pointer; // Should pointer be an individual class (following a route)?
+    private Circle endPointCircle, startPointCircle, pointer; // Should pointer be an individual class (following a route)? //TODO change pointer to groundoverlay
+    private GroundOverlay pointerWithBearing;
     private LatLng origin, destination;
     private String originAddress, destinationAddress;
     private long distanceInKm, durationInSeconds;
@@ -194,25 +196,21 @@ public class Route {
      */
     public void addPause(long secondsIntoRoute) {
         long realSecondsIntoRoute = 0;
-        long lastRealSecondsIntoRoute = 0;
         LatLng pauseLocation = null;
-        LatLng lastPauseLocation = null;
+
         outerLoop:
         for(Leg leg : legs){
             for(Step step : leg.steps){
+                double substepDuration = ((double)step.duration) / (step.subSteps.size()-1);
                 realSecondsIntoRoute += step.duration;
                 //Log.d(DEBUG_TAG, "Real: "+realSecondsIntoRoute);
                 if(realSecondsIntoRoute >= secondsIntoRoute){
-                    if(realSecondsIntoRoute - secondsIntoRoute > lastRealSecondsIntoRoute - secondsIntoRoute){
-                        pauseLocation = step.startLocation;
-
-                    }else{
-                        pauseLocation = lastPauseLocation;
-                    }
+                    int substepBackIndex = (int)((realSecondsIntoRoute - secondsIntoRoute) / substepDuration);
+                    int substepIndex = step.subSteps.size() - 1 - substepBackIndex;
+                    pauseLocation = step.subSteps.get(substepIndex);
+                    realSecondsIntoRoute -= substepBackIndex * substepDuration;
                     break outerLoop;
                 }
-                lastRealSecondsIntoRoute = realSecondsIntoRoute;
-                lastPauseLocation = step.startLocation;
             }
         }
 
@@ -220,11 +218,11 @@ public class Route {
             pauses.add(new Pause(pauseLocation));
 
             for(RouteListener l : listeners){
-                // TODO Change onPauseAdded to give a pause instead of latlng
+                // TODO Change onPauseAdded to give a pause instead of latlng (maybe)
                 l.onPauseAdded(pauseLocation);
             }
         }
-        Log.d(DEBUG_TAG, "Pause added " + realSecondsIntoRoute + " seconds into the route. Because: " +secondsIntoRoute);
+        Log.d(DEBUG_TAG, "Pause added at" + realSecondsIntoRoute + " seconds into the route.");
     }
 
     /**
@@ -232,17 +230,28 @@ public class Route {
      * @param kmIntoRoute, in km
      */
     public void addPause(double kmIntoRoute){
-        double realKmIntoRoute = 0;
+        double metresIntoRoute = kmIntoRoute * 1000;
+        double realMetresIntoRoute = 0;
         LatLng pauseLocation = null;
 
         outerLoop:
         for(Leg leg : legs){
             for(Step step : leg.steps){
-                realKmIntoRoute += ((double)step.distance)/1000;
+                double substepDistance = ((double)step.distance) / (step.subSteps.size()-1);
+                realMetresIntoRoute += step.distance;
+                //Log.d(DEBUG_TAG, "Real: "+realSecondsIntoRoute);
+                if(realMetresIntoRoute >= metresIntoRoute){
+                    int substepBackIndex = (int)((realMetresIntoRoute - metresIntoRoute) / substepDistance);
+                    int substepIndex = step.subSteps.size() - 1 - substepBackIndex;
+                    pauseLocation = step.subSteps.get(substepIndex);
+                    realMetresIntoRoute -= substepBackIndex * substepDistance;
+                    break outerLoop;
+                }
+                /*realKmIntoRoute += ((double)step.distance)/1000;
                 if(realKmIntoRoute >= kmIntoRoute){
                     pauseLocation = step.startLocation;
                     break outerLoop;
-                }
+                }*/
             }
         }
 
@@ -253,7 +262,7 @@ public class Route {
                 l.onPauseAdded(pauseLocation);
             }
         }
-        Log.d(DEBUG_TAG, "Pause added " + realKmIntoRoute + " km into the route.");
+        Log.d(DEBUG_TAG, "Pause added " + realMetresIntoRoute + " km into the route.");
     }
 
     public List<LatLng> getPauses(){
@@ -377,7 +386,12 @@ public class Route {
                 .strokeColor(Color.RED)
                 .fillColor(Color.BLUE));
 
-        this.pointer = map.addCircle(new CircleOptions().center(legs.get(0).startLocation).fillColor(Color.GREEN).radius(8));
+        //this.pointer = map.addCircle(new CircleOptions().center(legs.get(0).startLocation).fillColor(Color.GREEN).radius(8));
+        pointerWithBearing = map.addGroundOverlay(new GroundOverlayOptions()
+                .position(legs.get(0).startLocation, (float) 100)
+                .image(BitmapDescriptorFactory.fromResource(R.drawable.nav_arrow))
+                .bearing((float)10));
+
         Log.d(DEBUG_TAG, "Drawing route in navigation mode.");
     }
 
@@ -479,12 +493,13 @@ public class Route {
             if(stepToRedraw != null){
                 stepToRedraw.draw(map);
             }
-            if(pointer != null && !pointer.getCenter().equals(nearestLocation)){
-                pointer.setCenter(nearestLocation);
+            if(pointerWithBearing != null && !pointerWithBearing.getPosition().equals(nearestLocation)){
+                pointerWithBearing.setPosition(nearestLocation);
                 // Calculate new bearing and rotate the camera
                 Step newStep = legs.get(0).steps.get(0);
                 float bearing = (float) NavigationUtil.finalBearing(newStep.startLocation.latitude, newStep.startLocation.longitude,
 		                newStep.endLocation.latitude, newStep.endLocation.longitude);
+                pointerWithBearing.setBearing(bearing);
                 CameraPosition lastPosition = map.getCameraPosition();
                 CameraPosition currentPlace = new CameraPosition.Builder().target(nearestLocation).bearing(bearing)
                         .tilt(lastPosition.tilt).zoom(lastPosition.zoom).build();
@@ -548,6 +563,7 @@ public class Route {
                 JSONArray stepsArray = legJSON.getJSONArray("steps");
                 for(int i = 0; i < stepsArray.length(); i++){
                     Step step = new Step(stepsArray.getJSONObject(i));
+                    Log.d(DEBUG_TAG, "Step "+i+" duration: "+step.duration);
                     steps.add(step);
                 }
             } catch (JSONException e) {
@@ -579,7 +595,7 @@ public class Route {
      * Class that represent every step of the directions. It stores distance, duration, location and instructions
      */
     private class Step{
-        int distance, duration;
+        long distance, duration;
         LatLng startLocation, endLocation;
         String instructions;
         private Polyline polyline;
@@ -588,9 +604,9 @@ public class Route {
         Step(JSONObject stepJSON){
             Log.d(DEBUG_TAG, "Creating step.");
             try {
-                distance = Integer.decode(stepJSON.getJSONObject("distance").getString("value"));
+                distance = stepJSON.getJSONObject("distance").getLong("value");
+                duration = stepJSON.getJSONObject("duration").getLong("value");
                 JSONObject startLocation = stepJSON.getJSONObject("start_location");
-                duration = Integer.decode(stepJSON.getJSONObject("duration").getString("value"));
                 this.startLocation = new LatLng(startLocation.getDouble("lat"), startLocation.getDouble("lng"));
                 JSONObject endLocation = stepJSON.getJSONObject("end_location");
                 this.endLocation = new LatLng(endLocation.getDouble("lat"), endLocation.getDouble("lng"));
@@ -603,6 +619,7 @@ public class Route {
                 JSONObject polyline = stepJSON.getJSONObject("polyline");
                 String encodedString = polyline.getString("points");
                 subSteps = NavigationUtil.decodePoly(encodedString);
+                Log.d(DEBUG_TAG, "Substepsize: "+subSteps.size());
 
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
@@ -635,6 +652,7 @@ public class Route {
     private class Pause{
         private LatLng center;
         private Circle circle;
+        private Marker middleOfPause;
 
         Pause(LatLng center){
             this.center = center;
@@ -645,9 +663,13 @@ public class Route {
          * @param map, the map to draw it on
          */
         void draw(GoogleMap map){
-            Log.d("Pause", "Drawing Pause at "+center.toString());
+            Log.d("Pause", "Drawing Pause at " + center.toString());
             this.erase();
             this.circle = map.addCircle(new CircleOptions().center(center).fillColor(Color.RED).radius(4000));
+            this.middleOfPause = map.addMarker(new MarkerOptions()
+                    .position(center)
+                    .title("Pause")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
             //this.circle = map.addCircle(new CircleOptions().center(center).radius(100).fillColor(Color.RED).strokeColor(Color.RED).visible(true));
         }
 
@@ -657,6 +679,9 @@ public class Route {
         void erase(){
             if(circle != null){
                 circle.remove();
+            }
+            if(middleOfPause != null){
+                middleOfPause.remove();
             }
         }
     }
