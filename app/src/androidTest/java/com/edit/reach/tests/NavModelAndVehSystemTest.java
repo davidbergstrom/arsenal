@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 
 /* This test class depends on simulator values */
 public class NavModelAndVehSystemTest extends TestCase {
+	// TODO unable to test this because of the AGA-Simulator...
 
 	NavigationModel m;
 
@@ -17,22 +18,22 @@ public class NavModelAndVehSystemTest extends TestCase {
 		@Override
 		public void handleMessage(Message message) {
 			if(message.what == SignalType.LOW_FUEL) {
-				// TODO
+				Log.d("Km-To-Refuel: ", message.obj + "");
 			} else if(message.what == SignalType.VEHICLE_STOPPED_OR_STARTED) {
-				// TODO
+				Log.d("Vehicle-State: ", message.obj + "");
 			} else if(message.what == SignalType.SHORT_TIME) {
-				// TODO
+				Log.d("Time-to-stop: ", message.obj + "");
 			} else if(message.what == SignalType.SHORT_TO_SERVICE) {
-				// TODO
+				Log.d("Distance-to-service: ", message.obj + "");
 			} else {
 				Log.d("handleMessage", "Error");
-				assertTrue(1 == 2);
 			}
 		}
 	};
 
 	public void setUp() throws Exception {
 		super.setUp();
+
 		m = new NavigationModel(mainHandler);
 	}
 

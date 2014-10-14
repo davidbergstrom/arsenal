@@ -25,7 +25,7 @@ import java.util.Observable;
  * Project: REACH
  * Date: 2014-09-27
  * Time: 19:28
- * Last Edit: 2014-10-13
+ * Last Edit: 2014-10-14
  */
 public class VehicleSystem extends Observable implements Runnable {
 	/* --- Instance Variables --- */
@@ -40,7 +40,6 @@ public class VehicleSystem extends Observable implements Runnable {
 	private SCSInteger distanceToService = new SCSInteger(-1);
 
 	private List<SCSFloat> instantFuelEconomyList = new ArrayList<SCSFloat>();
-	private List<SCSFloat> instantFuelConsumptionList = new ArrayList<SCSFloat>();
 
 	// Will these be used?
 	private SCSFloat vehicleSpeed;
@@ -78,7 +77,6 @@ public class VehicleSystem extends Observable implements Runnable {
 
 							// Call methods to determine critical states
 							determineLowFuel(prevFuelLevel.getFloatValue(), fuelLevel.getFloatValue());
-							determineShortTime();
 
 							Log.d("Signal: FUEL", "Fuellevel: " + fuelLevel.getFloatValue());
 							break;
@@ -96,7 +94,7 @@ public class VehicleSystem extends Observable implements Runnable {
 							}
 
 							// Call method to determine critical states
-							determineIfStoppedOrStarted(prevWorkState.getIntValue(), workingState.getIntValue());
+							determineWorkStateChange(prevWorkState.getIntValue(), workingState.getIntValue());
 
 							Log.d("Signal: W-STATE", "State: " + workingState.getIntValue());
 							break;
@@ -115,6 +113,7 @@ public class VehicleSystem extends Observable implements Runnable {
 						// Is vehicle moving
 						case AutomotiveSignalId.FMS_VEHICLE_MOTION:
 							isMoving = (Uint8) (automotiveSignal.getData());
+							determineMovingChange();
 
 							Log.d("Signal: Motion", "Motion " + isMoving.getIntValue());
 							break;
@@ -168,7 +167,8 @@ public class VehicleSystem extends Observable implements Runnable {
 
 						default:
 							break;
-					}
+
+						}
 				}
 			});
 		}
@@ -196,13 +196,13 @@ public class VehicleSystem extends Observable implements Runnable {
 	/* --- CONSTANTS --- */
 
 	// TODO This is a fictitious tank size
-	private static final int TEMP_TANK_SIZE_IN_LITERS = 600;
+	private static final double TEMP_TANK_SIZE_IN_LITERS = 600.0;
 
 	// Multiply with this to convert nanoseconds to seconds.
-	private static final double NANOSECONDS_TO_SECONDS = 1*(Math.pow(10,-9));
+	private static final double NANOSECONDS_TO_SECONDS = 1.0/1000000000;
 
 	// The maximum number of seconds to drive before a 45 minute break.
-	private static final long LEGAL_UPTIME_IN_SECONDS = 16200;
+	private static final long LEGAL_UPTIME_IN_SECONDS = 40; // 16200
 
 	// Threshold for low fuel
 	private static final float FUEL_THRESHOLD = 10f;
@@ -211,7 +211,7 @@ public class VehicleSystem extends Observable implements Runnable {
 	private static final int SERVICE_THRESHOLD = 100;
 
 	// Threshold for short on time.
-	private static final long TIME_THRESHOLD = 900;
+	private static final long TIME_THRESHOLD = 10; // 900
 
 	/** Constructor.
 	 */
@@ -219,7 +219,7 @@ public class VehicleSystem extends Observable implements Runnable {
 		vehicleSignals = new Thread(VehicleSystem.this, "VehicleSignalsThread");
 		vehicleSignals.start();
 
-		// Requests values because of bug in registervalues.
+		// Requests values because of bug in register values.
 		automotiveManager.requestValue(
 				AutomotiveSignalId.FMS_FUEL_LEVEL_1,
 				AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE,
@@ -269,19 +269,19 @@ public class VehicleSystem extends Observable implements Runnable {
 	 */
 	public synchronized double getKilometersUntilRefuel() {
 		try {
-			double currentLitersInTank = (fuelLevel.getFloatValue() * Math.pow(1, -3)) * TEMP_TANK_SIZE_IN_LITERS;
+			double currentLitersInTank = ((fuelLevel.getFloatValue()/100.0) * TEMP_TANK_SIZE_IN_LITERS);
+
 			if (getVehicleState() == MovingState.DRIVE_AND_MOVING) {
 				float addedConsumption = 0;
-				for(SCSFloat consumption : instantFuelConsumptionList) {
+				for(SCSFloat consumption : instantFuelEconomyList) {
 					addedConsumption = addedConsumption + consumption.getFloatValue();
 				}
-				double meanFuelEconomy =  (double) addedConsumption / instantFuelConsumptionList.size();
+				double meanFuelEconomy =  (double) addedConsumption / instantFuelEconomyList.size();
 				return (meanFuelEconomy * currentLitersInTank);
 			} else if (getVehicleState() == MovingState.DRIVE_BUT_NOT_MOVING) {
 				// TODO, Evaluate for drive but not moving state
 				return 0;
 			} else {
-				// TODO Tank size not real.
 				double averageFuelConsumptionPerKilometer = totalFuelUsed.getDoubleValue() / (totalVehicleDistance.getLongValue() * Math.pow(10, -3));
 				return currentLitersInTank / averageFuelConsumptionPerKilometer;
 			}
@@ -299,10 +299,7 @@ public class VehicleSystem extends Observable implements Runnable {
 	 */
 	public synchronized double getTimeUntilForcedRest() {
 		try {
-			if (getVehicleState() == MovingState.DRIVE_AND_MOVING) {
-				return (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS));
-			} else if (getVehicleState() == MovingState.DRIVE_BUT_NOT_MOVING) {
-				// TODO What to do when not moving but in drive?
+			if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
 				return (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS));
 			} else {
 				return LEGAL_UPTIME_IN_SECONDS;
@@ -350,6 +347,8 @@ public class VehicleSystem extends Observable implements Runnable {
 
 	private void determineShortTime() {
 		if(workingState.getIntValue() == 3) {
+			Log.d("Time diff", ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS) + "");
+			Log.d("Time diff with legalUptime:", (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS) + ""));
 			if ((LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS)) < TIME_THRESHOLD) {
 				if (!timeHasBeenNotified) {
 					setChanged();
@@ -370,11 +369,17 @@ public class VehicleSystem extends Observable implements Runnable {
 	}
 
 	// Notify observers if the state of the driver has changed
-	private void determineIfStoppedOrStarted(int prevState, int curState) {
+	private void determineWorkStateChange(int prevState, int curState) {
 		if(prevState != curState && curState != -1) {
 			setChanged();
 			notifyObservers(SignalType.VEHICLE_STOPPED_OR_STARTED);
 		}
+	}
+
+	private void determineMovingChange() {
+		// No check is necessary
+		setChanged();
+		notifyObservers(SignalType.VEHICLE_STOPPED_OR_STARTED);
 	}
 
 	// Only notifies observers if the previous km to service was above the threshold and the current km to service is below the threshold.
