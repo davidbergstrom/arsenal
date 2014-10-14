@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.edit.reach.app.R;
 import com.edit.reach.fragments.MapFragment;
@@ -20,6 +21,7 @@ import com.edit.reach.model.Milestone;
 import com.edit.reach.model.NavigationModel;
 import com.edit.reach.model.Route;
 import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.model.interfaces.RouteListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -74,6 +76,8 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+
+
     }
 
     /**
@@ -144,13 +148,13 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
                         // Milestone already added
                         preliminaryMilestones.remove(milestone);
                         milestonesFragment.removeMilestoneCard(milestone);
-                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                        marker.setIcon(BitmapDescriptorFactory.defaultMarker());
                     }else{
                         Log.d("MultiPaneActivity", "Added milestone to list");
                         // Add milestone to list
                         preliminaryMilestones.add(milestone);
                         milestonesFragment.addMilestoneCard(milestone);
-                        marker.setIcon(BitmapDescriptorFactory.defaultMarker());
+                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
                     }
                 }else {
                     Log.d("MultiPaneActivity", "Invalid milestone, removing");
@@ -199,9 +203,25 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
             nvm.setRoute(r);
 
 			//fragment_container goes from RouteFragment -> MilestonesFragment
+            //TODO: Load with a spinner and wait for route to finish, then show fragment below...
+            //new Spinner().start();
+            r.addListener(new RouteListener() {
+                @Override
+                public void onInitialization() {
+                    // WHen route finished loading
+                    milestonesFragment = MilestonesFragment.newInstance("Stockholm", "Lund");
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
+                    ProgressBar spinner = (ProgressBar)findViewById(R.id.spinner);
+                    spinner.setVisibility(View.GONE);
+                }
 
-			milestonesFragment = MilestonesFragment.newInstance("Stockholm", "Lund");
-			getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
+                @Override
+                public void onPauseAdded(LatLng pauseLocation) {
+                    // Fuck this
+                }
+            });
+
+
 
 
         }

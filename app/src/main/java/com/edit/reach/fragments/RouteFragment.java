@@ -32,8 +32,7 @@ public class RouteFragment extends Fragment {
     private static final String ARG_ID = "Route";
     private String mId;
     private Route route;
-    private String strFrom;
-    private String strTo;
+
 
     private AutoCompleteTextView actFrom;
     private AutoCompleteTextView actTo;
@@ -41,6 +40,7 @@ public class RouteFragment extends Fragment {
     private List<EditText> etListOfVia;
     private List<String> lMatchedStrings;
     private TextView tvMatchedListItem;
+    private ProgressBar spinner;
 
     private OnRouteInteractionListener mListener;
 
@@ -82,20 +82,14 @@ public class RouteFragment extends Fragment {
     private View.OnClickListener getNearestRouteListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            strFrom = actFrom.getText().toString();
-            strTo = actTo.getText().toString();
+            String strFrom = actFrom.getText().toString();
+            String strTo = actTo.getText().toString();
             route = new Route(strFrom, strTo);
             onSetRoute(route);
+            spinner.setVisibility(View.VISIBLE);
         }
     };
 
-    public String getStrFrom(){
-        return strFrom;
-    }
-
-    public String getStrTo(){
-        return strTo;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,7 +98,7 @@ public class RouteFragment extends Fragment {
 
         actFrom = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_route_from);
         actTo = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_route_to);
-
+        spinner = (ProgressBar)view.findViewById(R.id.spinner);
         etListOfVia = new ArrayList<EditText>();
         lMatchedStrings = new ArrayList<String>();
         actFrom.setOnKeyListener(new View.OnKeyListener() {
