@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import com.edit.reach.app.R;
 import com.edit.reach.model.Route;
 
@@ -34,6 +36,7 @@ public class RouteFragment extends Fragment {
 
     private EditText etFrom;
     private EditText etTo;
+    private Switch sCurLoc;
     private List<EditText> etListOfVia;
 
     private OnRouteInteractionListener mListener;
@@ -103,14 +106,25 @@ public class RouteFragment extends Fragment {
         etFrom = (EditText) view.findViewById(R.id.et_route_from);
         etTo = (EditText) view.findViewById(R.id.et_route_to);
         etListOfVia = new ArrayList<EditText>();
-
-
+        sCurLoc = (Switch) view.findViewById(R.id.switch_current_location);
         Button btGetNearestRoute = (Button) view.findViewById(R.id.btSubmitNearestRoute);
         btGetNearestRoute.setOnClickListener(getNearestRouteListener);
 
 		return view;
     }
-
+    //TODO: Fix the method...
+    /*
+    @Override
+    public void onTouchEvent(MotionEvent ev){
+      if(togglebutton = true){
+          etFrom.setText("Use current Location");
+          etFrom.setEnabled(false);
+      } else{
+          etFrom.setText("");
+          etFrom.setEnabled(true);
+      }
+    }
+*/
 
     public void onSetRoute(Route route) {
         if (mListener != null) {
