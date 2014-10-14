@@ -20,6 +20,8 @@
 	<dimen name="use_current_location_left">10dp</dimen>
 	<dimen name="use_current_location_right">10dp</dimen>
 
+	<dimen name="image_my_location_margin_right">20dp</dimen>
+
 	<dimen name="text_my_location_margin_right">10dp</dimen>
 
 	<dimen name="button_get_route_top_margin">30dp</dimen>
