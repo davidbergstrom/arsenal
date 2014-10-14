@@ -38,20 +38,22 @@
 		        android:layout_marginRight="@dimen/use_current_location_right"
 			    >
 
-		    <!--<ImageView
-				    android:layout_width="30dp"
-				    android:layout_height="30dp"
+		    <ImageView
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
 				    android:id="@+id/image_my_location"
-		            android:src="@drawable/my_location"
-
-				    />-->
+				    android:src="@drawable/my_location"
+		            android:layout_alignParentLeft="true"
+		            android:layout_centerVertical="true"
+		            android:layout_marginRight="@dimen/image_my_location_margin_right"
+				    />
 
 		    <TextView
 				    android:id="@+id/tv_use_current_location"
 				    android:layout_width="wrap_content"
 				    android:layout_height="wrap_content"
 				    android:layout_marginRight="@dimen/text_my_location_margin_right"
-				    android:layout_alignParentLeft="true"
+				    android:layout_toRightOf="@+id/image_my_location"
 				    android:layout_centerVertical="true"
 				    android:text="@string/bt_current_location"
 				    android:textColor="@color/text_fragment_route"
