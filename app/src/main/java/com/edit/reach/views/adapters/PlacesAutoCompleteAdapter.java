@@ -1,12 +1,9 @@
 package com.edit.reach.views.adapters;
 
-import android.app.Activity;
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.*;
-import com.edit.reach.app.R;
+import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import java.util.ArrayList;
 
@@ -17,7 +14,7 @@ import java.util.ArrayList;
 
 public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
 
-    private final ArrayList<String> resultsList
+    private ArrayList<String> resultsList;
 
     public PlacesAutoCompleteAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
@@ -41,10 +38,18 @@ public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements F
 				FilterResults filterResults = new FilterResults();
 				if (constraint != null) {
 					// Retrieve the autocomplete results
-					resultsList = autocomplete(constraint.toString());
+/*					resultsList = autocomplete(constraint.toString());*/
 				}
+                return filterResults;
 			}
-		}
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+
+            }
+        };
+
+        return filter;
 	}
 
 }
