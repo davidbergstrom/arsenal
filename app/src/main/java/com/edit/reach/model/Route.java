@@ -665,7 +665,8 @@ public class Route {
         void draw(GoogleMap map){
             Log.d("Pause", "Drawing Pause at " + center.toString());
             this.erase();
-            this.circle = map.addCircle(new CircleOptions().center(center).fillColor(Color.RED).radius(4000));
+            this.circle = map.addCircle(new CircleOptions().center(center).fillColor(Color.RED).radius(NavigationUtil.RADIUS_IN_KM*1000));
+            Log.d(DEBUG_TAG, "Km radius:"+NavigationUtil.RADIUS_IN_KM);
             this.middleOfPause = map.addMarker(new MarkerOptions()
                     .position(center)
                     .title("Pause")
