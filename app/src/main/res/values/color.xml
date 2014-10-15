@@ -16,7 +16,7 @@
 
 	<!-- MilestonesFragment -->
 	<color name="text_fragment_milestones_from_to">#E5E5E5</color>
-	<color name="route_list_item">#E5E5E5</color>
+	<color name="route_list_item">#000000</color>
 	<color name="card_milestone_text">#E5E5E5</color>
 
 

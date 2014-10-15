@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-		android:orientation="vertical"
-        android:background="@color/background_fragment_left"
-		>
-
-	<TextView
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
 			android:id="@+id/text_route_list_item"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -16,7 +9,5 @@
 	        android:layout_marginRight="@dimen/route_list_item_margin_right"
 	        android:text="@string/route_list_item"
 	        android:textColor="@color/route_list_item"
+            android:textSize="18sp"
 			/>
-
-
-</LinearLayout>

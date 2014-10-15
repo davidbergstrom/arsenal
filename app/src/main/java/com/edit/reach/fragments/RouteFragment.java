@@ -3,6 +3,8 @@ package com.edit.reach.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -33,12 +35,11 @@ public class RouteFragment extends Fragment {
     private String mId;
     private Route route;
 
-
     private AutoCompleteTextView actFrom;
     private AutoCompleteTextView actTo;
     private ToggleButton tbCurLoc;
     private List<EditText> etListOfVia;
-    private List<String> lMatchedStrings;
+    private List<String> matchedPlaces;
     private TextView tvMatchedListItem;
     private ProgressBar spinner;
 
@@ -72,25 +73,6 @@ public class RouteFragment extends Fragment {
         }
     }
 
-    private View.OnClickListener addDestinationListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            editText();
-        }
-    };
-
-    private View.OnClickListener getNearestRouteListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            String strFrom = actFrom.getText().toString();
-            String strTo = actTo.getText().toString();
-            route = new Route(strFrom, strTo);
-            onSetRoute(route);
-            spinner.setVisibility(View.VISIBLE);
-        }
-    };
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -100,15 +82,27 @@ public class RouteFragment extends Fragment {
         actTo = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_route_to);
         spinner = (ProgressBar)view.findViewById(R.id.spinner);
         etListOfVia = new ArrayList<EditText>();
-        lMatchedStrings = new ArrayList<String>();
         actFrom.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
-
-
                 return false;
             }
         });
+
+		// Listener that listens to search field and reacts when text is changed
+		actFrom.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				onTextEntered(s.toString());
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {}
+		});
+
         tvMatchedListItem = (TextView) view.findViewById(R.id.text_route_list_item);
         tbCurLoc = (ToggleButton) view.findViewById(R.id.toggle_my_location);
         tbCurLoc.setOnClickListener(new View.OnClickListener() {
@@ -129,12 +123,28 @@ public class RouteFragment extends Fragment {
 		return view;
     }
 
+	private View.OnClickListener getNearestRouteListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View view) {
+			String strFrom = actFrom.getText().toString();
+			String strTo = actTo.getText().toString();
+			route = new Route(strFrom, strTo);
+			onSetRoute(route);
+			spinner.setVisibility(View.VISIBLE);
+		}
+	};
 
     public void onSetRoute(Route route) {
         if (mListener != null) {
             mListener.onRouteInteraction(route);
         }
     }
+
+	public void onTextEntered(String text) {
+		if (mListener != null) {
+			mListener.onRouteInteraction(text);
+		}
+	}
 
     //Kan behövas för att dynamiskt lägga till fler textfält för del-destinationer
     private EditText editText(){
@@ -153,8 +163,13 @@ public class RouteFragment extends Fragment {
         return ll;
     }
 
-	public void sendAutoCompleteList(ArrayList<String> resultList) {
-
+	// Receives a list of places related to the entered text in search field
+	// and gives suggestions.
+	public void suggestionList(List<String> resultList) {
+		matchedPlaces = resultList;
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), R.layout.route_list_item, matchedPlaces);
+		actFrom.setThreshold(1);
+		actFrom.setAdapter(adapter);
 	}
 
     @Override

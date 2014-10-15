@@ -43,6 +43,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
     private List<IMilestone> preliminaryMilestones;
 
     private MilestonesFragment milestonesFragment;
+	private RouteFragment routeFragment;
 
     // A handler for the UI thread. The Handler recieves messages from other thread.
 	private Handler mainHandler = new Handler(Looper.getMainLooper()) {
@@ -63,7 +64,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
                 return;
             }
 
-            RouteFragment routeFragment = RouteFragment.newInstance("Route");
+            routeFragment = RouteFragment.newInstance("Route");
             getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, routeFragment).commit();
         }
 
@@ -197,6 +198,13 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
         }
 
+		// Sends the text from search field and receives a list of
+		// places and sends the list back to the fragment
+		if(o.getClass() == String.class) {
+			List<String> list = nvm.getMatchedStringResults((String)o);
+			routeFragment.suggestionList(list);
+		}
+
         if(o.getClass() == Route.class){
 
             final Route r = (Route)o;
@@ -220,10 +228,6 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
                     // Fuck this
                 }
             });
-
-
-
-
         }
 	}
 
