@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Application strings -->
-    <string name="app_name">REACH</string>
+    <string name="app_name">Milestone</string>
     <string name="action_settings">Settings</string>
 
     <!-- Route Fragment -->
@@ -27,6 +27,6 @@
     <string name="card_milestone_text">Milestone Card</string>
     <string name="button_edit_route">EDIT ROUTE</string>
     <string name="title_activity_moving">MovingActivity</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_splash">Splash</string>
 
 </resources>
