@@ -4,80 +4,101 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="horizontal"
-
-        >
+              android:background="@color/background_fragment_left"
+              android:paddingTop="@dimen/fragment_left_top_padding"
+              android:paddingBottom="@dimen/fragment_left_bottom_padding"
+              android:paddingLeft="@dimen/fragment_left_left_padding"
+              android:paddingRight="@dimen/fragment_left_right_padding"
+              android:descendantFocusability="beforeDescendants"
+              android:focusableInTouchMode="true"
+	>
 
     <!-- Lägg till fler layouter för att få en TextView bredvid +-knappen -->
     <LinearLayout
             android:orientation="vertical"
-            android:background="@color/background_fragment_left"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="@dimen/fragment_left_top_padding"
-            android:paddingBottom="@dimen/fragment_left_bottom_padding"
-            android:paddingLeft="@dimen/fragment_left_left_padding"
-            android:paddingRight="@dimen/fragment_left_right_padding"
             >
 
-
-        <EditText
-                android:id="@+id/etFrom"
+        <AutoCompleteTextView
+                android:id="@+id/autocomplete_route_from"
                 android:inputType="textAutoComplete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="0dp"
                 android:textColor="@color/text_fragment_route"
-                android:hint="@string/et_from"
-                />
+                android:hint="@string/et_route_from" />
 
+	    <RelativeLayout
+			    android:id="@+id/container_use_current_location"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+		        android:layout_marginTop="@dimen/use_current_location_top"
+		        android:layout_marginBottom="@dimen/use_current_location_bottom"
+		        android:layout_marginLeft="@dimen/use_current_location_left"
+		        android:layout_marginRight="@dimen/use_current_location_right"
+			    >
 
-        <EditText
-                android:id="@+id/etTo"
+		    <ImageView
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:id="@+id/image_my_location"
+				    android:src="@drawable/my_location"
+		            android:layout_alignParentLeft="true"
+		            android:layout_centerVertical="true"
+		            android:layout_marginRight="@dimen/image_my_location_margin_right"
+				    />
+
+		    <TextView
+				    android:id="@+id/tv_use_current_location"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_marginRight="@dimen/text_my_location_margin_right"
+				    android:layout_toRightOf="@+id/image_my_location"
+				    android:layout_centerVertical="true"
+				    android:text="@string/bt_current_location"
+				    android:textColor="@color/text_fragment_route"
+		            android:textSize="16dp"
+				    />
+
+		    <ToggleButton
+				    android:id="@+id/toggle_my_location"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_alignParentEnd="true"
+				    android:layout_gravity="end"
+
+		            style="@android:style/Widget.Holo.Button.Borderless.Small"
+				    />
+
+	    </RelativeLayout>
+
+        <AutoCompleteTextView
+                android:id="@+id/autocomplete_route_to"
                 android:inputType="textAutoComplete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="0dp"
                 android:textColor="@color/text_fragment_route"
-                android:hint="@string/et_to"
+                android:hint="@string/et_route_to"
                 />
 
         <Button
-                android:id="@+id/bt_add_destination"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="0dp"
-                android:text="Add destination +"
+		        android:id="@+id/btSubmitNearestRoute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/button_get_route_top_margin"
+                android:layout_gravity="center"
+                android:text="@string/bt_route_get_route"
                 android:textColor="@color/text_fragment_route"
-
-
+                style="?android:attr/borderlessButtonStyle"
                 />
 
-        <Button
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="0dp"
-                android:text="Find nearest route"
-                android:textColor="@color/text_fragment_route"
-                android:id="@+id/btSubmitNearestRoute"
-
-
+        <ProgressBar
+                android:id="@+id/spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
                 />
-
 
     </LinearLayout>
-
-
 </LinearLayout>
 

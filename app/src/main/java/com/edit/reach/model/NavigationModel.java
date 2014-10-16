@@ -5,12 +5,14 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import com.edit.reach.constants.SignalType;
-import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.RouteListener;
+import com.edit.reach.model.interfaces.SuggestionListener;
 import com.edit.reach.system.VehicleSystem;
+import com.edit.reach.utils.SuggestionUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -20,41 +22,35 @@ import java.util.Observer;
  * Project: REACH
  * Date: 2014-09-27
  * Time: 19:27
- * Last Edit: 2014-10-13
+ * Last Edit: 2014-10-14
  */
-public class NavigationModel implements Runnable, Observer {
+public class NavigationModel implements Runnable, Observer, SuggestionListener {
 
-	private VehicleSystem vehicleSystem;
-	private Map map;
+	private final VehicleSystem vehicleSystem;
+	private final Map map;
+	private final Thread pipelineThread;
 
 	private Handler mainHandler;
 	private Handler pipelineHandler;
-	private Thread pipelineThread;
+
+	private List<String> searchResults;
 
 	/* --- CONSTANTS --- */
 	private static final String PIPELINE_THREAD_NAME = "PipelineThread";
-
-	/** Constructor that does not initialize map. Used for testing.
-	 * Other usage and calling for methods using map will result in NullPointer.
-	 * @param mainHandler a handler created on the main Looper thread.
-	 */
-	public NavigationModel(Handler mainHandler) {
-		pipelineThread = new Thread(this, PIPELINE_THREAD_NAME);
-		pipelineThread.start();
-
-		vehicleSystem = new VehicleSystem();
-		vehicleSystem.addObserver(this);
-
-		this.mainHandler = mainHandler;
-	}
 
 	/** Constructor
 	 * @param googleMap a GoogleMap
 	 * @param mainHandler a handler created on the main Looper thread.
 	 */
 	public NavigationModel(GoogleMap googleMap, Handler mainHandler) {
-		this(mainHandler);
-		map = new Map(googleMap);
+		this.pipelineThread = new Thread(this, PIPELINE_THREAD_NAME);
+		this.pipelineThread.start();
+
+		this.vehicleSystem = new VehicleSystem();
+		this.vehicleSystem.addObserver(this);
+
+		this.mainHandler = mainHandler;
+		this.map = new Map(googleMap);
 	}
 
 	@Override
@@ -68,12 +64,26 @@ public class NavigationModel implements Runnable, Observer {
 		}
 	}
 
-	/** Returns a IMilestone matching the lat and longitude.
-	 * @param latLng a LatLng with the latitude and longitude.
-	 * @return a IMilestone, null if no milestone is not found.
+	/** Returns a map object.
+	 * @return a Map
 	 */
-	public IMilestone getMatchedMilestone(final LatLng latLng) {
-		return map.getMilestone(latLng);
+	public Map getMap() {
+		return map;
+	}
+
+	@Override
+	public void onGetSuccess(List<String> results) {
+		searchResults = results;
+	}
+
+	/** This method is used to match search result strings.
+	 * @param searchString the string to match a result with
+	 * @return a list of strings with results.
+	 */
+	public List<String> getMatchedStringResults(final String searchString) {
+		SuggestionUtil suggestionUtil = new SuggestionUtil(this);
+		suggestionUtil.searchForAddresses(searchString);
+		return searchResults;
 	}
 
 	// This method must run on UI thread because of google map objects in Map class.

@@ -4,90 +4,60 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
+              android:background="@color/background_fragment_left"
+              android:paddingTop="@dimen/fragment_left_top_padding"
+              android:paddingBottom="@dimen/fragment_left_bottom_padding"
+              android:paddingLeft="@dimen/fragment_left_left_padding"
+              android:paddingRight="@dimen/fragment_left_right_padding"
+			  >
 
-		>
-
-	<!-- Lägg till fler layouter för att få en TextView bredvid +-knappen -->
-	<LinearLayout
-			android:orientation="vertical"
-			android:background="@color/background_fragment_left"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-	        android:paddingTop="@dimen/fragment_left_top_padding"
-	        android:paddingBottom="@dimen/fragment_left_bottom_padding"
-	        android:paddingLeft="@dimen/fragment_left_left_padding"
-	        android:paddingRight="@dimen/fragment_left_right_padding"
-			>
-
-		<!-- Label for starting point "from" -->
-		<TextView
-				android:id="@+id/tv_label_from"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-		        android:textColor="@color/text_fragment_milestones_label"
-		        android:text="Label From"
-		        android:textSize="@dimen/fragment_milestones_label"
-
-				/>
-
-		<!-- The actual starting point -->
+		<!-- The starting point -->
 		<TextView
 				android:id="@+id/tv_text_from"
 				android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:text="Text From"
+		        android:text="@string/et_milestones_text_from"
 		        android:textSize="@dimen/fragment_milestones_from_to"
-
+		        android:textColor="@color/text_fragment_milestones_from_to"
 				/>
 
-		<!--<ListView
-				android:id="@+id/lv_milestones"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-
-
-				/>-->
-
+		<!-- Holder for Milestones Cards -->
 		<ScrollView
 				android:id="@+id/list_of_milestones"
 				android:layout_width="match_parent"
-				android:layout_height="fill_parent">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/cardList">
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/fragment_milestones_cards_holder_margin_top"
+				android:layout_marginBottom="@dimen/fragment_milestones_cards_holder_margin_bottom"
+				>
 
-
-
+            <LinearLayout
+		            android:id="@+id/cardList"
+		            android:layout_width="match_parent"
+		            android:layout_height="match_parent"
+		            android:orientation="vertical">
             </LinearLayout>
 
-				</ScrollView>
+		</ScrollView>
 
-
-
-        <!-- Kommenterade ut raden nedan på grund av problem vid körning, var tidigare vid ListView:n ovan -->
-       <!-- android:entries="@color/text_fragment_milestones_list" -->
-
-        <!-- Label for end point "to" -->
-		<TextView
-				android:id="@+id/tv_label_to"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:textColor="@color/text_fragment_milestones_label"
-				android:text="Label To"
-				android:textSize="@dimen/fragment_milestones_label"
-
-				/>
-
-		<!-- The actual end point -->
+		<!-- The end point -->
 		<TextView
 				android:id="@+id/tv_text_to"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="Text To"
+				android:text="@string/et_milestones_text_to"
 				android:textSize="@dimen/fragment_milestones_from_to"
-
+		        android:textColor="@color/text_fragment_milestones_from_to"
 				/>
 
-
-	</LinearLayout>
-
+		<Button
+				android:id="@+id/button_edit_route"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/button_edit_route_margin_top"
+				android:layout_gravity="center"
+				android:text="@string/button_edit_route"
+				android:textColor="@color/text_fragment_route"
+				style="?android:attr/borderlessButtonStyle"
+				/>
 
 </LinearLayout>

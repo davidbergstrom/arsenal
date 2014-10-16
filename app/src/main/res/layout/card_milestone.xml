@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="100dp"
-              android:background="@color/text_fragment_route">
-    <!-- TODO: Change dimensions when you add to fragment_milestone  -->
-    <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/icon"/>
-    <TextView
-            android:layout_width="400dp"
-            android:layout_height="50dp"
-            android:id="@+id/test"/>
+              android:layout_height="wrap_content"
+              android:background="@color/background_fragment_left"
+              android:orientation="horizontal">
 
-</RelativeLayout>
+    <ImageView
+            android:id="@+id/card_milestone_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/milestone_restarea"
+            android:adjustViewBounds="true"
+            android:maxWidth="65dp"
+            android:maxHeight="65dp"
+            android:scaleType="fitCenter"
+            android:padding="10dp"/>
+
+	<TextView
+			android:id="@+id/card_milestone_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+			android:text="@string/card_milestone_text"
+			android:textColor="@color/card_milestone_text"
+			android:textSize="22sp"/>
+
+
+</LinearLayout>

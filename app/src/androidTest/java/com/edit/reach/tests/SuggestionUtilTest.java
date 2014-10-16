@@ -29,7 +29,7 @@ public class SuggestionUtilTest extends TestCase {
         };
 
         SuggestionUtil ss = new SuggestionUtil(suggestionListener);
-        ss.searchForAddresses("New Y");
+        ss.searchForAddresses("new yo");
         Thread.sleep(5000);
         Log.d("TestClass", "Test done");
 

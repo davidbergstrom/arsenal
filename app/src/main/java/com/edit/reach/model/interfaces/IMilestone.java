@@ -1,6 +1,5 @@
 package com.edit.reach.model.interfaces;
 
-import android.location.Location;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -14,7 +13,7 @@ public interface IMilestone {
 	 * Category is an enum class to identify a milestones type.
 	 */
 	public enum Category{
-		RESTAURANT, RESTAREA, GASSTATION
+		RESTAURANT, RESTAREA, GASSTATION, OBSTRUCTION, FOOD, SLEEP, ROAD_CAMERA
 	}
 
 	/**

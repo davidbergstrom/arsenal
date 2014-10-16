@@ -6,6 +6,7 @@ import android.util.Log;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.MilestonesReceiver;
 import com.edit.reach.model.interfaces.RouteListener;
+import com.edit.reach.system.GoogleMapsEndpoints;
 import com.edit.reach.system.Remote;
 import com.edit.reach.system.ResponseHandler;
 import com.edit.reach.utils.NavigationUtil;
@@ -75,8 +76,7 @@ public class Map {
                 //map.addCircle(new CircleOptions().center(pauseLocation).fillColor(Color.RED).radius(1000));
                 currentRoute.drawPauses(map);
                 Log.d("Map", "Getting milestones");
-                Ranking ranking = new Ranking(milestonesReceiver);
-                ranking.getMilestones(pauseLocation, 100);
+                Ranking.getMilestones(milestonesReceiver, pauseLocation, NavigationUtil.RADIUS_IN_DEGREES*2);
             }
 
         }
@@ -139,7 +139,7 @@ public class Map {
      * Set the current route to the provided route, this will also initiate an overview of the route.
      * @param newRoute, the new route
      */
-    public void setRoute(Route newRoute){
+    void setRoute(Route newRoute){
         Log.d(logClass, "Erasing old route and adding a new.");
         if(currentRoute != null){
             currentRoute.erase();
@@ -163,7 +163,7 @@ public class Map {
     /**
      * Start the current route.
      */
-	void startNavigation(){
+	public void startNavigation(){
         setState(State.NAVIGATION);
 	}
 
@@ -198,10 +198,9 @@ public class Map {
                 currentRoute.drawOverview(map);
             }
 
-            Ranking ranking = new Ranking(milestonesReceiver);
             List<LatLng> pauses = currentRoute.getPauses();
             for (LatLng i : pauses) {
-                ranking.getMilestones(i, NavigationUtil.RADIUS_IN_DEGREES);
+                Ranking.getMilestones(milestonesReceiver, i, NavigationUtil.RADIUS_IN_DEGREES*2);
             }
 
             map.getUiSettings().setAllGesturesEnabled(true);
@@ -259,7 +258,7 @@ public class Map {
      * @param location, the LatLng to find a milestone on
      * @return the milestone, null if there is no milestones at that coordinate
      */
-    IMilestone getMilestone(LatLng location){
+    public IMilestone getMilestone(LatLng location){
         for(IMilestone milestone : milestonesOnMap){
             if(milestone.getLocation().equals(location)){
                 return milestone;
@@ -275,7 +274,7 @@ public class Map {
      * @param handler, the handler to handle the results
      */
     void requestAddressSuggestion(String partOfAddress, ResponseHandler handler){
-        URL url = NavigationUtil.makeURL(partOfAddress);
+        URL url = GoogleMapsEndpoints.makeURL(partOfAddress);
         Remote.get(url, handler);
     }
 

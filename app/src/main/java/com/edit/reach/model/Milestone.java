@@ -19,18 +19,46 @@ public class Milestone implements IMilestone {
 
         name = properties.getString("name");
         description = properties.getString("description");
-        int rank = properties.getInt("ranking");
+        rank = properties.getInt("rating");
 
-        int categoryGroup = properties.getInt("category");
-
-        category = Category.RESTAREA;
+        int cat = properties.getInt("category");
+        category = getCategoryGroup(cat);
 
         JSONObject geometry = json.getJSONObject("geometry");
         JSONArray coordinates = geometry.getJSONArray("coordinates");
         double latitude = coordinates.getDouble(0);
         double longitude = coordinates.getDouble(1);
         location = new LatLng(latitude, longitude);
+    }
 
+    /**
+     * Takes a category number between 1-27 and
+     * places it in the appropriate category group
+     * @ return enum category
+     */
+    private Category getCategoryGroup(int category) {
+        Category categoryGroup = Category.GASSTATION;
+        switch(category) {
+            case 1:
+            case 2:
+            case 4:
+            case 12:
+            case 25: categoryGroup = Category.FOOD;
+                break;
+            case 3: categoryGroup = Category.GASSTATION;
+                break;
+            case 8:
+            case 9: categoryGroup = Category.SLEEP;
+                break;
+            case 22:
+            case 23: categoryGroup = Category.OBSTRUCTION;
+                break;
+            case 24: categoryGroup = Category.ROAD_CAMERA;
+                break;
+            default: categoryGroup =  Category.RESTAREA;
+        }
+
+       return categoryGroup;
     }
 
     /**

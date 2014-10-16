@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.views.widgets.MilestonesCard;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +41,10 @@ public class MilestonesFragment extends Fragment {
 	private ArrayList <String> mMilestonesList;
     private ArrayList <String> mMilestonesType;
 
+    private Button btEditRoute;
+
+    private static int n = 0;
+
 	private ListView mMilestonesListView;
 	private	TextView mFromTextView;
 	private	TextView mToTextView;
@@ -52,16 +58,13 @@ public class MilestonesFragment extends Fragment {
      *
      * @param from Start point of Route.
 	 * @param to End point of Route.
-	 * @param milestonesList ArrayList of IMilestones.
      * @return A new instance of fragment MilestonesFragment.
      */
-    public static MilestonesFragment newInstance(String from, String to, ArrayList<String> milestonesList, ArrayList<String> milestonesType) {
+    public static MilestonesFragment newInstance(String from, String to) {
         MilestonesFragment fragment = new MilestonesFragment();
         Bundle args = new Bundle();
         args.putString(ARG_FROM, from);
 		args.putString(ARG_TO, to);
-		args.putStringArrayList(ARG_LIST, milestonesList);
-		args.putStringArrayList(ARG_TYPE, milestonesType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,35 +75,38 @@ public class MilestonesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mFrom = getArguments().getString(ARG_FROM);
 			mTo = getArguments().getString(ARG_TO);
             mMilestonesList = getArguments().getStringArrayList(ARG_LIST);
 			mMilestonesType = getArguments().getStringArrayList(ARG_TYPE);
-        }
 
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
 		View view = inflater.inflate(R.layout.fragment_milestones, container, false);
-		//mMilestonesListView = (ListView) view.findViewById(R.id.lv_milestones);
+		//mMilestonesListView = () view.findViewById(R.id.lv_milestones);
 		mFromTextView = (TextView) view.findViewById(R.id.tv_text_from);
 		mToTextView = (TextView) view.findViewById(R.id.tv_text_to);
         cardList = (LinearLayout) view.findViewById(R.id.cardList);
-        MilestonesCard mc = new MilestonesCard(getActivity().getApplicationContext(), null);
-        mc.setMilestoneName("Simon äter bajs");
-        cardList.addView(mc, 0);
-        MilestonesCard apa = new MilestonesCard(getActivity().getApplicationContext(), null);
-        apa.setMilestoneName("Till frukost");
-        cardList.addView(apa, 1);
+        btEditRoute = (Button) view.findViewById(R.id.button_edit_route);
+        btEditRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("EditRoute", "Performed a EditRoute-click");
+                /*RouteFragment rf = new RouteFragment();
+                rf.newInstance("Test");
 
-
+                rf.setRouteText(mFrom, mTo);*/
+            }
+        });
         return view;
     }
+
+
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -114,38 +120,38 @@ public class MilestonesFragment extends Fragment {
 		mToTextView.setText(mTo);
 	}
 
-	public void addMilestone(IMilestone milestone) {
-        MilestonesCard mc = new MilestonesCard(getActivity().getApplicationContext(), null);
-        mc.setMilestoneName(milestone.getName());
-        cardList.addView(mc);
-	}
-    /*
-    public void iterateAllMilestones(){
-        for(IMilestone milestone: mMilestone){
-            addMilestone(milestone);
-        }
-    }
 
-        */
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onMilestonesInteraction(uri);
         }
     }
-    /*
-    private void addToList(){
-        HashMap<String, String> map1 = new HashMap<String, String>();
-        for(IMilestone milestone: mMilestones){
-            String name = milestone.getName();
-            String type = milestone.getCategory().toString();
-            map1.put(name, type);
+
+
+
+    public void removeMilestoneCard(IMilestone milestone){
+        List<MilestonesCard> mcList = new ArrayList<MilestonesCard>();
+        for(int i =0; i < cardList.getChildCount(); i++){
+            View tmp = cardList.getChildAt(i);
+            if(tmp instanceof MilestonesCard){
+                MilestonesCard card = (MilestonesCard)cardList.getChildAt(i);
+                if(card.getMilestone().equals(milestone)){
+                    cardList.removeViewAt(i);
+                    break;
+                }
+            }
         }
 
-            mlAdapter.addMilestone(map1);
+    }
+
+    public void addMilestoneCard(IMilestone milestone){
+        MilestonesCard mc = new MilestonesCard(getActivity().getApplicationContext(), milestone);
+        cardList.addView(mc);
 
     }
-    */
+
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

@@ -3,13 +3,16 @@ package com.edit.reach.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.*;
+import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.model.Route;
 
@@ -32,9 +35,14 @@ public class RouteFragment extends Fragment {
     private String mId;
     private Route route;
 
-    private EditText etFrom;
-    private EditText etTo;
+    private AutoCompleteTextView actFrom;
+    private AutoCompleteTextView actTo;
+    private ToggleButton tbCurLoc;
     private List<EditText> etListOfVia;
+    private List<String> matchedPlaces;
+    private TextView tvMatchedListItem;
+    private ProgressBar spinner;
+	private ArrayAdapter<String> adapter;
 
     private OnRouteInteractionListener mListener;
 
@@ -54,6 +62,7 @@ public class RouteFragment extends Fragment {
         return fragment;
     }
 
+
     public RouteFragment() {
         // Required empty public constructor
     }
@@ -66,59 +75,82 @@ public class RouteFragment extends Fragment {
         }
     }
 
-    private View.OnClickListener addDestinationListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            editText();
-        }
-    };
-
-    private View.OnClickListener getNearestRouteListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            String strFrom = etFrom.getText().toString();
-            String strTo = etTo.getText().toString();
-            route = new Route(strFrom, strTo);
-            onSetRoute(route);
-
-
-           /* List<String> strListOfVia = new ArrayList<String>();
-            for(EditText et: etListOfVia){
-                strListOfVia.add(et.getText().toString());
-            }
-
-            */
-
-
-            //Send : strFrom, strTo, strListOfVia to map-Activity
-
-        }
-    };
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_route, container, false);
 
-        etFrom = (EditText) view.findViewById(R.id.etFrom);
-        etTo = (EditText) view.findViewById(R.id.etTo);
+        actFrom = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_route_from);
+        actTo = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_route_to);
+        spinner = (ProgressBar)view.findViewById(R.id.spinner);
         etListOfVia = new ArrayList<EditText>();
+        actFrom.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                return false;
+            }
+        });
 
+		// Listener that listens to search field and reacts when text is changed
+		actFrom.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				onTextEntered(s.toString());
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {}
+		});
+
+        tvMatchedListItem = (TextView) view.findViewById(R.id.text_route_list_item);
+        tbCurLoc = (ToggleButton) view.findViewById(R.id.toggle_my_location);
+        tbCurLoc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(((ToggleButton) view).isChecked()){
+                    actFrom.setText("My Location");
+                    actFrom.setEnabled(false);
+                } else {
+                    actFrom.setText("");
+                    actFrom.setEnabled(true);
+                }
+            }
+        });
         Button btGetNearestRoute = (Button) view.findViewById(R.id.btSubmitNearestRoute);
         btGetNearestRoute.setOnClickListener(getNearestRouteListener);
-        Button btAddDestination = (Button) view.findViewById(R.id.bt_add_destination);
-        btAddDestination.setOnClickListener(addDestinationListener);
 
 		return view;
     }
 
+	private View.OnClickListener getNearestRouteListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View view) {
+			String strFrom = actFrom.getText().toString();
+			String strTo = actTo.getText().toString();
+			route = new Route(strFrom, strTo);
+			onSetRoute(route);
+			spinner.setVisibility(View.VISIBLE);
+		}
+	};
 
     public void onSetRoute(Route route) {
         if (mListener != null) {
             mListener.onRouteInteraction(route);
-
-
         }
+    }
+
+	public void onTextEntered(String text) {
+		if (mListener != null) {
+			mListener.onRouteInteraction(text);
+		}
+	}
+
+    public void setRouteText(String from, String to){
+        actFrom.setText(from);
+        actTo.setText(to);
     }
 
     //Kan behövas för att dynamiskt lägga till fler textfält för del-destinationer
@@ -128,7 +160,6 @@ public class RouteFragment extends Fragment {
         editText.setWidth(180);
         etListOfVia.add(editText);
         return editText;
-
     }
 
     //Kan behövas för att dynamiskt lägga till fler textfält för del-destinationer
@@ -136,9 +167,16 @@ public class RouteFragment extends Fragment {
         LinearLayout ll = new LinearLayout(getActivity());
         ll.setId(_intID);
 
-
         return ll;
     }
+
+	// Receives a list of places related to the entered text in search field
+	// and gives suggestions.
+	public void suggestionList(List<String> resultList) {
+		matchedPlaces = resultList;
+		adapter = new ArrayAdapter<String>(this.getActivity(), R.layout.route_list_item, matchedPlaces);
+		actFrom.setAdapter(adapter);
+	}
 
     @Override
     public void onAttach(Activity activity) {
