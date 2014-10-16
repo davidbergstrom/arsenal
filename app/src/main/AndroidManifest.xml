@@ -23,7 +23,7 @@
             android:name="com.edit.reach.activities.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
-	    <activity
+        <activity
             android:name="com.edit.reach.activities.MultiPaneActivity"
             android:label="@string/title_activity_multi_pane" >
         </activity>
@@ -34,6 +34,11 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCqs-SMMT3_BIzMsPr-wsWqsJTthTgFUb8" />
+
+        <activity
+            android:name="com.edit.reach.activities.MovingActivity"
+            android:label="@string/title_activity_moving" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
