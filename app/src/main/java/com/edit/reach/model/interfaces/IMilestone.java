@@ -2,6 +2,8 @@ package com.edit.reach.model.interfaces;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+
 /**
  * Created by Joakim Berntsson on 2014-09-29.
  * Interface for Milestones.
@@ -29,10 +31,10 @@ public interface IMilestone {
 	public String getDescription();
 
 	/**
-	 * Returns the category of the milestone
-	 * @return the milestones category
+	 * Returns the categories associated with the milestone
+	 * @return a list with the milestone's categories
 	 */
-	public Category getCategory();
+	public ArrayList<Category> getCategories();
 
 	/**
 	 * Set the rank of the milestone

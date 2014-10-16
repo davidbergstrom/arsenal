@@ -13,7 +13,6 @@ public class Milestone implements IMilestone {
     private String name;
     private String description;
     private ArrayList<Category> categories;
-    private Category category;
     private int rank;
     private LatLng location;
 
@@ -88,13 +87,13 @@ public class Milestone implements IMilestone {
     }
 
     /**
-     * Returns the category of the milestone
+     * Returns the categories associated with the milestone
      *
-     * @return the milestones category
+     * @return a list with the milestone's categories
      */
     @Override
-    public Category getCategory() {
-        return category;
+    public ArrayList<Category> getCategories() {
+        return categories;
     }
 
     /**
