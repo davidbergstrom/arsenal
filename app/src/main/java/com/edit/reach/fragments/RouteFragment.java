@@ -61,6 +61,7 @@ public class RouteFragment extends Fragment {
         return fragment;
     }
 
+
     public RouteFragment() {
         // Required empty public constructor
     }
@@ -145,6 +146,11 @@ public class RouteFragment extends Fragment {
 			mListener.onRouteInteraction(text);
 		}
 	}
+
+    public void setRouteText(String from, String to){
+        actFrom.setText(from);
+        actTo.setText(to);
+    }
 
     //Kan behövas för att dynamiskt lägga till fler textfält för del-destinationer
     private EditText editText(){

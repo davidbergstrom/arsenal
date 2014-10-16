@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -39,6 +40,8 @@ public class MilestonesFragment extends Fragment {
 	private String mTo;
 	private ArrayList <String> mMilestonesList;
     private ArrayList <String> mMilestonesType;
+
+    private Button btEditRoute;
 
     private static int n = 0;
 
@@ -89,8 +92,21 @@ public class MilestonesFragment extends Fragment {
 		mFromTextView = (TextView) view.findViewById(R.id.tv_text_from);
 		mToTextView = (TextView) view.findViewById(R.id.tv_text_to);
         cardList = (LinearLayout) view.findViewById(R.id.cardList);
+        btEditRoute = (Button) view.findViewById(R.id.button_edit_route);
+        btEditRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("EditRoute", "Performed a EditRoute-click");
+                /*RouteFragment rf = new RouteFragment();
+                rf.newInstance("Test");
+
+                rf.setRouteText(mFrom, mTo);*/
+            }
+        });
         return view;
     }
+
+
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
