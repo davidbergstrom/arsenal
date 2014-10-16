@@ -9,6 +9,15 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.edit.reach.activities.MainActivity">
 
+    <ImageView id="@+id/splashscreen" android:layout_width="wrap_content"
+               android:layout_height="fill_parent"
+               android:src="@drawable/splash"
+               android:layout_gravity="center"/>
+
+    <TextView android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:text="Hello World, splash"/>
+
     <ImageButton
             android:id="@+id/get_started_button"
             android:background="@null"

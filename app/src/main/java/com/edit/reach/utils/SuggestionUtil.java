@@ -44,8 +44,7 @@ public class SuggestionUtil implements ResponseHandler {
                     if (potentialMatch.contains(searchString)) {
 
                         resultList.add(potentialMatch);
-                        Log.d("TestClass", "" + "" + resultList.size());
-
+                        Log.d("TestClass", "" + "" + resultList.size() + ": "+ potentialMatch);
                         break;
                     }
                 }
