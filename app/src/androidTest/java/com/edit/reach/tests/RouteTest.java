@@ -1,6 +1,7 @@
-package com.edit.reach.model;
+package com.edit.reach.tests;
 
 import android.util.Log;
+import com.edit.reach.model.Route;
 import com.edit.reach.model.interfaces.RouteListener;
 import com.google.android.gms.maps.model.LatLng;
 import junit.framework.TestCase;
