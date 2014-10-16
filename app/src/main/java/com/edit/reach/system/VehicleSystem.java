@@ -4,8 +4,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.swedspot.automotiveapi.AutomotiveSignal;
 import android.swedspot.automotiveapi.AutomotiveSignalId;
+import android.swedspot.scs.SCS;
 import android.swedspot.scs.data.*;
 import android.util.Log;
+import com.edit.reach.constants.Constants;
 import com.edit.reach.constants.MovingState;
 import com.edit.reach.constants.SignalType;
 import com.swedspot.automotiveapi.AutomotiveFactory;
@@ -33,13 +35,18 @@ public class VehicleSystem extends Observable implements Runnable {
 	private SCSDouble totalFuelUsed;
 
 	private SCSFloat instantFuelEconomy = new SCSFloat(0f);
+	private SCSFloat fuelRate = new SCSFloat(0f);
 	private SCSFloat fuelLevel = new SCSFloat(-1f);
 
 	private Uint8 isMoving = new Uint8(-1);
 	private Uint8 workingState = new Uint8(-1);
 	private SCSInteger distanceToService = new SCSInteger(-1);
 
+	private double tankSize = 0;
+
 	private final List<SCSFloat> instantFuelEconomyList = new ArrayList<SCSFloat>();
+
+	private final List<SCSFloat> fuelRateList = new ArrayList<SCSFloat>();
 
 	// Will these be used?
 	private SCSFloat vehicleSpeed;
@@ -53,6 +60,8 @@ public class VehicleSystem extends Observable implements Runnable {
 	private boolean timeHasBeenNotified = false;
 
 	private Handler signalHandler;
+
+	private SCSFloat startFuelLevel = new SCSFloat(-1f);
 
 	// A thread for listening to the vehicle signals.
 	private final Thread vehicleSignals;
@@ -135,6 +144,21 @@ public class VehicleSystem extends Observable implements Runnable {
 							Log.d("Signal: FuelEconomy", "Fuel economy " + instantFuelEconomy.getFloatValue());
 							break;
 
+						case AutomotiveSignalId.FMS_FUEL_RATE:
+							fuelRate = (SCSFloat) automotiveSignal.getData();
+
+							if(isMoving.getIntValue() == 1) {
+								fuelRateList.add(fuelRate);
+							}
+
+							if(startFuelLevel.getFloatValue() != -1f && fuelLevel.getFloatValue() != -1f) {
+								startFuelLevel = fuelLevel;
+							}
+
+							calculateTankSize();
+
+							break;
+
 						// Vehicle speed (Tachograph)
 						case AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED:
 							vehicleSpeed = ((SCSFloat) automotiveSignal.getData());
@@ -200,12 +224,6 @@ public class VehicleSystem extends Observable implements Runnable {
 
 	/* --- CONSTANTS --- */
 
-	// TODO This is a fictitious tank size
-	private static final double TEMP_TANK_SIZE_IN_LITERS = 600.0;
-
-	// Multiply with this to convert nanoseconds to seconds.
-	private static final double NANOSECONDS_TO_SECONDS = 1.0/1000000000;
-
 	// The maximum number of seconds to drive before a 45 minute break.
 	private static final long LEGAL_UPTIME_IN_SECONDS = 16200;
 
@@ -217,6 +235,10 @@ public class VehicleSystem extends Observable implements Runnable {
 
 	// Threshold for short on time.
 	private static final long TIME_THRESHOLD = 900;
+
+	// TODO the time threshold for calculating the tank size.
+	private static final float FUEL_TIME_THRESHOLD = 100;
+
 
 	/** Constructor.
 	 */
@@ -275,7 +297,7 @@ public class VehicleSystem extends Observable implements Runnable {
 	 */
 	public synchronized double getKilometersUntilRefuel() {
 		try {
-			double currentLitersInTank = ((fuelLevel.getFloatValue()/100.0) * TEMP_TANK_SIZE_IN_LITERS);
+			double currentLitersInTank = ((fuelLevel.getFloatValue()/100.0) * tankSize);
 
 			if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
 				float addedConsumption = 0;
@@ -303,7 +325,7 @@ public class VehicleSystem extends Observable implements Runnable {
 	public synchronized double getTimeUntilForcedRest() {
 		try {
 			if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
-				return (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS));
+				return (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS));
 			} else {
 				return LEGAL_UPTIME_IN_SECONDS;
 			}
@@ -350,7 +372,7 @@ public class VehicleSystem extends Observable implements Runnable {
 
 	private void determineShortTime() {
 		if(workingState.getIntValue() == 3) {
-			if ((LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * NANOSECONDS_TO_SECONDS)) < TIME_THRESHOLD) {
+			if ((LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS)) < TIME_THRESHOLD) {
 				if (!timeHasBeenNotified) {
 					setChanged();
 					notifyObservers(SignalType.SHORT_TIME);
@@ -389,6 +411,21 @@ public class VehicleSystem extends Observable implements Runnable {
 		if(kmToService <= SERVICE_THRESHOLD && prevKmToService > SERVICE_THRESHOLD) {
 			setChanged();
 			notifyObservers(SignalType.SHORT_TO_SERVICE);
+		}
+	}
+
+	// Method that calculates and sets the size of the vehicles tank.
+	private void calculateTankSize() {
+		if(((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS) <= FUEL_TIME_THRESHOLD && tankSize != 0.0) {
+			float deltaFuelLevel = fuelLevel.getFloatValue() - startFuelLevel.getFloatValue();
+			double deltaTime = (((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS) * Constants.SECONDS_TO_HOURS);
+			float fuelRateSum = 0;
+			for(SCSFloat fuelRate : fuelRateList) {
+				fuelRateSum = fuelRateSum + fuelRate.getFloatValue();
+			}
+			float meanFuelRate = fuelRateSum / fuelRateList.size();
+
+			tankSize = (100/deltaFuelLevel) * (meanFuelRate * deltaTime);
 		}
 	}
 }
