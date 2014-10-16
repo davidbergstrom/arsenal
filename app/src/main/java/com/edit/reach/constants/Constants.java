@@ -1,6 +1,7 @@
 package com.edit.reach.constants;
 
 /**
+ * Class that holds constants.
  * Created by: Tim Kerschbaumer
  * Project: arsenal
  * Date: 2014-10-16

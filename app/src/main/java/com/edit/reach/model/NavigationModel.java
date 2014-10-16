@@ -30,7 +30,7 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 	private final Map map;
 	private final Thread pipelineThread;
 
-	private Handler mainHandler;
+	private final Handler mainHandler;
 	private Handler pipelineHandler;
 
 	private List<String> searchResults;
@@ -95,9 +95,6 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
         newRoute.addListener(new RouteListener() {
 			@Override
 			public void onInitialization() {
-				Log.d("NavModel", "Adding pauses.");
-				//map.getRoute().addPause(vehicleSystem.getKilometersUntilRefuel());
-
 				long routeTime = map.getRoute().getDuration();
 				long nmbrOfPauses = routeTime/VehicleSystem.getLegalUptimeInSeconds();
 
@@ -123,6 +120,7 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 		pipelineHandler.post(new Runnable() {
 			@Override
 			public void run() {
+				// TODO
 				Message message = Message.obtain(mainHandler);
 				Log.d("THREAD", "Thread in update: " + Thread.currentThread().getName());
 
@@ -131,37 +129,41 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 					Log.d("GET", "Km to refuel: " + vehicleSystem.getKilometersUntilRefuel());
 
 					// TODO
-					message.obj = vehicleSystem.getKilometersUntilRefuel();
-					message.what = SignalType.LOW_FUEL;
-					mainHandler.sendMessage(message);
+					// message.obj = vehicleSystem.getKilometersUntilRefuel();
+					// message.what = SignalType.LOW_FUEL;
+					// mainHandler.sendMessage(message);
 
 				} else if ((Integer)data == SignalType.SHORT_TIME) {
 					Log.d("UPDATE", "TYPE: SHORT_TIME");
 					Log.d("GET", "Time until rest: " + vehicleSystem.getTimeUntilForcedRest());
 
 					// TODO
-					message.obj = vehicleSystem.getTimeUntilForcedRest();
-					message.what = SignalType.SHORT_TIME;
-					mainHandler.sendMessage(message);
+					// message.obj = vehicleSystem.getTimeUntilForcedRest();
+					// message.what = SignalType.SHORT_TIME;
+					// mainHandler.sendMessage(message);
 
 				} else if ((Integer)data == SignalType.SHORT_TO_SERVICE) {
 					Log.d("UPDATE", "TYPE: SHORT_TO_SERVICE");
 					Log.d("GET", "Km to service: " + vehicleSystem.getKilometersUntilService());
 
 					// TODO
-					message.obj = vehicleSystem.getKilometersUntilService();
-					message.what = SignalType.SHORT_TO_SERVICE;
-					mainHandler.sendMessage(message);
+					// message.obj = vehicleSystem.getKilometersUntilService();
+					// message.what = SignalType.SHORT_TO_SERVICE;
+					// mainHandler.sendMessage(message);
 
 				} else if ((Integer)data == SignalType.VEHICLE_STOPPED_OR_STARTED) {
 					Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
 					Log.d("GET", "Vehicle State: " + vehicleSystem.getVehicleState());
 
 					// TODO
-					message.obj = vehicleSystem.getVehicleState();
-					message.what = SignalType.VEHICLE_STOPPED_OR_STARTED;
-					mainHandler.sendMessage(message);
+					// message.obj = vehicleSystem.getVehicleState();
+					// message.what = SignalType.VEHICLE_STOPPED_OR_STARTED;
+					// mainHandler.sendMessage(message);
 
+				} else if ((Integer)data == SignalType.VEHICLE_TOOK_FINAL_BREAK) {
+					Log.d("UPDATE", "TYPE: VEHICLE_TOOK_FINAL_BREAK");
+
+					// TODO what to do when vehicle took a "final" break.
 				} else {
 					Log.d("TYPE ERROR", "Type error in update");
 				}
