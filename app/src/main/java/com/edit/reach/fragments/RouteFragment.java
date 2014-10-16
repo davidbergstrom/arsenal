@@ -42,6 +42,7 @@ public class RouteFragment extends Fragment {
     private List<String> matchedPlaces;
     private TextView tvMatchedListItem;
     private ProgressBar spinner;
+	private ArrayAdapter<String> adapter;
 
     private OnRouteInteractionListener mListener;
 
@@ -60,6 +61,7 @@ public class RouteFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
 
     public RouteFragment() {
         // Required empty public constructor
@@ -146,6 +148,11 @@ public class RouteFragment extends Fragment {
 		}
 	}
 
+    public void setRouteText(String from, String to){
+        actFrom.setText(from);
+        actTo.setText(to);
+    }
+
     //Kan behövas för att dynamiskt lägga till fler textfält för del-destinationer
     private EditText editText(){
         EditText editText = new EditText(getActivity());
@@ -167,8 +174,7 @@ public class RouteFragment extends Fragment {
 	// and gives suggestions.
 	public void suggestionList(List<String> resultList) {
 		matchedPlaces = resultList;
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), R.layout.route_list_item, matchedPlaces);
-		actFrom.setThreshold(1);
+		adapter = new ArrayAdapter<String>(this.getActivity(), R.layout.route_list_item, matchedPlaces);
 		actFrom.setAdapter(adapter);
 	}
 
