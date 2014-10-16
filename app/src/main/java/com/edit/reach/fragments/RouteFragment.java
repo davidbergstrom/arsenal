@@ -42,6 +42,7 @@ public class RouteFragment extends Fragment {
     private List<String> matchedPlaces;
     private TextView tvMatchedListItem;
     private ProgressBar spinner;
+	private ArrayAdapter<String> adapter;
 
     private OnRouteInteractionListener mListener;
 
@@ -173,8 +174,7 @@ public class RouteFragment extends Fragment {
 	// and gives suggestions.
 	public void suggestionList(List<String> resultList) {
 		matchedPlaces = resultList;
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), R.layout.route_list_item, matchedPlaces);
-		actFrom.setThreshold(1);
+		adapter = new ArrayAdapter<String>(this.getActivity(), R.layout.route_list_item, matchedPlaces);
 		actFrom.setAdapter(adapter);
 	}
 
