@@ -13,7 +13,7 @@ public interface IMilestone {
 	 * Category is an enum class to identify a milestones type.
 	 */
 	public enum Category{
-		RESTAURANT, RESTAREA, GASSTATION, OBSTRUCTION, FOOD, SLEEP, ROAD_CAMERA
+		RESTAURANT, RESTAREA, GASSTATION, OBSTRUCTION, FOOD, SLEEP, TOILET, ROAD_CAMERA
 	}
 
 	/**
