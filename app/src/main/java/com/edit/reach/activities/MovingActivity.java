@@ -1,37 +1,24 @@
 package com.edit.reach.activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
 import com.edit.reach.app.R;
 
+public class MovingActivity extends Activity {
 
-public class MainActivity extends Activity implements View.OnClickListener {
-
-	private ImageButton getStartedButton;
-
-    /** Called when the activity is first created. */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_main);
-
-		getStartedButton = (ImageButton) findViewById(R.id.get_started_button);
-		getStartedButton.setOnClickListener(this);
+        setContentView(R.layout.activity_moving);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-
+        getMenuInflater().inflate(R.menu.moving, menu);
         return true;
     }
 
@@ -46,12 +33,4 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
         return super.onOptionsItemSelected(item);
     }
-
-	@Override
-	public void onClick(View view) {
-		if (view == getStartedButton) {
-			Intent intent = new Intent(this, MultiPaneActivity.class);
-			startActivity(intent);
-		}
-	}
 }

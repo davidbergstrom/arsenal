@@ -7,27 +7,37 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/appicon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.edit.reach.activities.Splash"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.edit.reach.activities.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.edit.reach.activities.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
-	    <activity
+        <activity
             android:name="com.edit.reach.activities.MultiPaneActivity"
             android:label="@string/title_activity_multi_pane" >
         </activity>
-
+        <activity
+                android:name="com.edit.reach.activities.MovingActivity"
+                android:label="@string/title_activity_moving" >
+        </activity>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

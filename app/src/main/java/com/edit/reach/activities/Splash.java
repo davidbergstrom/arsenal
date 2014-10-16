@@ -2,36 +2,40 @@ package com.edit.reach.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
 import com.edit.reach.app.R;
 
+public class Splash extends Activity {
 
-public class MainActivity extends Activity implements View.OnClickListener {
+    /** Duration of wait on splash_land screen in milliseconds**/
+    private final int SPLASH_DISPLAY_LENGTH = 1500;
 
-	private ImageButton getStartedButton;
-
-    /** Called when the activity is first created. */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setContentView(R.layout.splash_land);
+        } else {
+            setContentView(R.layout.splash_port);
+        }
 
-        setContentView(R.layout.activity_main);
 
-		getStartedButton = (ImageButton) findViewById(R.id.get_started_button);
-		getStartedButton.setOnClickListener(this);
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                startActivity(new Intent(Splash.this, MainActivity.class));
+                finish();
+            }
+        }, SPLASH_DISPLAY_LENGTH);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-
+        getMenuInflater().inflate(R.menu.splash, menu);
         return true;
     }
 
@@ -46,12 +50,4 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
         return super.onOptionsItemSelected(item);
     }
-
-	@Override
-	public void onClick(View view) {
-		if (view == getStartedButton) {
-			Intent intent = new Intent(this, MultiPaneActivity.class);
-			startActivity(intent);
-		}
-	}
 }
