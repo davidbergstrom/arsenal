@@ -24,34 +24,40 @@ import java.util.Observer;
  * Date: 2014-09-27
  * Time: 19:27
  * Last Edit: 2014-10-17
+ * This class har the singleton pattern.
  */
 public class NavigationModel implements Runnable, Observer, SuggestionListener {
 
 	private final VehicleSystem vehicleSystem;
-	private final Map map;
 	private final Thread pipelineThread;
-
 	private final Handler mainHandler;
+
 	private Handler pipelineHandler;
+	private Map map;
+
+	private static NavigationModel navigationModel;
 
 	private List<String> searchResults;
 
 	/* --- CONSTANTS --- */
 	private static final String PIPELINE_THREAD_NAME = "PipelineThread";
 
-	/** Constructor
-	 * @param googleMap a GoogleMap
-	 * @param mainHandler a handler created on the main Looper thread.
-	 */
-	public NavigationModel(GoogleMap googleMap, Handler mainHandler) {
+	// Private constructor
+	private NavigationModel() {
 		this.pipelineThread = new Thread(this, PIPELINE_THREAD_NAME);
 		this.pipelineThread.start();
 
 		this.vehicleSystem = new VehicleSystem();
 		this.vehicleSystem.addObserver(this);
 
-		this.mainHandler = mainHandler;
-		this.map = new Map(googleMap);
+		this.mainHandler = new Handler(Looper.getMainLooper());
+	}
+
+	public static NavigationModel getInstance() {
+		if (navigationModel != null) {
+			navigationModel = new NavigationModel();
+		}
+		return navigationModel;
 	}
 
 	@Override
@@ -70,6 +76,12 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 	 */
 	public Map getMap() {
 		return map;
+	}
+
+	public void setGoogleMap(GoogleMap googleMap) {
+		if(this.map != null) {
+			this.map = new Map(googleMap);
+		}
 	}
 
 	@Override
