@@ -33,27 +33,25 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 
 	private final Thread pipelineThread;
 	private final Handler mainHandler;
+	private final Map map;
 
 	private Handler pipelineHandler;
 
-	private Map map;
-
 	private List<String> searchResults;
-
-	private static NavigationModel navigationModel;
 
 	/* --- CONSTANTS --- */
 	private static final String PIPELINE_THREAD_NAME = "PipelineThread";
 
-	// Private constructor that makes initializations.
-	private NavigationModel() {
+	public NavigationModel(GoogleMap googleMap, Handler mainHandler) {
 		this.pipelineThread = new Thread(this, PIPELINE_THREAD_NAME);
 		this.pipelineThread.start();
 
 		this.vehicleSystem = new VehicleSystem();
 		this.vehicleSystem.addObserver(this);
 
-		this.mainHandler = new Handler(Looper.getMainLooper());
+		this.map = new Map(googleMap);
+
+		this.mainHandler = mainHandler;
 	}
 
 	@Override
@@ -67,35 +65,22 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 		}
 	}
 
-	/** Returns an instance of this class.
-	 * @return an instance of the NavigationModel.
-	 */
-	public static NavigationModel getInstance() {
-		if (navigationModel == null) {
-			navigationModel = new NavigationModel();
-		}
-		return navigationModel;
-	}
-
 	/** This method is used to find pauses in driving mode.
 	 * @param categoryList a list of categories with what the user wants.
 	 * @return a IMilestone that matches the categories specified.
 	 */
 	public IMilestone getPauseSuggestions(List<IMilestone.Category> categoryList) {
-		// TODO The AISA method
+		// TODO The AISA method for multiple categories.
 		return null;
 	}
 
-	/** Initialized map with a googleMap.
-	 * If the map is already initialized, nothing will happend.
-	 * Always set the map before using methods in this class.
-	 * If you do not call this method it will result in a nullpointer for many methods in this class.
-	 * @param googleMap
+	/** This method is used to find pauses in driving mode.
+	 * @param category a category with what the user wants.
+	 * @return a IMilestone that matches the category specified.
 	 */
-	public void setGoogleMap(GoogleMap googleMap) {
-		if (this.map == null) {
-			this.map = new Map(googleMap);
-		}
+	public IMilestone getPauseSuggestions(IMilestone.Category category) {
+		// TODO The AISA method for one category
+		return null;
 	}
 
 	/** Returns a map object.
@@ -126,6 +111,7 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 	 * @param newRoute the route to be set.
 	 */
 	public void setRoute(final Route newRoute) {
+		Log.d("NavigationModel", "setRoute()");
 		map.setRoute(newRoute);
 		newRoute.addListener(this);
 	}
@@ -137,14 +123,18 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 
 	@Override
 	public void onInitialization(boolean success) {
+		Log.d("NavigationModel", "onInitialization()");
 		Message message = mainHandler.obtainMessage();
 		if (success) {
+			Log.d("NavigationModel", "added time pause");
 			addTimePause();
 			message.what = SignalType.ROUTE_INITIALIZATION_SUCCEDED;
 		} else {
 			message.what = SignalType.ROUTE_INITIALIZATION_FAILED;
 		}
+
 		mainHandler.sendMessage(message);
+		Log.d("NavigationModel", "Sent message to mainhandler");
 	}
 
 	@Override
@@ -169,6 +159,7 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 	 */
 	@Override
 	public synchronized void update(Observable observable, final Object data) {
+		Log.d("NavigationModel", "update()");
 		pipelineHandler.post(new Runnable() {
 			@Override
 			public void run() {

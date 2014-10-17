@@ -19,29 +19,6 @@ import com.edit.reach.model.NavigationModel;
 public class MainActivity extends Activity implements View.OnClickListener {
 
 	private ImageButton startMovingActivity, startStationaryActivity;
-    private NavigationModel navigationModel;
-
-    // A handler for the UI thread. The Handler recieves messages from other thread.
-    private Handler mainHandler = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(Message message) {
-
-            //Change Activity when state is changed
-            if (message.what == SignalType.VEHICLE_STOPPED_OR_STARTED) {
-
-                if ((Integer)message.obj == MovingState.NOT_IN_DRIVE) {
-                     Intent intent = new Intent(getApplicationContext(), MultiPaneActivity.class);
-                    startActivity(intent);
-                } else {
-                    Intent intent = new Intent(getApplicationContext(), MovingActivity.class);
-                    startActivity(intent);
-                }
-
-            }
-
-
-        }
-    };
 
     /** Called when the activity is first created. */
     @Override

@@ -15,6 +15,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.edit.reach.app.R;
+import com.edit.reach.constants.SignalType;
+import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.fragments.ControlFragment;
 import com.edit.reach.fragments.MapFragment;
 import com.edit.reach.fragments.MilestonesFragment;
@@ -32,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MultiPaneActivity extends FragmentActivity implements MapFragment.OnMapInteractionListener,
-	RouteFragment.OnRouteInteractionListener, MilestonesFragment.OnMilestonesInteractionListener {
+        RouteFragment.OnRouteInteractionListener, MilestonesFragment.OnMilestonesInteractionListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
@@ -44,16 +46,46 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
     private ProgressBar spinner;
 
     private MilestonesFragment milestonesFragment;
-	private RouteFragment routeFragment;
+    private RouteFragment routeFragment;
     private ControlFragment controlFragment;
 
+    private boolean msFragmentHasBeenCreated = false;
+
+    private Route route;
+
     // A handler for the UI thread. The Handler recieves messages from other thread.
-	private Handler mainHandler = new Handler(Looper.getMainLooper()) {
-		@Override
-		public void handleMessage(Message message) {
-			// TODO how to handle messages sent to UI thread.
-		}
-	};
+    private Handler mainHandler = new Handler(Looper.getMainLooper()) {
+
+        @Override
+        public void handleMessage(Message message) {
+            switch (message.what) {
+                case SignalType.VEHICLE_STOPPED_OR_STARTED:
+                    // TODO
+                    break;
+
+                case SignalType.ROUTE_INITIALIZATION_SUCCEDED:
+                    if(!msFragmentHasBeenCreated) {
+                        createMilestonesFragment();
+                        msFragmentHasBeenCreated = true;
+                    } else {
+                        // TODO what to do here?
+                    }
+                    break;
+
+                case SignalType.FUEL_UPDATE:
+                    controlFragment.setFuelBar((Float)message.obj);
+                    break;
+
+                case SignalType.UPTIME_UPDATE:
+                    controlFragment.setTimeClockBar((Double)message.obj);
+                    break;
+
+                case SignalType.LEG_UPDATE:
+                    // TODO what here?
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +104,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
         setUpMapIfNeeded();
         preliminaryMilestones = new ArrayList<IMilestone>();
-        navigationModel = NavigationModel.getInstance();
-        navigationModel.setGoogleMap(mMap);
+        navigationModel = new NavigationModel(mMap, mainHandler);
     }
 
     @Override
@@ -169,29 +200,33 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         });
     }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.multi_pane, menu);
-		return true;
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.multi_pane, menu);
+        return true;
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-	@Override
-	public void onMapInteraction(Uri uri) {
+    @Override
+    public void onMapInteraction(Uri uri) {
 
-	}
+    }
+
+    public void driverInteractByButtons(){
+
+    }
 
     public void goBackToRouteFragment(){
         Log.d("MultiPaneActivity", "goBackFragment");
@@ -204,25 +239,20 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
     public void createRoute(String from, String to){
         routeWithCurrentLocation = false;
-        final Route r = new Route(from, to);
-        navigationModel.setRoute(r);
-        createMilestonesFragment(r);
+        route = new Route(from, to);
+        navigationModel.setRoute(route);
     }
 
     public void createRoute(LatLng one, String to){
         routeWithCurrentLocation = true;
-        final Route r = new Route(one, to);
-        navigationModel.setRoute(r);
-        createMilestonesFragment(r);
+        route = new Route(one, to);
+        navigationModel.setRoute(route);
     }
 
     public boolean routeWithCurrentLocation(){
         return routeWithCurrentLocation;
     }
 
-    public List<IMilestone> getPreliminaryMilestones(){
-        return preliminaryMilestones;
-    }
 
     public void createRouteWithMyLocation(String to){
         Double myLocationLatitude = getMyLocation().getLatitude();
@@ -235,63 +265,37 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         spinner = (ProgressBar)findViewById(R.id.spinner);
         spinner.setVisibility(View.VISIBLE);
     }
-    public void createMilestonesFragment(final Route r){
-        r.addListener(new RouteListener() {
-            @Override
-            public void onInitialization(boolean success) {
-                if(success && spinner != null){
-                    milestonesFragment = MilestonesFragment.newInstance(r.getOriginAddress(), r.getDestinationAddress());
-                    getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
-  //                  spinner = (ProgressBar)findViewById(R.id.spinner);
-//                    spinner.setVisibility(View.GONE);
-                }else{
 
-                }
-
-            }
-
-            @Override
-            public void onPauseAdded(Pause pause) {
-
-            }
-
-            @Override
-            public void onLegFinished(Leg finishedLeg) {
-
-            }
-
-            @Override
-            public void onStepFinished(Step finishedStep) {
-
-            }
-        });
+    public void createMilestonesFragment(){
+        if(spinner != null) {
+            spinner = (ProgressBar) findViewById(R.id.spinner);
+            spinner.setVisibility(View.GONE);
+            milestonesFragment = MilestonesFragment.newInstance(route.getOriginAddress(), route.getDestinationAddress());
+            getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
+            navigationModel.addMilestones(preliminaryMilestones);
+        }
     }
 
-
+    public void getPauseSuggestions(IMilestone.Category category){
+        navigationModel.getPauseSuggestions(category);
+    }
 
     public void startMovingMode(){
-        navigationModel.addMilestones(preliminaryMilestones);
         navigationModel.getMap().setState(Map.State.MOVING);
-
-        /*
+        //TODO: Gav nullpointer (oklart varför..)
         controlFragment = ControlFragment.newInstance("Control");
         getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
-        */
     }
 
-	@Override
-	public void onRouteInteraction(Object o) {
-
-
-		// Sends the text from search field and receives a list of
-		// places and sends the list back to the fragment
-		if(o.getClass() == String.class) {
-			List<String> list = navigationModel.getMatchedStringResults((String)o);
-			routeFragment.suggestionList(list);
-		}
-
-
-	}
+    @Override
+    public void onRouteInteraction(Object o) {
+        // Sends the text from search field and receives a list of
+        // places and sends the list back to the fragment
+        if(o.getClass() == String.class) {
+            List<String> list = navigationModel.getMatchedStringResults((String)o);
+            routeFragment.suggestionList(list);
+        }
+    }
 
     @Override
     public void onMilestonesInteraction(Object o) {
