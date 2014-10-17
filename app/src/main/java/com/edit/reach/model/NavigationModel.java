@@ -155,15 +155,28 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 					Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
 					Log.d("GET", "Vehicle State: " + vehicleSystem.getVehicleState());
 
-					// TODO
-					// message.obj = vehicleSystem.getVehicleState();
-					// message.what = SignalType.VEHICLE_STOPPED_OR_STARTED;
-					// mainHandler.sendMessage(message);
+					message.obj = vehicleSystem.getVehicleState();
+					message.what = SignalType.VEHICLE_STOPPED_OR_STARTED;
+					mainHandler.sendMessage(message);
 
 				} else if ((Integer)data == SignalType.VEHICLE_TOOK_FINAL_BREAK) {
+					// TODO what to do when vehicle took a "final" break.
 					Log.d("UPDATE", "TYPE: VEHICLE_TOOK_FINAL_BREAK");
 
-					// TODO what to do when vehicle took a "final" break.
+				} else if ((Integer)data == SignalType.UPTIME_UPDATE) {
+					Log.d("UPDATE", "TYPDE: UP_TIME_UPDATE");
+
+					message.obj = vehicleSystem.getTimeUntilForcedRest();
+					message.what = SignalType.UPTIME_UPDATE;
+					mainHandler.sendMessage(message);
+
+				} else if ((Integer)data == SignalType.FUEL_UPDATE) {
+					Log.d("UPDATE", "TYPDE: FUEL_UPDATE");
+
+					message.obj = vehicleSystem.getFuelLevel();
+					message.what = SignalType.FUEL_UPDATE;
+					mainHandler.sendMessage(message);
+
 				} else {
 					Log.d("TYPE ERROR", "Type error in update");
 				}
