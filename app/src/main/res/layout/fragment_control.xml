@@ -1,13 +1,102 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background_fragment_left"
+    android:paddingTop="@dimen/fragment_control_top_padding"
+    android:paddingBottom="@dimen/fragment_control_bottom_padding"
+    android:paddingStart="@dimen/fragment_control_start_padding"
+    android:paddingEnd="@dimen/fragment_control_end_padding"
     tools:context="com.edit.reach.fragments.ControlFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+		<!-- Holder for top content in ControlFragment -->
+		<RelativeLayout
+			android:id="@+id/container_control_top"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_alignParentTop="true">
 
-</FrameLayout>
+			<!-- ******************************************************************** -->
+
+			<!-- The following is just here for design purposes -->
+			<!-- It will be added here dynamically as "control_input.xml" -->
+
+
+
+
+			<!-- ******************************************************************** -->
+
+		</RelativeLayout>
+
+		<!-- Holder for bottom content in ControlFragment -->
+		<RelativeLayout
+				android:id="@+id/container_control_bottom"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_alignParentBottom="true"
+				android:layout_marginBottom="30dp">
+
+			<!-- ******************************************************************** -->
+
+			<!-- The following is just here for design purposes -->
+			<!-- It will be added here dynamically as "control_input.xml" -->
+
+			<!-- Holder for 4 buttons. When button is pressed switch src to <<name>> + _pressed
+			- for example "input_restaurant_pressed" and for the other buttons "input_toilet_shaded"  -->
+			<GridLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_centerInParent="true"
+					>
+
+				<ImageButton
+						android:id="@+id/button_control_input_restaurant"
+						android:src="@drawable/input_restaurant_pressed"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_column="0"
+						android:layout_row="0"
+						android:layout_margin="@dimen/input_button_margin"
+						style="@android:style/Widget.Holo.Button.Borderless"
+						/>
+
+				<ImageButton
+						android:id="@+id/button_control_input_restarea"
+						android:src="@drawable/input_restarea_shaded"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_column="0"
+						android:layout_row="1"
+						android:layout_margin="@dimen/input_button_margin"
+						style="@android:style/Widget.Holo.Button.Borderless"
+						/>
+
+				<ImageButton
+						android:id="@+id/button_control_input_toilet"
+						android:src="@drawable/input_toilet_shaded"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_column="1"
+						android:layout_row="0"
+						android:layout_margin="@dimen/input_button_margin"
+						style="@android:style/Widget.Holo.Button.Borderless"
+						/>
+
+				<ImageButton
+						android:id="@+id/button_control_input_gasstation"
+						android:src="@drawable/input_gasstation_pressed"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_column="1"
+						android:layout_row="1"
+						android:layout_margin="@dimen/input_button_margin"
+						style="@android:style/Widget.Holo.Button.Borderless"
+						/>
+
+			</GridLayout>
+
+			<!-- ******************************************************************** -->
+
+		</RelativeLayout>
+
+</RelativeLayout>

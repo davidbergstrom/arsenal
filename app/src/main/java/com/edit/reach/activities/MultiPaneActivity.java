@@ -19,6 +19,7 @@ import com.edit.reach.fragments.MilestonesFragment;
 import com.edit.reach.fragments.RouteFragment;
 import com.edit.reach.model.Milestone;
 import com.edit.reach.model.NavigationModel;
+import com.edit.reach.model.Pause;
 import com.edit.reach.model.Route;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.RouteListener;
@@ -215,16 +216,20 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
             //new Spinner().start();
             r.addListener(new RouteListener() {
                 @Override
-                public void onInitialization() {
+                public void onInitialization(boolean success) {
                     // WHen route finished loading
-                    milestonesFragment = MilestonesFragment.newInstance(r.getOriginAddress(), r.getDestinationAddress());
-                    getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
-                    ProgressBar spinner = (ProgressBar)findViewById(R.id.spinner);
-                    spinner.setVisibility(View.GONE);
+                    if(success){
+                        milestonesFragment = MilestonesFragment.newInstance(r.getOriginAddress(), r.getDestinationAddress());
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
+                        ProgressBar spinner = (ProgressBar)findViewById(R.id.spinner);
+                        spinner.setVisibility(View.GONE);
+                    }else{
+                        // When the Route failed to initialize, show the user an error.
+                    }
                 }
 
                 @Override
-                public void onPauseAdded(LatLng pauseLocation) {
+                public void onPauseAdded(Pause pause) {
                     // Fuck this
                 }
             });

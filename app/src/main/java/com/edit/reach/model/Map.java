@@ -41,64 +41,39 @@ public class Map {
 
     // All the markers on the map
     private List<Marker> markersOnMap;
-    private List<IMilestone> milestonesOnMap;
+    //private List<IMilestone> milestonesOnMap;
 
     // Class name for logging
-    private String logClass = "Map";
+    private String DEBUG_TAG = "Map";
 
     /** Enum class for internal state pattern */
-    private enum State{
-        OVERVIEW, NAVIGATION, NONE
+    public enum State{
+        STATIONARY, MOVING
     }
 
     /** A listener for a route */
     private RouteListener routeListener = new RouteListener(){
 
         @Override
-        public void onInitialization() {
+        public void onInitialization(boolean success) {
             // When the route has been initialized, draw it
-            updateState();  // Update all the state specific changes when route initialized.
-            if(state == State.OVERVIEW){
-                Log.d(logClass, "Drawing Route");
-                currentRoute.drawOverview(map);
-            }else if(state == State.NAVIGATION){
-                Log.d(logClass, "Drawing Route");
-                currentRoute.drawNavigation(map);
+            if(success){
+                updateState();  // Update all the state specific changes when route initialized.
             }
-
         }
 
         @Override
-        public void onPauseAdded(LatLng pauseLocation) {
+        public void onPauseAdded(Pause pause) {
             Log.d("Map", "Pause added");
-            if(state == State.OVERVIEW){
+            if(state == State.STATIONARY){
                 // If the current state is overview, draw the pause circle and add the markers to the map
                 //map.addCircle(new CircleOptions().center(pauseLocation).fillColor(Color.RED).radius(1000));
-                currentRoute.drawPauses(map);
+                //currentRoute.drawPauses(map);
+                pause.draw(map);
                 Log.d("Map", "Getting milestones");
-                Ranking.getMilestones(milestonesReceiver, pauseLocation, NavigationUtil.RADIUS_IN_DEGREES*2);
+                //Ranking.getMilestones(milestonesReceiver, pause.getLocation(), NavigationUtil.RADIUS_IN_DEGREES*2);
             }
 
-        }
-    };
-
-    /** A class receiving milestones and adding them as markers  */
-    private MilestonesReceiver milestonesReceiver = new MilestonesReceiver() {
-        @Override
-        public void onMilestonesRecieved(ArrayList<IMilestone> milestones) {
-            Log.d("Map", "Adding milestones");
-            milestonesOnMap.addAll(milestones);
-            for (IMilestone i : milestones) {
-                markersOnMap.add(map.addMarker(new MarkerOptions()
-                        .position(i.getLocation())
-                        .title(i.getName())
-                        .snippet(i.getDescription() + "\nRating: " + i.getRank() + "/5")));
-            }
-        }
-
-        @Override
-        public void onMilestonesGetFailed() {
-            Log.d("Map", "Failed retireved!");
         }
     };
 
@@ -106,7 +81,7 @@ public class Map {
     private Runnable navigationRunnable = new Runnable() {
         @Override
         public void run() {
-            if(state == State.NAVIGATION && currentRoute != null && currentRoute.isInitialized()){
+            if(state == State.MOVING && currentRoute != null && currentRoute.isInitialized()){
                 Location myLocation = map.getMyLocation();
                 LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
 
@@ -118,7 +93,7 @@ public class Map {
                 handler.postDelayed(this, UPDATE_INTERVAL);
                 lastLocation = myLocation;
             }else{
-                Log.d(logClass, "Current route null or not initialized!");
+                Log.d(DEBUG_TAG, "Current route null or not initialized!");
             }
         }
     };
@@ -131,8 +106,8 @@ public class Map {
 		this.map = map;
         this.handler = new Handler();
         this.markersOnMap = new ArrayList<Marker>();
-        this.milestonesOnMap = new ArrayList<IMilestone>();
-        this.state = State.NONE;
+        //this.milestonesOnMap = new ArrayList<IMilestone>();
+        this.state = State.STATIONARY;
 	}
 
     /**
@@ -140,7 +115,7 @@ public class Map {
      * @param newRoute, the new route
      */
     void setRoute(Route newRoute){
-        Log.d(logClass, "Erasing old route and adding a new.");
+        Log.d(DEBUG_TAG, "Erasing old route and adding a new.");
         if(currentRoute != null){
             currentRoute.erase();
             currentRoute.removeListeners();
@@ -148,8 +123,8 @@ public class Map {
         currentRoute = newRoute;
         currentRoute.addListener(routeListener);
         // Set the mode to Overview
-        state = State.OVERVIEW;
-        //setState(State.OVERVIEW);
+        state = State.STATIONARY;
+        //setState(State.STATIONARY);
     }
 
     /**
@@ -161,52 +136,57 @@ public class Map {
     }
 
     /**
-     * Start the current route.
+     * Move the camera for the map to the new location.
+     * @param location, the location to move to.
      */
-	public void startNavigation(){
-        setState(State.NAVIGATION);
-	}
-
-    /**
-     * Stop the current route.
-     */
-	void stopNavigation(){
-        setState(State.NONE);
-	}
-
-    /**
-     * Start an overview of the current route.
-     */
-    void startOverview(){
-        setState(State.OVERVIEW);
+    void moveCameraTo(LatLng location){
+        CameraPosition newCameraLocation = new CameraPosition.Builder().target(location).zoom(8).build();
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(newCameraLocation));
     }
 
-    // Sets the state of the map to the provided. This class will behave differently
-    // based on what state it is in.
-    private void setState(State newState){
+    /**
+     * Move the camera for the map to the milestone and add it as a marker.
+     * @param milestone, the milestone to add to the map and move the camera to.
+     */
+    Marker showMilestone(IMilestone milestone){
+        LatLng milestoneLocation = milestone.getLocation();
+        Marker tempMarker = map.addMarker(new MarkerOptions().position(milestoneLocation).snippet(milestone.getDescription()).title(milestone.getName()));
+        moveCameraTo(milestoneLocation);
+        return tempMarker;
+    }
+
+    /**
+     * Sets the state of the map. Available states are:
+     *      STATIONARY    -   Will zoom so the whole route is visible and with pauses and milestones added.
+     *      NAVIGATION  -   Zoom to the ground and starts a automatic update of the route to follow the users current location.
+     * @param newState, the new state of the map
+     */
+    public void setState(State newState){
         this.state = newState;
-        if(newState == State.OVERVIEW){
+        if(newState == State.STATIONARY){
             LatLng routeOrigin = currentRoute.getOrigin();
             LatLng routeDestination = currentRoute.getDestination();
             if(routeOrigin != null && routeDestination != null){
-                LatLng routeMiddle = new LatLng((routeOrigin.latitude+routeDestination.latitude)/2, (routeOrigin.longitude+routeDestination.longitude)/2);
-                CameraPosition currentPlace = new CameraPosition.Builder().target(routeMiddle).zoom(6).build();
-                map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
+                // Zoom and move camera so the whole route is visible.
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                builder.include(routeDestination).include(routeOrigin);
+                map.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
             }
 
             if(currentRoute.isInitialized()){
                 currentRoute.drawOverview(map);
             }
 
-            List<LatLng> pauses = currentRoute.getPauses();
-            for (LatLng i : pauses) {
-                Ranking.getMilestones(milestonesReceiver, i, NavigationUtil.RADIUS_IN_DEGREES*2);
+            List<Pause> pauses = currentRoute.getPauses();
+            for (Pause p : pauses) {
+                p.draw(map);
+                //Ranking.getMilestones(milestonesReceiver, p.getLocation(), NavigationUtil.RADIUS_IN_DEGREES*2);
             }
 
             map.getUiSettings().setAllGesturesEnabled(true);
 
-            Log.d("Map", "End of overview.");
-        }else if(newState == State.NAVIGATION){
+            Log.d("Map", "In overview mode.");
+        }else if(newState == State.MOVING){
             // Remove markers when navigation is starting
             removeMarkers();
 
@@ -217,7 +197,6 @@ public class Map {
             map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
             if(currentRoute.isInitialized()){
-                Log.d(logClass, "Route is initialized");
                 currentRoute.drawNavigation(map);
             }
 
@@ -228,24 +207,8 @@ public class Map {
             map.getUiSettings().setCompassEnabled(false);
             map.getUiSettings().setRotateGesturesEnabled(false);
 
-
             // Start navigation runnable
             handler.postDelayed(navigationRunnable, UPDATE_INTERVAL);
-        }else{
-            // Remove markers when navigation is starting
-            removeMarkers();
-
-            // TODO Add what to show (maybe new draw?)
-            currentRoute.erase();
-
-            Location myLocation = map.getMyLocation();
-            if(myLocation != null){
-                LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-
-                CameraPosition currentPlace = new CameraPosition.Builder().target(position).tilt(0).zoom(5).build();
-                map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
-            }
-            map.getUiSettings().setAllGesturesEnabled(true);
         }
     }
 
@@ -259,9 +222,11 @@ public class Map {
      * @return the milestone, null if there is no milestones at that coordinate
      */
     public IMilestone getMilestone(LatLng location){
-        for(IMilestone milestone : milestonesOnMap){
-            if(milestone.getLocation().equals(location)){
-                return milestone;
+        for(Pause pause : currentRoute.getPauses()){
+            for(IMilestone milestone : pause.getMilestones()){
+                if(milestone.getLocation().equals(location)){
+                    return milestone;
+                }
             }
         }
         return null;
@@ -283,7 +248,7 @@ public class Map {
         for(Marker marker : markersOnMap){
             marker.remove();
         }
-        milestonesOnMap.clear();
+        //milestonesOnMap.clear();
         markersOnMap.clear();
     }
 }
