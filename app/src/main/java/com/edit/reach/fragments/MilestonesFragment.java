@@ -1,9 +1,11 @@
 package com.edit.reach.fragments;
 
 import android.app.Activity;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,10 +99,8 @@ public class MilestonesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.d("EditRoute", "Performed a EditRoute-click");
-                /*RouteFragment rf = new RouteFragment();
-                rf.newInstance("Test");
 
-                rf.setRouteText(mFrom, mTo);*/
+
             }
         });
         return view;
