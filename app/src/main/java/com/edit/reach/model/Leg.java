@@ -54,6 +54,15 @@ public class Leg {
     }
 
     /**
+     * Returns the milestone at the end of the leg. Will return null if there is no milestone there.
+     * (That means that it is the last leg of the route and the end is the destination)
+     * @return the milestone at the end of the leg
+     */
+    IMilestone getMilestone(){
+        return endMilestone;
+    }
+
+    /**
      * Draw this leg on the provided map
      * @param map, the map to draw on
      */
