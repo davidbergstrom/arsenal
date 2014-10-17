@@ -6,6 +6,7 @@ import android.os.Message;
 import android.util.Log;
 import com.edit.reach.constants.Constants;
 import com.edit.reach.constants.SignalType;
+import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.RouteListener;
 import com.edit.reach.model.interfaces.SuggestionListener;
 import com.edit.reach.system.VehicleSystem;
@@ -76,20 +77,32 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 		return navigationModel;
 	}
 
-	/** Returns a map object.
-	 * @return a Map
+	/** This method is used to find pauses in driving mode.
+	 * @param categoryList a list of categories with what the user wants.
+	 * @return a IMilestone that matches the categories specified.
 	 */
-	public Map getMap() {
-		return map;
+	public IMilestone getPauseSuggestions(List<IMilestone.Category> categoryList) {
+		// TODO The AISA method
+		return null;
 	}
 
 	/** Initialized map with a googleMap.
+	 * If the map is already initialized, nothing will happend.
+	 * Always set the map before using methods in this class.
+	 * If you do not call this method it will result in a nullpointer for many methods in this class.
 	 * @param googleMap
 	 */
 	public void setGoogleMap(GoogleMap googleMap) {
 		if (this.map == null) {
 			this.map = new Map(googleMap);
 		}
+	}
+
+	/** Returns a map object.
+	 * @return a Map
+	 */
+	public Map getMap() {
+		return map;
 	}
 
 	/** This method is used to match search result strings.
@@ -134,18 +147,18 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 	}
 
 	@Override
-	public void onPauseAdded(Pause pause) {
-		// Do Nothing.
-	}
-
-	@Override
 	public void onLegFinished(Leg finishedLeg) {
 		// TODO Reached a milestone.
 	}
 
 	@Override
+	public void onPauseAdded(Pause pause) {
+		// TODO do nothing?
+	}
+
+	@Override
 	public void onStepFinished(Step finishedStep) {
-		// TODO needed?
+		// TODO do nothing?
 	}
 
 	/**
@@ -161,7 +174,7 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 				// Obtain message from handler.
 				Message message = Message.obtain(mainHandler);
 
-				// Sets the message to the routs legs and send it to the UI.
+				// Sets the message to the routes legs and send it to the UI.
 				message.obj = map.getRoute().getLegs();
 				message.what = SignalType.LEG_UPDATE;
 				mainHandler.sendMessage(message);
