@@ -267,8 +267,12 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         });
     }
 
+
+
     public void startMovingMode(){
+        navigationModel.addMilestones(preliminaryMilestones);
         navigationModel.getMap().setState(Map.State.MOVING);
+
         /*
         controlFragment = ControlFragment.newInstance("Control");
         getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
