@@ -13,10 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import com.edit.reach.activities.MovingActivity;
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
@@ -102,6 +99,7 @@ public class MilestonesFragment extends Fragment {
         cardList = (LinearLayout) view.findViewById(R.id.cardList);
         btEditRoute = (Button) view.findViewById(R.id.button_edit_route);
         btStartRoute = (Button) view.findViewById(R.id.button_start_route);
+
 
 
         btEditRoute.setOnClickListener(new View.OnClickListener() {
