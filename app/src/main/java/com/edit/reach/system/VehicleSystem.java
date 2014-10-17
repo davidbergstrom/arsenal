@@ -27,7 +27,7 @@ import java.util.Observable;
  * Project: REACH
  * Date: 2014-09-27
  * Time: 19:28
- * Last Edit: 2014-10-16
+ * Last Edit: 2014-10-17
  */
 public class VehicleSystem extends Observable implements Runnable {
 	/* --- Instance Variables --- */
@@ -211,12 +211,6 @@ public class VehicleSystem extends Observable implements Runnable {
 
 	/* --- CONSTANTS --- */
 
-	// The maximum number of seconds to drive before a 45 minute break.
-	private static final long LEGAL_UPTIME_IN_SECONDS = 16200;
-
-	// The time in seconds that a break has to be after a 16200 second drive.
-	private static final long BREAKTIME_IN_SECONDS = 2700;
-
 	// Threshold for low fuel
 	private static final float FUEL_THRESHOLD = 10f;
 
@@ -274,13 +268,6 @@ public class VehicleSystem extends Observable implements Runnable {
 
 	// ****** GET-METHODS ****** //
 
-	/** Class Method that returns the legal uptime in seconds constant
-	 * @return A long with the max legal uptime in seconds.
-	 */
-	public static long getLegalUptimeInSeconds() {
-		return LEGAL_UPTIME_IN_SECONDS;
-	}
-
 
 	public synchronized float getFuelLevel() {
 		return (fuelLevel.getFloatValue());
@@ -318,9 +305,9 @@ public class VehicleSystem extends Observable implements Runnable {
 	public synchronized double getTimeUntilForcedRest() {
 		try {
 			if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
-				return (LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS));
+				return (Constants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS));
 			} else {
-				return LEGAL_UPTIME_IN_SECONDS;
+				return Constants.LEGAL_UPTIME_IN_SECONDS;
 			}
 		} catch (NullPointerException e) {
 			e.printStackTrace();
@@ -366,7 +353,7 @@ public class VehicleSystem extends Observable implements Runnable {
 	// Method that notifies observers if the vehicle has been in drive close to threshold.
 	private void determineShortTime() {
 		if(workingState.getIntValue() == 3) {
-			if ((LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS)) < TIME_THRESHOLD) {
+			if ((Constants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS)) < TIME_THRESHOLD) {
 				if (!timeHasBeenNotified) {
 					setChanged();
 					notifyObservers(SignalType.SHORT_TIME);
@@ -403,7 +390,7 @@ public class VehicleSystem extends Observable implements Runnable {
 	// Notify observers if the vehicle took a break longer than or equal to the break time.
 	private boolean determineBreakWasFinal() {
 		boolean wasFinal = false;
-		if(((System.nanoTime() - stopTime) * Constants.NANOSECONDS_TO_SECONDS) >= BREAKTIME_IN_SECONDS ) {
+		if(((System.nanoTime() - stopTime) * Constants.NANOSECONDS_TO_SECONDS) >= Constants.BREAKTIME_IN_SECONDS ) {
 			setChanged();
 			notifyObservers(SignalType.VEHICLE_TOOK_FINAL_BREAK);
 			wasFinal = true;
