@@ -79,7 +79,7 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 	}
 
 	public void setGoogleMap(GoogleMap googleMap) {
-		if(this.map != null) {
+		if(this.map == null) {
 			this.map = new Map(googleMap);
 		}
 	}
