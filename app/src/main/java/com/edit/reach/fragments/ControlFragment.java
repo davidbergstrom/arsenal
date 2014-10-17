@@ -26,6 +26,7 @@ import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.constants.Constants;
 import com.edit.reach.constants.SignalType;
+import com.edit.reach.model.NavigationModel;
 import com.edit.reach.model.interfaces.IMilestone;
 
 import java.util.List;
@@ -41,6 +42,8 @@ public class ControlFragment extends Fragment{
     private ImageButton ibRestaurant;
     private ImageButton ibToilet;
     private ImageButton ibGasStation;
+    private NavigationModel navigationModel;
+
 
 
     private float fuelLevel;
@@ -91,6 +94,12 @@ public class ControlFragment extends Fragment{
         // Required empty public constructor
     }
 
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            navigationModel = NavigationModel.getInstance();
+        }
+    }
 
 
     @Override
@@ -114,26 +123,38 @@ public class ControlFragment extends Fragment{
         nextStopBar = (ProgressBar) view.findViewById(R.id.progress_next_stop);
 
         ibRestArea = (ImageButton) view.findViewById(R.id.button_control_input_restarea);
+        ibRestArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         ibRestaurant = (ImageButton)view.findViewById(R.id.button_control_input_restaurant);
+        ibRestaurant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         ibToilet = (ImageButton) view.findViewById(R.id.button_control_input_toilet);
+        ibToilet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         ibGasStation = (ImageButton) view.findViewById(R.id.button_control_input_gasstation);
+        ibGasStation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
 
         return view;
     }
 
-    public void onClick(View view){
-        if(view == ibRestArea){
-
-        }else if(view == ibRestaurant){
-
-        } else if(view == ibToilet){
-
-        } else if(view == ibGasStation){
-
-        }
-
-    }
 
 
 }
