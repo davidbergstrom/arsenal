@@ -14,15 +14,17 @@
 			android:id="@+id/container_control_top"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_alignParentTop="true"
-			>
+			android:layout_alignParentTop="true">
 
 			<!-- ******************************************************************** -->
 
+			<!-- The following is just here for design purposes -->
+			<!-- It will be added here dynamically as "control_input.xml" -->
+
+
 
 
 			<!-- ******************************************************************** -->
-
 
 		</RelativeLayout>
 
