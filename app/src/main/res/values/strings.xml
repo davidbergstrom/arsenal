@@ -5,6 +5,13 @@
     <string name="app_name">Milestone</string>
     <string name="action_settings">Settings</string>
 
+	<!-- Titles -->
+	<string name="title_activity_moving">MovingActivity</string>
+	<string name="title_activity_maps">Map</string>
+	<string name="title_activity_multi_pane">MultiPaneActivity</string>
+	<string name="title_activity_milestones">MilestonesActivity</string>
+	<string name="title_activity_splash">Splash</string>
+
     <!-- Route Fragment -->
     <string name="et_route_from">From</string>
     <string name="et_route_to">To</string>
@@ -13,9 +20,6 @@
 
     <!-- Map Fragment -->
     <string name="tv_fragment_map">This is where the map will show...</string>
-    <string name="title_activity_maps">Map</string>
-    <string name="title_activity_multi_pane">MultiPaneActivity</string>
-    <string name="title_activity_milestones">MilestonesActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="info_window_icon">milestone_category</string>
     <string name="info_window_clicktoadd">Click to add</string>
@@ -26,8 +30,5 @@
     <string name="route_list_item">Route list item</string>
     <string name="card_milestone_text">Milestone Card</string>
     <string name="button_edit_route">EDIT ROUTE</string>
-    <string name="title_activity_moving">MovingActivity</string>
-    <string name="title_activity_splash">Splash</string>
-    <string name="hello_world"/>
 
 </resources>

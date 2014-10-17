@@ -1,13 +1,31 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_fragment_left"
+    android:paddingTop="@dimen/fragment_control_top_padding"
+    android:paddingBottom="@dimen/fragment_control_bottom_padding"
+    android:paddingStart="@dimen/fragment_control_start_padding"
+    android:paddingEnd="@dimen/fragment_control_end_padding"
     tools:context="com.edit.reach.fragments.ControlFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+		<!-- Holder for top content in ControlFragment -->
+		<FrameLayout
+			android:id="@+id/container_control_top"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_alignParentTop="true"
+			>
+		</FrameLayout>
 
-</FrameLayout>
+		<!-- Holder for bottom content in ControlFragment -->
+		<FrameLayout
+				android:id="@+id/container_control_bottom"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_alignParentBottom="true">
+
+
+		</FrameLayout>
+
+</RelativeLayout>
