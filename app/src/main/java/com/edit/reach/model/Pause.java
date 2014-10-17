@@ -2,6 +2,7 @@ package com.edit.reach.model;
 
 import android.graphics.Color;
 import android.util.Log;
+import com.edit.reach.app.R;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,8 +24,13 @@ public class Pause {
     private List<Marker> milestoneMarkers;
     private String DEBUG_TAG = "Pause";
 
-    public Pause(LatLng center, List<IMilestone> milestones){
-        this.location = center;
+    /**
+     * Constructs a pause with the provided location and milestones.
+     * @param location the location of the pause as coordinate
+     * @param milestones the milestones available for this pause
+     */
+    public Pause(LatLng location, List<IMilestone> milestones){
+        this.location = location;
         this.milestones = milestones;
         this.milestoneMarkers = new ArrayList<Marker>();
     }
@@ -36,16 +42,32 @@ public class Pause {
     public void draw(GoogleMap map){
         Log.d("Pause", "Drawing Pause at " + location.toString());
         this.erase();
-        this.circle = map.addCircle(new CircleOptions().center(location).fillColor(Color.RED).radius( NavigationUtil.RADIUS_IN_KM * 1000 ));
+        this.circle = map.addCircle(new CircleOptions()
+                .center(location)
+                .fillColor(0x9971c3e2)
+                .strokeWidth(0)
+                .radius( NavigationUtil.RADIUS_IN_KM * 1000 ));
         this.middleOfPause = map.addMarker(new MarkerOptions()
                 .position(location)
                 .title("Pause")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
 
         for(IMilestone milestone : milestones){
+            BitmapDescriptor icon;
+            if(milestone.getCategory() == IMilestone.Category.GASSTATION){
+                icon = NavigationUtil.gasMarker;
+            }else if(milestone.getCategory() == IMilestone.Category.RESTAURANT){
+                icon = NavigationUtil.foodMarker;
+            }else if(milestone.getCategory() == IMilestone.Category.RESTAREA){
+                icon = NavigationUtil.restMarker;
+            }else{
+                icon = NavigationUtil.bathroomMarker;
+            }
+
             milestoneMarkers.add(map.addMarker(new MarkerOptions()
                     .position(milestone.getLocation())
                     .title(milestone.getName())
+                    .icon(icon)
                     .snippet("Rating: " + milestone.getRank() + "/5\n" + milestone.getDescription())));
         }
     }
@@ -67,10 +89,18 @@ public class Pause {
         }
     }
 
+    /**
+     * Returns the location of this pause.
+     * @return the location as coordinate
+     */
     public LatLng getLocation(){
         return location;
     }
 
+    /**
+     * Returns the milestones available for this pause.
+     * @return the milestones
+     */
     public List<IMilestone> getMilestones(){
         return milestones;
     }

@@ -37,6 +37,7 @@ public class Route {
     private List<IMilestone> milestones;
     private List<Pause> pauses;
     private String DEBUG_TAG = "Route";
+    private boolean TEST_MODE = true;   // Specifies if the route should run in test mode
 
     /** Handler for receiving a route as JSON Object */
     private ResponseHandler routeHandler = new ResponseHandler() {
@@ -45,10 +46,12 @@ public class Route {
             try {
                 JSONArray routeArray = json.getJSONArray("routes");
                 JSONObject route = routeArray.getJSONObject(0);
+                Log.d(DEBUG_TAG, route.toString());
                 JSONArray arrayLegs = route.getJSONArray("legs");
                 for(int i = 0; i < arrayLegs.length(); i++) {
-                    JSONObject legJSON = arrayLegs.getJSONObject(0);
+                    JSONObject legJSON = arrayLegs.getJSONObject(i);
                     Leg newLeg = new Leg(legJSON);
+                    //TODO Matching wont match exactly and will never work, fix!
                     newLeg.setMilestone(getMilestone(newLeg.getEndLocation())); // Set the milestone to a milestone with the endlocation of the leg
                     legs.add(newLeg);
                 }
@@ -213,15 +216,15 @@ public class Route {
      * @param secondsIntoRoute, in seconds
      */
     public void addPause(long secondsIntoRoute) {
-        Log.d(DEBUG_TAG, "Adding pause...");
         long actualSecondsIntoRoute = 0;
 
         outerLoop:
         for(Leg leg : legs){
             for(Step step : leg.getSteps()){
                 List<LatLng> subSteps = step.getSubSteps();
-                double subDuration = ((double)step.getDuration()) / (subSteps.size()-1);
-                actualSecondsIntoRoute += step.getDuration();
+                float stepDuration = step.getDuration();
+                double subDuration = ((double)stepDuration) / (subSteps.size()-1);
+                actualSecondsIntoRoute += stepDuration;
                 if(actualSecondsIntoRoute >= secondsIntoRoute){
                     int subIndexTooFar = (int)((actualSecondsIntoRoute - secondsIntoRoute) / subDuration);
                     int subIndex = subSteps.size() - 1 - subIndexTooFar;
@@ -259,7 +262,6 @@ public class Route {
      * @param kmIntoRoute, in km
      */
     public void addPause(double kmIntoRoute){
-        Log.d(DEBUG_TAG, "Adding pause...");
         double metresIntoRoute = kmIntoRoute * 1000;
         double actualMetresIntoRoute = 0;
 
@@ -380,6 +382,9 @@ public class Route {
      * @param milestone, the milestone to add
      */
     public void addMilestone(IMilestone milestone){
+        this.erase();
+        legs.clear();
+        pauses.clear();
         milestones.add(milestone);
         // Recalculate the route
         initialized = false;
@@ -392,11 +397,16 @@ public class Route {
      * @param milestones, the milestones to add
      */
     public void addMilestones(List<IMilestone> milestones){
-        this.milestones.addAll(milestones);
-        // Recalculate the route
-        initialized = false;
-        URL url = GoogleMapsEndpoints.makeURL(origin, destination, milestones, true);
-        Remote.get(url, routeHandler);
+        if(milestones.size() > 0){
+            this.erase();
+            legs.clear();
+            pauses.clear();
+            this.milestones.addAll(milestones);
+            // Recalculate the route
+            initialized = false;
+            URL url = GoogleMapsEndpoints.makeURL(origin, destination, milestones, true);
+            Remote.get(url, routeHandler);
+        }
     }
 
     /**
@@ -404,6 +414,7 @@ public class Route {
      * @param milestone, the milestone to remove
      */
     public void removeMilestone(IMilestone milestone){
+        this.erase();
         milestones.remove(milestone);
         // Recalculate the route
         initialized = false;
@@ -415,6 +426,7 @@ public class Route {
      * Remove all of the routes milestones
      */
     public void removeAllMilestones(){
+        this.erase();
         milestones.clear();
         // Recalculate the route
         initialized = false;
@@ -435,11 +447,13 @@ public class Route {
         this.endPointCircle = map.addCircle(new CircleOptions()
                 .center(legs.get(legs.size()-1).getEndLocation())
                 .radius(100)
-                .fillColor(Color.BLUE));
+                .strokeWidth(0)
+                .fillColor(0x99ff3333));
 
         //this.pointer = map.addCircle(new CircleOptions().center(legs.get(0).startLocation).fillColor(Color.GREEN).radius(8));
         pointerWithBearing = map.addGroundOverlay(new GroundOverlayOptions()
-                .position(legs.get(0).getStartLocation(), (float) 100)
+                .position(legs.get(0).getStartLocation(), (float) 40)
+                .zIndex(2)
                 .image(BitmapDescriptorFactory.fromResource(R.drawable.nav_arrow))
                 .bearing((float)10));
 
@@ -459,15 +473,15 @@ public class Route {
         // Add an end point
         this.endPointCircle = map.addCircle(new CircleOptions()
                 .center(legs.get(legs.size()-1).getEndLocation())
-                .radius(500)
+                .radius(2000)
                 .strokeWidth(0)
-                .fillColor(Color.BLUE));
+                .fillColor(0x99ff3333));
 
         this.startPointCircle = map.addCircle(new CircleOptions()
                 .center(legs.get(0).getStartLocation())
-                .radius(500)
-                .strokeColor(Color.BLUE)
-                .fillColor(Color.YELLOW));
+                .radius(2000)
+                .strokeWidth(0)
+                .fillColor(0x9999cc00));
 
         Log.d(DEBUG_TAG, "Drawing route in overview mode.");
     }
@@ -505,28 +519,14 @@ public class Route {
      * @param location, the location to move to
      */
     public void goTo(GoogleMap map, LatLng location){
-        /*LatLng firstLocation = legs.get(0).getStartLocation();
+        long startTime = System.nanoTime();
 
-        for(int i = 0; i < legs.size(); i++){
-            Leg leg = legs.get(i);
-            List<Step> steps = leg.getSteps();
-
-            for(int j = 0; j < steps.size(); j++){
-                Step step = steps.get(j);
-                List<LatLng> subSteps = step.getSubSteps();
-
-                double distanceToStepStart = NavigationUtil.getDistance(location, step.getStartLocation());
-                double distanceToStepEnd = NavigationUtil.getDistance(location, step.getEndLocation());
-
-                double subDistance = step.getDistance() / (subSteps.size()-1);
-            }
-        }*/
-
-        Log.d(DEBUG_TAG, "Move pointer to "+location.toString()+".");
+        if(TEST_MODE){
+            location = getNextSubStep();
+        }
 
         LatLng nearestLocation = legs.get(0).getSteps().get(0).getSubSteps().get(0);
 
-        // TODO: Clean up.
         // TODO: This only works if the sub steps are in a relatively straight line.
         outerLoop:
         for(Iterator<Leg> iteratorLeg = legs.iterator(); iteratorLeg.hasNext(); ){
@@ -534,7 +534,6 @@ public class Route {
             for(Iterator<Step> iteratorStep = leg.getSteps().iterator(); iteratorStep.hasNext(); ){
                 Step step = iteratorStep.next();
                 List<LatLng> subSteps = step.getSubSteps();
-                double distanceToStepEnd = NavigationUtil.getDistance(location, step.getEndLocation());
 
                 for(int i = 0; i < subSteps.size() - 1; i++){
                     LatLng subStep = subSteps.get(i);
@@ -547,7 +546,7 @@ public class Route {
                         nearestLocation = subStepTwo;
                         subSteps.remove(i);
 
-                    }else if(distance2 <= distanceToStepEnd){   // If the new point is also closer to current location then the end of step
+                    }else{   // If the new point is also closer to current location then the end of step
                         step.draw(map);
                         break outerLoop; // Break the outer loop
                     }
@@ -560,17 +559,18 @@ public class Route {
         }
 
         if(legs.size() == 0){
-            // Route finished!
-            endPointCircle.remove();
+            // TODO Route finished!
 
         }else{
-            if(NavigationUtil.getDistance(location, nearestLocation) > 0.1){
-                // TODO Reinitialize the route with new start location.
+            if(NavigationUtil.getDistance(location, nearestLocation) > 0.5){    // If the nearest location is more than 500 metres away from the the real location, then reinitialize route
+                this.origin = location;
+                URL url = GoogleMapsEndpoints.makeURL(location, destination, milestones, true);
+                Remote.get(url, routeHandler);
             }
             if(pointerWithBearing != null && !pointerWithBearing.getPosition().equals(nearestLocation)){
                 // Calculate new bearing and rotate the camera
-                Step newStep = legs.get(0).getSteps().get(0);
-                float bearing = NavigationUtil.finalBearing(newStep.getStartLocation(), newStep.getEndLocation());
+                LatLng nextLocation = getNextSubStep();
+                float bearing = NavigationUtil.finalBearing(nextLocation, nearestLocation);
                 pointerWithBearing.setBearing(bearing);
                 pointerWithBearing.setPosition(nearestLocation);
 
@@ -581,6 +581,32 @@ public class Route {
             }
 
         }
+        long endTime = System.nanoTime();
+
+        long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+        Log.d(DEBUG_TAG, "GoTo method duration: "+(duration/1000000) + "ms");
+    }
+
+    private LatLng getNextSubStep(){
+        LatLng location;
+        Leg currentLeg = legs.get(0);
+        Step currentStep = currentLeg.getSteps().get(0);
+        List<LatLng> currentSubSteps = currentStep.getSubSteps();
+        if(currentSubSteps.size() < 2){
+            if(currentLeg.getSteps().size() < 2){
+                if(legs.size() < 2){
+                    // Route finished
+                    location = currentSubSteps.get(0);
+                }else{
+                    location = legs.get(1).getSteps().get(0).getSubSteps().get(0);
+                }
+            }else{
+                location = currentLeg.getSteps().get(1).getSubSteps().get(0);
+            }
+        }else{
+            location = currentSubSteps.get(1);
+        }
+        return location;
     }
 
     /**

@@ -1,12 +1,10 @@
 package com.edit.reach.utils;
 
-import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.app.R;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +15,17 @@ import java.util.List;
 public class NavigationUtil {
 
     /** Radius for the pauses */
-    public static final double RADIUS_IN_DEGREES = 0.1;
+    public static final double RADIUS_IN_DEGREES = 0.2;
 
     /** Radius for the pauses */
     public static final int RADIUS_IN_KM = (int) getDistance(new LatLng(0,0), new LatLng(0,RADIUS_IN_DEGREES));
+
+    public static final BitmapDescriptor
+            foodMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_food),
+            bathroomMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_bathroom),
+            plannedMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_pause),
+            restMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_reststop),
+            gasMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_gas);
 
 	private NavigationUtil(){}
 

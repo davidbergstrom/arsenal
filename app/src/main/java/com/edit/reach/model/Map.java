@@ -4,12 +4,10 @@ import android.location.Location;
 import android.os.Handler;
 import android.util.Log;
 import com.edit.reach.model.interfaces.IMilestone;
-import com.edit.reach.model.interfaces.MilestonesReceiver;
 import com.edit.reach.model.interfaces.RouteListener;
 import com.edit.reach.system.GoogleMapsEndpoints;
 import com.edit.reach.system.Remote;
 import com.edit.reach.system.ResponseHandler;
-import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.*;
@@ -25,7 +23,7 @@ import java.util.List;
 public class Map {
 
     // Constant, the refresh rate of the navigation loop in milliseconds
-    private final int UPDATE_INTERVAL = 300;
+    private final int UPDATE_INTERVAL_NORMAL = 300, UPDATE_INTERVAL_FAST = 40, UPDATE_INTERVAL_SLOW = 500;
 
     // The map which modifies the map view in the activity
     private GoogleMap map;
@@ -78,7 +76,7 @@ public class Map {
 
         @Override
         public void onLegFinished(Leg finishedLeg) {
-            
+
         }
 
         @Override
@@ -101,7 +99,7 @@ public class Map {
                     currentRoute.goTo(map, position);
                 }
                 lastLocation = myLocation;
-                handler.postDelayed(this, UPDATE_INTERVAL);
+                handler.postDelayed(this, UPDATE_INTERVAL_FAST);
             }else{
                 Log.d(DEBUG_TAG, "Current route null or not initialized!");
             }
@@ -203,7 +201,7 @@ public class Map {
             // Set camera to right tilt and zoom
             Location myLocation = map.getMyLocation();
             LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-            CameraPosition currentPlace = new CameraPosition.Builder().target(position).tilt(65.5f).zoom(18).build();
+            CameraPosition currentPlace = new CameraPosition.Builder().target(position).tilt(65.5f).zoom(17).build();
             map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
             if(currentRoute.isInitialized()){
@@ -218,7 +216,7 @@ public class Map {
             map.getUiSettings().setRotateGesturesEnabled(false);
 
             // Start navigation runnable
-            handler.postDelayed(navigationRunnable, UPDATE_INTERVAL);
+            handler.postDelayed(navigationRunnable, UPDATE_INTERVAL_NORMAL);
         }
     }
 

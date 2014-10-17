@@ -1,5 +1,6 @@
 package com.edit.reach.system;
 
+import android.util.Log;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -47,6 +48,7 @@ public class GoogleMapsEndpoints {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
+        Log.d("GoogleMapsEndpoints", url);
 
 		return http;
 	}

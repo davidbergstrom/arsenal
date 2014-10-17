@@ -242,8 +242,8 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
                 if(success && spinner != null){
                     milestonesFragment = MilestonesFragment.newInstance(r.getOriginAddress(), r.getDestinationAddress());
                     getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
-                    spinner = (ProgressBar)findViewById(R.id.spinner);
-                    spinner.setVisibility(View.GONE);
+  //                  spinner = (ProgressBar)findViewById(R.id.spinner);
+//                    spinner.setVisibility(View.GONE);
                 }else{
 
                 }
