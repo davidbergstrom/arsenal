@@ -3,16 +3,12 @@ package com.edit.reach.fragments;
 
 
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-
-import android.media.Image;
-import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
 
@@ -23,15 +19,16 @@ import android.view.ViewGroup;
 
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.edit.reach.activities.MovingActivity;
-import com.edit.reach.activities.MultiPaneActivity;
 
 import android.widget.ImageButton;
 
+import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.constants.Constants;
-import com.edit.reach.constants.MovingState;
 import com.edit.reach.constants.SignalType;
+import com.edit.reach.model.interfaces.IMilestone;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,6 +40,8 @@ public class ControlFragment extends Fragment{
     private ImageButton ibRestArea;
     private ImageButton ibRestaurant;
     private ImageButton ibToilet;
+    private ImageButton ibGasStation;
+
 
     private float fuelLevel;
     private double nextStopClock; //in sec
@@ -92,6 +91,8 @@ public class ControlFragment extends Fragment{
         // Required empty public constructor
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -112,13 +113,11 @@ public class ControlFragment extends Fragment{
         timeClockBar = (ProgressBar) view.findViewById(R.id.progress_time_clock);
         nextStopBar = (ProgressBar) view.findViewById(R.id.progress_next_stop);
 
+        ibRestArea = (ImageButton) view.findViewById(R.id.button_control_input_restarea);
+        ibRestaurant = (ImageButton)view.findViewById(R.id.button_control_input_restaurant);
+        ibToilet = (ImageButton) view.findViewById(R.id.button_control_input_toilet);
+        ibGasStation = (ImageButton) view.findViewById(R.id.button_control_input_gasstation);
 
-
-        /*
-        ibRestArea = (ImageButton) view.findViewById(R.id.ibrestarea);
-        ibRestaurant = (ImageButton)view.findViewById(R.id.ibRestaurant);
-        ibToilet = (ImageButton) view.findViewById(R.id.ibToilet);
-        */
 
         return view;
     }
@@ -129,6 +128,8 @@ public class ControlFragment extends Fragment{
         }else if(view == ibRestaurant){
 
         } else if(view == ibToilet){
+
+        } else if(view == ibGasStation){
 
         }
 
