@@ -39,6 +39,7 @@
 	<string name="tv_control_info_time_clock_left">4h 38m</string>
 	<string name="tv_control_info_time_clock_right">3h 12m</string>
 	<string name="tv_control_info_top_card_title">Title for Milestone</string>
-	<string name="tv_control_info_top_card_description">Description of Milestone</string>
+	<string name="tv_control_info_top_card_time">21 min</string>
+	<string name="tv_control_info_top_card_distance">17 km</string>
 
 </resources>
