@@ -2,20 +2,32 @@ package com.edit.reach.fragments;
 
 
 
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+
+
+import android.media.Image;
+import android.os.Bundle;
+
+import android.support.v4.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.edit.reach.activities.MovingActivity;
 import com.edit.reach.activities.MultiPaneActivity;
+
+import android.widget.ImageButton;
+
 import com.edit.reach.app.R;
 import com.edit.reach.constants.Constants;
 import com.edit.reach.constants.MovingState;
@@ -25,7 +37,12 @@ import com.edit.reach.constants.SignalType;
  * A simple {@link Fragment} subclass.
  *
  */
-public class ControlFragment extends Fragment {
+public class ControlFragment extends Fragment{
+
+    private static final String ARG_ID = "Control";
+    private ImageButton ibRestArea;
+    private ImageButton ibRestaurant;
+    private ImageButton ibToilet;
 
     private float fuelLevel;
     private double nextStopClock; //in sec
@@ -62,6 +79,15 @@ public class ControlFragment extends Fragment {
     };
 
 
+
+    public static ControlFragment newInstance(String id){
+        ControlFragment fragment = new ControlFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_ID, id);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public ControlFragment() {
         // Required empty public constructor
     }
@@ -71,7 +97,9 @@ public class ControlFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        TextView stopNameView = (TextView) getView().findViewById(R.id.tv_control_info_top_card_title);
+        View view = inflater.inflate(R.layout.fragment_control, container, false);
+
+        TextView stopNameView = (TextView) view.findViewById(R.id.tv_control_info_top_card_title);
 
         if(nextStopName != null) {
             stopNameView.setText(nextStopName);
@@ -80,11 +108,30 @@ public class ControlFragment extends Fragment {
         }
 
         //Get progressbars
-        fuelBar = (ProgressBar) getView().findViewById(R.id.progress_gas);
-        timeClockBar = (ProgressBar) getView().findViewById(R.id.progress_time_clock);
-        nextStopBar = (ProgressBar) getView().findViewById(R.id.progress_next_stop);
+        fuelBar = (ProgressBar) view.findViewById(R.id.progress_gas);
+        timeClockBar = (ProgressBar) view.findViewById(R.id.progress_time_clock);
+        nextStopBar = (ProgressBar) view.findViewById(R.id.progress_next_stop);
 
-        return inflater.inflate(R.layout.fragment_control, container, false);
+
+
+        /*
+        ibRestArea = (ImageButton) view.findViewById(R.id.ibrestarea);
+        ibRestaurant = (ImageButton)view.findViewById(R.id.ibRestaurant);
+        ibToilet = (ImageButton) view.findViewById(R.id.ibToilet);
+        */
+
+        return view;
+    }
+
+    public void onClick(View view){
+        if(view == ibRestArea){
+
+        }else if(view == ibRestaurant){
+
+        } else if(view == ibToilet){
+
+        }
+
     }
 
 

@@ -1,6 +1,7 @@
 package com.edit.reach.fragments;
 
 import android.app.Activity;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -35,6 +36,7 @@ public class RouteFragment extends Fragment {
     private String mId;
     private Route route;
 
+
     private AutoCompleteTextView actFrom;
     private AutoCompleteTextView actTo;
     private ToggleButton tbCurLoc;
@@ -43,6 +45,7 @@ public class RouteFragment extends Fragment {
     private TextView tvMatchedListItem;
     private ProgressBar spinner;
 	private ArrayAdapter<String> adapter;
+    private boolean myCurrentLocationActivated;
 
     private OnRouteInteractionListener mListener;
 
@@ -73,6 +76,7 @@ public class RouteFragment extends Fragment {
         if (getArguments() != null) {
             mId = getArguments().getString(ARG_ID);
         }
+
     }
 
     @Override
@@ -111,9 +115,11 @@ public class RouteFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(((ToggleButton) view).isChecked()){
+                    myCurrentLocationActivated = true;
                     actFrom.setText("My Location");
                     actFrom.setEnabled(false);
                 } else {
+                    myCurrentLocationActivated = false;
                     actFrom.setText("");
                     actFrom.setEnabled(true);
                 }
@@ -128,11 +134,14 @@ public class RouteFragment extends Fragment {
 	private View.OnClickListener getNearestRouteListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View view) {
-			String strFrom = actFrom.getText().toString();
 			String strTo = actTo.getText().toString();
-			route = new Route(strFrom, strTo);
-			onSetRoute(route);
-			spinner.setVisibility(View.VISIBLE);
+            ((MultiPaneActivity)getActivity()).showSpinner();
+            if(myCurrentLocationActivated){
+                ((MultiPaneActivity)getActivity()).createRouteWithMyLocation(strTo);
+            }else {
+			String strFrom = actFrom.getText().toString();
+            ((MultiPaneActivity)getActivity()).createRoute(strFrom, strTo);
+            }
 		}
 	};
 

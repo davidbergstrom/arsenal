@@ -434,7 +434,7 @@ public class Route {
         // Add an end point
         this.endPointCircle = map.addCircle(new CircleOptions()
                 .center(legs.get(legs.size()-1).getEndLocation())
-                .radius(50)
+                .radius(100)
                 .fillColor(Color.BLUE));
 
         //this.pointer = map.addCircle(new CircleOptions().center(legs.get(0).startLocation).fillColor(Color.GREEN).radius(8));
@@ -459,13 +459,13 @@ public class Route {
         // Add an end point
         this.endPointCircle = map.addCircle(new CircleOptions()
                 .center(legs.get(legs.size()-1).getEndLocation())
-                .radius(20)
+                .radius(500)
                 .strokeWidth(0)
                 .fillColor(Color.BLUE));
 
         this.startPointCircle = map.addCircle(new CircleOptions()
                 .center(legs.get(0).getStartLocation())
-                .radius(20)
+                .radius(500)
                 .strokeColor(Color.BLUE)
                 .fillColor(Color.YELLOW));
 

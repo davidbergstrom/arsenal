@@ -1,9 +1,13 @@
 package com.edit.reach.fragments;
 
 import android.app.Activity;
+
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +17,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.edit.reach.activities.MovingActivity;
+import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.views.widgets.MilestonesCard;
@@ -42,6 +48,7 @@ public class MilestonesFragment extends Fragment {
     private ArrayList <String> mMilestonesType;
 
     private Button btEditRoute;
+    private Button btStartRoute;
 
     private static int n = 0;
 
@@ -81,6 +88,7 @@ public class MilestonesFragment extends Fragment {
             mMilestonesList = getArguments().getStringArrayList(ARG_LIST);
 			mMilestonesType = getArguments().getStringArrayList(ARG_TYPE);
 
+
         }
     }
 
@@ -93,18 +101,28 @@ public class MilestonesFragment extends Fragment {
 		mToTextView = (TextView) view.findViewById(R.id.tv_text_to);
         cardList = (LinearLayout) view.findViewById(R.id.cardList);
         btEditRoute = (Button) view.findViewById(R.id.button_edit_route);
+        btStartRoute = (Button) view.findViewById(R.id.button_start_route);
+
+
         btEditRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("EditRoute", "Performed a EditRoute-click");
-                /*RouteFragment rf = new RouteFragment();
-                rf.newInstance("Test");
+                ((MultiPaneActivity)getActivity()).goBackToRouteFragment();
 
-                rf.setRouteText(mFrom, mTo);*/
+
+            }
+        });
+        btStartRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("StartRoute", "Performed a StartRoute-click");
+                Intent intent = new Intent(getActivity().getApplicationContext(), MovingActivity.class);
+                startActivity(intent);
             }
         });
         return view;
     }
+
 
 
 
@@ -114,9 +132,11 @@ public class MilestonesFragment extends Fragment {
 
 		//mMilestonesListView.setAdapter(new MilestonesListAdapter(this.getActivity(), mMilestonesList, mMilestonesType));
 
-		Log.v("TEST", mFrom);
-
-		mFromTextView.setText(mFrom);
+        if(((MultiPaneActivity)getActivity()).routeWithCurrentLocation()){
+            mFromTextView.setText("My Location");
+        } else{
+            mFromTextView.setText(mFrom);
+        }
 		mToTextView.setText(mTo);
 	}
 

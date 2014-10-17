@@ -1,5 +1,6 @@
 package com.edit.reach.activities;
 
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +25,7 @@ import com.edit.reach.model.interfaces.RouteListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
@@ -36,7 +38,10 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
     private NavigationModel navigationModel;
 
+    private static Boolean routeWithCurrentLocation;
+
     private List<IMilestone> preliminaryMilestones;
+    private ProgressBar spinner;
 
     private MilestonesFragment milestonesFragment;
 	private RouteFragment routeFragment;
@@ -187,13 +192,70 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
 	}
 
+    public void goBackToRouteFragment(){
+        Log.d("MultiPaneActivity", "goBackFragment");
+        getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, routeFragment).commit();
+    }
 
+    public Location getMyLocation(){
+        return mMap.getMyLocation();
+    }
+
+    public void createRoute(String from, String to){
+        routeWithCurrentLocation = false;
+        final Route r = new Route(from, to);
+        navigationModel.setRoute(r);
+        createMilestonesFragment(r);
+    }
+
+    public void createRoute(LatLng one, String to){
+        routeWithCurrentLocation = true;
+        final Route r = new Route(one, to);
+        navigationModel.setRoute(r);
+        createMilestonesFragment(r);
+    }
+
+    public boolean routeWithCurrentLocation(){
+        return routeWithCurrentLocation;
+    }
+
+
+    public void createRouteWithMyLocation(String to){
+        Double myLocationLatitude = getMyLocation().getLatitude();
+        Double myLocationLongitude = getMyLocation().getLongitude();
+        LatLng myLocation = new LatLng(myLocationLatitude, myLocationLongitude);
+        createRoute(myLocation, to);
+    }
+
+    public void showSpinner(){
+        spinner = (ProgressBar)findViewById(R.id.spinner);
+        spinner.setVisibility(View.VISIBLE);
+    }
+    public void createMilestonesFragment(final Route r){
+        r.addListener(new RouteListener() {
+            @Override
+            public void onInitialization(boolean success) {
+                if(success){
+                    milestonesFragment = MilestonesFragment.newInstance(r.getOriginAddress(), r.getDestinationAddress());
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
+                    spinner = (ProgressBar)findViewById(R.id.spinner);
+                    spinner.setVisibility(View.GONE);
+                }else{
+
+                }
+
+            }
+
+            @Override
+            public void onPauseAdded(Pause pause) {
+
+            }
+        });
+    }
 
 	@Override
 	public void onRouteInteraction(Object o) {
-        if(o.getClass() == RouteFragment.class){
 
-        }
 
 		// Sends the text from search field and receives a list of
 		// places and sends the list back to the fragment
@@ -202,38 +264,12 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 			routeFragment.suggestionList(list);
 		}
 
-        if(o.getClass() == Route.class){
 
-            final Route r = (Route)o;
-            navigationModel.setRoute(r);
-
-			//fragment_container goes from RouteFragment -> MilestonesFragment
-            //TODO: Load with a spinner and wait for route to finish, then show fragment below...
-            //new Spinner().start();
-            r.addListener(new RouteListener() {
-                @Override
-                public void onInitialization(boolean success) {
-                    // WHen route finished loading
-                    if(success){
-                        milestonesFragment = MilestonesFragment.newInstance(r.getOriginAddress(), r.getDestinationAddress());
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
-                        ProgressBar spinner = (ProgressBar)findViewById(R.id.spinner);
-                        spinner.setVisibility(View.GONE);
-                    }else{
-                        // When the Route failed to initialize, show the user an error.
-                    }
-                }
-
-                @Override
-                public void onPauseAdded(Pause pause) {
-                    // Fuck this
-                }
-            });
-        }
 	}
 
     @Override
     public void onMilestonesInteraction(Object o) {
+
 
     }
 }
