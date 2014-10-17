@@ -15,6 +15,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.edit.reach.app.R;
+import com.edit.reach.constants.SignalType;
+import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.fragments.ControlFragment;
 import com.edit.reach.fragments.MapFragment;
 import com.edit.reach.fragments.MilestonesFragment;
@@ -32,142 +34,171 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MultiPaneActivity extends FragmentActivity implements MapFragment.OnMapInteractionListener,
-	RouteFragment.OnRouteInteractionListener, MilestonesFragment.OnMilestonesInteractionListener {
+		RouteFragment.OnRouteInteractionListener, MilestonesFragment.OnMilestonesInteractionListener {
 
-    private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+	private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
-    private NavigationModel navigationModel;
+	private NavigationModel navigationModel;
 
-    private Boolean routeWithCurrentLocation;
+	private Boolean routeWithCurrentLocation;
 
-    private List<IMilestone> preliminaryMilestones;
-    private ProgressBar spinner;
+	private List<IMilestone> preliminaryMilestones;
+	private ProgressBar spinner;
 
-    private MilestonesFragment milestonesFragment;
+	private MilestonesFragment milestonesFragment;
 	private RouteFragment routeFragment;
-    private ControlFragment controlFragment;
+	private ControlFragment controlFragment;
 
-    // A handler for the UI thread. The Handler recieves messages from other thread.
+	private boolean msFragmentHasBeenCreated = false;
+
+	private Route route;
+
+	// A handler for the UI thread. The Handler recieves messages from other thread.
 	private Handler mainHandler = new Handler(Looper.getMainLooper()) {
+
 		@Override
 		public void handleMessage(Message message) {
-			// TODO how to handle messages sent to UI thread.
+			switch (message.what) {
+				case SignalType.VEHICLE_STOPPED_OR_STARTED:
+					// TODO
+					break;
+
+				case SignalType.ROUTE_INITIALIZATION_SUCCEDED:
+					if(!msFragmentHasBeenCreated) {
+						createMilestonesFragment();
+						msFragmentHasBeenCreated = true;
+					} else {
+						// TODO what to do here?
+					}
+					break;
+
+				case SignalType.FUEL_UPDATE:
+					controlFragment.setFuelBar((Float)message.obj);
+					break;
+
+				case SignalType.UPTIME_UPDATE:
+					controlFragment.setTimeClockBar((Double)message.obj);
+					break;
+
+				case SignalType.LEG_UPDATE:
+					// TODO what here?
+					break;
+			}
 		}
 	};
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_multi_pane);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_multi_pane);
 
-        //Create a FragmentManager and add a Fragment to it
-        if(findViewById(R.id.container_fragment_left) != null){
-            if(savedInstanceState != null){
-                return;
-            }
+		//Create a FragmentManager and add a Fragment to it
+		if(findViewById(R.id.container_fragment_left) != null){
+			if(savedInstanceState != null){
+				return;
+			}
 
-            routeFragment = RouteFragment.newInstance("Route");
-            getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, routeFragment).commit();
-        }
+			routeFragment = RouteFragment.newInstance("Route");
+			getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, routeFragment).commit();
+		}
 
-        setUpMapIfNeeded();
-        preliminaryMilestones = new ArrayList<IMilestone>();
-        navigationModel = NavigationModel.getInstance();
-        navigationModel.setGoogleMap(mMap);
-    }
+		setUpMapIfNeeded();
+		preliminaryMilestones = new ArrayList<IMilestone>();
+		navigationModel = new NavigationModel(mMap, mainHandler);
+	}
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setUpMapIfNeeded();
+	@Override
+	protected void onResume() {
+		super.onResume();
+		setUpMapIfNeeded();
 
 
-    }
+	}
 
-    /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link } once when {@link #mMap} is not null.
-     * <p>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
-     */
-    private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                setupMap();
-            }else{
-                // TODO: Alert user that application wont work properly
-            }
-        }
-    }
+	/**
+	 * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
+	 * installed) and the map has not already been instantiated.. This will ensure that we only ever
+	 * call {@link } once when {@link #mMap} is not null.
+	 * <p>
+	 * If it isn't installed {@link SupportMapFragment} (and
+	 * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
+	 * install/update the Google Play services APK on their device.
+	 * <p>
+	 * A user can return to this FragmentActivity after following the prompt and correctly
+	 * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
+	 * have been completely destroyed during this process (it is likely that it would only be
+	 * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
+	 * method in {@link #onResume()} to guarantee that it will be called.
+	 */
+	private void setUpMapIfNeeded() {
+		// Do a null check to confirm that we have not already instantiated the map.
+		if (mMap == null) {
+			// Try to obtain the map from the SupportMapFragment.
+			mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+					.getMap();
+			// Check if we were successful in obtaining the map.
+			if (mMap != null) {
+				setupMap();
+			}else{
+				// TODO: Alert user that application wont work properly
+			}
+		}
+	}
 
-    public List<String> addMatchedStringsToList(String input, List<String> strings){
-        strings = navigationModel.getMatchedStringResults(input);
-        return strings;
-    }
+	public List<String> addMatchedStringsToList(String input, List<String> strings){
+		strings = navigationModel.getMatchedStringResults(input);
+		return strings;
+	}
 
-    private void setupMap(){
-        // Enable GoogleMap to track the user's location
-        mMap.setMyLocationEnabled(true);
-        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-            @Override
-            public View getInfoWindow(Marker marker) {
-                View myContentsView = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+	private void setupMap(){
+		// Enable GoogleMap to track the user's location
+		mMap.setMyLocationEnabled(true);
+		mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+			@Override
+			public View getInfoWindow(Marker marker) {
+				View myContentsView = getLayoutInflater().inflate(R.layout.custom_info_window, null);
 
-                TextView tvTitle = ((TextView)myContentsView.findViewById(R.id.title));
-                tvTitle.setText(marker.getTitle());
-                TextView tvSnippet = ((TextView)myContentsView.findViewById(R.id.snippet));
-                tvSnippet.setText(marker.getSnippet());
+				TextView tvTitle = ((TextView)myContentsView.findViewById(R.id.title));
+				tvTitle.setText(marker.getTitle());
+				TextView tvSnippet = ((TextView)myContentsView.findViewById(R.id.snippet));
+				tvSnippet.setText(marker.getSnippet());
 
-                return myContentsView;
-            }
+				return myContentsView;
+			}
 
-            @Override
-            public View getInfoContents(Marker marker) {
+			@Override
+			public View getInfoContents(Marker marker) {
 
-                return null;
-            }
-        });
+				return null;
+			}
+		});
 
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                IMilestone milestone = navigationModel.getMap().getMilestone(marker.getPosition());
-                if(milestone != null){
-                    if(preliminaryMilestones.contains(milestone)){
-                        Log.d("MultiPaneActivity", "Milestone already in list, removing");
-                        // Milestone already added
-                        preliminaryMilestones.remove(milestone);
-                        milestonesFragment.removeMilestoneCard(milestone);
-                        marker.setIcon(BitmapDescriptorFactory.defaultMarker());
-                    }else{
-                        Log.d("MultiPaneActivity", "Added milestone to list");
-                        // Add milestone to list
-                        preliminaryMilestones.add(milestone);
-                        milestonesFragment.addMilestoneCard(milestone);
-                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                    }
-                }else {
-                    Log.d("MultiPaneActivity", "Invalid milestone, removing");
-                    // Marker unavailable, remove it
-                    marker.remove();
-                }
-            }
-        });
-    }
+		mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+			@Override
+			public void onInfoWindowClick(Marker marker) {
+				IMilestone milestone = navigationModel.getMap().getMilestone(marker.getPosition());
+				if(milestone != null){
+					if(preliminaryMilestones.contains(milestone)){
+						Log.d("MultiPaneActivity", "Milestone already in list, removing");
+						// Milestone already added
+						preliminaryMilestones.remove(milestone);
+						milestonesFragment.removeMilestoneCard(milestone);
+						marker.setIcon(BitmapDescriptorFactory.defaultMarker());
+					}else{
+						Log.d("MultiPaneActivity", "Added milestone to list");
+						// Add milestone to list
+						preliminaryMilestones.add(milestone);
+						milestonesFragment.addMilestoneCard(milestone);
+						marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+					}
+				}else {
+					Log.d("MultiPaneActivity", "Invalid milestone, removing");
+					// Marker unavailable, remove it
+					marker.remove();
+				}
+			}
+		});
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -193,112 +224,82 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
 	}
 
-    public void driverInteractByButtons(){
+	public void driverInteractByButtons(){
 
-    }
+	}
 
-    public void goBackToRouteFragment(){
-        Log.d("MultiPaneActivity", "goBackFragment");
-        getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, routeFragment).commit();
-    }
+	public void goBackToRouteFragment(){
+		Log.d("MultiPaneActivity", "goBackFragment");
+		getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, routeFragment).commit();
+	}
 
-    public Location getMyLocation(){
-        return mMap.getMyLocation();
-    }
+	public Location getMyLocation(){
+		return mMap.getMyLocation();
+	}
 
-    public void createRoute(String from, String to){
-        routeWithCurrentLocation = false;
-        final Route r = new Route(from, to);
-        navigationModel.setRoute(r);
-        createMilestonesFragment(r);
-    }
+	public void createRoute(String from, String to){
+		routeWithCurrentLocation = false;
+		route = new Route(from, to);
+		navigationModel.setRoute(route);
+	}
 
-    public void createRoute(LatLng one, String to){
-        routeWithCurrentLocation = true;
-        final Route r = new Route(one, to);
-        navigationModel.setRoute(r);
-        createMilestonesFragment(r);
-    }
+	public void createRoute(LatLng one, String to){
+		routeWithCurrentLocation = true;
+		route = new Route(one, to);
+		navigationModel.setRoute(route);
+	}
 
-    public boolean routeWithCurrentLocation(){
-        return routeWithCurrentLocation;
-    }
-
-    public List<IMilestone> getPreliminaryMilestones(){
-        return preliminaryMilestones;
-    }
-
-    public void createRouteWithMyLocation(String to){
-        Double myLocationLatitude = getMyLocation().getLatitude();
-        Double myLocationLongitude = getMyLocation().getLongitude();
-        LatLng myLocation = new LatLng(myLocationLatitude, myLocationLongitude);
-        createRoute(myLocation, to);
-    }
-
-    public void showSpinner(){
-        spinner = (ProgressBar)findViewById(R.id.spinner);
-        spinner.setVisibility(View.VISIBLE);
-    }
-    public void createMilestonesFragment(final Route r){
-        r.addListener(new RouteListener() {
-            @Override
-            public void onInitialization(boolean success) {
-                if(success && spinner != null){
-                    milestonesFragment = MilestonesFragment.newInstance(r.getOriginAddress(), r.getDestinationAddress());
-                    getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
-                    spinner = (ProgressBar)findViewById(R.id.spinner);
-                    spinner.setVisibility(View.GONE);
-                }else{
-
-                }
-
-            }
-
-            @Override
-            public void onPauseAdded(Pause pause) {
-
-            }
-
-            @Override
-            public void onLegFinished(Leg finishedLeg) {
-
-            }
-
-            @Override
-            public void onStepFinished(Step finishedStep) {
-
-            }
-        });
-    }
+	public boolean routeWithCurrentLocation(){
+		return routeWithCurrentLocation;
+	}
 
 
+	public void createRouteWithMyLocation(String to){
+		Double myLocationLatitude = getMyLocation().getLatitude();
+		Double myLocationLongitude = getMyLocation().getLongitude();
+		LatLng myLocation = new LatLng(myLocationLatitude, myLocationLongitude);
+		createRoute(myLocation, to);
+	}
 
-    public void startMovingMode(){
-        navigationModel.addMilestones(preliminaryMilestones);
-        navigationModel.getMap().setState(Map.State.MOVING);
-        //TODO: Gav nullpointer (oklart varför..)
-        /* controlFragment = ControlFragment.newInstance("Control");
+	public void showSpinner(){
+		spinner = (ProgressBar)findViewById(R.id.spinner);
+		spinner.setVisibility(View.VISIBLE);
+	}
+
+	public void createMilestonesFragment(){
+		if(spinner != null) {
+			spinner = (ProgressBar) findViewById(R.id.spinner);
+			spinner.setVisibility(View.GONE);
+			milestonesFragment = MilestonesFragment.newInstance(route.getOriginAddress(), route.getDestinationAddress());
+			getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
+			navigationModel.addMilestones(preliminaryMilestones);
+		}
+	}
+
+	public void getPauseSuggestions(IMilestone.Category category){
+		navigationModel.getPauseSuggestions(category);
+	}
+
+	public void startMovingMode(){
+		navigationModel.getMap().setState(Map.State.MOVING);
+		//TODO: Gav nullpointer (oklart varför..)
+        controlFragment = ControlFragment.newInstance("Control");
         getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
-        */
-    }
+	}
 
 	@Override
 	public void onRouteInteraction(Object o) {
-
-
 		// Sends the text from search field and receives a list of
 		// places and sends the list back to the fragment
 		if(o.getClass() == String.class) {
 			List<String> list = navigationModel.getMatchedStringResults((String)o);
 			routeFragment.suggestionList(list);
 		}
+	}
+
+	@Override
+	public void onMilestonesInteraction(Object o) {
 
 
 	}
-
-    @Override
-    public void onMilestonesInteraction(Object o) {
-
-
-    }
 }
