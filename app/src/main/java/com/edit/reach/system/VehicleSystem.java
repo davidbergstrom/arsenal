@@ -180,6 +180,7 @@ public class VehicleSystem extends Observable implements Runnable {
 							}
 
 							calculateTankSize();
+							determineTankSizeEstimated();
 
 							Log.d("Signal: FuelRate", "Fuel rate: " + instantFuelEconomy.getFloatValue());
 							break;
@@ -404,6 +405,14 @@ public class VehicleSystem extends Observable implements Runnable {
 		if(kmToService <= SERVICE_THRESHOLD && prevKmToService > SERVICE_THRESHOLD) {
 			setChanged();
 			notifyObservers(SignalType.SHORT_TO_SERVICE);
+		}
+	}
+
+	// Notifies observers if the tank size has been estimated.
+	private void determineTankSizeEstimated() {
+		if(tankSize != 0) {
+			setChanged();
+			notifyObservers(SignalType.TANK_SIZE_CALCULATED);
 		}
 	}
 

@@ -18,4 +18,5 @@ public class SignalType {
 	public static final int LEG_UPDATE = 209;
 	public static final int ROUTE_INITIALIZATION_SUCCEDED = 210;
 	public static final int ROUTE_INITIALIZATION_FAILED = 211;
+	public static final int TANK_SIZE_CALCULATED = 212;
 }

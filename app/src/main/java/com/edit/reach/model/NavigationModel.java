@@ -132,13 +132,7 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 	public void onInitialization(boolean success) {
 		Message message = mainHandler.obtainMessage();
 		if (success) {
-			long routeTime = map.getRoute().getDuration();
-			long nmbrOfPauses = routeTime / Constants.LEGAL_UPTIME_IN_SECONDS;
-
-			for (int i = 1; i < nmbrOfPauses; i++) {
-				Log.d("NavModel", "Adding pause: ");
-				map.getRoute().addPause(i * Constants.LEGAL_UPTIME_IN_SECONDS);
-			}
+			addTimePause();
 			message.what = SignalType.ROUTE_INITIALIZATION_SUCCEDED;
 		} else {
 			message.what = SignalType.ROUTE_INITIALIZATION_FAILED;
@@ -203,8 +197,17 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 
 				// If a vehicle took a break longer than or equal to 45 minutes.
 				} else if ((Integer) data == SignalType.VEHICLE_TOOK_FINAL_BREAK) {
-					// TODO what to do when vehicle took a "final" break.
 					Log.d("UPDATE", "TYPE: VEHICLE_TOOK_FINAL_BREAK");
+
+					// This has to be done in UI thread because of Googles Map.
+					mainHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							// Remove all pauses and add them again.
+							map.getRoute().removeAllPauses();
+							addTimePause();
+						}
+					});
 
 				// If the up time is updated.
 				} else if ((Integer) data == SignalType.UPTIME_UPDATE) {
@@ -224,11 +227,41 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 					message.what = SignalType.FUEL_UPDATE;
 					mainHandler.sendMessage(message);
 
+				// If it is possible to get km to refuel.
+				} else if ((Integer) data == SignalType.TANK_SIZE_CALCULATED) {
+					Log.d("UPDATE", "TYPE: TANK_SIZE_CALCULATED");
+
+					final double kmToRefuel = vehicleSystem.getKilometersUntilRefuel();
+
+					// This has to be done in UI thread because of Googles Map.
+					mainHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							addFuelPause(kmToRefuel);
+						}
+					});
+
 				// If No signal matches
 				} else {
 					Log.d("TYPE ERROR", "Type error in update");
 				}
 			}
 		});
+	}
+
+	// Method that adds time-pauses in the map.
+	private void addTimePause() {
+		long routeTime = map.getRoute().getDuration();
+		long nmbrOfPauses = routeTime / Constants.LEGAL_UPTIME_IN_SECONDS;
+
+		for (int i = 1; i < nmbrOfPauses; i++) {
+			Log.d("NavModel", "Adding pause: ");
+			map.getRoute().addPause(i * Constants.LEGAL_UPTIME_IN_SECONDS);
+		}
+	}
+
+	// Method that add fuel-pause in the map.
+	private void addFuelPause(double kmToRefuel) {
+		map.getRoute().addPause(kmToRefuel);
 	}
 }
