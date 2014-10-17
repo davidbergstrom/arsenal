@@ -1,13 +1,11 @@
 package com.edit.reach.constants;
 
 /**
+ * Class with static ints containing ID:s for different types of states.
  * Created by: Tim Kerschbaumer
  * Project: arsenal
  * Date: 2014-10-13
  * Time: 19:31
- */
-
-/** Class with static ints containing ID:s for different types of states.
  */
 public class MovingState {
 	public static final int DRIVE_AND_MOVING = 101;

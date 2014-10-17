@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-// TODO Refactoring!
 /**
- * Class that represents a VehicleSystem (Or a Vehicle).
+ * Class that represents a VehicleSystem.
+ * This class handles all communication with the AGA SDK.
  * Created by: Tim Kerschbaumer
  * Project: REACH
  * Date: 2014-09-27
@@ -30,32 +30,33 @@ import java.util.Observable;
  * Last Edit: 2014-10-17
  */
 public class VehicleSystem extends Observable implements Runnable {
-	/* --- Instance Variables --- */
+	/* --- INSTANCE VARIABLES --- */
 
 	// The fuel economy.
 	private SCSFloat instantFuelEconomy = new SCSFloat(0f);
-
 	// The fuel rate.
 	private SCSFloat fuelRate = new SCSFloat(0f);
-
 	// The fuel level.
 	private SCSFloat fuelLevel = new SCSFloat(-1f);
-
 	// The fuel level in percent when starting calculation for the tank size.
 	private SCSFloat startFuelLevel = new SCSFloat(-1f);
 
+	// 0 if not moving 1 if moving
 	private Uint8 isMoving = new Uint8(-1);
+	// The working state of the driver.
 	private Uint8 workingState = new Uint8(-1);
+	// The number of km til service.
 	private SCSInteger distanceToService = new SCSInteger(-1);
 
 	// A list with the instant fuel economy
 	private final List<SCSFloat> instantFuelEconomyList = new ArrayList<SCSFloat>();
-
 	// A list with the fuel rate
 	private final List<SCSFloat> fuelRateList = new ArrayList<SCSFloat>();
 
 	// Time that vehicle started driving.
 	private long startTime = 0;
+
+	// Time that the vehicle stopped driving.
 	private long stopTime = 0;
 
 	// Previous time used to calculate when to notify observers.
@@ -101,7 +102,7 @@ public class VehicleSystem extends Observable implements Runnable {
 								determineTimeUpdate();
 							}
 
-							Log.d("Signal: FUEL", "Fuellevel: " + fuelLevel.getFloatValue());
+							Log.d("Signal: FuelLevel", "Fuel level: " + fuelLevel.getFloatValue());
 							break;
 
 						// Working state of driver
@@ -133,7 +134,7 @@ public class VehicleSystem extends Observable implements Runnable {
 							// Call method to determine critical states
 							determineWorkStateChange(prevWorkState.getIntValue(), workingState.getIntValue());
 
-							Log.d("Signal: W-STATE", "State: " + workingState.getIntValue());
+							Log.d("Signal: WorkingState", "State: " + workingState.getIntValue());
 							break;
 
 						// Distance to service
@@ -152,7 +153,7 @@ public class VehicleSystem extends Observable implements Runnable {
 							isMoving = (Uint8) (automotiveSignal.getData());
 							determineMovingChange();
 
-							Log.d("Signal: Motion", "Motion " + isMoving.getIntValue());
+							Log.d("Signal: Motion", "Motion: " + isMoving.getIntValue());
 							break;
 
 						// Instantaneous Fuel economy
@@ -164,7 +165,7 @@ public class VehicleSystem extends Observable implements Runnable {
 								instantFuelEconomyList.add(instantFuelEconomy);
 							}
 
-							Log.d("Signal: FuelEconomy", "Fuel economy " + instantFuelEconomy.getFloatValue());
+							Log.d("Signal: FuelEconomy", "Fuel economy: " + instantFuelEconomy.getFloatValue());
 							break;
 
 						case AutomotiveSignalId.FMS_FUEL_RATE:
@@ -180,6 +181,7 @@ public class VehicleSystem extends Observable implements Runnable {
 
 							calculateTankSize();
 
+							Log.d("Signal: FuelRate", "Fuel rate: " + instantFuelEconomy.getFloatValue());
 							break;
 
 						default:
@@ -230,19 +232,6 @@ public class VehicleSystem extends Observable implements Runnable {
 		vehicleSignals = new Thread(VehicleSystem.this, "VehicleSignalsThread");
 		vehicleSignals.start();
 
-		// TODO Needed?
-		// Requests values because of bug in register values.
-		automotiveManager.requestValue(
-				AutomotiveSignalId.FMS_FUEL_LEVEL_1,
-				AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE,
-				AutomotiveSignalId.FMS_FUEL_RATE,
-				AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY,
-				AutomotiveSignalId.FMS_SERVICE_DISTANCE,
-				AutomotiveSignalId.FMS_VEHICLE_MOTION,
-				AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED,
-				AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED,
-				AutomotiveSignalId.FMS_HIGH_RESOLUTION_TOTAL_VEHICLE_DISTANCE);
-
 		// Register Listeners
 		automotiveManager.register(
 				AutomotiveSignalId.FMS_FUEL_LEVEL_1,
@@ -270,6 +259,9 @@ public class VehicleSystem extends Observable implements Runnable {
 	// ****** GET-METHODS ****** //
 
 
+	/** This methods returns the level of fuel left in tank in percent from 0 to 100.
+	 * @return a float from 0-100 that represents the fuel level
+	 */
 	public synchronized float getFuelLevel() {
 		return (fuelLevel.getFloatValue());
 	}
@@ -316,18 +308,6 @@ public class VehicleSystem extends Observable implements Runnable {
 		}
 	}
 
-	/** Method that returns the number om kilometers until service is recommended.
-	 * @return how many km until a stop for service is recommended.
-	 */
-	public synchronized int getKilometersUntilService() {
-		try {
-			return distanceToService.getIntValue();
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-			throw new NullPointerException("Nullpointer in getKilometersUntilService: distanceToService not initialized");
-		}
-	}
-
 	/** Method that returns the current state of the vehicle.
 	 * @return a constant int value from class MovingState.
 	 */
@@ -349,18 +329,26 @@ public class VehicleSystem extends Observable implements Runnable {
 		}
 	}
 
+	// TODO not used because the AGA simulator does not have this signal.
+	/** Method that returns the number om kilometers until service is recommended.
+	 * @return how many km until a stop for service is recommended.
+	 */
+	public synchronized int getKilometersUntilService() {
+		try {
+			return distanceToService.getIntValue();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+			throw new NullPointerException("Nullpointer in getKilometersUntilService: distanceToService not initialized");
+		}
+	}
+
 	// ********** PRIVATE METHODS THAT NOTIFY OBSERVERS ********** //
 
-	// Method that notifies observers if the vehicle has been in drive close to threshold.
-	private void determineShortTime() {
-		if(workingState.getIntValue() == 3) {
-			if ((Constants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS)) < TIME_THRESHOLD) {
-				if (!timeHasBeenNotified) {
-					setChanged();
-					notifyObservers(SignalType.SHORT_TIME);
-					timeHasBeenNotified = true;
-				}
-			}
+	// Method that notifies observers if the fuellevel changed more than 1%.
+	private void determineFuelUpdate(float prevFuelLevel, float fuelLevel) {
+		if(fuelLevel - prevFuelLevel >= 1) {
+			setChanged();
+			notifyObservers(SignalType.FUEL_UPDATE);
 		}
 	}
 
@@ -388,15 +376,45 @@ public class VehicleSystem extends Observable implements Runnable {
 		notifyObservers(SignalType.VEHICLE_STOPPED_OR_STARTED);
 	}
 
+	// Method that notifies observers if the vehicle has been in drive close to threshold.
+	private void determineShortTime() {
+		if(workingState.getIntValue() == 3) {
+			if ((Constants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS)) < TIME_THRESHOLD) {
+				if (!timeHasBeenNotified) {
+					setChanged();
+					notifyObservers(SignalType.SHORT_TIME);
+					timeHasBeenNotified = true;
+				}
+			}
+		}
+	}
+
 	// Notify observers if the vehicle took a break longer than or equal to the break time.
 	private boolean determineBreakWasFinal() {
 		boolean wasFinal = false;
-		if(((System.nanoTime() - stopTime) * Constants.NANOSECONDS_TO_SECONDS) >= Constants.BREAKTIME_IN_SECONDS ) {
+		if (((System.nanoTime() - stopTime) * Constants.NANOSECONDS_TO_SECONDS) >= Constants.BREAKTIME_IN_SECONDS) {
 			setChanged();
 			notifyObservers(SignalType.VEHICLE_TOOK_FINAL_BREAK);
 			wasFinal = true;
 		}
 		return wasFinal;
+	}
+
+	// Method that notifies observers if the time changed more than 60 seconds.
+	private void determineTimeUpdate() {
+		if(prevTime == 0) {
+			setChanged();
+			notifyObservers(SignalType.UPTIME_UPDATE);
+			prevTime = System.nanoTime();
+		} else {
+			if(((System.nanoTime() - prevTime) * Constants.NANOSECONDS_TO_SECONDS) >= 60) {
+				setChanged();
+				notifyObservers(SignalType.UPTIME_UPDATE);
+				prevTime = System.nanoTime();
+			} else {
+				// Do nothing
+			}
+		}
 	}
 
 	// Only notifies observers if the previous km to service was above the threshold and the current km to service is below the threshold.
@@ -407,6 +425,8 @@ public class VehicleSystem extends Observable implements Runnable {
 			notifyObservers(SignalType.SHORT_TO_SERVICE);
 		}
 	}
+
+	// ********** OTHER PRIVATE METHODS ********** //
 
 	// Method that calculates and sets the size of the vehicles tank.
 	private void calculateTankSize() {
@@ -432,30 +452,5 @@ public class VehicleSystem extends Observable implements Runnable {
 		}
 		double meanFuelEconomy =  (double) addedConsumption / instantFuelEconomyList.size();
 		return (meanFuelEconomy * currentLitersInTank);
-	}
-
-	// Method that notifies observers if the fuellevel changed more than 1%.
-	private void determineFuelUpdate(float prevFuelLevel, float fuelLevel) {
-		if(fuelLevel - prevFuelLevel >= 1) {
-			setChanged();
-			notifyObservers(SignalType.FUEL_UPDATE);
-		}
-	}
-
-	// Method that notifies observers if the time changed more than 60 seconds.
-	private void determineTimeUpdate() {
-		if(prevTime == 0) {
-			setChanged();
-			notifyObservers(SignalType.UPTIME_UPDATE);
-			prevTime = System.nanoTime();
-		} else {
-			if(((System.nanoTime() - prevTime) * Constants.NANOSECONDS_TO_SECONDS) >= 60) {
-				setChanged();
-				notifyObservers(SignalType.UPTIME_UPDATE);
-				prevTime = System.nanoTime();
-			} else {
-				// Do nothing
-			}
-		}
 	}
 }
