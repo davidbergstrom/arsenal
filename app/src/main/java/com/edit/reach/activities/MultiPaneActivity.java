@@ -15,6 +15,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.edit.reach.app.R;
+import com.edit.reach.fragments.ControlFragment;
 import com.edit.reach.fragments.MapFragment;
 import com.edit.reach.fragments.MilestonesFragment;
 import com.edit.reach.fragments.RouteFragment;
@@ -37,13 +38,14 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
     private NavigationModel navigationModel;
 
-    private static Boolean routeWithCurrentLocation;
+    private Boolean routeWithCurrentLocation;
 
     private List<IMilestone> preliminaryMilestones;
     private ProgressBar spinner;
 
     private MilestonesFragment milestonesFragment;
 	private RouteFragment routeFragment;
+    private ControlFragment controlFragment;
 
     // A handler for the UI thread. The Handler recieves messages from other thread.
 	private Handler mainHandler = new Handler(Looper.getMainLooper()) {
@@ -218,6 +220,9 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         return routeWithCurrentLocation;
     }
 
+    public List<IMilestone> getPreliminaryMilestones(){
+        return preliminaryMilestones;
+    }
 
     public void createRouteWithMyLocation(String to){
         Double myLocationLatitude = getMyLocation().getLatitude();
@@ -260,6 +265,14 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
             }
         });
+    }
+
+    public void startMovingMode(){
+        navigationModel.getMap().setState(Map.State.MOVING);
+        /*
+        controlFragment = ControlFragment.newInstance("Control");
+        getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
+        */
     }
 
 	@Override
