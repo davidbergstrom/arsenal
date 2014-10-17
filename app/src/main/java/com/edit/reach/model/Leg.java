@@ -28,7 +28,7 @@ public class Leg {
         steps = new ArrayList<Step>();
         try {
             //distance = legJSON.getJSONObject("distance").getLong("value");
-            long duration = legJSON.getJSONObject("duration").getLong("value");
+            //long duration = legJSON.getJSONObject("duration").getLong("value");
             //JSONObject startPosition = legJSON.getJSONObject("start_location");
             //this.startLocation = new LatLng(startPosition.getDouble("lat"), startPosition.getDouble("lng"));
             //JSONObject endPosition = legJSON.getJSONObject("end_location");
@@ -37,7 +37,7 @@ public class Leg {
             JSONArray stepsArray = legJSON.getJSONArray("steps");
             for(int i = 0; i < stepsArray.length(); i++){
                 Step step = new Step(stepsArray.getJSONObject(i));
-                Log.d(DEBUG_TAG, "Step "+i+" duration: "+step.getDuration());
+                //Log.d(DEBUG_TAG, "Step "+i+" duration: "+step.getDuration());
                 steps.add(step);
             }
         } catch (JSONException e) {
