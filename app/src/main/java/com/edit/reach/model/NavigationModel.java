@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import com.edit.reach.constants.Constants;
+import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.constants.SignalType;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.RouteListener;
@@ -82,7 +82,17 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 	 * @return a IMilestone that matches the categories specified.
 	 */
 	public IMilestone getPauseSuggestions(List<IMilestone.Category> categoryList) {
-		// TODO The AISA method
+		// TODO The AISA method for multiple categories.
+		return null;
+	}
+
+
+	/** This method is used to find pauses in driving mode.
+	 * @param category a category with what the user wants.
+	 * @return a IMilestone that matches the category specified.
+	 */
+	public IMilestone getPauseSuggestions(IMilestone.Category category) {
+		// TODO The AISA method for one category
 		return null;
 	}
 
@@ -259,11 +269,11 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 	// Method that adds time-pauses in the map.
 	private void addTimePause() {
 		long routeTime = map.getRoute().getDuration();
-		long nmbrOfPauses = routeTime / Constants.LEGAL_UPTIME_IN_SECONDS;
+		long nmbrOfPauses = routeTime / UniversalConstants.LEGAL_UPTIME_IN_SECONDS;
 
 		for (int i = 1; i < nmbrOfPauses; i++) {
 			Log.d("NavModel", "Adding pause: ");
-			map.getRoute().addPause(i * Constants.LEGAL_UPTIME_IN_SECONDS);
+			map.getRoute().addPause(i * UniversalConstants.LEGAL_UPTIME_IN_SECONDS);
 		}
 	}
 

@@ -22,14 +22,15 @@ import android.widget.TextView;
 
 import android.widget.ImageButton;
 
-import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
-import com.edit.reach.constants.Constants;
+import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.constants.SignalType;
+
 import com.edit.reach.model.NavigationModel;
 import com.edit.reach.model.interfaces.IMilestone;
 
 import java.util.List;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,8 +74,8 @@ public class ControlFragment extends Fragment{
 
                 case SignalType.UPTIME_UPDATE:
                     timeClock = (Double) message.obj;
-                    timeClockBar.setMax((int)(Constants.LEGAL_UPTIME_IN_SECONDS * Constants.SECONDS_TO_MINUTES));
-                    timeClockBar.setProgress((int) (timeClock * Constants.SECONDS_TO_MINUTES));
+                    timeClockBar.setMax((int)(UniversalConstants.LEGAL_UPTIME_IN_SECONDS * UniversalConstants.SECONDS_TO_MINUTES));
+                    timeClockBar.setProgress((int) (timeClock * UniversalConstants.SECONDS_TO_MINUTES));
                     break;
             }
         }
