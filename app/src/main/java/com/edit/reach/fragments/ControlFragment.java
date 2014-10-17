@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import com.edit.reach.activities.MovingActivity;
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
+import com.edit.reach.constants.Constants;
 import com.edit.reach.constants.MovingState;
 import com.edit.reach.constants.SignalType;
 
@@ -26,8 +27,9 @@ import com.edit.reach.constants.SignalType;
 public class ControlFragment extends Fragment {
 
     private float fuelLevel;
-    private double secToTimeStop;
-    private double totalTime;
+    private double nextStopClock; //in sec
+    private double timeClock;   //in sec
+    private double totalTime;   //in sec
     private String nextStop;
 
     //Progressbar
@@ -35,21 +37,28 @@ public class ControlFragment extends Fragment {
     private ProgressBar nextStopBar;
     private ProgressBar timeClockBar;
 
-    /*
     // A handler for the UI thread. The Handler recieves messages from other thread.
     private Handler mainHandler = new Handler(Looper.getMainLooper()) {
+
         @Override
         public void handleMessage(Message message) {
 
-            switch (SignalType) {
+            switch (message.what) {
 
-                case : fuelBar.setProgress((int) fuelLevel);
-                break;
+                case SignalType.FUEL_UPDATE:
+                    fuelLevel = (Float) message.obj;
+                    fuelBar.setMax(100);
+                    fuelBar.setProgress((int) fuelLevel);
+                    break;
 
-                case : nextStopBar.setProgress();
-
+                case SignalType.UPTIME_UPDATE:
+                    timeClock = (Double) message.obj;
+                    timeClockBar.setMax((int)(Constants.LEGAL_UPTIME_IN_SECONDS * Constants.SECONDS_TO_MINUTES));
+                    timeClockBar.setProgress((int) (timeClock * Constants.SECONDS_TO_MINUTES));
+                    break;
+            }
         }
-    };*/
+    };
 
 
     public ControlFragment() {
@@ -62,6 +71,8 @@ public class ControlFragment extends Fragment {
         // Inflate the layout for this fragment
 
         fuelBar = (ProgressBar) getView().findViewById(R.id.progress_gas);
+        timeClockBar = (ProgressBar) getView().findViewById(R.id.progress_time_clock);
+        nextStopBar = (ProgressBar) getView().findViewById(R.id.progress_next_stop);
 
         return inflater.inflate(R.layout.fragment_control, container, false);
     }

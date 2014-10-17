@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
-import android.text.InputFilter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +16,6 @@ import com.edit.reach.app.R;
 import com.edit.reach.fragments.MapFragment;
 import com.edit.reach.fragments.MilestonesFragment;
 import com.edit.reach.fragments.RouteFragment;
-import com.edit.reach.model.Milestone;
 import com.edit.reach.model.NavigationModel;
 import com.edit.reach.model.Pause;
 import com.edit.reach.model.Route;
@@ -26,11 +24,8 @@ import com.edit.reach.model.interfaces.RouteListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +34,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
-    private NavigationModel nvm;
+    private NavigationModel navigationModel;
 
     private List<IMilestone> preliminaryMilestones;
 
@@ -71,7 +66,8 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
         setUpMapIfNeeded();
         preliminaryMilestones = new ArrayList<IMilestone>();
-        nvm = new NavigationModel(mMap, mainHandler);
+        navigationModel = NavigationModel.getInstance();
+        navigationModel.setGoogleMap(mMap);
     }
 
     @Override
@@ -113,7 +109,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
     }
 
     public List<String> addMatchedStringsToList(String input, List<String> strings){
-        strings = nvm.getMatchedStringResults(input);
+        strings = navigationModel.getMatchedStringResults(input);
         return strings;
     }
 
@@ -143,7 +139,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                IMilestone milestone = nvm.getMap().getMilestone(marker.getPosition());
+                IMilestone milestone = navigationModel.getMap().getMilestone(marker.getPosition());
                 if(milestone != null){
                     if(preliminaryMilestones.contains(milestone)){
                         Log.d("MultiPaneActivity", "Milestone already in list, removing");
@@ -202,14 +198,14 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 		// Sends the text from search field and receives a list of
 		// places and sends the list back to the fragment
 		if(o.getClass() == String.class) {
-			List<String> list = nvm.getMatchedStringResults((String)o);
+			List<String> list = navigationModel.getMatchedStringResults((String)o);
 			routeFragment.suggestionList(list);
 		}
 
         if(o.getClass() == Route.class){
 
             final Route r = (Route)o;
-            nvm.setRoute(r);
+            navigationModel.setRoute(r);
 
 			//fragment_container goes from RouteFragment -> MilestonesFragment
             //TODO: Load with a spinner and wait for route to finish, then show fragment below...
