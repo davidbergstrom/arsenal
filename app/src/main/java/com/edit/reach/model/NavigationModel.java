@@ -54,7 +54,7 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 	}
 
 	public static NavigationModel getInstance() {
-		if (navigationModel != null) {
+		if (navigationModel == null) {
 			navigationModel = new NavigationModel();
 		}
 		return navigationModel;
@@ -108,7 +108,7 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
         newRoute.addListener(new RouteListener() {
 			@Override
 			public void onInitialization(boolean success) {
-                if(success){
+                if(success) {
                     long routeTime = map.getRoute().getDuration();
                     long nmbrOfPauses = routeTime/ Constants.LEGAL_UPTIME_IN_SECONDS;
 
@@ -116,7 +116,7 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
                         Log.d("NavModel", "Adding pause: ");
                         map.getRoute().addPause(i*Constants.LEGAL_UPTIME_IN_SECONDS);
                     }
-                }else{
+                } else {
                     // Failed initialization
                 }
 			}
