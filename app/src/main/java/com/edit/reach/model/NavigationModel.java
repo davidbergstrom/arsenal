@@ -19,14 +19,14 @@ import java.util.Observer;
 
 /**
  * Class that merges data from the vehicle and the map. The class finds optimal stops for the trip.
- * This class har the singleton pattern.
+ * This class is using the singleton pattern.
  * Created by: Tim Kerschbaumer
  * Project: REACH
  * Date: 2014-09-27
  * Time: 19:27
  * Last Edit: 2014-10-17
  */
-public class NavigationModel implements Runnable, Observer, SuggestionListener {
+public class NavigationModel implements Runnable, Observer, SuggestionListener, RouteListener {
 
 	private final VehicleSystem vehicleSystem;
 	private final Thread pipelineThread;
@@ -106,27 +106,7 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 	 */
 	public void setRoute(final Route newRoute) {
 		map.setRoute(newRoute);
-        newRoute.addListener(new RouteListener() {
-			@Override
-			public void onInitialization(boolean success) {
-                if(success) {
-                    long routeTime = map.getRoute().getDuration();
-                    long nmbrOfPauses = routeTime/ Constants.LEGAL_UPTIME_IN_SECONDS;
-
-                    for(int i = 1; i < nmbrOfPauses; i++) {
-                        Log.d("NavModel", "Adding pause: ");
-                        map.getRoute().addPause(i*Constants.LEGAL_UPTIME_IN_SECONDS);
-                    }
-                } else {
-                    // Failed initialization
-                }
-			}
-
-			@Override
-			public void onPauseAdded(Pause pause) {
-				// TODO what here?
-			}
-		});
+        newRoute.addListener(this);
 	}
 
 	/** Do not call this method. It is called automatically when the observable changes.
@@ -138,67 +118,97 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 		pipelineHandler.post(new Runnable() {
 			@Override
 			public void run() {
-				// TODO
+				// Obtain message from handler.
 				Message message = Message.obtain(mainHandler);
-				Log.d("THREAD", "Thread in update: " + Thread.currentThread().getName());
 
+				// Sets the message to the routs legs and send it to the UI.
+				message.obj = map.getRoute().getLegs();
+				message.what = SignalType.LEG_UPDATE;
+				mainHandler.sendMessage(message);
+
+				// If vehicle is low on fuel.
 				if((Integer)data == SignalType.LOW_FUEL) {
+					// TODO what to do here?
 					Log.d("UPDATE", "TYPE: LOW_FUEL");
 					Log.d("GET", "Km to refuel: " + vehicleSystem.getKilometersUntilRefuel());
 
-					// TODO
-					// message.obj = vehicleSystem.getKilometersUntilRefuel();
-					// message.what = SignalType.LOW_FUEL;
-					// mainHandler.sendMessage(message);
-
+				// If vehicles up time is short relative to the legal up time.
 				} else if ((Integer)data == SignalType.SHORT_TIME) {
+					// TODO what to do here?
 					Log.d("UPDATE", "TYPE: SHORT_TIME");
 					Log.d("GET", "Time until rest: " + vehicleSystem.getTimeUntilForcedRest());
 
-					// TODO
-					// message.obj = vehicleSystem.getTimeUntilForcedRest();
-					// message.what = SignalType.SHORT_TIME;
-					// mainHandler.sendMessage(message);
-
-				} else if ((Integer)data == SignalType.SHORT_TO_SERVICE) {
-					Log.d("UPDATE", "TYPE: SHORT_TO_SERVICE");
-					Log.d("GET", "Km to service: " + vehicleSystem.getKilometersUntilService());
-
-					// TODO
-					// message.obj = vehicleSystem.getKilometersUntilService();
-					// message.what = SignalType.SHORT_TO_SERVICE;
-					// mainHandler.sendMessage(message);
-
+				// If vehicle stopped or started
 				} else if ((Integer)data == SignalType.VEHICLE_STOPPED_OR_STARTED) {
 					Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
 					Log.d("GET", "Vehicle State: " + vehicleSystem.getVehicleState());
 
+					// Send the MovingState to the UI.
 					message.obj = vehicleSystem.getVehicleState();
 					message.what = SignalType.VEHICLE_STOPPED_OR_STARTED;
 					mainHandler.sendMessage(message);
 
+				// If a vehicle took a break longer than or equal to 45 minutes.
 				} else if ((Integer)data == SignalType.VEHICLE_TOOK_FINAL_BREAK) {
 					// TODO what to do when vehicle took a "final" break.
 					Log.d("UPDATE", "TYPE: VEHICLE_TOOK_FINAL_BREAK");
 
+				// If the up time is updated.
 				} else if ((Integer)data == SignalType.UPTIME_UPDATE) {
-					Log.d("UPDATE", "TYPDE: UP_TIME_UPDATE");
+					Log.d("UPDATE", "TYPE: UP_TIME_UPDATE");
 
+					// Send the number of seconds until break to UI.
 					message.obj = vehicleSystem.getTimeUntilForcedRest();
 					message.what = SignalType.UPTIME_UPDATE;
 					mainHandler.sendMessage(message);
 
+				// If the fuel level is updated.
 				} else if ((Integer)data == SignalType.FUEL_UPDATE) {
-					Log.d("UPDATE", "TYPDE: FUEL_UPDATE");
+					Log.d("UPDATE", "TYPE: FUEL_UPDATE");
 
+					// Send the amount of fuel in tank to the UI.
 					message.obj = vehicleSystem.getFuelLevel();
 					message.what = SignalType.FUEL_UPDATE;
 					mainHandler.sendMessage(message);
 
+				// If No signal matches
 				} else {
 					Log.d("TYPE ERROR", "Type error in update");
 				}
 			}
 		});
+	}
+
+	@Override
+	public void onInitialization(boolean success) {
+		Message message = mainHandler.obtainMessage();
+		if (success) {
+			long routeTime = map.getRoute().getDuration();
+			long nmbrOfPauses = routeTime / Constants.LEGAL_UPTIME_IN_SECONDS;
+
+			for (int i = 1; i < nmbrOfPauses; i++) {
+				Log.d("NavModel", "Adding pause: ");
+				map.getRoute().addPause(i * Constants.LEGAL_UPTIME_IN_SECONDS);
+			}
+			message.what = SignalType.ROUTE_INITIALIZATION_SUCCEDED;
+		} else {
+			message.what = SignalType.ROUTE_INITIALIZATION_FAILED;
+		}
+		mainHandler.sendMessage(message);
+	}
+
+	@Override
+	public void onPauseAdded(Pause pause) {
+		// Do Nothing.
+	}
+
+	@Override
+	public void onLegFinished(Leg finishedLeg) {
+		// TODO Reached a milestone.
+	}
+
+	@Override
+	public void onStepFinished(Step finishedStep) {
+		// TODO needed?
 	}
 }

@@ -75,6 +75,16 @@ public class Map {
             }
 
         }
+
+        @Override
+        public void onLegFinished(Leg finishedLeg) {
+            
+        }
+
+        @Override
+        public void onStepFinished(Step finishedStep) {
+
+        }
     };
 
     /** A runnable for navigation */

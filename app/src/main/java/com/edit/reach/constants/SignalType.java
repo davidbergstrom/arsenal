@@ -1,13 +1,11 @@
 package com.edit.reach.constants;
 
 /**
+ * Class with static ints containing ID:s for different types of signals.
  * Created by: Tim Kerschbaumer
  * Project: arsenal
  * Date: 2014-10-13
  * Time: 16:16
- */
-
-/** Class with static ints containing ID:s for different types of signals.
  */
 public class SignalType {
 	public static final int LOW_FUEL = 201;
@@ -16,6 +14,8 @@ public class SignalType {
 	public static final int VEHICLE_STOPPED_OR_STARTED = 204;
 	public static final int VEHICLE_TOOK_FINAL_BREAK = 205;
 	public static final int UPTIME_UPDATE = 206;
-	public static final int DOWN_TIME_UPDATE = 207;
 	public static final int FUEL_UPDATE = 208;
+	public static final int LEG_UPDATE = 209;
+	public static final int ROUTE_INITIALIZATION_SUCCEDED = 210;
+	public static final int ROUTE_INITIALIZATION_FAILED = 211;
 }
