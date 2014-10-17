@@ -16,4 +16,6 @@ public class SignalType {
 	public static final int UPTIME_UPDATE = 206;
 	public static final int FUEL_UPDATE = 208;
 	public static final int LEG_UPDATE = 209;
+	public static final int ROUTE_INITIALIZATION_SUCCEDED = 210;
+	public static final int ROUTE_INITIALIZATION_FAILED = 211;
 }

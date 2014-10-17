@@ -26,7 +26,7 @@ import java.util.Observer;
  * Time: 19:27
  * Last Edit: 2014-10-17
  */
-public class NavigationModel implements Runnable, Observer, SuggestionListener {
+public class NavigationModel implements Runnable, Observer, SuggestionListener, RouteListener {
 
 	private final VehicleSystem vehicleSystem;
 	private final Thread pipelineThread;
@@ -106,27 +106,7 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 	 */
 	public void setRoute(final Route newRoute) {
 		map.setRoute(newRoute);
-        newRoute.addListener(new RouteListener() {
-			@Override
-			public void onInitialization(boolean success) {
-                if(success) {
-                    long routeTime = map.getRoute().getDuration();
-                    long nmbrOfPauses = routeTime/ Constants.LEGAL_UPTIME_IN_SECONDS;
-
-                    for(int i = 1; i < nmbrOfPauses; i++) {
-                        Log.d("NavModel", "Adding pause: ");
-                        map.getRoute().addPause(i*Constants.LEGAL_UPTIME_IN_SECONDS);
-                    }
-                } else {
-                    // Failed initialization
-                }
-			}
-
-			@Override
-			public void onPauseAdded(Pause pause) {
-				// TODO what here?
-			}
-		});
+        newRoute.addListener(this);
 	}
 
 	/** Do not call this method. It is called automatically when the observable changes.
@@ -197,5 +177,38 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 				}
 			}
 		});
+	}
+
+	@Override
+	public void onInitialization(boolean success) {
+		Message message = mainHandler.obtainMessage();
+		if (success) {
+			long routeTime = map.getRoute().getDuration();
+			long nmbrOfPauses = routeTime / Constants.LEGAL_UPTIME_IN_SECONDS;
+
+			for (int i = 1; i < nmbrOfPauses; i++) {
+				Log.d("NavModel", "Adding pause: ");
+				map.getRoute().addPause(i * Constants.LEGAL_UPTIME_IN_SECONDS);
+			}
+			message.what = SignalType.ROUTE_INITIALIZATION_SUCCEDED;
+		} else {
+			message.what = SignalType.ROUTE_INITIALIZATION_FAILED;
+		}
+		mainHandler.sendMessage(message);
+	}
+
+	@Override
+	public void onPauseAdded(Pause pause) {
+		// Do Nothing.
+	}
+
+	@Override
+	public void onLegFinished(Leg finishedLeg) {
+		// TODO Reached a milestone.
+	}
+
+	@Override
+	public void onStepFinished(Step finishedStep) {
+		// TODO needed?
 	}
 }
