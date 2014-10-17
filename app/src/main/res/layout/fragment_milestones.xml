@@ -60,4 +60,15 @@
 				style="?android:attr/borderlessButtonStyle"
 				/>
 
+        <Button
+                android:id="@+id/button_start_route"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_gravity="center"
+                android:text="START ROUTE"
+                android:textColor="@color/text_fragment_route"
+                style="?android:attr/borderlessButtonStyle"
+                />
+
 </LinearLayout>
