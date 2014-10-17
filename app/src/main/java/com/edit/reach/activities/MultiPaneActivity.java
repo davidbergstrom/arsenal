@@ -11,15 +11,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.edit.reach.app.R;
 import com.edit.reach.fragments.MapFragment;
 import com.edit.reach.fragments.MilestonesFragment;
 import com.edit.reach.fragments.RouteFragment;
-import com.edit.reach.model.NavigationModel;
-import com.edit.reach.model.Pause;
-import com.edit.reach.model.Route;
+import com.edit.reach.model.*;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.RouteListener;
 import com.google.android.gms.maps.GoogleMap;
@@ -248,6 +247,16 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
             @Override
             public void onPauseAdded(Pause pause) {
+
+            }
+
+            @Override
+            public void onLegFinished(Leg finishedLeg) {
+
+            }
+
+            @Override
+            public void onStepFinished(Step finishedStep) {
 
             }
         });

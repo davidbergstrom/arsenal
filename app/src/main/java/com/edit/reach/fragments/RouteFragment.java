@@ -37,6 +37,7 @@ public class RouteFragment extends Fragment {
     private Route route;
 
 
+
     private AutoCompleteTextView actFrom;
     private AutoCompleteTextView actTo;
     private ToggleButton tbCurLoc;
@@ -85,6 +86,11 @@ public class RouteFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_route, container, false);
 
         actFrom = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_route_from);
+        if(myCurrentLocationActivated){
+            actFrom.setEnabled(false);
+        } else{
+            actFrom.setEnabled(true);
+        }
         actTo = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_route_to);
         spinner = (ProgressBar)view.findViewById(R.id.spinner);
         etListOfVia = new ArrayList<EditText>();
@@ -118,6 +124,7 @@ public class RouteFragment extends Fragment {
                     myCurrentLocationActivated = true;
                     actFrom.setText("My Location");
                     actFrom.setEnabled(false);
+
                 } else {
                     myCurrentLocationActivated = false;
                     actFrom.setText("");
