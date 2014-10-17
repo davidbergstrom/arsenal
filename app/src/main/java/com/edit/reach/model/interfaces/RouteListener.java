@@ -1,5 +1,6 @@
 package com.edit.reach.model.interfaces;
 
+import com.edit.reach.model.Pause;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -16,5 +17,5 @@ public interface RouteListener {
     /**
      * What the listener should do when a pause has been added to the route.
      */
-    public void onPauseAdded(LatLng pauseLocation);
+    public void onPauseAdded(Pause pause);
 }

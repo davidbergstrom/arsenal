@@ -19,6 +19,7 @@ import com.edit.reach.fragments.MilestonesFragment;
 import com.edit.reach.fragments.RouteFragment;
 import com.edit.reach.model.Milestone;
 import com.edit.reach.model.NavigationModel;
+import com.edit.reach.model.Pause;
 import com.edit.reach.model.Route;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.RouteListener;
@@ -224,7 +225,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
                 }
 
                 @Override
-                public void onPauseAdded(LatLng pauseLocation) {
+                public void onPauseAdded(Pause pause) {
                     // Fuck this
                 }
             });

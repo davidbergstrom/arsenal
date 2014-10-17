@@ -105,7 +105,7 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 			}
 
 			@Override
-			public void onPauseAdded(LatLng pauseLocation) {
+			public void onPauseAdded(Pause pause) {
 				// TODO what here?
 			}
 		});
