@@ -46,10 +46,12 @@
 	<dimen name="custom_info_window_left">15dp</dimen>
 	<dimen name="custom_info_window_right">15dp</dimen>
 
-	<!-- Control fragment default padding -->
+	<!-- Control fragment -->
 	<dimen name="fragment_control_top_padding">30dp</dimen>
 	<dimen name="fragment_control_bottom_padding">30dp</dimen>
 	<dimen name="fragment_control_start_padding">10dp</dimen>
 	<dimen name="fragment_control_end_padding">10dp</dimen>
+
+	<dimen name="input_button_margin">5dp</dimen>
 
 </resources>

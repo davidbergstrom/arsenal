@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,16 +9,13 @@
     android:paddingEnd="@dimen/fragment_control_end_padding"
     tools:context="com.edit.reach.fragments.ControlFragment">
 
-	<RelativeLayout
-		android:layout_width="match_parent"
-		android:layout_height="match_parent">
-
 		<!-- Holder for top content in ControlFragment -->
 		<FrameLayout
 			android:id="@+id/container_control_top"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_alignParentTop="true">
+			android:layout_alignParentTop="true"
+			>
 		</FrameLayout>
 
 		<!-- Holder for bottom content in ControlFragment -->
@@ -27,8 +24,8 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_alignParentBottom="true">
+
+
 		</FrameLayout>
 
-	</RelativeLayout>
-
-</FrameLayout>
+</RelativeLayout>
