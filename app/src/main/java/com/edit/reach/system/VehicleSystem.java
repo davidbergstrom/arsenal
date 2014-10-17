@@ -58,6 +58,8 @@ public class VehicleSystem extends Observable implements Runnable {
 	private long startTime = 0;
 	private long stopTime = 0;
 
+	private long prevTime = 0;
+
 	// The tanksize
 	private double tankSize = 0.0;
 
@@ -90,10 +92,12 @@ public class VehicleSystem extends Observable implements Runnable {
 
 							// Call methods to determine critical states
 							determineLowFuel(prevFuelLevel.getFloatValue(), fuelLevel.getFloatValue());
+							determineFuelUpdate(prevFuelLevel.getFloatValue(), fuelLevel.getFloatValue());
 
 							// TODO where to put this?
 							if(startTime != 0) {
 								determineShortTime();
+								determineTimeUpdate();
 							}
 
 							Log.d("Signal: FUEL", "Fuellevel: " + fuelLevel.getFloatValue());
@@ -277,6 +281,11 @@ public class VehicleSystem extends Observable implements Runnable {
 		return LEGAL_UPTIME_IN_SECONDS;
 	}
 
+
+	public synchronized float getFuelLevel() {
+		return (fuelLevel.getFloatValue());
+	}
+
 	/** Estimates how long until a refuel is recommended.
 	 * @return how many km until a stop for fueling is recommended. Returns -1 if not applicable.
 	 */
@@ -435,5 +444,30 @@ public class VehicleSystem extends Observable implements Runnable {
 		}
 		double meanFuelEconomy =  (double) addedConsumption / instantFuelEconomyList.size();
 		return (meanFuelEconomy * currentLitersInTank);
+	}
+
+	// Method that notifies observers if the fuellevel changed more than 1%.
+	private void determineFuelUpdate(float prevFuelLevel, float fuelLevel) {
+		if(fuelLevel - prevFuelLevel >= 1) {
+			setChanged();
+			notifyObservers(SignalType.FUEL_UPDATE);
+		}
+	}
+
+	// Method that notifies observers if the time changed more than 60 seconds.
+	private void determineTimeUpdate() {
+		if(prevTime == 0) {
+			setChanged();
+			notifyObservers(SignalType.UPTIME_UPDATE);
+			prevTime = System.nanoTime();
+		} else {
+			if(((System.nanoTime() - prevTime) * Constants.NANOSECONDS_TO_SECONDS) >= 60) {
+				setChanged();
+				notifyObservers(SignalType.UPTIME_UPDATE);
+				prevTime = System.nanoTime();
+			} else {
+				// Do nothing
+			}
+		}
 	}
 }
