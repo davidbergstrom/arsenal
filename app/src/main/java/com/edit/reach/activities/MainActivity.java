@@ -4,16 +4,44 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import com.edit.reach.app.R;
+import com.edit.reach.constants.MovingState;
+import com.edit.reach.constants.SignalType;
+import com.edit.reach.model.NavigationModel;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
-	private ImageButton getStartedButton;
+	private ImageButton startMovingActivity, startStationaryActivity;
+    private NavigationModel navigationModel;
+
+    // A handler for the UI thread. The Handler recieves messages from other thread.
+    private Handler mainHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message message) {
+
+            //Change Activity when state is changed
+            if (message.what == SignalType.VEHICLE_STOPPED_OR_STARTED) {
+
+                if ((Integer)message.obj == MovingState.NOT_IN_DRIVE) {
+                     Intent intent = new Intent(getApplicationContext(), MultiPaneActivity.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), MovingActivity.class);
+                    startActivity(intent);
+                }
+
+            }
+
+
+        }
+    };
 
     /** Called when the activity is first created. */
     @Override
@@ -22,8 +50,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         setContentView(R.layout.activity_main);
 
-		getStartedButton = (ImageButton) findViewById(R.id.get_started_button);
-		getStartedButton.setOnClickListener(this);
+		startMovingActivity = (ImageButton) findViewById(R.id.start_moving_activity);
+        startMovingActivity.setOnClickListener(this);
+
+        startStationaryActivity = (ImageButton) findViewById(R.id.start_stationary_activity);
+        startStationaryActivity.setOnClickListener(this);
     }
 
 
@@ -49,9 +80,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 	@Override
 	public void onClick(View view) {
-		if (view == getStartedButton) {
-			Intent intent = new Intent(this, MultiPaneActivity.class);
+        Intent intent = null;
+		if (view == startMovingActivity) {
+			intent = new Intent(this, MovingActivity.class);
 			startActivity(intent);
-		}
+		} else if (view == startStationaryActivity) {
+            intent = new Intent(this, MultiPaneActivity.class);
+            startActivity(intent);
+        }
 	}
 }
