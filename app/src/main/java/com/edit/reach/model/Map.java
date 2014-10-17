@@ -87,11 +87,11 @@ public class Map {
 
                 // Move arrow to the current position on the route
 
-                if(currentRoute != null && !myLocation.equals(lastLocation)) {
+                if(!myLocation.equals(lastLocation)) {
                     currentRoute.goTo(map, position);
                 }
-                handler.postDelayed(this, UPDATE_INTERVAL);
                 lastLocation = myLocation;
+                handler.postDelayed(this, UPDATE_INTERVAL);
             }else{
                 Log.d(DEBUG_TAG, "Current route null or not initialized!");
             }
@@ -222,14 +222,7 @@ public class Map {
      * @return the milestone, null if there is no milestones at that coordinate
      */
     public IMilestone getMilestone(LatLng location){
-        for(Pause pause : currentRoute.getPauses()){
-            for(IMilestone milestone : pause.getMilestones()){
-                if(milestone.getLocation().equals(location)){
-                    return milestone;
-                }
-            }
-        }
-        return null;
+        return currentRoute.getMilestone(location);
     }
 
     /**

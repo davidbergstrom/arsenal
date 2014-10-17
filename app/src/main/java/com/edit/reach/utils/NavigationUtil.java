@@ -58,6 +58,12 @@ public class NavigationUtil {
 		return poly;
 	}
 
+    /**
+     * Returns the distance between the two coordinates in km.
+     * @param firstPosition, coordinate of the first location
+     * @param secondPosition, coordinate of the second
+     * @return the distance in km
+     */
     public static double getDistance(LatLng firstPosition, LatLng secondPosition){
         int R = 6371; // Earths radius in km
         double a = Math.pow(Math.sin(Math.toRadians(secondPosition.latitude-firstPosition.latitude)/2), 2) +
@@ -67,16 +73,22 @@ public class NavigationUtil {
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     }
 
-    public static double finalBearing(double lat1, double long1, double lat2, double long2){
+    /**
+     * Get the bearing of the two locations provided.
+     * @param firstLocation, the location to get the bearing from
+     * @param secondLocation, the location to get the bearing too
+     * @return the bearing
+     */
+    public static float finalBearing(LatLng firstLocation, LatLng secondLocation){
         double degToRad = Math.PI / 180.0;
-        double phi1 = lat1 * degToRad;
-        double phi2 = lat2 * degToRad;
-        double lam1 = long1 * degToRad;
-        double lam2 = long2 * degToRad;
+        double phi1 = firstLocation.latitude * degToRad;
+        double phi2 = secondLocation.latitude * degToRad;
+        double lam1 = firstLocation.longitude * degToRad;
+        double lam2 = secondLocation.longitude * degToRad;
 
         double bearing = Math.atan2(Math.sin(lam2-lam1)*Math.cos(phi2),
                 Math.cos(phi1)*Math.sin(phi2) - Math.sin(phi1)*Math.cos(phi2)*Math.cos(lam2-lam1)) * 180/Math.PI;
 
-        return (bearing + 180.0) % 360;
+        return (float)(bearing + 180.0) % 360;
     }
 }

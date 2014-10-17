@@ -20,8 +20,8 @@ import java.util.List;
  * A step is a part of route with instructions.
  */
 public class Step {
-    private long distance, duration;
-    private LatLng startLocation, endLocation;
+    private float distancePerSubStep, durationPerSubStep;
+    //private LatLng startLocation, endLocation; // Using the sub steps instead;
     private String instructions;
     private Polyline polyline;
     private List<LatLng> subSteps;
@@ -30,12 +30,11 @@ public class Step {
     public Step(JSONObject stepJSON){
         Log.d(DEBUG_TAG, "Creating step.");
         try {
-            distance = stepJSON.getJSONObject("distance").getLong("value");
-            duration = stepJSON.getJSONObject("duration").getLong("value");
+
             JSONObject startLocation = stepJSON.getJSONObject("start_location");
-            this.startLocation = new LatLng(startLocation.getDouble("lat"), startLocation.getDouble("lng"));
+            //this.startLocation = new LatLng(startLocation.getDouble("lat"), startLocation.getDouble("lng"));
             JSONObject endLocation = stepJSON.getJSONObject("end_location");
-            this.endLocation = new LatLng(endLocation.getDouble("lat"), endLocation.getDouble("lng"));
+            //this.endLocation = new LatLng(endLocation.getDouble("lat"), endLocation.getDouble("lng"));
             try {
                 instructions = URLDecoder.decode(Html.fromHtml(stepJSON.getString("html_instructions")).toString(), "UTF-8");
             } catch (UnsupportedEncodingException e) {
@@ -45,7 +44,9 @@ public class Step {
             JSONObject polyline = stepJSON.getJSONObject("polyline");
             String encodedString = polyline.getString("points");
             subSteps = NavigationUtil.decodePoly(encodedString);
-            Log.d(DEBUG_TAG, "Substepsize: "+subSteps.size());
+            Log.d(DEBUG_TAG, "Number of sub steps: " + subSteps.size());
+            distancePerSubStep = (float)stepJSON.getJSONObject("distance").getDouble("value") / (subSteps.size()-1);
+            durationPerSubStep = (float)stepJSON.getJSONObject("duration").getDouble("value") / (subSteps.size()-1);
 
         } catch (JSONException e) {
             // TODO Auto-generated catch block
@@ -80,20 +81,19 @@ public class Step {
     }
 
     public LatLng getEndLocation() {
-        return endLocation;
+        return subSteps.get(subSteps.size()-1);
     }
 
     public LatLng getStartLocation() {
-        return startLocation;
+        return subSteps.get(0);
     }
 
-    public long getDuration() {
-        return duration;
+    public float getDuration() {
+        return durationPerSubStep * (subSteps.size()-1);
     }
 
-    public long getDistance() {
-        return distance;
+    public float getDistance() {
+        return distancePerSubStep * (subSteps.size()-1);
     }
-
 
 }

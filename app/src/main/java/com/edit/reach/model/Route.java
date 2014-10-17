@@ -32,7 +32,6 @@ public class Route {
     private GroundOverlay pointerWithBearing;
     private LatLng origin, destination;
     private String originAddress, destinationAddress;
-    private long distanceInMetres, durationInSeconds;
     private boolean initialized;
     private List<RouteListener> listeners;
     private List<IMilestone> milestones;
@@ -46,14 +45,11 @@ public class Route {
             try {
                 JSONArray routeArray = json.getJSONArray("routes");
                 JSONObject route = routeArray.getJSONObject(0);
-                distanceInMetres = 0;
-                durationInSeconds = 0;
                 JSONArray arrayLegs = route.getJSONArray("legs");
                 for(int i = 0; i < arrayLegs.length(); i++) {
                     JSONObject legJSON = arrayLegs.getJSONObject(0);
                     Leg newLeg = new Leg(legJSON);
-                    distanceInMetres += newLeg.getDistance();
-                    durationInSeconds += newLeg.getDuration();
+                    newLeg.setMilestone(getMilestone(newLeg.getEndLocation())); // Set the milestone to a milestone with the endlocation of the leg
                     legs.add(newLeg);
                 }
 
@@ -177,7 +173,11 @@ public class Route {
      * @return number of seconds the route will take
      */
     public long getDuration(){
-        return durationInSeconds;
+        float durationInSeconds = 0;
+        for(Leg leg : legs){
+            durationInSeconds += leg.getDuration();
+        }
+        return (long)durationInSeconds;
     }
 
     /**
@@ -185,7 +185,27 @@ public class Route {
      * @return the number of metres the route is
      */
     public long getDistance(){
-        return distanceInMetres;
+        float distanceInMetres = 0;
+        for(Leg leg : legs){
+            distanceInMetres += leg.getDistance();
+        }
+        return (long)distanceInMetres;
+    }
+
+    /**
+     * Get the milestone at the specified location
+     * @param location, the location to find a milestone on.
+     * @return the milestone
+     */
+    public IMilestone getMilestone(LatLng location){
+        for(Pause pause : pauses){
+            for(IMilestone milestone : pause.getMilestones()){
+                if(milestone.getLocation().equals(location)){
+                    return milestone;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -193,6 +213,7 @@ public class Route {
      * @param secondsIntoRoute, in seconds
      */
     public void addPause(long secondsIntoRoute) {
+        Log.d(DEBUG_TAG, "Adding pause...");
         long actualSecondsIntoRoute = 0;
 
         outerLoop:
@@ -238,6 +259,7 @@ public class Route {
      * @param kmIntoRoute, in km
      */
     public void addPause(double kmIntoRoute){
+        Log.d(DEBUG_TAG, "Adding pause...");
         double metresIntoRoute = kmIntoRoute * 1000;
         double actualMetresIntoRoute = 0;
 
@@ -412,8 +434,7 @@ public class Route {
         // Add an end point
         this.endPointCircle = map.addCircle(new CircleOptions()
                 .center(legs.get(legs.size()-1).getEndLocation())
-                .radius(10)
-                .strokeColor(Color.RED)
+                .radius(50)
                 .fillColor(Color.BLUE));
 
         //this.pointer = map.addCircle(new CircleOptions().center(legs.get(0).startLocation).fillColor(Color.GREEN).radius(8));
@@ -439,7 +460,7 @@ public class Route {
         this.endPointCircle = map.addCircle(new CircleOptions()
                 .center(legs.get(legs.size()-1).getEndLocation())
                 .radius(20)
-                .strokeColor(Color.RED)
+                .strokeWidth(0)
                 .fillColor(Color.BLUE));
 
         this.startPointCircle = map.addCircle(new CircleOptions()
@@ -471,16 +492,39 @@ public class Route {
     }
 
     /**
+     * Get the legs of this route. A leg is a part of the route.
+     * @return the legs
+     */
+    public List getLegs(){
+        return legs;
+    }
+
+    /**
      * Go to the provided location on the route.
      * @param map, the map to use
      * @param location, the location to move to
-     * @return the estimated location on the route
      */
-    public LatLng goTo(GoogleMap map, LatLng location){
+    public void goTo(GoogleMap map, LatLng location){
+        /*LatLng firstLocation = legs.get(0).getStartLocation();
+
+        for(int i = 0; i < legs.size(); i++){
+            Leg leg = legs.get(i);
+            List<Step> steps = leg.getSteps();
+
+            for(int j = 0; j < steps.size(); j++){
+                Step step = steps.get(j);
+                List<LatLng> subSteps = step.getSubSteps();
+
+                double distanceToStepStart = NavigationUtil.getDistance(location, step.getStartLocation());
+                double distanceToStepEnd = NavigationUtil.getDistance(location, step.getEndLocation());
+
+                double subDistance = step.getDistance() / (subSteps.size()-1);
+            }
+        }*/
+
         Log.d(DEBUG_TAG, "Move pointer to "+location.toString()+".");
 
         LatLng nearestLocation = legs.get(0).getSteps().get(0).getSubSteps().get(0);
-        Step stepToRedraw = legs.get(0).getSteps().get(0);
 
         // TODO: Clean up.
         // TODO: This only works if the sub steps are in a relatively straight line.
@@ -490,8 +534,8 @@ public class Route {
             for(Iterator<Step> iteratorStep = leg.getSteps().iterator(); iteratorStep.hasNext(); ){
                 Step step = iteratorStep.next();
                 List<LatLng> subSteps = step.getSubSteps();
-                double subDuration = step.getDuration() / subSteps.size();
-                double subDistance = step.getDistance() / subSteps.size();
+                double distanceToStepEnd = NavigationUtil.getDistance(location, step.getEndLocation());
+
                 for(int i = 0; i < subSteps.size() - 1; i++){
                     LatLng subStep = subSteps.get(i);
                     LatLng subStepTwo = subSteps.get(i + 1);
@@ -503,12 +547,8 @@ public class Route {
                         nearestLocation = subStepTwo;
                         subSteps.remove(i);
 
-                        // Update the distance and duration of the route with the update route.
-                        durationInSeconds -= subDuration;
-                        distanceInMetres -= subDistance;
-                    }else{
-                        //TODO add the redrawing here
-                        stepToRedraw = step;
+                    }else if(distance2 <= distanceToStepEnd){   // If the new point is also closer to current location then the end of step
+                        step.draw(map);
                         break outerLoop; // Break the outer loop
                     }
                 }
@@ -524,25 +564,23 @@ public class Route {
             endPointCircle.remove();
 
         }else{
-            if(stepToRedraw != null){
-                stepToRedraw.draw(map);
+            if(NavigationUtil.getDistance(location, nearestLocation) > 0.1){
+                // TODO Reinitialize the route with new start location.
             }
             if(pointerWithBearing != null && !pointerWithBearing.getPosition().equals(nearestLocation)){
-                pointerWithBearing.setPosition(nearestLocation);
                 // Calculate new bearing and rotate the camera
                 Step newStep = legs.get(0).getSteps().get(0);
-                float bearing = (float) NavigationUtil.finalBearing(newStep.getStartLocation().latitude, newStep.getStartLocation().longitude,
-		                newStep.getEndLocation().latitude, newStep.getEndLocation().longitude);
+                float bearing = NavigationUtil.finalBearing(newStep.getStartLocation(), newStep.getEndLocation());
                 pointerWithBearing.setBearing(bearing);
+                pointerWithBearing.setPosition(nearestLocation);
+
                 CameraPosition lastPosition = map.getCameraPosition();
                 CameraPosition currentPlace = new CameraPosition.Builder().target(nearestLocation).bearing(bearing)
                         .tilt(lastPosition.tilt).zoom(lastPosition.zoom).build();
-
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
             }
 
         }
-        return nearestLocation;
     }
 
     /**
