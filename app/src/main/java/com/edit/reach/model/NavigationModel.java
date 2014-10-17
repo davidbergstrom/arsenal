@@ -105,6 +105,13 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 		return map;
 	}
 
+	/** Add milestones to the route.
+	 * @param list a list of milestones to be added.
+	 */
+	public void addMilestones(List<IMilestone> list) {
+		map.getRoute().addMilestones(list);
+	}
+
 	/** This method is used to match search result strings.
 	 * @param searchString the string to match a result with
 	 * @return a list of strings with results.
