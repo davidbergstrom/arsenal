@@ -239,7 +239,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         r.addListener(new RouteListener() {
             @Override
             public void onInitialization(boolean success) {
-                if(success){
+                if(success && spinner != null){
                     milestonesFragment = MilestonesFragment.newInstance(r.getOriginAddress(), r.getDestinationAddress());
                     getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
                     spinner = (ProgressBar)findViewById(R.id.spinner);
@@ -267,8 +267,12 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         });
     }
 
+
+
     public void startMovingMode(){
+        navigationModel.addMilestones(preliminaryMilestones);
         navigationModel.getMap().setState(Map.State.MOVING);
+
         /*
         controlFragment = ControlFragment.newInstance("Control");
         getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
