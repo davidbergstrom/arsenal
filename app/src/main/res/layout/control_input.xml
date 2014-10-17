@@ -4,6 +4,8 @@
     android:layout_height="match_parent"
     android:background="@color/background_control_input">
 
+	<!-- Holder for 4 buttons. When button is pressed switch src to <<name>> + _pressed
+	- for example "input_restaurant_pressed" and for the other buttons "input_toilet_shaded"  -->
 	<GridLayout
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -12,7 +14,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_restaurant"
-				android:src="@drawable/input_restaurant"
+				android:src="@drawable/input_restaurant_pressed"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_column="0"
@@ -23,7 +25,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_restarea"
-				android:src="@drawable/input_restarea"
+				android:src="@drawable/input_restarea_shaded"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 		        android:layout_column="0"
@@ -34,7 +36,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_toilet"
-				android:src="@drawable/input_toilet"
+				android:src="@drawable/input_toilet_shaded"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_column="1"
@@ -45,7 +47,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_gasstation"
-				android:src="@drawable/input_gasstation"
+				android:src="@drawable/input_gasstation_pressed"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_column="1"

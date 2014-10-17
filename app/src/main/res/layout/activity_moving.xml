@@ -13,12 +13,16 @@
 			android:layout_weight="1">
 	</FrameLayout>-->
 
+	<!-- ******************************************************************** -->
+
 	<!-- Temporary for design purposes -->
 	<fragment android:layout_width="0dp" android:layout_height="match_parent"
 			android:layout_weight="1"
 			tools:context="com.edit.reach.activities.MovingActivity"
 			android:name="com.edit.reach.fragments.ControlFragment"
 			tools:layout="@layout/fragment_control"/>
+
+	<!-- ******************************************************************** -->
 
 	<fragment android:layout_width="0dp"
 	          android:layout_height="match_parent"
