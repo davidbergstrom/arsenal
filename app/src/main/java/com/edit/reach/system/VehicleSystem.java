@@ -62,7 +62,7 @@ public class VehicleSystem extends Observable implements Runnable {
 	// Previous time used to calculate when to notify observers.
 	private long prevTime = 0;
 
-	// The tanksize
+	// The size of the tank.
 	private double tankSize = 0.0;
 
 	// Keeps track if navigationModel has been notified for "short time".
@@ -96,7 +96,7 @@ public class VehicleSystem extends Observable implements Runnable {
 							determineLowFuel(prevFuelLevel.getFloatValue(), fuelLevel.getFloatValue());
 							determineFuelUpdate(prevFuelLevel.getFloatValue(), fuelLevel.getFloatValue());
 
-							// TODO where to put this?
+							// TODO where to put the time updates?
 							if(startTime != 0) {
 								determineShortTime();
 								determineTimeUpdate();
@@ -186,8 +186,7 @@ public class VehicleSystem extends Observable implements Runnable {
 
 						default:
 							break;
-
-						}
+					}
 				}
 			});
 		}
@@ -226,10 +225,13 @@ public class VehicleSystem extends Observable implements Runnable {
 	// The time threshold for when to calculate tank size.
 	private static final float FUEL_TIME_CALCULATION_THRESHOLD = 100;
 
+	// The name of the thread that runs the vehicle signals.
+	private static final String VEHICLE_SIGNALS_THREAD = "VehicleSignalsThread";
+
 	/** Constructor.
 	 */
 	public VehicleSystem() {
-		vehicleSignals = new Thread(VehicleSystem.this, "VehicleSignalsThread");
+		vehicleSignals = new Thread(VehicleSystem.this, VEHICLE_SIGNALS_THREAD);
 		vehicleSignals.start();
 
 		// Register Listeners
@@ -258,7 +260,6 @@ public class VehicleSystem extends Observable implements Runnable {
 
 	// ****** GET-METHODS ****** //
 
-
 	/** This methods returns the level of fuel left in tank in percent from 0 to 100.
 	 * @return a float from 0-100 that represents the fuel level
 	 */
@@ -270,22 +271,17 @@ public class VehicleSystem extends Observable implements Runnable {
 	 * @return how many km until a stop for fueling is recommended. Returns -1 if not applicable.
 	 */
 	public synchronized double getKilometersUntilRefuel() {
-		try {
-			double currentLitersInTank = ((fuelLevel.getFloatValue()/100.0) * tankSize);
+		double currentLitersInTank = ((fuelLevel.getFloatValue()/100.0) * tankSize);
 
-			if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
-				return calculateKmToRefuel(currentLitersInTank);
+		if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
+			return calculateKmToRefuel(currentLitersInTank);
+		} else {
+			if(tankSize == 0 || instantFuelEconomyList.size() == 0) {
+				// Not applicable because no record of driving is available.
+				return -1;
 			} else {
-				if(tankSize == 0 || instantFuelEconomyList.size() == 0) {
-					// Not applicable because no record of driving is avaliable.
-					return -1;
-				} else {
-					return calculateKmToRefuel(currentLitersInTank);
-				}
+				return calculateKmToRefuel(currentLitersInTank);
 			}
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-			throw new NullPointerException("Nullpointer in getKilometersUntilRefuel: totalFuelUsed or totalVehicleDistance not initialized");
 		}
 	}
 
@@ -296,15 +292,10 @@ public class VehicleSystem extends Observable implements Runnable {
 	Negative number if drive longer than legal.
 	 */
 	public synchronized double getTimeUntilForcedRest() {
-		try {
-			if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
-				return (Constants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS));
-			} else {
-				return Constants.LEGAL_UPTIME_IN_SECONDS;
-			}
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-			throw new NullPointerException("Nullpointer in getTimeUntilForcedRest: startTime not initialized");
+		if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
+			return (Constants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS));
+		} else {
+			return Constants.LEGAL_UPTIME_IN_SECONDS;
 		}
 	}
 
@@ -312,20 +303,15 @@ public class VehicleSystem extends Observable implements Runnable {
 	 * @return a constant int value from class MovingState.
 	 */
 	public synchronized int getVehicleState() {
-		try {
-			if (isMoving.getIntValue() == 1 && workingState.getIntValue() == 3) {
-				// Is in drive and vehicle is moving.
-				return MovingState.DRIVE_AND_MOVING;
-			} else if (isMoving.getIntValue() == 0 && workingState.getIntValue() == 3) {
-				// Is in drive but vehicle not moving.
-				return MovingState.DRIVE_BUT_NOT_MOVING;
-			} else {
-				// Vehicle not in drive
-				return MovingState.NOT_IN_DRIVE;
-			}
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-			throw new NullPointerException("Nullpointer in getVehicleState: isMoving or workingState not initialized");
+		if (isMoving.getIntValue() == 1 && workingState.getIntValue() == 3) {
+			// Is in drive and vehicle is moving.
+			return MovingState.DRIVE_AND_MOVING;
+		} else if (isMoving.getIntValue() == 0 && workingState.getIntValue() == 3) {
+			// Is in drive but vehicle not moving.
+			return MovingState.DRIVE_BUT_NOT_MOVING;
+		} else {
+			// Vehicle not in drive
+			return MovingState.NOT_IN_DRIVE;
 		}
 	}
 
@@ -334,12 +320,7 @@ public class VehicleSystem extends Observable implements Runnable {
 	 * @return how many km until a stop for service is recommended.
 	 */
 	public synchronized int getKilometersUntilService() {
-		try {
-			return distanceToService.getIntValue();
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-			throw new NullPointerException("Nullpointer in getKilometersUntilService: distanceToService not initialized");
-		}
+		return distanceToService.getIntValue();
 	}
 
 	// ********** PRIVATE METHODS THAT NOTIFY OBSERVERS ********** //
