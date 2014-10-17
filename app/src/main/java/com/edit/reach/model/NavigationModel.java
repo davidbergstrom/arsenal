@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import com.edit.reach.constants.Constants;
 import com.edit.reach.constants.SignalType;
 import com.edit.reach.model.interfaces.RouteListener;
 import com.edit.reach.model.interfaces.SuggestionListener;
@@ -22,7 +23,7 @@ import java.util.Observer;
  * Project: REACH
  * Date: 2014-09-27
  * Time: 19:27
- * Last Edit: 2014-10-14
+ * Last Edit: 2014-10-17
  */
 public class NavigationModel implements Runnable, Observer, SuggestionListener {
 
@@ -97,11 +98,11 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 			public void onInitialization(boolean success) {
                 if(success){
                     long routeTime = map.getRoute().getDuration();
-                    long nmbrOfPauses = routeTime/VehicleSystem.getLegalUptimeInSeconds();
+                    long nmbrOfPauses = routeTime/ Constants.LEGAL_UPTIME_IN_SECONDS;
 
                     for(int i = 1; i < nmbrOfPauses; i++) {
                         Log.d("NavModel", "Adding pause: ");
-                        map.getRoute().addPause(i*VehicleSystem.getLegalUptimeInSeconds());
+                        map.getRoute().addPause(i*Constants.LEGAL_UPTIME_IN_SECONDS);
                     }
                 }else{
                     // Failed initialization
