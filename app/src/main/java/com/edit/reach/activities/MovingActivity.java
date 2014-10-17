@@ -2,16 +2,28 @@ package com.edit.reach.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.edit.reach.app.R;
+import com.edit.reach.fragments.ControlFragment;
 
-public class MovingActivity extends Activity {
+public class MovingActivity extends FragmentActivity {
+
+    private ControlFragment controlFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moving);
+
+        if(findViewById(R.id.container_fragment_left) != null){
+            if(savedInstanceState != null){
+                return;
+            }
+            controlFragment = new ControlFragment().newInstance("Control");
+            getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, controlFragment).commit();
+        }
     }
 
 
