@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.edit.reach.app.R;
 
-public class Splash extends Activity {
+public class SplashActivity extends Activity {
 
     /** Duration of wait on splash_land screen in milliseconds**/
     private final int SPLASH_DISPLAY_LENGTH = 1500;
@@ -26,7 +26,7 @@ public class Splash extends Activity {
 
         new Handler().postDelayed(new Runnable() {
             public void run() {
-                startActivity(new Intent(Splash.this, MainActivity.class));
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
                 finish();
             }
         }, SPLASH_DISPLAY_LENGTH);

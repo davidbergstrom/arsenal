@@ -6,7 +6,7 @@ import android.swedspot.automotiveapi.AutomotiveSignal;
 import android.swedspot.automotiveapi.AutomotiveSignalId;
 import android.swedspot.scs.data.*;
 import android.util.Log;
-import com.edit.reach.constants.Constants;
+import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.constants.MovingState;
 import com.edit.reach.constants.SignalType;
 import com.swedspot.automotiveapi.AutomotiveFactory;
@@ -45,8 +45,6 @@ public class VehicleSystem extends Observable implements Runnable {
 	private Uint8 isMoving = new Uint8(-1);
 	// The working state of the driver.
 	private Uint8 workingState = new Uint8(-1);
-	// The number of km til service.
-	private SCSInteger distanceToService = new SCSInteger(-1);
 
 	// A list with the instant fuel economy
 	private final List<SCSFloat> instantFuelEconomyList = new ArrayList<SCSFloat>();
@@ -135,17 +133,6 @@ public class VehicleSystem extends Observable implements Runnable {
 							determineWorkStateChange(prevWorkState.getIntValue(), workingState.getIntValue());
 
 							Log.d("Signal: WorkingState", "State: " + workingState.getIntValue());
-							break;
-
-						// Distance to service
-						case AutomotiveSignalId.FMS_SERVICE_DISTANCE:
-							SCSInteger prevDistanceToService = distanceToService;
-							distanceToService = (SCSInteger) (automotiveSignal.getData());
-
-							// Call method to determine critical states
-							determineCloseToService(prevDistanceToService.getIntValue(), distanceToService.getIntValue());
-
-							Log.d("Signal: Distance-To-Service", "Distance: " + distanceToService.getIntValue());
 							break;
 
 						// Is vehicle moving
@@ -294,9 +281,9 @@ public class VehicleSystem extends Observable implements Runnable {
 	 */
 	public synchronized double getTimeUntilForcedRest() {
 		if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
-			return (Constants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS));
+			return (UniversalConstants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * UniversalConstants.NANOSECONDS_TO_SECONDS));
 		} else {
-			return Constants.LEGAL_UPTIME_IN_SECONDS;
+			return UniversalConstants.LEGAL_UPTIME_IN_SECONDS;
 		}
 	}
 
@@ -314,14 +301,6 @@ public class VehicleSystem extends Observable implements Runnable {
 			// Vehicle not in drive
 			return MovingState.NOT_IN_DRIVE;
 		}
-	}
-
-	// TODO not used because the AGA simulator does not have this signal.
-	/** Method that returns the number om kilometers until service is recommended.
-	 * @return how many km until a stop for service is recommended.
-	 */
-	public synchronized int getKilometersUntilService() {
-		return distanceToService.getIntValue();
 	}
 
 	// ********** PRIVATE METHODS THAT NOTIFY OBSERVERS ********** //
@@ -361,7 +340,7 @@ public class VehicleSystem extends Observable implements Runnable {
 	// Method that notifies observers if the vehicle has been in drive close to threshold.
 	private void determineShortTime() {
 		if(workingState.getIntValue() == 3) {
-			if ((Constants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS)) < TIME_THRESHOLD) {
+			if ((UniversalConstants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * UniversalConstants.NANOSECONDS_TO_SECONDS)) < TIME_THRESHOLD) {
 				if (!timeHasBeenNotified) {
 					setChanged();
 					notifyObservers(SignalType.SHORT_TIME);
@@ -374,7 +353,7 @@ public class VehicleSystem extends Observable implements Runnable {
 	// Notify observers if the vehicle took a break longer than or equal to the break time.
 	private boolean determineBreakWasFinal() {
 		boolean wasFinal = false;
-		if (((System.nanoTime() - stopTime) * Constants.NANOSECONDS_TO_SECONDS) >= Constants.BREAKTIME_IN_SECONDS) {
+		if (((System.nanoTime() - stopTime) * UniversalConstants.NANOSECONDS_TO_SECONDS) >= UniversalConstants.BREAKTIME_IN_SECONDS) {
 			setChanged();
 			notifyObservers(SignalType.VEHICLE_TOOK_FINAL_BREAK);
 			wasFinal = true;
@@ -389,22 +368,13 @@ public class VehicleSystem extends Observable implements Runnable {
 			notifyObservers(SignalType.UPTIME_UPDATE);
 			prevTime = System.nanoTime();
 		} else {
-			if(((System.nanoTime() - prevTime) * Constants.NANOSECONDS_TO_SECONDS) >= 60) {
+			if(((System.nanoTime() - prevTime) * UniversalConstants.NANOSECONDS_TO_SECONDS) >= 60) {
 				setChanged();
 				notifyObservers(SignalType.UPTIME_UPDATE);
 				prevTime = System.nanoTime();
 			} else {
 				// Do nothing
 			}
-		}
-	}
-
-	// Only notifies observers if the previous km to service was above the threshold and the current km to service is below the threshold.
-	// This to avoid multiple observer updates when service decreases.
-	private void determineCloseToService(int prevKmToService, int kmToService) {
-		if(kmToService <= SERVICE_THRESHOLD && prevKmToService > SERVICE_THRESHOLD) {
-			setChanged();
-			notifyObservers(SignalType.SHORT_TO_SERVICE);
 		}
 	}
 
@@ -420,9 +390,9 @@ public class VehicleSystem extends Observable implements Runnable {
 
 	// Method that calculates and sets the size of the vehicles tank.
 	private void calculateTankSize() {
-		if(((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS) <= FUEL_TIME_CALCULATION_THRESHOLD && tankSize != 0.0) {
+		if(((System.nanoTime() - startTime) * UniversalConstants.NANOSECONDS_TO_SECONDS) <= FUEL_TIME_CALCULATION_THRESHOLD && tankSize != 0.0) {
 			float deltaFuelLevel = fuelLevel.getFloatValue() - startFuelLevel.getFloatValue();
-			double deltaTime = (((System.nanoTime() - startTime) * Constants.NANOSECONDS_TO_SECONDS) * Constants.SECONDS_TO_HOURS);
+			double deltaTime = (((System.nanoTime() - startTime) * UniversalConstants.NANOSECONDS_TO_SECONDS) * UniversalConstants.SECONDS_TO_HOURS);
 			float fuelRateSum = 0;
 			for(SCSFloat fuelRate : fuelRateList) {
 				fuelRateSum = fuelRateSum + fuelRate.getFloatValue();

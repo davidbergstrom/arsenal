@@ -7,7 +7,7 @@ package com.edit.reach.constants;
  * Date: 2014-10-16
  * Time: 17:20
  */
-public class Constants {
+public class UniversalConstants {
 	// Multiply with this to convert (FROM -> TO)
 	public static final double NANOSECONDS_TO_SECONDS = 1.0/1000000000;
 	public static final double SECONDS_TO_HOURS = 1.0/3600;

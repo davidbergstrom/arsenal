@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import com.edit.reach.constants.Constants;
+import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.constants.SignalType;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.RouteListener;
@@ -259,11 +259,11 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 	// Method that adds time-pauses in the map.
 	private void addTimePause() {
 		long routeTime = map.getRoute().getDuration();
-		long nmbrOfPauses = routeTime / Constants.LEGAL_UPTIME_IN_SECONDS;
+		long nmbrOfPauses = routeTime / UniversalConstants.LEGAL_UPTIME_IN_SECONDS;
 
 		for (int i = 1; i < nmbrOfPauses; i++) {
 			Log.d("NavModel", "Adding pause: ");
-			map.getRoute().addPause(i * Constants.LEGAL_UPTIME_IN_SECONDS);
+			map.getRoute().addPause(i * UniversalConstants.LEGAL_UPTIME_IN_SECONDS);
 		}
 	}
 
