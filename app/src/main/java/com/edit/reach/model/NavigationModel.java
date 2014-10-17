@@ -82,7 +82,17 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 	 * @return a IMilestone that matches the categories specified.
 	 */
 	public IMilestone getPauseSuggestions(List<IMilestone.Category> categoryList) {
-		// TODO The AISA method
+		// TODO The AISA method for multiple categories.
+		return null;
+	}
+
+
+	/** This method is used to find pauses in driving mode.
+	 * @param category a category with what the user wants.
+	 * @return a IMilestone that matches the category specified.
+	 */
+	public IMilestone getPauseSuggestions(IMilestone.Category category) {
+		// TODO The AISA method for one category
 		return null;
 	}
 
