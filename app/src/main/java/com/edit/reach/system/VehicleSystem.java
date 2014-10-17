@@ -58,6 +58,7 @@ public class VehicleSystem extends Observable implements Runnable {
 	private long startTime = 0;
 	private long stopTime = 0;
 
+	// Previous time used to calculate when to notify observers.
 	private long prevTime = 0;
 
 	// The tanksize

@@ -19,25 +19,26 @@ import java.util.Observer;
 
 /**
  * Class that merges data from the vehicle and the map. The class finds optimal stops for the trip.
+ * This class har the singleton pattern.
  * Created by: Tim Kerschbaumer
  * Project: REACH
  * Date: 2014-09-27
  * Time: 19:27
  * Last Edit: 2014-10-17
- * This class har the singleton pattern.
  */
 public class NavigationModel implements Runnable, Observer, SuggestionListener {
 
 	private final VehicleSystem vehicleSystem;
 	private final Thread pipelineThread;
+
 	private final Handler mainHandler;
 
 	private Handler pipelineHandler;
 	private Map map;
 
-	private static NavigationModel navigationModel;
-
 	private List<String> searchResults;
+
+	private static NavigationModel navigationModel;
 
 	/* --- CONSTANTS --- */
 	private static final String PIPELINE_THREAD_NAME = "PipelineThread";
