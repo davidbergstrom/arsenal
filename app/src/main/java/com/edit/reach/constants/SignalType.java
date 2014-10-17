@@ -15,4 +15,7 @@ public class SignalType {
 	public static final int SHORT_TO_SERVICE = 203;
 	public static final int VEHICLE_STOPPED_OR_STARTED = 204;
 	public static final int VEHICLE_TOOK_FINAL_BREAK = 205;
+	public static final int UPTIME_UPDATE = 206;
+	public static final int DOWN_TIME_UPDATE = 207;
+	public static final int FUEL_UPDATE = 208;
 }
