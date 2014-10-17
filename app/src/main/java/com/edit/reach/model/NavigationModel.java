@@ -94,14 +94,18 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener {
 		map.setRoute(newRoute);
         newRoute.addListener(new RouteListener() {
 			@Override
-			public void onInitialization() {
-				long routeTime = map.getRoute().getDuration();
-				long nmbrOfPauses = routeTime/VehicleSystem.getLegalUptimeInSeconds();
+			public void onInitialization(boolean success) {
+                if(success){
+                    long routeTime = map.getRoute().getDuration();
+                    long nmbrOfPauses = routeTime/VehicleSystem.getLegalUptimeInSeconds();
 
-				for(int i = 1; i < nmbrOfPauses; i++) {
-					Log.d("NavModel", "Adding pause: ");
-					map.getRoute().addPause(i*VehicleSystem.getLegalUptimeInSeconds());
-				}
+                    for(int i = 1; i < nmbrOfPauses; i++) {
+                        Log.d("NavModel", "Adding pause: ");
+                        map.getRoute().addPause(i*VehicleSystem.getLegalUptimeInSeconds());
+                    }
+                }else{
+                    // Failed initialization
+                }
 			}
 
 			@Override

@@ -55,9 +55,11 @@ public class Map {
     private RouteListener routeListener = new RouteListener(){
 
         @Override
-        public void onInitialization() {
+        public void onInitialization(boolean success) {
             // When the route has been initialized, draw it
-            updateState();  // Update all the state specific changes when route initialized.
+            if(success){
+                updateState();  // Update all the state specific changes when route initialized.
+            }
         }
 
         @Override

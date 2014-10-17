@@ -4,10 +4,14 @@
     <color name="background_main">#212121</color>
     <color name="background_map">#C7C7C7</color>
     <color name="background_fragment_left">#212121</color>
+	<color name="background_control_info">#111111</color>
+	<color name="background_control_input">#333333</color>
+	<color name="background_control_suggestion">#555555</color>
+	<color name="background_info_window">#212121</color>
+
     <color name="h1">#575757</color>
     <color name="white">#F9F9F9</color>
     <color name="volvo_blue">#213568</color>
-    <color name="background_info_window">#212121</color>
 	<color name="click_to_add">#6994AF</color>
 
     <color name="text_fragment_route">#E5E5E5</color>

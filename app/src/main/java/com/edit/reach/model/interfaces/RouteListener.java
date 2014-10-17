@@ -12,7 +12,7 @@ public interface RouteListener {
     /**
      * What the listener should do when the route has been initialized.
      */
-    public void onInitialization();
+    public void onInitialization(boolean success);
 
     /**
      * What the listener should do when a pause has been added to the route.

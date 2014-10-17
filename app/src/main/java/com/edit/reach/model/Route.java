@@ -56,9 +56,10 @@ public class Route {
                     durationInSeconds += newLeg.getDuration();
                     legs.add(newLeg);
                 }
+
                 Log.d(DEBUG_TAG, "Has been initialized.");
-                initialized = true;
-                onInitialize(); // Notify the observers that the route has been initialized
+                onInitialize(legs.size() > 0); // Notify the observers that the route has been initialized
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -66,7 +67,7 @@ public class Route {
 
         @Override
         public void onGetFail() {
-
+            onInitialize(false); // Notify the observers that the route has been initialized
         }
     };
 
@@ -567,9 +568,11 @@ public class Route {
         listeners.clear();
     }
 
-    private void onInitialize(){
+    private void onInitialize(boolean success){
+        Log.d(DEBUG_TAG, "Has been initialized: "+success);
+        initialized = success;
         for(RouteListener listener : listeners){
-            listener.onInitialization();
+            listener.onInitialization(success);
         }
     }
 }
