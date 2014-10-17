@@ -14,6 +14,12 @@
     <color name="volvo_blue">#213568</color>
 	<color name="click_to_add">#6994AF</color>
 
+    <!-- Map Colors -->
+    <color name="route_start">#99cc00</color>
+    <color name="route_stop">#ff4444</color>
+    <color name="route_road">#0066ff</color>
+    <color name="radius_color">#71c3e2</color>
+
     <color name="text_fragment_route">#E5E5E5</color>
     <color name="text_fragment_map">#777777</color>
     <color name="text_fragment_driving_route">#E5E5E5</color>

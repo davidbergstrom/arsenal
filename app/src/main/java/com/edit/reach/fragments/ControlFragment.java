@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import com.edit.reach.activities.MovingActivity;
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
@@ -30,7 +31,7 @@ public class ControlFragment extends Fragment {
     private double nextStopClock; //in sec
     private double timeClock;   //in sec
     private double totalTime;   //in sec
-    private String nextStop;
+    private String nextStopName = null;
 
     //Progressbar
     private ProgressBar fuelBar;
@@ -70,6 +71,15 @@ public class ControlFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+        TextView stopNameView = (TextView) getView().findViewById(R.id.tv_control_info_top_card_title);
+
+        if(nextStopName != null) {
+            stopNameView.setText(nextStopName);
+        } else {
+            stopNameView.setText("N/A");
+        }
+
+        //Get progressbars
         fuelBar = (ProgressBar) getView().findViewById(R.id.progress_gas);
         timeClockBar = (ProgressBar) getView().findViewById(R.id.progress_time_clock);
         nextStopBar = (ProgressBar) getView().findViewById(R.id.progress_next_stop);
