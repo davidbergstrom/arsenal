@@ -30,6 +30,12 @@ public interface IMilestone {
 	 */
 	public String getDescription();
 
+    /**
+     * Checks wether the milestone has the requested categories or not
+     * @return true if the milestone has the requested categories
+     */
+    public boolean hasCategories(ArrayList<Category> requestedCategories);
+
 	/**
 	 * Returns the categories associated with the milestone
 	 * @return a list with the milestone's categories

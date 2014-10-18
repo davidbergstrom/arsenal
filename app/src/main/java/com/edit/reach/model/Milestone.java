@@ -87,6 +87,15 @@ public class Milestone implements IMilestone {
     }
 
     /**
+     * Checks wether the milestone has the requested categories or not
+     * @return true if the milestone has the requested categories
+     */
+    @Override
+    public boolean hasCategories(ArrayList<Category> requestedCategories) {
+        return this.categories.containsAll(requestedCategories);
+    }
+
+    /**
      * Returns the categories associated with the milestone
      *
      * @return a list with the milestone's categories
