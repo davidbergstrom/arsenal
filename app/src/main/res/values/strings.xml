@@ -34,8 +34,8 @@
 	<!-- Control Fragment -->
 	<string name="tv_control_info_next_stop_left">2h 34m</string>
 	<string name="tv_control_info_next_stop_right">1h 15m</string>
-	<string name="tv_control_info_gas_left">Icon empty</string>
-	<string name="tv_control_info_gas_right">Icon full</string>
+	<string name="tv_control_info_gas_left">Empty</string>
+	<string name="tv_control_info_gas_right">Full</string>
 	<string name="tv_control_info_time_clock_left">4h 38m</string>
 	<string name="tv_control_info_time_clock_right">3h 12m</string>
 	<string name="tv_control_info_top_card_title">Title for Milestone</string>

@@ -43,8 +43,8 @@
 	<dimen name="custom_info_window_right">15dp</dimen>
 
 	<!-- Control fragment -->
-	<dimen name="fragment_control_top_padding">30dp</dimen>
-	<dimen name="fragment_control_bottom_padding">30dp</dimen>
+	<dimen name="fragment_control_top_padding">10dp</dimen>
+	<dimen name="fragment_control_bottom_padding">10dp</dimen>
 	<dimen name="fragment_control_start_padding">10dp</dimen>
 	<dimen name="fragment_control_end_padding">10dp</dimen>
 	<dimen name="input_button_margin">5dp</dimen>
@@ -52,7 +52,7 @@
 
 	<!-- Control Fragment - Top Info Box -->
 	<dimen name="control_info_top_card_holder_margin_bottom">20dp</dimen>
-	<dimen name="control_info_top_card_holder_margin_top">20dp</dimen>
+	<dimen name="control_info_top_card_holder_margin_top">10dp</dimen>
 	<dimen name="tv_control_info_top_card_title">30sp</dimen>
 	<dimen name="tv_control_info_top_card_specs">30sp</dimen>
 
@@ -61,7 +61,7 @@
 	<dimen name="progress_bar_max_width">150dp</dimen>
 	<dimen name="progress_bar_min_height">20dp</dimen>
 	<dimen name="progress_bar_max_height">20dp</dimen>
-	<dimen name="progress_bar_margin_side">20dp</dimen>
+	<dimen name="progress_bar_margin_side">10dp</dimen>
 
 	<!-- Control Fragment - Top Suggestion Box -->
 	<dimen name="control_suggestion_top_card_button_margin_right">50dp</dimen>

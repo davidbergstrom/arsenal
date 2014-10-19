@@ -19,7 +19,8 @@
 				android:layout_height="wrap_content"
 				android:id="@+id/tv_control_info_top_card_title"
 				android:text="@string/tv_control_info_top_card_title"
-				android:textSize="@dimen/tv_control_info_top_card_title"/>
+				android:textSize="@dimen/tv_control_info_top_card_title"
+				android:textColor="@color/text_control_info"/>
 
 		<!-- Icons Holder -->
 		<RelativeLayout
@@ -60,14 +61,16 @@
 					android:layout_height="wrap_content"
 		            android:id="@+id/control_info_top_card_distance"
 		            android:text="@string/tv_control_info_top_card_distance"
-		            android:textSize="@dimen/tv_control_info_top_card_specs"/>
+		            android:textSize="@dimen/tv_control_info_top_card_specs"
+		            android:textColor="@color/text_control_info"/>
 
 			<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/control_info_top_card_time"
 					android:text="@string/tv_control_info_top_card_time"
-					android:textSize="@dimen/tv_control_info_top_card_specs"/>
+					android:textSize="@dimen/tv_control_info_top_card_specs"
+					android:textColor="@color/text_control_info"/>
 		</LinearLayout>
 
 	</LinearLayout>
@@ -136,14 +139,16 @@
 				android:layout_row="0"
 				android:text="@string/tv_control_info_next_stop_left"
 				android:textSize="@dimen/tv_control_info_progress_bar_text"
-				android:layout_gravity="end"/>
+				android:layout_gravity="end"
+				android:textColor="@color/text_control_progress_bar"/>
 
 		<TextView
 				android:id="@+id/tv_control_info_next_stop_right"
 				android:layout_column="2"
 				android:layout_row="0"
 				android:text="@string/tv_control_info_next_stop_right"
-				android:textSize="@dimen/tv_control_info_progress_bar_text"/>
+				android:textSize="@dimen/tv_control_info_progress_bar_text"
+				android:textColor="@color/text_control_progress_bar"/>
 
 		<TextView
 				android:id="@+id/tv_control_info_gas_left"
@@ -151,14 +156,16 @@
 				android:layout_row="1"
 				android:text="@string/tv_control_info_gas_left"
 				android:textSize="@dimen/tv_control_info_progress_bar_text"
-				android:layout_gravity="end"/>
+				android:layout_gravity="end"
+				android:textColor="@color/text_control_progress_bar"/>
 
 		<TextView
 				android:id="@+id/tv_control_info_gas_right"
 				android:layout_column="2"
 				android:layout_row="1"
 				android:text="@string/tv_control_info_gas_right"
-				android:textSize="@dimen/tv_control_info_progress_bar_text"/>
+				android:textSize="@dimen/tv_control_info_progress_bar_text"
+				android:textColor="@color/text_control_progress_bar"/>
 
 		<TextView
 				android:id="@+id/tv_control_info_time_clock_left"
@@ -166,14 +173,16 @@
 				android:layout_row="2"
 				android:text="@string/tv_control_info_time_clock_left"
 				android:textSize="@dimen/tv_control_info_progress_bar_text"
-				android:layout_gravity="end"/>
+				android:layout_gravity="end"
+				android:textColor="@color/text_control_progress_bar"/>
 
 		<TextView
 				android:id="@+id/tv_control_info_time_clock_right"
 				android:layout_column="2"
 				android:layout_row="2"
 				android:text="@string/tv_control_info_time_clock_right"
-				android:textSize="@dimen/tv_control_info_progress_bar_text"/>
+				android:textSize="@dimen/tv_control_info_progress_bar_text"
+				android:textColor="@color/text_control_progress_bar"/>
 
     </GridLayout>
 
