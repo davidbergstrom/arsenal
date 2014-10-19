@@ -33,6 +33,12 @@ public class Milestone implements IMilestone {
         location = new LatLng(latitude, longitude);
     }
 
+    public String getSnippet() {
+        return name + "\n"
+               + description + "\n"
+               + rank;
+    }
+
     /**
      * Takes a category number between 1-27 and
      * places it in the appropriate category group
