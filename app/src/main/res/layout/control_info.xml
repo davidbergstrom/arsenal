@@ -23,9 +23,12 @@
 				android:textColor="@color/text_control_info"/>
 
 		<!-- Icons Holder -->
-		<RelativeLayout
+		<LinearLayout
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content">
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:layout_marginTop="@dimen/control_info_icons_holder_margin_top"
+				android:layout_marginBottom="@dimen/control_info_icons_holder_margin_bottom">
 
 			<ImageView
 					android:layout_width="wrap_content"
@@ -37,17 +40,15 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 		            android:id="@+id/control_info_top_card_type_icon_2"
-		            android:src="@drawable/milestone_restarea"
-		            android:layout_toEndOf="@+id/control_info_top_card_type_icon"/>
+		            android:src="@drawable/milestone_restarea"/>
 
 			<ImageView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 		            android:id="@+id/control_info_top_card_type_icon_3"
-		            android:src="@drawable/milestone_gasstation"
-		            android:layout_toEndOf="@+id/control_info_top_card_type_icon_2"/>
+		            android:src="@drawable/milestone_gasstation"/>
 
-		</RelativeLayout>
+		</LinearLayout>
 
 		<!-- Specifications holder -->
 		<LinearLayout

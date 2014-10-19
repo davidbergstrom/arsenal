@@ -2,30 +2,111 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/background_control_suggestion">
 
-	<!-- Buttons holder -->
-	<RelativeLayout
-			android:layout_width="match_parent"
+	<LinearLayout
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:id="@+id/control_suggestion_top_card_buttons_holder">
+			android:id="@+id/control_suggestion_top_card_holder"
+			android:orientation="vertical"
+			android:layout_gravity="center_horizontal"
+			android:layout_marginTop="@dimen/control_suggestion_top_card_holder_margin_top"
+			android:layout_marginBottom="@dimen/control_suggestion_top_card_holder_margin_bottom">
 
-		<ImageButton
+		<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:id="@+id/control_suggestion_top_card_button_next"
-				android:src="@drawable/control_suggestion_top_card_next"
-				android:layout_alignParentStart="true"
-				style="@android:style/Widget.Holo.Button.Borderless"/>
+				android:id="@+id/tv_control_suggestion_top_card_title"
+				android:text="@string/tv_control_suggestion_top_card_title"
+				android:textSize="@dimen/tv_control_suggestion_top_card_title"
+				android:textColor="@color/text_control_suggestion"/>
 
-		<ImageButton
+		<!-- Icons Holder -->
+		<LinearLayout
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:id="@+id/control_suggestion_top_card_button_ok"
-				android:src="@drawable/control_suggestion_top_card_ok"
-				android:layout_alignParentEnd="true"
-				style="@android:style/Widget.Holo.Button.Borderless"/>
+				android:orientation="horizontal"
+				android:layout_marginTop="@dimen/control_suggestion_icons_holder_margin_top"
+				android:layout_marginBottom="@dimen/control_suggestion_icons_holder_margin_bottom">
 
-	</RelativeLayout>
+			<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/control_suggestion_top_card_type_icon"
+					android:src="@drawable/milestone_restaurant"/>
+
+			<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/control_suggestion_top_card_type_icon_2"
+					android:src="@drawable/milestone_restarea"/>
+
+			<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/control_suggestion_top_card_type_icon_3"
+					android:src="@drawable/milestone_gasstation"/>
+
+		</LinearLayout>
+
+		<!-- Specifications holder -->
+		<LinearLayout
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/control_suggestion_top_card_specs_holder"
+				android:orientation="vertical"
+				android:layout_marginBottom="@dimen/control_suggestion_specs_margin_bottom">
+
+			<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/control_suggestion_top_card_rating"
+					android:text="@string/tv_control_suggestion_top_card_rating"
+					android:textSize="@dimen/tv_control_suggestion_top_card_specs"
+					android:textColor="@color/text_control_suggestion"/>
+
+			<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/control_suggestion_top_card_distance"
+					android:text="@string/tv_control_suggestion_top_card_distance"
+					android:textSize="@dimen/tv_control_suggestion_top_card_specs"
+					android:textColor="@color/text_control_suggestion"/>
+
+			<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/control_suggestion_top_card_time"
+					android:text="@string/tv_control_suggestion_top_card_time"
+					android:textSize="@dimen/tv_control_suggestion_top_card_specs"
+					android:textColor="@color/text_control_suggestion"/>
+		</LinearLayout>
+
+		<!-- Buttons holder -->
+		<RelativeLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/control_suggestion_top_card_buttons_holder">
+
+			<ImageButton
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/control_suggestion_top_card_button_next"
+					android:src="@drawable/control_suggestion_top_card_next"
+					android:layout_alignParentStart="true"
+					style="@android:style/Widget.Holo.Button.Borderless"/>
+
+			<ImageButton
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/control_suggestion_top_card_button_ok"
+					android:src="@drawable/control_suggestion_top_card_ok"
+					android:layout_alignParentEnd="true"
+					style="@android:style/Widget.Holo.Button.Borderless"/>
+
+		</RelativeLayout>
+
+	</LinearLayout>
 
 </LinearLayout>

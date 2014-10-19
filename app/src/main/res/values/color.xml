@@ -31,6 +31,7 @@
 
 	<!-- Control Fragment -->
 	<color name="text_control_info">#E5E5E5</color>
+	<color name="text_control_suggestion">#E5E5E5</color>
 	<color name="text_control_progress_bar">#E5E5E5</color>
 
 </resources>

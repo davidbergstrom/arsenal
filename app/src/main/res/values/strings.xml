@@ -41,5 +41,9 @@
 	<string name="tv_control_info_top_card_title">Title for Milestone</string>
 	<string name="tv_control_info_top_card_time">21 min</string>
 	<string name="tv_control_info_top_card_distance">17 km</string>
+	<string name="tv_control_suggestion_top_card_title">Title for Suggestion</string>
+	<string name="tv_control_suggestion_top_card_rating">4/5</string>
+	<string name="tv_control_suggestion_top_card_time">12 min</string>
+	<string name="tv_control_suggestion_top_card_distance">8 km</string>
 
 </resources>
