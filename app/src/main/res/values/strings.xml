@@ -8,8 +8,8 @@
 	<!-- Titles -->
 	<string name="title_activity_moving">MovingActivity</string>
 	<string name="title_activity_maps">Map</string>
-	<string name="title_activity_multi_pane">MultiPaneActivity</string>
-	<string name="title_activity_milestones">MilestonesActivity</string>
+	<string name="title_activity_multi_pane">Plan Your Route</string>
+	<string name="title_activity_milestones">Combine Stops</string>
 	<string name="title_activity_splash">Splash</string>
 
     <!-- Route Fragment -->

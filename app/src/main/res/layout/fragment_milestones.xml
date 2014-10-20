@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical"
               android:background="@color/background_fragment_left"
               android:paddingTop="@dimen/fragment_left_top_padding"
               android:paddingBottom="@dimen/fragment_left_bottom_padding"
@@ -13,63 +12,72 @@
 
 	<LinearLayout
 			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			android:layout_weight="5"
-			android:orientation="vertical">
+			android:layout_height="fill_parent"
+			android:orientation="vertical"
+			android:layout_alignParentTop="true">
 
-
-		<!-- The starting point -->
-		<TextView
-				android:id="@+id/tv_text_from"
+		<LinearLayout
 				android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:text="@string/et_milestones_text_from"
-		        android:textSize="@dimen/fragment_milestones_from_to"
-		        android:textColor="@color/text_fragment_milestones_from_to"
-				/>
+				android:layout_height="0dp"
+				android:layout_weight="5"
+				android:orientation="vertical">
 
-		<!-- Holder for Milestones Cards -->
-		<ScrollView
-				android:id="@+id/list_of_milestones"
+			<!-- The starting point -->
+			<TextView
+					android:id="@+id/tv_text_from"
+					android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:text="@string/et_milestones_text_from"
+			        android:textSize="@dimen/fragment_milestones_from_to"
+			        android:textColor="@color/text_fragment_milestones_from_to"
+					/>
+
+			<!-- Holder for Milestones Cards -->
+			<ScrollView
+					android:id="@+id/list_of_milestones"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="@dimen/fragment_milestones_cards_holder_margin_top"
+					android:layout_marginBottom="@dimen/fragment_milestones_cards_holder_margin_bottom"
+					>
+
+	            <LinearLayout
+			            android:id="@+id/cardList"
+			            android:layout_width="match_parent"
+			            android:layout_height="wrap_content"
+			            android:orientation="vertical">
+	            </LinearLayout>
+
+			</ScrollView>
+
+		</LinearLayout>
+
+		<LinearLayout
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/fragment_milestones_cards_holder_margin_top"
-				android:layout_marginBottom="@dimen/fragment_milestones_cards_holder_margin_bottom"
-				>
+				android:layout_height="0dp"
+				android:layout_weight="1"
+				android:orientation="vertical">
 
-            <LinearLayout
-		            android:id="@+id/cardList"
-		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
-		            android:orientation="vertical">
-            </LinearLayout>
+			<!-- The end point -->
+			<TextView
+					android:id="@+id/tv_text_to"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="@string/et_milestones_text_to"
+					android:textSize="@dimen/fragment_milestones_from_to"
+					android:textColor="@color/text_fragment_milestones_from_to"
+					/>
 
-		</ScrollView>
+		</LinearLayout>
 
 	</LinearLayout>
-
-	<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			android:layout_weight="1"
-			android:orientation="vertical">
-
-		<!-- The end point -->
-		<TextView
-				android:id="@+id/tv_text_to"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="@string/et_milestones_text_to"
-				android:textSize="@dimen/fragment_milestones_from_to"
-				android:textColor="@color/text_fragment_milestones_from_to"
-				android:layout_gravity="top"
-				/>
 
 		<RelativeLayout
 				android:id="@+id/rl_wizard_milestones"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_gravity="bottom">
+				android:layout_alignParentBottom="true"
+				android:layout_marginTop="@dimen/milestone_navigation_margin_top">
 
 			<ImageButton
 					android:id="@+id/ib_milestone_navigation_back"
@@ -113,6 +121,4 @@
 
 		</RelativeLayout>
 
-	</LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>
