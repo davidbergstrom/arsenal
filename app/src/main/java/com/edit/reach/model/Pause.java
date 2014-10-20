@@ -1,8 +1,6 @@
 package com.edit.reach.model;
 
-import android.graphics.Color;
 import android.util.Log;
-import com.edit.reach.app.R;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.GoogleMap;
@@ -53,16 +51,7 @@ public class Pause {
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
 
         for(IMilestone milestone : milestones){
-            BitmapDescriptor icon;
-            if(milestone.getCategory() == IMilestone.Category.GASSTATION){
-                icon = NavigationUtil.gasMarker;
-            }else if(milestone.getCategory() == IMilestone.Category.RESTAURANT){
-                icon = NavigationUtil.foodMarker;
-            }else if(milestone.getCategory() == IMilestone.Category.RESTAREA){
-                icon = NavigationUtil.restMarker;
-            }else{
-                icon = NavigationUtil.bathroomMarker;
-            }
+            BitmapDescriptor icon = NavigationUtil.getMilestoneIcon(milestone);
 
             milestoneMarkers.add(map.addMarker(new MarkerOptions()
                     .position(milestone.getLocation())

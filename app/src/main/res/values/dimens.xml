@@ -5,21 +5,22 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
 	<!-- Left fragment default padding -->
-	<dimen name="fragment_left_top_padding">30dp</dimen>
-	<dimen name="fragment_left_bottom_padding">30dp</dimen>
+	<dimen name="fragment_left_top_padding">20dp</dimen>
+	<dimen name="fragment_left_bottom_padding">10dp</dimen>
 	<dimen name="fragment_left_left_padding">10dp</dimen>
 	<dimen name="fragment_left_right_padding">10dp</dimen>
 
 	<!-- MilestonesFragment -->
 	<dimen name="fragment_milestones_cards_holder_margin_top">20dp</dimen>
 	<dimen name="fragment_milestones_cards_holder_margin_bottom">20dp</dimen>
-	<dimen name="fragment_milestones_from_to">22sp</dimen>
+	<dimen name="fragment_milestones_from_to">18sp</dimen>
+	<dimen name="fragment_milestones_button_holder_margin_top">20dp</dimen>
 
 	<dimen name="card_milestone_icon_margin_right">20dp</dimen>
-	<dimen name="card_milestone_text_margin_left">20dp</dimen>
-	<dimen name="card_milestone_text">22sp</dimen>
+	<dimen name="card_milestone_text_margin_left">10dp</dimen>
+	<dimen name="card_milestone_text">18sp</dimen>
 
-	<dimen name="button_edit_route_margin_top">50dp</dimen>
+	<dimen name="button_edit_route_margin_side">10dp</dimen>
 
 	<!-- Route Fragment -->
 	<dimen name="use_current_location_top">5dp</dimen>
