@@ -39,7 +39,6 @@ public class ControlFragment extends Fragment{
 
 	//Progressbars
 	private ProgressBar fuelBar;
-	private ProgressBar nextStopBar;
 	private ProgressBar timeClockBar;
 
 	public void setTimeClockBar(double timeClock) {
@@ -65,10 +64,8 @@ public class ControlFragment extends Fragment{
         }
 	}
 
-    public void setNextStopBar(double nextStopClock) {
+    public void setNextStop(double nextStopClock) {
         this.nextStopClock = nextStopClock;
-        nextStopBar.setBackgroundColor(Color.GREEN);
-        nextStopBar.setMax();
     }
 
     public void setTotalTime(double totalTime) {
@@ -112,7 +109,6 @@ public class ControlFragment extends Fragment{
 		//Get progressbars
 		fuelBar = (ProgressBar) view.findViewById(R.id.progress_gas);
 		timeClockBar = (ProgressBar) view.findViewById(R.id.progress_time_clock);
-		nextStopBar = (ProgressBar) view.findViewById(R.id.progress_next_stop);
 
 		ibRestArea = (ImageButton) view.findViewById(R.id.button_control_input_restarea);
 		ibRestArea.setOnClickListener(new View.OnClickListener() {

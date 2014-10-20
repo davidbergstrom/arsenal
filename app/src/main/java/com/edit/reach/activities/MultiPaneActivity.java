@@ -87,7 +87,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
                     break;
 
                 case SignalType.ROUTE_MILESTONE_TIME_UPDATE:
-                    controlFragment.setNextStopBar((Long)message.obj);
+                    controlFragment.setNextStop((Long)message.obj);
                     break;
             }
         }
