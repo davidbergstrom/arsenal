@@ -60,6 +60,7 @@ public class Step {
      * @param map, the map to draw on
      */
     void draw(GoogleMap map){
+        this.erase();
         polyline = map.addPolyline(new PolylineOptions()
                 .addAll(subSteps)
                 .width(14)
