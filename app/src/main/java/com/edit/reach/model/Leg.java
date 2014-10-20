@@ -72,7 +72,7 @@ public class Leg {
      * (That means that it is the last leg of the route and the end is the destination)
      * @return the milestone at the end of the leg
      */
-    IMilestone getMilestone(){
+    public IMilestone getMilestone(){
         return endMilestone;
     }
 
