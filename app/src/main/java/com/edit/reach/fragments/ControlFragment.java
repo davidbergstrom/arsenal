@@ -5,10 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.*;
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.constants.UniversalConstants;
@@ -52,6 +49,10 @@ public class ControlFragment extends Fragment{
     private ImageView ivGastation;
     private ImageView ivRestArea;
     private ImageView ivToilet;
+
+	//Fragment Containers
+	private RelativeLayout containerTop;
+	private RelativeLayout containerBottom;
 
 	public void setBarTimeClock(double timeClock) {
 		this.timeClock = timeClock;
@@ -113,6 +114,12 @@ public class ControlFragment extends Fragment{
 		// Inflate the layout for this fragment
 
 		View view = inflater.inflate(R.layout.fragment_control, container, false);
+
+		containerTop = (RelativeLayout) view.findViewById(R.id.container_control_top);
+		containerBottom = (RelativeLayout) view.findViewById(R.id.container_control_bottom);
+
+		containerTop.inflate(this.getActivity(), R.layout.control_info, container);
+		containerBottom.inflate(this.getActivity(), R.layout.control_input, container);
 
 		textNextStop = (TextView) view.findViewById(R.id.tv_control_info_top_card_title);
 
