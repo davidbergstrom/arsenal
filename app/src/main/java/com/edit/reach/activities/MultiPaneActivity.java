@@ -23,6 +23,7 @@ import com.edit.reach.fragments.MilestonesFragment;
 import com.edit.reach.fragments.RouteFragment;
 import com.edit.reach.model.*;
 import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -247,13 +248,13 @@ public class MultiPaneActivity extends FragmentActivity{
                         // Milestone already added
                         preliminaryMilestones.remove(milestone);
                         milestonesFragment.removeMilestoneCard(milestone);
-                        marker.setIcon(BitmapDescriptorFactory.defaultMarker());
+                        marker.setIcon(NavigationUtil.getMilestoneIcon(milestone));
                     }else{
                         Log.d("MultiPaneActivity", "Added milestone to list");
                         // Add milestone to list
                         preliminaryMilestones.add(milestone);
                         milestonesFragment.addMilestoneCard(milestone);
-                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                        marker.setIcon(NavigationUtil.getSelectedMilestoneIcon(milestone));
                     }
                 }else {
                     Log.d("MultiPaneActivity", "Invalid milestone, removing");
