@@ -190,7 +190,7 @@ public class MultiPaneActivity extends FragmentActivity{
 	 */
 	public void initializeMovingUI(){
 		controlFragment = ControlFragment.newInstance("MovingMode");
-		state = ControlFragment.State.ROUTELESS;
+		state = ControlFragment.State.INFO;
 		getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, controlFragment).commit();
 	}
 
