@@ -48,7 +48,7 @@ public class Pause {
         this.middleOfPause = map.addMarker(new MarkerOptions()
                 .position(location)
                 .title("Pause")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                .icon(NavigationUtil.pauseMarker));
 
         for(IMilestone milestone : milestones){
             BitmapDescriptor icon = NavigationUtil.getMilestoneIcon(milestone);
@@ -59,6 +59,19 @@ public class Pause {
                     .icon(icon)
                     .snippet("Rating: " + milestone.getRank() + "/5\n" + milestone.getDescription())));
         }
+    }
+
+    /**
+     * Draw this pause with the middle marker only.
+     * @param map the map to draw it on
+     */
+    public void drawWithoutCircle(GoogleMap map){
+        Log.d("Pause", "Drawing Pause at " + location.toString());
+        this.erase();
+        this.middleOfPause = map.addMarker(new MarkerOptions()
+                .position(location)
+                .title("Pause")
+                .icon(NavigationUtil.pauseMarker));
     }
 
     /**

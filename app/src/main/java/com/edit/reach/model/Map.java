@@ -106,7 +106,13 @@ public class Map extends Observable{
             if(state == State.MOVING){
                 if(isRouteSet() && currentRoute.isInitialized()){
                     Location myLocation = map.getMyLocation();
-                    LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                    //LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+	                LatLng position;
+	                if(myLocation != null){
+		                position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+	                }else{
+		                position = new LatLng(0, 0);
+	                }
 
                     // Move arrow to the current position on the route
 

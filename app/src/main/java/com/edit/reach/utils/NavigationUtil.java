@@ -26,7 +26,7 @@ public class NavigationUtil {
     public static final BitmapDescriptor
             foodMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_food),
             bathroomMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_bathroom),
-            plannedMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_pause),
+            pauseMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_pause),
             restMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_reststop),
             gasMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_gas);
 
