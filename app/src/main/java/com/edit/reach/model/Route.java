@@ -1,12 +1,17 @@
 package com.edit.reach.model;
 
+import android.animation.ObjectAnimator;
+import android.animation.TypeEvaluator;
 import android.util.Log;
+import android.util.Property;
 import com.edit.reach.app.R;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.MilestonesReceiver;
 import com.edit.reach.model.interfaces.RouteListener;
-import com.edit.reach.system.*;
+import com.edit.reach.system.GoogleMapsEndpoints;
+import com.edit.reach.system.Remote;
 import com.edit.reach.system.ResponseHandler;
+import com.edit.reach.utils.LatLngInterpolator;
 import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -15,7 +20,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.String;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -582,7 +586,21 @@ public class Route {
                 LatLng nextLocation = getNextSubStep();
                 float bearing = NavigationUtil.finalBearing(nextLocation, nearestLocation);
                 pointerWithBearing.setBearing(bearing);
-                pointerWithBearing.setPosition(nearestLocation);
+                //pointerWithBearing.setPosition(nearestLocation);
+
+                final LatLngInterpolator latLngInterpolator = new LatLngInterpolator.Spherical();
+
+                TypeEvaluator<LatLng> typeEvaluator = new TypeEvaluator<LatLng>() {
+                    @Override
+                    public LatLng evaluate(float fraction, LatLng startValue, LatLng endValue) {
+                        return latLngInterpolator.interpolate(fraction, startValue, endValue);
+                    }
+                };
+
+                Property<GroundOverlay, LatLng> property = Property.of(GroundOverlay.class, LatLng.class, "position");
+                ObjectAnimator animator = ObjectAnimator.ofObject(pointerWithBearing, property, typeEvaluator, nearestLocation);
+                animator.setDuration(300);
+                animator.start();
 
                 CameraPosition lastPosition = map.getCameraPosition();
                 CameraPosition currentPlace = new CameraPosition.Builder().target(nearestLocation).bearing(bearing)
@@ -643,7 +661,7 @@ public class Route {
     }
 
     private void onInitialize(boolean success){
-        Log.d(DEBUG_TAG, "Has been initialized: "+success);
+        Log.d(DEBUG_TAG, "Has been initialized: " + success);
         initialized = success;
         for(RouteListener listener : listeners){
             listener.onInitialization(success);

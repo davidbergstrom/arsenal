@@ -135,7 +135,7 @@ public class Map extends Observable{
                     Log.d(DEBUG_TAG, "Current route not initialized!");
                 }
 
-                handler.postDelayed(this, UPDATE_INTERVAL_FAST);
+                handler.postDelayed(this, UPDATE_INTERVAL_NORMAL);
             }else{
                 Log.d(DEBUG_TAG, "Not in moving mode, NavigationRunnable is aborting.");
             }
