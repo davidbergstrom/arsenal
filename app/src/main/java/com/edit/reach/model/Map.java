@@ -147,9 +147,11 @@ public class Map extends Observable{
     private Runnable routeUpdate = new Runnable() {
         @Override
         public void run() {
-            setChanged();
-            notifyObservers(SignalType.ROUTE_TOTAL_TIME_UPDATE);
-            handler.postDelayed(this, ROUTE_INTERVAL);
+            if(state == State.MOVING && isRouteSet() && currentRoute.isInitialized()) {
+                setChanged();
+                notifyObservers(SignalType.ROUTE_TOTAL_TIME_UPDATE);
+                handler.postDelayed(this, ROUTE_INTERVAL);
+            }
         }
     };
 
@@ -179,7 +181,6 @@ public class Map extends Observable{
         currentRoute.addListener(routeListener);
         // Set the mode to Overview
         state = State.STATIONARY;
-        //setState(State.STATIONARY);
     }
 
     /**
@@ -288,6 +289,10 @@ public class Map extends Observable{
         setState(state);
     }
 
+    /**
+     * Returns if map has a route.
+     * @return true if the map has a route and false otherwise
+     */
     public boolean isRouteSet(){
         return currentRoute != null;
     }
