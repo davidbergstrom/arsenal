@@ -46,7 +46,8 @@ public class ControlFragment extends Fragment{
 
     //State of Panel
 	private State currentState;
-	public enum State {
+
+    public enum State {
 		ROUTELESS, INFO, SUGGESTION
 	}
 
@@ -59,6 +60,7 @@ public class ControlFragment extends Fragment{
     private TextView textTimeToNextStop;
     private TextView textNextStop;
     private TextView textDistanceToTextStop;
+    private TextView textRatingNextStop;
 
     //Suggestion Buttons
 	private Button btNextSuggestion;
@@ -95,49 +97,52 @@ public class ControlFragment extends Fragment{
 	}
 
     public void setNextLeg(Leg leg) {
-        IMilestone milestone = leg.getMilestone();
-        float nextStopClock = leg.getDuration();
-        String nextStopName = milestone.getName();
-        float distanceToNextStop = leg.getDistance();
-        List<IMilestone.Category> categories = milestone.getCategories();
 
-        textNextStop.setText(nextStopName);
-        textTimeToNextStop.setText((int)(nextStopClock * UniversalConstants.SECONDS_TO_MINUTES) + " min");
-        textDistanceToTextStop.setText((int)(distanceToNextStop * 0.001) + " km");
+        if (leg.getMilestone() != null) {
+            IMilestone milestone = leg.getMilestone();
+            float nextStopClock = leg.getDuration();
+            String nextStopName = milestone.getName();
+            float distanceToNextStop = leg.getDistance();
+            Log.d("ControlFragment", "Mile :"+milestone.toString() + ", cat :"+milestone.getCategories());
+            List<IMilestone.Category> categories = milestone.getCategories();
 
-        //Set Milestone Images
-        ivFood.setVisibility(ImageView.GONE);
-        ivGastation.setVisibility(ImageView.GONE);
-        ivRestArea.setVisibility(ImageView.GONE);
-        ivToilet.setVisibility(ImageView.GONE);
+            textNextStop.setText(nextStopName);
+            textTimeToNextStop.setText((int)(nextStopClock * UniversalConstants.SECONDS_TO_MINUTES) + " min");
+            textDistanceToTextStop.setText((int)(distanceToNextStop * 0.001) + " km");
 
-        for (IMilestone.Category cat : categories) {
+            //Set Milestone Images
+            ivFood.setVisibility(ImageView.GONE);
+            ivGastation.setVisibility(ImageView.GONE);
+            ivRestArea.setVisibility(ImageView.GONE);
+            ivToilet.setVisibility(ImageView.GONE);
 
-            Log.d("ControlFragment:", "" + cat);
+            for (IMilestone.Category cat : categories) {
 
-            switch (cat) {
-                case FOOD:
-                    ivFood.setVisibility(ImageView.VISIBLE);
-                    Log.d("ControlFragment:", "Set FOOD Visible");
-                    break;
+                Log.d("ControlFragment:", "" + cat);
 
-                case GASSTATION:
-                    ivGastation.setVisibility(ImageView.VISIBLE);
-                    Log.d("ControlFragment:", "Set GASSTATION Visible");
-                    break;
+                switch (cat) {
+                    case FOOD:
+                        ivFood.setVisibility(ImageView.VISIBLE);
+                        Log.d("ControlFragment:", "Set FOOD Visible");
+                        break;
 
-                case RESTAREA:
-                    ivGastation.setVisibility(ImageView.VISIBLE);
-                    Log.d("ControlFragment:", "Set RESTAREA Visible";
-                    break;
+                    case GASSTATION:
+                        ivGastation.setVisibility(ImageView.VISIBLE);
+                        Log.d("ControlFragment:", "Set GASSTATION Visible");
+                        break;
 
-                case TOILET:
-                    ivToilet.setVisibility(ImageView.VISIBLE);
-                    Log.d("ControlFragment:", "Set TOILET Visible");
-                    break;
+                    case RESTAREA:
+                        ivRestArea.setVisibility(ImageView.VISIBLE);
+                        Log.d("ControlFragment:", "Set RESTAREA Visible");
+                        break;
 
+                    case TOILET:
+                        ivToilet.setVisibility(ImageView.VISIBLE);
+                        Log.d("ControlFragment:", "Set TOILET Visible");
+                        break;
+
+                }
             }
-
         }
     }
 
@@ -179,7 +184,7 @@ public class ControlFragment extends Fragment{
 
         //Get TextViews
         textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
-        TextView textRatingNextStop = (TextView) view.findViewById(R.id.navigation_info_rating);
+        textRatingNextStop = (TextView) view.findViewById(R.id.navigation_info_rating);
         textTimeToNextStop = (TextView) view.findViewById(R.id.navigation_info_time);
         textDistanceToTextStop = (TextView) view.findViewById(R.id.navigation_info_distance);
 

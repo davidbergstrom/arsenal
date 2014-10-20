@@ -71,6 +71,7 @@ public class Milestone implements IMilestone {
                 categories.add(Category.ROAD_CAMERA);
                 break;
         }
+    categories.add(Category.RESTAREA);
     }
 
     /**
