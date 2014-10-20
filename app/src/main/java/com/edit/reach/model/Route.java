@@ -561,9 +561,11 @@ public class Route {
                 }
                 step.erase();
                 iteratorStep.remove();
+                onStepFinished(step);
             }
             leg.erase();
             iteratorLeg.remove();
+            onLegFinished(leg);
         }
 
         if(legs.size() == 0){
@@ -645,6 +647,18 @@ public class Route {
         initialized = success;
         for(RouteListener listener : listeners){
             listener.onInitialization(success);
+        }
+    }
+
+    private void onLegFinished(Leg finishedLeg){
+        for(RouteListener listener : listeners){
+            listener.onLegFinished(finishedLeg);
+        }
+    }
+
+    private void onStepFinished(Step finishedStep){
+        for(RouteListener listener : listeners){
+            listener.onStepFinished(finishedStep);
         }
     }
 }
