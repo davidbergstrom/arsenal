@@ -107,8 +107,8 @@ public class ControlFragment extends Fragment{
             List<IMilestone.Category> categories = milestone.getCategories();
 
             textNextStop.setText(nextStopName);
-            textTimeToNextStop.setText((int)(nextStopClock * UniversalConstants.SECONDS_TO_MINUTES) + " min");
-            textDistanceToTextStop.setText((int)(distanceToNextStop * 0.001) + " km");
+            textTimeToNextStop.setText("Time to stop: " + (int)(nextStopClock * UniversalConstants.SECONDS_TO_MINUTES) + " min");
+            textDistanceToTextStop.setText("Distance to stop: " + (int)(distanceToNextStop * 0.001) + " km");
 
             //Set Milestone Images
             ivFood.setVisibility(ImageView.GONE);
