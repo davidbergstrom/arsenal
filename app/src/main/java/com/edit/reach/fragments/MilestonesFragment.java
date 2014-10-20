@@ -1,20 +1,13 @@
 package com.edit.reach.fragments;
 
-import android.app.Activity;
-
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.*;
-import com.edit.reach.activities.MovingActivity;
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.model.interfaces.IMilestone;
@@ -93,7 +86,7 @@ public class MilestonesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_milestones_2, container, false);
+		View view = inflater.inflate(R.layout.fragment_milestones, container, false);
 		//mMilestonesListView = () view.findViewById(R.id.lv_milestones);
 		mFromTextView = (TextView) view.findViewById(R.id.tv_text_from);
 		mToTextView = (TextView) view.findViewById(R.id.tv_text_to);

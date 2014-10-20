@@ -23,8 +23,8 @@
 
 	<dimen name="button_edit_route_margin_left">20dp</dimen>
 	<dimen name="button_start_route_margin_right">20dp</dimen>
-	<dimen name="text_button_milestone_navigation">22sp</dimen>
-	<dimen name="milestone_navigation_margin_top">20dp</dimen>
+	<dimen name="text_button_milestone_navigation">18sp</dimen>
+	<dimen name="milestone_navigation_margin_top">30dp</dimen>
 
 	<!-- Route Fragment -->
 	<dimen name="use_current_location_top">5dp</dimen>
@@ -40,7 +40,7 @@
 	<dimen name="image_my_location_margin_right">20dp</dimen>
 	<dimen name="text_my_location_margin_right">10dp</dimen>
 	<dimen name="button_get_route_top_margin">30dp</dimen>
-	<dimen name="text_button_route_navigation">22sp</dimen>
+	<dimen name="text_button_route_navigation">18sp</dimen>
 
 	<!-- Custom info window on Map Fragment -->
 	<dimen name="custom_info_window_top">20dp</dimen>
