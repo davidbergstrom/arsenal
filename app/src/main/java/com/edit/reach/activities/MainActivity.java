@@ -59,10 +59,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 	public void onClick(View view) {
         Intent intent = null;
 		if (view == startMovingActivity) {
-			intent = new Intent(this, MovingActivity.class);
+			intent  = new Intent(this, MultiPaneActivity.class);
+			intent.putExtra("Moving", true);
 			startActivity(intent);
 		} else if (view == startStationaryActivity) {
             intent = new Intent(this, MultiPaneActivity.class);
+			intent.putExtra("Moving", false);
             startActivity(intent);
         }
 	}

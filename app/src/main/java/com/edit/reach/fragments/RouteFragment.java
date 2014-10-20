@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.*;
+import com.edit.reach.activities.MainActivity;
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.model.Route;
@@ -151,16 +152,8 @@ public class RouteFragment extends Fragment {
 		}
 	};
 
-	public void onSetRoute(Route route) {
-		if (mListener != null) {
-			mListener.onRouteInteraction(route);
-		}
-	}
-
 	public void onTextEntered(String text) {
-		if (mListener != null) {
-			mListener.onRouteInteraction(text);
-		}
+		((MultiPaneActivity)getActivity()).getMatchedStringResults(text);
 	}
 
 	public void setRouteText(String from, String to){

@@ -3,19 +3,20 @@ import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
 
+
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.ImageButton;
+import android.widget.*;
 
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 
 import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.model.interfaces.IMilestone;
+import com.google.android.gms.tagmanager.Container;
 
 
 /**
@@ -29,6 +30,7 @@ public class ControlFragment extends Fragment{
 	private ImageButton ibFood;
 	private ImageButton ibToilet;
 	private ImageButton ibGasStation;
+
 
 	private float fuelLevel;
 	private double nextStopClock; //in sec

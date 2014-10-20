@@ -114,7 +114,9 @@ public class MilestonesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.d("StartRoute", "Performed a StartRoute-click");
-                ((MultiPaneActivity)getActivity()).startMovingMode();
+                ((MultiPaneActivity)getActivity()).initializeMovingBackend();
+	            ((MultiPaneActivity)getActivity()).initializeMovingUI();
+	            ((MultiPaneActivity)getActivity()).addMilestones();
             }
         });
         return view;
