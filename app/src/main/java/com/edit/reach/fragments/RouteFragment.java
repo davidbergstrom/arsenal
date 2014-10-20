@@ -84,15 +84,15 @@ public class RouteFragment extends Fragment {
 	                         Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_route, container, false);
 
+        spinner = (ProgressBar)view.findViewById(R.id.spinner);
+        etListOfVia = new ArrayList<EditText>();
+
 		actFrom = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_route_from);
 		if(myCurrentLocationActivated){
 			actFrom.setEnabled(false);
 		} else{
 			actFrom.setEnabled(true);
 		}
-		actTo = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_route_to);
-		spinner = (ProgressBar)view.findViewById(R.id.spinner);
-		etListOfVia = new ArrayList<EditText>();
 		actFrom.setOnKeyListener(new View.OnKeyListener() {
 			@Override
 			public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -113,6 +113,28 @@ public class RouteFragment extends Fragment {
 			@Override
 			public void afterTextChanged(Editable s) {}
 		});
+
+        actTo = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_route_to);
+        actTo.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                return false;
+            }
+        });
+
+        // Listener that listens to search field and reacts when text is changed
+        actTo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                onTextEntered(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
 		tvMatchedListItem = (TextView) view.findViewById(R.id.text_route_list_item);
 		tbCurLoc = (ToggleButton) view.findViewById(R.id.toggle_my_location);
@@ -175,6 +197,7 @@ public class RouteFragment extends Fragment {
 		matchedPlaces = resultList;
 		adapter = new ArrayAdapter<String>(this.getActivity(), R.layout.route_list_item, matchedPlaces);
 		actFrom.setAdapter(adapter);
+        actTo.setAdapter(adapter);
 	}
 
 
