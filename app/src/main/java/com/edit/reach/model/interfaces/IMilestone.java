@@ -2,6 +2,8 @@ package com.edit.reach.model.interfaces;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+
 /**
  * Created by Joakim Berntsson on 2014-09-29.
  * Interface for Milestones.
@@ -13,7 +15,7 @@ public interface IMilestone {
 	 * Category is an enum class to identify a milestones type.
 	 */
 	public enum Category{
-		RESTAURANT, RESTAREA, GASSTATION, OBSTRUCTION, FOOD, SLEEP, ROAD_CAMERA
+		RESTAURANT, RESTAREA, GASSTATION, OBSTRUCTION, FOOD, SLEEP, TOILET, ROAD_CAMERA
 	}
 
 	/**
@@ -28,11 +30,23 @@ public interface IMilestone {
 	 */
 	public String getDescription();
 
+    /**
+     * Checks wether the milestone has the requested categories or not
+     * @return true if the milestone has the requested categories
+     */
+    public boolean hasCategories(ArrayList<Category> requestedCategories);
+
+    /**
+     * Checks wether the milestone has the requested category or not
+     * @return true if the milestone has the requested category
+     */
+    public boolean hasCategory(Category requestedCategory);
+
 	/**
-	 * Returns the category of the milestone
-	 * @return the milestones category
+	 * Returns the categories associated with the milestone
+	 * @return a list with the milestone's categories
 	 */
-	public Category getCategory();
+	public ArrayList<Category> getCategories();
 
 	/**
 	 * Set the rank of the milestone
