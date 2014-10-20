@@ -99,7 +99,8 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
             }
 
             routeFragment = RouteFragment.newInstance("Route");
-            getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, routeFragment).commit();
+            getSupportFragmentManager().beginTransaction()
+		            .add(R.id.container_fragment_left, routeFragment).commit();
         }
 
         setUpMapIfNeeded();
@@ -224,13 +225,11 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
     }
 
-    public void driverInteractByButtons(){
-
-    }
-
     public void goBackToRouteFragment(){
         Log.d("MultiPaneActivity", "goBackFragment");
-        getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, routeFragment).commit();
+	    //msFragmentHasBeenCreated = false;
+        getSupportFragmentManager().beginTransaction().replace
+		        (R.id.container_fragment_left, routeFragment).addToBackStack("routeFragment").commit();
     }
 
     public Location getMyLocation(){
@@ -271,7 +270,8 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
             spinner = (ProgressBar) findViewById(R.id.spinner);
             spinner.setVisibility(View.GONE);
             milestonesFragment = MilestonesFragment.newInstance(route.getOriginAddress(), route.getDestinationAddress());
-            getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
+            getSupportFragmentManager().beginTransaction().
+		            replace(R.id.container_fragment_left, milestonesFragment).addToBackStack("milestonesFragment").commit();
             navigationModel.addMilestones(preliminaryMilestones);
         }
     }
@@ -284,7 +284,8 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         navigationModel.getMap().setState(Map.State.MOVING);
         //TODO: Gav nullpointer (oklart varför..)
         controlFragment = ControlFragment.newInstance("Control");
-        getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
+        getSupportFragmentManager().beginTransaction().
+		        replace(R.id.container_fragment_left, controlFragment).addToBackStack("controlFragment").commit();
     }
 
     @Override

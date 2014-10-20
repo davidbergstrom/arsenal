@@ -26,7 +26,7 @@ public class ControlFragment extends Fragment{
 
 	private static final String ARG_ID = "Control";
 	private ImageButton ibRestArea;
-	private ImageButton ibRestaurant;
+	private ImageButton ibFood;
 	private ImageButton ibToilet;
 	private ImageButton ibGasStation;
 
@@ -101,11 +101,11 @@ public class ControlFragment extends Fragment{
 				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.RESTAREA);
 			}
 		});
-		ibRestaurant = (ImageButton)view.findViewById(R.id.button_control_input_restaurant);
-		ibRestaurant.setOnClickListener(new View.OnClickListener() {
+		ibFood = (ImageButton)view.findViewById(R.id.button_control_input_restaurant);
+		ibFood.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.RESTAURANT);
+				((MultiPaneActivity) getActivity()).getPauseSuggestions(IMilestone.Category.FOOD);
 			}
 		});
 		ibToilet = (ImageButton) view.findViewById(R.id.button_control_input_toilet);
