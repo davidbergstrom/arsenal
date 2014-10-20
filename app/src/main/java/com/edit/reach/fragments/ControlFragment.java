@@ -1,4 +1,5 @@
 package com.edit.reach.fragments;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
@@ -36,23 +37,43 @@ public class ControlFragment extends Fragment{
 	private double totalTime;   //in sec
 	private String nextStopName = null;
 
-	//Progressbar
+	//Progressbars
 	private ProgressBar fuelBar;
 	private ProgressBar nextStopBar;
 	private ProgressBar timeClockBar;
 
 	public void setTimeClockBar(double timeClock) {
 		this.timeClock = timeClock;
+        timeClockBar.setBackgroundColor(Color.GREEN);
 		timeClockBar.setMax((int)(UniversalConstants.LEGAL_UPTIME_IN_SECONDS * UniversalConstants.SECONDS_TO_MINUTES));
 		timeClockBar.setProgress((int) (timeClock * UniversalConstants.SECONDS_TO_MINUTES));
+
+        if (timeClock <= UniversalConstants.TIME_THRESHOLD) {
+            timeClockBar.setBackgroundColor(Color.RED);
+        }
 	}
 
 
 	public void setFuelBar(float fuelLevel) {
 		this.fuelLevel = fuelLevel;
+        fuelBar.setBackgroundColor(Color.GREEN);
 		fuelBar.setMax(100);
 		fuelBar.setProgress((int) fuelLevel);
+
+        if (fuelLevel <= UniversalConstants.FUEL_THRESHOLD) {
+            fuelBar.setBackgroundColor(Color.RED);
+        }
 	}
+
+    public void setNextStopBar(double nextStopClock) {
+        this.nextStopClock = nextStopClock;
+        nextStopBar.setBackgroundColor(Color.GREEN);
+        nextStopBar.setMax();
+    }
+
+    public void setTotalTime(double totalTime) {
+        this.totalTime = totalTime;
+    }
 
 	public static ControlFragment newInstance(String id){
 		ControlFragment fragment = new ControlFragment();
@@ -72,7 +93,6 @@ public class ControlFragment extends Fragment{
 
 		}
 	}
-
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -125,7 +145,5 @@ public class ControlFragment extends Fragment{
 
 		return view;
 	}
-
-
 
 }

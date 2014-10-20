@@ -74,14 +74,19 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
                 case SignalType.FUEL_UPDATE:
                     controlFragment.setFuelBar((Float)message.obj);
+
                     break;
 
                 case SignalType.UPTIME_UPDATE:
                     controlFragment.setTimeClockBar((Double)message.obj);
                     break;
 
-                case SignalType.LEG_UPDATE:
-                    // TODO what here?
+                case SignalType.ROUTE_TOTAL_TIME_UPDATE:
+                    controlFragment.setTotalTime((Long)message.obj);
+                    break;
+
+                case SignalType.ROUTE_MILESTONE_TIME_UPDATE:
+                    controlFragment.setNextStopBar((Long)message.obj);
                     break;
             }
         }
