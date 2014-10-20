@@ -272,6 +272,8 @@ public class ControlFragment extends Fragment{
 			}
 		});
 
+		((MultiPaneActivity)getActivity()).readyToSetState();
+
 		return view;
 	}
 
@@ -298,6 +300,7 @@ public class ControlFragment extends Fragment{
 	}
 
 	public void setState(State newState) {
+
 		currentState = newState;
 
 		if (currentState == State.ROUTELESS) {
@@ -312,8 +315,8 @@ public class ControlFragment extends Fragment{
 	}
 
 	private void setStateRouteless() {
-		/*navigationInfoContainer.setVisibility(LinearLayout.GONE);
-		suggestionButtonContainer.setVisibility(RelativeLayout.GONE);*/
+		navigationInfoContainer.setVisibility(View.GONE);
+		suggestionButtonContainer.setVisibility(View.GONE);
 		Log.d("STATE", "setStateRouteless");
 	}
 

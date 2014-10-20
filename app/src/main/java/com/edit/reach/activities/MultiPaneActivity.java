@@ -23,6 +23,7 @@ import com.edit.reach.fragments.MilestonesFragment;
 import com.edit.reach.fragments.RouteFragment;
 import com.edit.reach.model.*;
 import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -50,6 +51,8 @@ public class MultiPaneActivity extends FragmentActivity{
     private boolean msFragmentHasBeenCreated = false;
 
     private Route route;
+
+	private ControlFragment.State state;
 
     // A handler for the UI thread. The Handler recieves messages from other thread.
     private Handler mainHandler = new Handler(Looper.getMainLooper()) {
@@ -187,7 +190,7 @@ public class MultiPaneActivity extends FragmentActivity{
 	 */
 	public void initializeMovingUI(){
 		controlFragment = ControlFragment.newInstance("MovingMode");
-		controlFragment.setState(ControlFragment.State.ROUTELESS);
+		state = ControlFragment.State.ROUTELESS;
 		getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, controlFragment).commit();
 	}
 
@@ -245,13 +248,13 @@ public class MultiPaneActivity extends FragmentActivity{
                         // Milestone already added
                         preliminaryMilestones.remove(milestone);
                         milestonesFragment.removeMilestoneCard(milestone);
-                        marker.setIcon(BitmapDescriptorFactory.defaultMarker());
+                        marker.setIcon(NavigationUtil.getMilestoneIcon(milestone));
                     }else{
                         Log.d("MultiPaneActivity", "Added milestone to list");
                         // Add milestone to list
                         preliminaryMilestones.add(milestone);
                         milestonesFragment.addMilestoneCard(milestone);
-                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                        marker.setIcon(NavigationUtil.getSelectedMilestoneIcon(milestone));
                     }
                 }else {
                     Log.d("MultiPaneActivity", "Invalid milestone, removing");
@@ -385,6 +388,10 @@ public class MultiPaneActivity extends FragmentActivity{
 	public void getMatchedStringResults(String str){
 		List<String> list = navigationModel.getMatchedStringResults(str);
 		routeFragment.suggestionList(list);
+	}
+
+	public void readyToSetState() {
+		controlFragment.setState(state);
 	}
 
 }
