@@ -1,5 +1,6 @@
 package com.edit.reach.fragments;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -72,24 +73,24 @@ public class ControlFragment extends Fragment{
 
     public void setBarTimeClock(double timeClock) {
 		this.timeClock = timeClock;
-        barTimeClock.setBackgroundColor(Color.GREEN);
+        barTimeClock.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
 		barTimeClock.setMax((int) (UniversalConstants.LEGAL_UPTIME_IN_SECONDS * UniversalConstants.SECONDS_TO_MINUTES));
 		barTimeClock.setProgress((int) (timeClock * UniversalConstants.SECONDS_TO_MINUTES));
 
         if (timeClock <= UniversalConstants.TIME_THRESHOLD) {
-            barTimeClock.setBackgroundColor(Color.RED);
+            barTimeClock.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
         }
 	}
 
 
 	public void setBarFuel(float fuelLevel) {
 		this.fuelLevel = fuelLevel;
-        barFuel.setBackgroundColor(Color.GREEN);
+        barFuel.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
 		barFuel.setMax(100);
 		barFuel.setProgress((int) fuelLevel);
 
         if (fuelLevel <= UniversalConstants.FUEL_THRESHOLD) {
-            barFuel.setBackgroundColor(Color.RED);
+            barFuel.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
         }
 	}
 
