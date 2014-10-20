@@ -98,12 +98,13 @@ public class MultiPaneActivity extends FragmentActivity{
         setUpMapIfNeeded();
         preliminaryMilestones = new ArrayList<IMilestone>();
         navigationModel = new NavigationModel(mMap, mainHandler);
+	    Bundle bundle = getIntent().getExtras();
         if(findViewById(R.id.container_fragment_left) != null){
             if(savedInstanceState != null){
                 return;
             }
 
-	        if(savedInstanceState.getBoolean("Moving")){
+	        if(bundle.getBoolean("Moving")){
 			    initializeMovingBackend();
 		        initializeMovingUI();
 		    } else {
