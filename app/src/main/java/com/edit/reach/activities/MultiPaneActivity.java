@@ -75,14 +75,19 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
                 case SignalType.FUEL_UPDATE:
                     controlFragment.setFuelBar((Float)message.obj);
+
                     break;
 
                 case SignalType.UPTIME_UPDATE:
                     controlFragment.setTimeClockBar((Double)message.obj);
                     break;
 
-                case SignalType.LEG_UPDATE:
-                    // TODO what here?
+                case SignalType.ROUTE_TOTAL_TIME_UPDATE:
+                    controlFragment.setTotalTime((Long)message.obj);
+                    break;
+
+                case SignalType.ROUTE_MILESTONE_TIME_UPDATE:
+                    controlFragment.setNextStop((Long)message.obj);
                     break;
             }
         }
@@ -100,7 +105,8 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
             }
 
             routeFragment = RouteFragment.newInstance("Route");
-            getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, routeFragment).commit();
+            getSupportFragmentManager().beginTransaction()
+		            .add(R.id.container_fragment_left, routeFragment).commit();
         }
 
         setUpMapIfNeeded();
@@ -227,13 +233,11 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
 
     }
 
-    public void driverInteractByButtons(){
-
-    }
-
     public void goBackToRouteFragment(){
         Log.d("MultiPaneActivity", "goBackFragment");
-        getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, routeFragment).commit();
+	    //msFragmentHasBeenCreated = false;
+        getSupportFragmentManager().beginTransaction().replace
+		        (R.id.container_fragment_left, routeFragment).addToBackStack("routeFragment").commit();
     }
 
     public Location getMyLocation(){
@@ -274,7 +278,9 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
             spinner = (ProgressBar) findViewById(R.id.spinner);
             spinner.setVisibility(View.GONE);
             milestonesFragment = MilestonesFragment.newInstance(route.getOriginAddress(), route.getDestinationAddress());
-            getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
+            getSupportFragmentManager().beginTransaction().
+		            replace(R.id.container_fragment_left, milestonesFragment).addToBackStack("milestonesFragment").commit();
+
         }
     }
 
@@ -286,7 +292,8 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         navigationModel.addMilestones(preliminaryMilestones);
         navigationModel.getMap().setState(Map.State.MOVING);
         controlFragment = ControlFragment.newInstance("Control");
-        getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
+        getSupportFragmentManager().beginTransaction().
+		        replace(R.id.container_fragment_left, controlFragment).addToBackStack("controlFragment").commit();
     }
 
     @Override

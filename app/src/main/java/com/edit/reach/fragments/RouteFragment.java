@@ -168,14 +168,6 @@ public class RouteFragment extends Fragment {
 		actTo.setText(to);
 	}
 
-	//Kan behövas för att dynamiskt lägga till fler textfält för del-destinationer
-	private EditText editText(){
-		EditText editText = new EditText(getActivity());
-		editText.setHint("By");
-		editText.setWidth(180);
-		etListOfVia.add(editText);
-		return editText;
-	}
 
 	//Kan behövas för att dynamiskt lägga till fler textfält för del-destinationer
 	private LinearLayout linearLayout (int _intID){
