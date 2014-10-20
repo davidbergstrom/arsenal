@@ -14,7 +14,7 @@
             android:src="@drawable/milestone_restarea"
             android:adjustViewBounds="true"
             android:maxWidth="65dp"
-            android:maxHeight="65dp"
+            android:maxHeight="25dp"
             android:scaleType="fitCenter"
             android:padding="10dp"/>
 
@@ -25,6 +25,7 @@
             android:layout_gravity="center_vertical"
 			android:text="@string/card_milestone_text"
 			android:textColor="@color/card_milestone_text"
+            android:maxHeight="20dp"
 			android:textSize="22sp"/>
 
 
