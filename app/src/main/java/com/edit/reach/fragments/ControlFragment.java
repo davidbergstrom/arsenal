@@ -52,9 +52,9 @@ public class ControlFragment extends Fragment{
 	private double nextStopClock; //in sec
 	private double timeClock;   //in sec
 	private double totalTime;   //in sec
-	private String nextStopName = null;
+	private String nextStopName;
 
-	//Progressbars
+	//Progressbar
 	private ProgressBar barFuel;
 	private ProgressBar barTimeClock;
 
@@ -150,7 +150,7 @@ public class ControlFragment extends Fragment{
         barFuel = (ProgressBar) view.findViewById(R.id.progress_gas);
         barTimeClock = (ProgressBar) view.findViewById(R.id.progress_time_clock);
 
-		if(nextStopName != null) {
+		if(!nextStopName.isEmpty()) {
 			textNextStop.setText(nextStopName);
 		} else {
 			textNextStop.setText("N/A");

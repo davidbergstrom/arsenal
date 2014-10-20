@@ -146,6 +146,7 @@ public class MultiPaneActivity extends FragmentActivity{
                     .getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
+	            Log.d("setUpMapIfNeeded", "mMap != null");
                 setupMap();
             }else{
                 // TODO: Alert user that application wont work properly
