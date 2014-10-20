@@ -187,9 +187,9 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 							mainHandler.sendMessage(message);
 
 							if(vehicleSystem.getVehicleState() == VehicleState.NOT_IN_DRIVE) {
-								map.setState(Map.State.STATIONARY);
+								map.setMapState(Map.MapState.STATIONARY);
 							} else {
-								map.setState(Map.State.MOVING);
+								map.setMapState(Map.MapState.MOVING);
 							}
 
 							break;

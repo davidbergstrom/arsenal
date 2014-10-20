@@ -123,7 +123,17 @@ public class Map extends Observable{
                         CameraPosition lastPosition = map.getCameraPosition();
                         CameraPosition currentPlace = new CameraPosition.Builder().target(currentRoute.getPointerLocation()).bearing(currentRoute.getPointerBearing())
                                 .tilt(lastPosition.tilt).zoom(lastPosition.zoom).build();
-                        map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
+                        map.animateCamera(CameraUpdateFactory.newCameraPosition(currentPlace), 100, new GoogleMap.CancelableCallback() {
+                            @Override
+                            public void onFinish() {
+
+                            }
+
+                            @Override
+                            public void onCancel() {
+
+                            }
+                        });
                     }
 
                     //}

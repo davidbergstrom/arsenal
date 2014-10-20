@@ -598,21 +598,6 @@ public class Route {
                 ObjectAnimator animator = ObjectAnimator.ofObject(pointerWithBearing, property, typeEvaluator, nearestLocation);
                 animator.setDuration(NavigationUtil.UPDATE_INTERVAL_FAST);
                 animator.start();
-
-                CameraPosition lastPosition = map.getCameraPosition();
-                CameraPosition currentPlace = new CameraPosition.Builder().target(nearestLocation).bearing(bearing)
-                        .tilt(lastPosition.tilt).zoom(lastPosition.zoom).build();
-                map.animateCamera(CameraUpdateFactory.newCameraPosition(currentPlace), 100, new GoogleMap.CancelableCallback() {
-                    @Override
-                    public void onFinish() {
-
-                    }
-
-                    @Override
-                    public void onCancel() {
-
-                    }
-                });
             }
         }
     }
