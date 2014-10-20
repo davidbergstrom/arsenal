@@ -21,6 +21,12 @@
 		        android:textColor="@color/text_fragment_milestones_from_to"
 				/>
 
+	<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="300dp"
+			android:orientation="vertical"
+			>
+
 		<!-- Holder for Milestones Cards -->
 		<ScrollView
 				android:id="@+id/list_of_milestones"
@@ -33,11 +39,13 @@
             <LinearLayout
 		            android:id="@+id/cardList"
 		            android:layout_width="match_parent"
-		            android:layout_height="match_parent"
+		            android:layout_height="wrap_content"
 		            android:orientation="vertical">
             </LinearLayout>
 
 		</ScrollView>
+
+		</LinearLayout>
 
 		<!-- The end point -->
 		<TextView
@@ -49,14 +57,20 @@
 		        android:textColor="@color/text_fragment_milestones_from_to"
 				/>
 
+	<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/milestones_button_holder"
+			android:layout_gravity="bottom"
+			android:layout_marginTop="@dimen/fragment_milestones_button_holder_margin_top">
+
 		<Button
 				android:id="@+id/button_edit_route"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/button_edit_route_margin_top"
-				android:layout_gravity="center"
 				android:text="@string/button_edit_route"
 				android:textColor="@color/text_fragment_route"
+				android:layout_alignParentStart="true"
 				style="?android:attr/borderlessButtonStyle"
 				/>
 
@@ -64,11 +78,12 @@
                 android:id="@+id/button_start_route"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:layout_gravity="center"
-                android:text="START ROUTE"
+                android:text="@string/button_start_route"
                 android:textColor="@color/text_fragment_route"
+                android:layout_alignParentEnd="true"
                 style="?android:attr/borderlessButtonStyle"
                 />
+
+	</RelativeLayout>
 
 </LinearLayout>
