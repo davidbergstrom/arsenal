@@ -583,11 +583,6 @@ public class Route {
                 float bearing = NavigationUtil.finalBearing(nextLocation, nearestLocation);
                 pointerWithBearing.setBearing(bearing);
                 pointerWithBearing.setPosition(nearestLocation);
-
-                CameraPosition lastPosition = map.getCameraPosition();
-                CameraPosition currentPlace = new CameraPosition.Builder().target(nearestLocation).bearing(bearing)
-                        .tilt(lastPosition.tilt).zoom(lastPosition.zoom).build();
-                map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
             }
 
         }
@@ -595,6 +590,22 @@ public class Route {
 
         long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
         Log.d(DEBUG_TAG, "GoTo method duration: "+(duration/1000000) + "ms");
+    }
+
+    /**
+     * Returns the bearing of the pointer.
+     * @return the bearing
+     */
+    float getPointerBearing(){
+        return pointerWithBearing.getBearing();
+    }
+
+    /**
+     * Returns the position of the pointer.
+     * @return the coordinate
+     */
+    LatLng getPointerLocation(){
+        return pointerWithBearing.getPosition();
     }
 
     private LatLng getNextSubStep(){
