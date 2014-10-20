@@ -71,19 +71,22 @@ public class MultiPaneActivity extends FragmentActivity{
 
                 case SignalType.FUEL_UPDATE:
                     controlFragment.setBarFuel((Float) message.obj);
-
+					Log.d("HANDLER UPDATE", "Fuel update");
                     break;
 
                 case SignalType.UPTIME_UPDATE:
                     controlFragment.setBarTimeClock((Double) message.obj);
+					Log.d("HANDLER UPDATE", "Uptime update");
                     break;
 
                 case SignalType.ROUTE_TOTAL_TIME_UPDATE:
                     controlFragment.setTotalTime((Long)message.obj);
+					Log.d("HANDLER UPDATE", "Route total time update");
                     break;
 
                 case SignalType.LEG_UPDATE:
                     controlFragment.setNextLeg((Leg)message.obj);
+					Log.d("HANDLER UPDATE", "Leg update");
                     break;
 
             }

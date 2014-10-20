@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 
 
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -166,57 +167,63 @@ public class ControlFragment extends Fragment{
 
 		View controlInfo = inflater.inflate(R.layout.control_info, container, false);
 		containerTop.addView(controlInfo);
-		//containerBottom.inflate(this.getActivity(), R.layout.control_input, container);
+		View controlInput = inflater.inflate(R.layout.control_input, container, false);
+		containerBottom.addView(controlInput);
 
-		textNextStop = (TextView) view.findViewById(R.id.tv_control_info_top_card_title);
+		textNextStop = (TextView) controlInfo.findViewById(R.id.tv_control_info_top_card_title);
 
         //Get TextViews
-        textNextStop = (TextView) view.findViewById(R.id.tv_control_info_top_card_title);
-        textTimeToNextStop = (TextView) view.findViewById(R.id.control_info_top_card_time);
-        textDistanceToTextStop = (TextView) view.findViewById(R.id.control_info_top_card_distance);
+        textNextStop = (TextView) controlInfo.findViewById(R.id.tv_control_info_top_card_title);
+        textTimeToNextStop = (TextView) controlInfo.findViewById(R.id.control_info_top_card_time);
+        textDistanceToTextStop = (TextView) controlInfo.findViewById(R.id.control_info_top_card_distance);
 
         //TODO delete setVisibility
         //Get ImageViews
-        ivFood = (ImageView) view.findViewById(R.id.control_info_top_card_type_food);
+        ivFood = (ImageView) controlInfo.findViewById(R.id.control_info_top_card_type_food);
 
-        ivGastation = (ImageView) view.findViewById(R.id.control_info_top_card_type_gasstation);
+        ivGastation = (ImageView) controlInfo.findViewById(R.id.control_info_top_card_type_gasstation);
 
-        ivRestArea = (ImageView) view.findViewById(R.id.control_info_top_card_type_restarea);
+        ivRestArea = (ImageView) controlInfo.findViewById(R.id.control_info_top_card_type_restarea);
 
-        ivToilet = (ImageView) view.findViewById(R.id.control_info_top_card_type_toilet);
+        ivToilet = (ImageView) controlInfo.findViewById(R.id.control_info_top_card_type_toilet);
 
         //Get progressbars
-        barFuel = (ProgressBar) view.findViewById(R.id.progress_gas);
-        barTimeClock = (ProgressBar) view.findViewById(R.id.progress_time_clock);
+        barFuel = (ProgressBar) controlInfo.findViewById(R.id.progress_gas);
+        barTimeClock = (ProgressBar) controlInfo.findViewById(R.id.progress_time_clock);
 
-		/*ibRestArea = (ImageButton) containerBottom.findViewById(R.id.button_control_input_restarea);
+		//Get and set Input buttons
+		ibRestArea = (ImageButton) controlInput.findViewById(R.id.button_control_input_restarea);
 		ibRestArea.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.RESTAREA);
+				Log.d("INPUTBUTTON", "Restarea");
 			}
 		});
-		ibFood = (ImageButton)view.findViewById(R.id.button_control_input_restaurant);
+		ibFood = (ImageButton) controlInput.findViewById(R.id.button_control_input_restaurant);
 		ibFood.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				((MultiPaneActivity) getActivity()).getPauseSuggestions(IMilestone.Category.FOOD);
+				Log.d("INPUTBUTTON", "Food");
 			}
 		});
-		ibToilet = (ImageButton) view.findViewById(R.id.button_control_input_toilet);
+		ibToilet = (ImageButton) controlInput.findViewById(R.id.button_control_input_toilet);
 		ibToilet.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				//TODO: Fix Toilet...
+				Log.d("INPUTBUTTON", "Toilet");
 			}
 		});
-		ibGasStation = (ImageButton) view.findViewById(R.id.button_control_input_gasstation);
+		ibGasStation = (ImageButton) controlInput.findViewById(R.id.button_control_input_gasstation);
 		ibGasStation.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.GASSTATION);
+				Log.d("INPUTBUTTON", "Gas Station");
 			}
-		});*/
+		});
 
 		return view;
 	}
