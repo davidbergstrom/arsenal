@@ -95,14 +95,18 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	 * @return a Map
 	 */
 	public Map getMap() {
-		return map;
+		synchronized (map) {
+			return map;
+		}
 	}
 
 	/** Add milestones to the route.
 	 * @param list a list of milestones to be added.
 	 */
 	public void addMilestones(List<IMilestone> list) {
-		map.getRoute().addMilestones(list);
+		synchronized (map) {
+			map.getRoute().addMilestones(list);
+		}
 	}
 
 	/** This method is used to match search result strings.
@@ -120,45 +124,15 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	 */
 	public void setRoute(final Route newRoute) {
 		Log.d("NavigationModel", "setRoute()");
-		map.setRoute(newRoute);
-		//newRoute.addListener(this);
+		synchronized (map) {
+			map.setRoute(newRoute);
+		}
 	}
 
 	@Override
 	public void onGetSuccess(List<String> results) {
 		searchResults = results;
 	}
-
-	/*@Override
-	public void onInitialization(boolean success) {
-		Log.d("NavigationModel", "onInitialization()");
-		Message message = mainHandler.obtainMessage();
-		if (success) {
-			Log.d("NavigationModel", "added time pause");
-			addTimePause();
-			message.what = SignalType.ROUTE_INITIALIZATION_SUCCEDED;
-		} else {
-			message.what = SignalType.ROUTE_INITIALIZATION_FAILED;
-		}
-
-		mainHandler.sendMessage(message);
-		Log.d("NavigationModel", "Sent message to mainhandler");
-	}
-
-	@Override
-	public void onLegFinished(Leg finishedLeg) {
-		// TODO Reached a milestone.
-	}
-
-	@Override
-	public void onPauseAdded(Pause pause) {
-		// TODO do nothing?
-	}
-
-	@Override
-	public void onStepFinished(Step finishedStep) {
-		// TODO do nothing?
-	}*/
 
 	/**
 	 * Do not call this method. It is called automatically when the observable changes.
@@ -175,115 +149,106 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 				Message message = Message.obtain(mainHandler);
 
 				// Get the route.
-				Route r = map.getRoute();
+				synchronized (map) {
+					Route route = map.getRoute();
 
-				switch ((Integer) data) {
-					// If vehicle is low on fuel.
-					case SignalType.LOW_FUEL:
-						// TODO what to do here? Not used
-						Log.d("UPDATE", "TYPE: LOW_FUEL");
-						break;
+					switch ((Integer) data) {
+						// If vehicle is low on fuel.
+						case SignalType.LOW_FUEL:
+							// TODO what to do here? Not used
+							Log.d("UPDATE", "TYPE: LOW_FUEL");
+							break;
 
-					// If vehicles up time is short relative to the legal up time.
-					case SignalType.SHORT_TIME:
-						// TODO what to do here? Not used
-						Log.d("UPDATE", "TYPE: SHORT_TIME");
-						break;
+						// If vehicles up time is short relative to the legal up time.
+						case SignalType.SHORT_TIME:
+							// TODO what to do here? Not used
+							Log.d("UPDATE", "TYPE: SHORT_TIME");
+							break;
 
-					// If vehicle stopped or started
-					case SignalType.VEHICLE_STOPPED_OR_STARTED:
-						Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
-						Log.d("GET", "Vehicle State: " + vehicleSystem.getVehicleState());
+						// If vehicle stopped or started
+						case SignalType.VEHICLE_STOPPED_OR_STARTED:
+							Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
+							Log.d("GET", "Vehicle State: " + vehicleSystem.getVehicleState());
 
-						// Send the MovingState to the UI.
-						message.obj = vehicleSystem.getVehicleState();
-						message.what = SignalType.VEHICLE_STOPPED_OR_STARTED;
-						mainHandler.sendMessage(message);
-						break;
+							// Send the MovingState to the UI.
+							message.obj = vehicleSystem.getVehicleState();
+							message.what = SignalType.VEHICLE_STOPPED_OR_STARTED;
+							mainHandler.sendMessage(message);
+							break;
 
-					// If a vehicle took a break longer than or equal to 45 minutes.
-					case SignalType.VEHICLE_TOOK_FINAL_BREAK:
-						Log.d("UPDATE", "TYPE: VEHICLE_TOOK_FINAL_BREAK");
+						// If a vehicle took a break longer than or equal to 45 minutes.
+						case SignalType.VEHICLE_TOOK_FINAL_BREAK:
+							Log.d("UPDATE", "TYPE: VEHICLE_TOOK_FINAL_BREAK");
 
-						// This has to be done in UI thread because of Googles Map.
-						mainHandler.post(new Runnable() {
-							@Override
-							public void run() {
-								// Remove all pauses and add them again.
-								map.getRoute().removeAllPauses();
-								addTimePause();
-							}
-						});
-						break;
+							// This has to be done in UI thread because of Googles Map.
+							mainHandler.post(new Runnable() {
+								@Override
+								public void run() {
+									synchronized (map) {
+										// Remove all pauses and add them again.
+										map.getRoute().removeAllPauses();
+										addTimePause();
+									}
+								}
+							});
+							break;
 
-					case SignalType.UPTIME_UPDATE:
-						Log.d("UPDATE", "TYPE: UP_TIME_UPDATE");
+						case SignalType.UPTIME_UPDATE:
+							Log.d("UPDATE", "TYPE: UP_TIME_UPDATE");
 
-						// Send the number of seconds until break to UI.
-						message.obj = vehicleSystem.getTimeUntilForcedRest();
-						message.what = SignalType.UPTIME_UPDATE;
-						mainHandler.sendMessage(message);
-						break;
+							// Send the number of seconds until break to UI.
+							message.obj = vehicleSystem.getTimeUntilForcedRest();
+							message.what = SignalType.UPTIME_UPDATE;
+							mainHandler.sendMessage(message);
+							break;
 
-					case SignalType.FUEL_UPDATE:
-						Log.d("UPDATE", "TYPE: FUEL_UPDATE");
-						Log.d("Thread in NavigationModel - Fuelupdate", Thread.currentThread().getName());
+						case SignalType.FUEL_UPDATE:
+							Log.d("UPDATE", "TYPE: FUEL_UPDATE");
+							Log.d("Thread in NavigationModel - Fuelupdate", Thread.currentThread().getName());
 
-						// Send the amount of fuel in tank to the UI.
-						message.obj = vehicleSystem.getFuelLevel();
-						message.what = SignalType.FUEL_UPDATE;
-						mainHandler.sendMessage(message);
-						break;
+							// Send the amount of fuel in tank to the UI.
+							message.obj = vehicleSystem.getFuelLevel();
+							message.what = SignalType.FUEL_UPDATE;
+							mainHandler.sendMessage(message);
+							break;
 
-					case SignalType.TANK_SIZE_CALCULATED:
-						Log.d("UPDATE", "TYPE: TANK_SIZE_CALCULATED");
+						case SignalType.TANK_SIZE_CALCULATED:
+							Log.d("UPDATE", "TYPE: TANK_SIZE_CALCULATED");
+							final double kmToRefuel = vehicleSystem.getKilometersUntilRefuel();
+							addFuelPause(kmToRefuel);
+							break;
 
-						final double kmToRefuel = vehicleSystem.getKilometersUntilRefuel();
+						case SignalType.LEG_UPDATE:
+							Log.d("UPDATE", "TYPE: LEG_UPDATE");
+							message.obj = route.getLegs().get(0);
+							message.what = SignalType.LEG_UPDATE;
+							mainHandler.sendMessage(message);
+							break;
 
-						// This has to be done in UI thread because of Googles Map.
-						mainHandler.post(new Runnable() {
-							@Override
-							public void run() {
-								addFuelPause(kmToRefuel);
-							}
-						});
-						break;
+						case SignalType.ROUTE_TOTAL_TIME_UPDATE:
+							Log.d("UPDATE", "TYPE: ROUTE_TOTAL_TIME_UPDATE");
+							message.obj = route.getDuration();
+							message.what = SignalType.ROUTE_TOTAL_TIME_UPDATE;
+							mainHandler.sendMessage(message);
+							break;
 
-                    case SignalType.ROUTE_TOTAL_TIME_UPDATE:
-                        Log.d("UPDATE", "TYPE: ROUTE_TOTAL_TIME_UPDATE");
-                        message.obj = r.getDuration();
-                        message.what = SignalType.ROUTE_TOTAL_TIME_UPDATE;
-                        mainHandler.sendMessage(message);
-                        break;
+						case SignalType.ROUTE_INITIALIZATION_SUCCEDED:
+							Log.d("UPDATE", "TYPE: ROUTE_INITIALIZATION_SUCCEEDED");
+							addTimePause();
+							message.what = SignalType.ROUTE_INITIALIZATION_SUCCEDED;
+							mainHandler.sendMessage(message);
+							break;
 
-                    case SignalType.LEG_FINISHED:
-                        Log.d("UPDATE", "TYPE: LEG_FINISHED");
-                        // TODO : Does the UI need this information? If it does will it need the information from the finished leg?
-                        break;
+						case SignalType.ROUTE_INITIALIZATION_FAILED:
+							Log.d("UPDATE", "TYPE: ROUTE_INITIALIZATION_FAILED");
+							message.what = SignalType.ROUTE_INITIALIZATION_FAILED;
+							mainHandler.sendMessage(message);
+							break;
 
-                    case SignalType.LEG_UPDATE:
-                        Log.d("UPDATE", "TYPE: LEG_UPDATE");
-                        message.obj = r.getLegs().get(0);
-                        message.what = SignalType.LEG_UPDATE;
-                        mainHandler.sendMessage(message);
-                        break;
-
-                    case SignalType.ROUTE_INITIALIZATION_SUCCEDED:
-                        Log.d("UPDATE", "TYPE: ROUTE_INITIALIZATION_SUCCEEDED");
-                        addTimePause();
-                        message.what = SignalType.ROUTE_INITIALIZATION_SUCCEDED;
-                        mainHandler.sendMessage(message);
-                        break;
-
-                    case SignalType.ROUTE_INITIALIZATION_FAILED:
-                        Log.d("UPDATE", "TYPE: ROUTE_INITIALIZATION_FAILED");
-                        message.what = SignalType.ROUTE_INITIALIZATION_FAILED;
-                        mainHandler.sendMessage(message);
-                        break;
-
-					default:
-						Log.d("TYPE ERROR", "Type error in update");
-						break;
+						default:
+							Log.d("TYPE ERROR", "Type error in update");
+							break;
+					}
 				}
 			}
 		});
