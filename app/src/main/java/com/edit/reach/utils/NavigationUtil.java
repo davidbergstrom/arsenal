@@ -23,17 +23,47 @@ public class NavigationUtil {
     /** Radius for the pauses */
     public static final int RADIUS_IN_KM = (int) getDistance(new LatLng(0,0), new LatLng(0,RADIUS_IN_DEGREES));
 
+    /** Icons for the markers */
     public static final BitmapDescriptor
             foodMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_food),
+            selectedFoodMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_food_selected),
             bathroomMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_bathroom),
-            plannedMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_pause),
+            selectedBathroomMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_bathroom_selected),
+            pauseMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_pause),
             restMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_reststop),
-            gasMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_gas);
+            selectedRestMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_reststop_selected),
+            gasMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_gas),
+            selectedGasMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_gas_selected);
 
 	private NavigationUtil(){}
 
-    public static BitmapDescriptor getMilestoneIcon(IMilestone milestone) {
+    /**
+     * Returns the icon for the specified milestone as a selected icon.
+     * @param milestone the milstone to find the selected image for
+     * @return the icon as a BitmapDescriptor
+     */
+    public static BitmapDescriptor getSelectedMilestoneIcon(IMilestone milestone){
+        BitmapDescriptor icon;
 
+        if (milestone.hasCategory(Category.GASSTATION)) {
+            icon = NavigationUtil.selectedGasMarker;
+        } else if (milestone.hasCategory(Category.FOOD)) {
+            icon = NavigationUtil.selectedFoodMarker;
+        } else if (milestone.hasCategory(Category.TOILET)) {
+            icon = NavigationUtil.selectedBathroomMarker;
+        } else {
+            icon = NavigationUtil.selectedRestMarker;
+        }
+
+        return icon;
+    }
+
+    /**
+     * Returns the icon for the specified milestone.
+     * @param milestone the milestone to find the image for
+     * @return the icon as a BitmapDescriptor
+     */
+    public static BitmapDescriptor getMilestoneIcon(IMilestone milestone) {
         BitmapDescriptor icon;
 
         if (milestone.hasCategory(Category.GASSTATION)) {
@@ -49,6 +79,11 @@ public class NavigationUtil {
         return icon;
     }
 
+    /**
+     * Returns a list of coordinates of the provided encoded string.
+     * @param encoded the string to decode as a polyline
+     * @return a list of coordinates
+     */
     public static List<LatLng> decodePoly(String encoded) {
 
 		List<LatLng> poly = new ArrayList<LatLng>();

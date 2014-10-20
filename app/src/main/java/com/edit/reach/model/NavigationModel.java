@@ -7,7 +7,6 @@ import android.util.Log;
 import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.constants.SignalType;
 import com.edit.reach.model.interfaces.IMilestone;
-import com.edit.reach.model.interfaces.RouteListener;
 import com.edit.reach.model.interfaces.SuggestionListener;
 import com.edit.reach.system.VehicleSystem;
 import com.edit.reach.utils.SuggestionUtil;
@@ -40,6 +39,9 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 
 	/* --- CONSTANTS --- */
 	private static final String PIPELINE_THREAD_NAME = "PipelineThread";
+	private static final int FOOD_THRESHOLD = 30*60;
+	private static final int REST_THRESHOLD = 15*60;
+	private static final int GAS_THRESHOLD = 20*60;
 
 	public NavigationModel(GoogleMap googleMap, Handler mainHandler) {
 		this.pipelineThread = new Thread(this, PIPELINE_THREAD_NAME);
@@ -81,10 +83,18 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	public IMilestone getPauseSuggestions(IMilestone.Category category) {
 		// TODO AISA for one category.
 		if(category == IMilestone.Category.FOOD) {
+			if(map.getRoute().getLegs().get(0).getDuration() <= FOOD_THRESHOLD) {
 
+			}
 		} else if(category == IMilestone.Category.RESTAREA) {
+			if(map.getRoute().getLegs().get(0).getDuration() <= REST_THRESHOLD) {
+
+			}
 
 		} else if(category == IMilestone.Category.GASSTATION) {
+			if(map.getRoute().getLegs().get(0).getDuration() <= GAS_THRESHOLD) {
+
+			}
 
 		} else {
 
@@ -194,6 +204,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 							});
 							break;
 
+						// TODO Not working
 						case SignalType.UPTIME_UPDATE:
 							Log.d("UPDATE", "TYPE: UP_TIME_UPDATE");
 

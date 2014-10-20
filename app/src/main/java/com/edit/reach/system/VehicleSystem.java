@@ -80,6 +80,18 @@ public final class VehicleSystem extends Observable implements Runnable {
 	// A thread for listening to the vehicle signals.
 	private final Thread vehicleSignals;
 
+	private final Runnable timeRunnable = new Runnable() {
+		@Override
+		public void run() {
+			Log.d("determineTimeUpdate()", "in timeRunnable");
+			if (startTime.get() != 0) {
+				Log.d("determineTimeUpdate()", "passed startTime.ger() != 0");
+				determineTimeUpdate();
+			}
+			signalHandler.postDelayed(this, 50);
+		}
+	};
+
 	private	final AutomotiveCertificate automotiveCertificate = new AutomotiveCertificate(new byte[0]);
 
 	private final AutomotiveListener automotiveListener = new AutomotiveListener() {
@@ -89,25 +101,17 @@ public final class VehicleSystem extends Observable implements Runnable {
 			signalHandler.post(new Runnable() {
 				@Override
 				public void run() {
-
 					// Switch between incoming signals
 					switch (automotiveSignal.getSignalId()) {
 
 						// How much fuel is left in tank.
 						case AutomotiveSignalId.FMS_FUEL_LEVEL_1:
 							float prevFuelLevel = fuelLevel.get();
-							Log.d("Thread in VehicleSystem - fuellevel update", Thread.currentThread().getName());
 							fuelLevel.set(((SCSFloat) (automotiveSignal.getData())).getFloatValue());
 
 							// Call methods to determine critical states
 							determineLowFuel(prevFuelLevel, fuelLevel.get());
 							determineFuelUpdate(prevFuelLevel, fuelLevel.get());
-
-							// TODO where to put the time updates?
-							if (startTime.get() != 0) {
-								determineShortTime();
-								determineTimeUpdate();
-							}
 
 							Log.d("Signal: FuelLevel", "Fuel level: " + fuelLevel);
 							break;
@@ -238,7 +242,14 @@ public final class VehicleSystem extends Observable implements Runnable {
 					AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED,
 					AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED,
 					AutomotiveSignalId.FMS_HIGH_RESOLUTION_TOTAL_VEHICLE_DISTANCE);
+
 		}
+
+		// TODO this is not beautiful
+		while(signalHandler == null) {
+		}
+
+		signalHandler.post(timeRunnable);
 	}
 
 	@Override
@@ -316,8 +327,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 	// Method that notifies observers if the fuellevel changed more than 1%.
 	private void determineFuelUpdate(float prevFuelLevel, float fuelLevel) {
-		Log.d("Thread in VehicleSystem - determineFuelUpdate()", Thread.currentThread().getName());
-		if(fuelLevel - prevFuelLevel >= 1) {
+		if(Math.abs(fuelLevel - prevFuelLevel) >= 1) {
 			setChanged();
 			notifyObservers(SignalType.FUEL_UPDATE);
 		}
@@ -347,6 +357,25 @@ public final class VehicleSystem extends Observable implements Runnable {
 		notifyObservers(SignalType.VEHICLE_STOPPED_OR_STARTED);
 	}
 
+	// Notify observers if the vehicle took a break longer than or equal to the break time.
+	private boolean determineBreakWasFinal() {
+		boolean wasFinal = false;
+		if (((System.nanoTime() - stopTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) >= UniversalConstants.BREAKTIME_IN_SECONDS) {
+			setChanged();
+			notifyObservers(SignalType.VEHICLE_TOOK_FINAL_BREAK);
+			wasFinal = true;
+		}
+		return wasFinal;
+	}
+
+	// Notifies observers if the tank size has been estimated.
+	private void determineTankSizeEstimated() {
+		if(tankSize.get() != 0) {
+			setChanged();
+			notifyObservers(SignalType.TANK_SIZE_CALCULATED);
+		}
+	}
+
 	// Method that notifies observers if the vehicle has been in drive close to threshold.
 	private void determineShortTime() {
 		if(workingState.get() == 3) {
@@ -360,40 +389,27 @@ public final class VehicleSystem extends Observable implements Runnable {
 		}
 	}
 
-	// Notify observers if the vehicle took a break longer than or equal to the break time.
-	private boolean determineBreakWasFinal() {
-		boolean wasFinal = false;
-		if (((System.nanoTime() - stopTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) >= UniversalConstants.BREAKTIME_IN_SECONDS) {
-			setChanged();
-			notifyObservers(SignalType.VEHICLE_TOOK_FINAL_BREAK);
-			wasFinal = true;
-		}
-		return wasFinal;
-	}
-
 	// Method that notifies observers if the time changed more than 60 seconds.
 	private void determineTimeUpdate() {
-		if(prevTime.get() == 0) {
+		Log.d("determineTimeUpdate()", "hit");
+		if (prevTime.get() == 0) {
+			Log.d("determineTimeUpdate()", "passed prevTime.get() == 0");
 			setChanged();
 			notifyObservers(SignalType.UPTIME_UPDATE);
 			prevTime.set(System.nanoTime());
 		} else {
-			if(((System.nanoTime() - prevTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) >= 60) {
+			Log.d("determineTimeUpdate()", "did not pass prevTime.get() == 0");
+			if (((System.nanoTime() - prevTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) >= 60) {
 				setChanged();
 				notifyObservers(SignalType.UPTIME_UPDATE);
 				prevTime.set(System.nanoTime());
 			} else {
 				// Do nothing
+				Log.d("determineTimeUpdate()", "in: do nothing");
 			}
 		}
-	}
-
-	// Notifies observers if the tank size has been estimated.
-	private void determineTankSizeEstimated() {
-		if(tankSize.get() != 0) {
-			setChanged();
-			notifyObservers(SignalType.TANK_SIZE_CALCULATED);
-		}
+		determineShortTime();
+		Log.d("determineTimeUpdate()", "called determineShortTime()");
 	}
 
 	// ********** OTHER PRIVATE METHODS ********** //

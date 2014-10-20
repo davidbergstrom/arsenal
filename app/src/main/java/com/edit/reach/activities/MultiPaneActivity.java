@@ -23,6 +23,7 @@ import com.edit.reach.model.Map;
 import com.edit.reach.model.NavigationModel;
 import com.edit.reach.model.Route;
 import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -50,6 +51,8 @@ public class MultiPaneActivity extends FragmentActivity{
     private boolean msFragmentHasBeenCreated = false;
 
     private Route route;
+
+	private ControlFragment.State state;
 
     // A handler for the UI thread. The Handler recieves messages from other thread.
     private Handler mainHandler = new Handler(Looper.getMainLooper()) {
@@ -138,6 +141,11 @@ public class MultiPaneActivity extends FragmentActivity{
 	@Override
 	protected void onPause(){
 		super.onPause();
+	}
+
+	@Override
+	protected  void onStop() {
+		super.onStop();
 		navigationModel.getMap().setState(Map.State.STATIONARY);
 	}
 
@@ -177,10 +185,18 @@ public class MultiPaneActivity extends FragmentActivity{
         return strings;
     }
 
+	/**
+	 * Init the UI-Fragment for moving-mode and adds it to the container.
+	 */
 	public void initializeMovingUI(){
 		controlFragment = ControlFragment.newInstance("MovingMode");
+		state = ControlFragment.State.INFO;
 		getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, controlFragment).commit();
 	}
+
+	/**
+	 * Init the functionality for moving-mode.
+	 */
 	public void initializeMovingBackend(){
 		navigationModel.getMap().setState(Map.State.MOVING);
 	}
@@ -189,6 +205,9 @@ public class MultiPaneActivity extends FragmentActivity{
 		navigationModel.addMilestones(preliminaryMilestones);
 	}
 
+	/**
+	 * Init the UI-Fragment for stationary-mode and adds it to the container.
+	 */
 	public void initializeStationaryUI(){
 		routeFragment = RouteFragment.newInstance("Route");
 		getSupportFragmentManager().beginTransaction()
@@ -229,13 +248,13 @@ public class MultiPaneActivity extends FragmentActivity{
                         // Milestone already added
                         preliminaryMilestones.remove(milestone);
                         milestonesFragment.removeMilestoneCard(milestone);
-                        marker.setIcon(BitmapDescriptorFactory.defaultMarker());
+                        marker.setIcon(NavigationUtil.getMilestoneIcon(milestone));
                     }else{
                         Log.d("MultiPaneActivity", "Added milestone to list");
                         // Add milestone to list
                         preliminaryMilestones.add(milestone);
                         milestonesFragment.addMilestoneCard(milestone);
-                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                        marker.setIcon(NavigationUtil.getSelectedMilestoneIcon(milestone));
                     }
                 }else {
                     Log.d("MultiPaneActivity", "Invalid milestone, removing");
@@ -272,9 +291,7 @@ public class MultiPaneActivity extends FragmentActivity{
     public void goBackToRouteFragment(){
         Log.d("MultiPaneActivity", "goBackFragment");
 	    //msFragmentHasBeenCreated = false;
-        getSupportFragmentManager().beginTransaction().replace
-                (R.id.container_fragment_left, routeFragment).commit();
-
+        getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, routeFragment).commit();
 
 
     }
@@ -283,23 +300,48 @@ public class MultiPaneActivity extends FragmentActivity{
         return mMap.getMyLocation();
     }
 
+	/**
+	 * Sets the route in navigation model.
+	 * @param from The location you start the route from. Manage by user input.
+	 * @param to The final destination. Manage by user input.
+	 */
     public void createRoute(String from, String to){
         routeWithCurrentLocation = false;
         route = new Route(from, to);
         navigationModel.setRoute(route);
     }
 
+	/**
+	 * Sets the route in navigation model.
+	 * @param one Your location by GPS.
+	 * @param to The final destination. Manage by user input.
+	 */
     public void createRoute(LatLng one, String to){
         routeWithCurrentLocation = true;
         route = new Route(one, to);
         navigationModel.setRoute(route);
     }
 
+	/**
+	 *
+	 * @param status
+	 */
+	public void changeMsFragmentHasBeenCreated(Boolean status){
+		msFragmentHasBeenCreated = status;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
     public boolean routeWithCurrentLocation(){
         return routeWithCurrentLocation;
     }
 
-
+	/**
+	 *
+	 * @param to
+	 */
     public void createRouteWithMyLocation(String to){
         Double myLocationLatitude = getMyLocation().getLatitude();
         Double myLocationLongitude = getMyLocation().getLongitude();
@@ -307,11 +349,17 @@ public class MultiPaneActivity extends FragmentActivity{
         createRoute(myLocation, to);
     }
 
+	/**
+	 *
+	 */
     public void showSpinner(){
         spinner = (ProgressBar)findViewById(R.id.spinner);
         spinner.setVisibility(View.VISIBLE);
     }
 
+	/**
+	 *
+	 */
     public void createMilestonesFragment(){
         if(spinner != null) {
             spinner = (ProgressBar) findViewById(R.id.spinner);
@@ -325,13 +373,25 @@ public class MultiPaneActivity extends FragmentActivity{
         }
     }
 
+	/**
+	 *
+	 * @param category
+	 */
     public void getPauseSuggestions(IMilestone.Category category){
         navigationModel.getPauseSuggestions(category);
     }
 
+	/**
+	 *
+	 * @param str
+	 */
 	public void getMatchedStringResults(String str){
 		List<String> list = navigationModel.getMatchedStringResults(str);
 		routeFragment.suggestionList(list);
+	}
+
+	public void readyToSetState() {
+		controlFragment.setState(state);
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.edit.reach.fragments;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -32,17 +33,28 @@ public class ControlFragment extends Fragment{
 	private ImageButton ibToilet;
 	private ImageButton ibGasStation;
 
+	private int intRestArea;
+	private int intFood;
+	private int intToilet;
+	private int intGasStation;
+
 
     private IMilestone milestone;
     private List<IMilestone.Category> categories;
 
 
 	private float fuelLevel;
-	private double nextStopClock; //in sec
+	private float nextStopClock; //in sec
 	private double timeClock;   //in sec
 	private double totalTime;   //in sec
+    private float distanceToNextStop;
 	private String nextStopName = "N/A";
 
+	//State of Panel
+	private State currentState;
+	public enum State {
+		ROUTELESS, INFO, SUGGESTION
+	}
 
 	//Progressbar
 	private ProgressBar barFuel;
@@ -64,26 +76,29 @@ public class ControlFragment extends Fragment{
     private ImageView ivRestArea;
     private ImageView ivToilet;
 
-	public void setBarTimeClock(double timeClock) {
+	private LinearLayout navigationInfoContainer;
+	private RelativeLayout suggestionButtonContainer;
+
+    public void setBarTimeClock(double timeClock) {
 		this.timeClock = timeClock;
-        barTimeClock.setBackgroundColor(Color.GREEN);
+        barTimeClock.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
 		barTimeClock.setMax((int) (UniversalConstants.LEGAL_UPTIME_IN_SECONDS * UniversalConstants.SECONDS_TO_MINUTES));
 		barTimeClock.setProgress((int) (timeClock * UniversalConstants.SECONDS_TO_MINUTES));
 
         if (timeClock <= UniversalConstants.TIME_THRESHOLD) {
-            barTimeClock.setBackgroundColor(Color.RED);
+            barTimeClock.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
         }
 	}
 
 
 	public void setBarFuel(float fuelLevel) {
 		this.fuelLevel = fuelLevel;
-        barFuel.setBackgroundColor(Color.GREEN);
+        barFuel.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
 		barFuel.setMax(100);
 		barFuel.setProgress((int) fuelLevel);
 
         if (fuelLevel <= UniversalConstants.FUEL_THRESHOLD) {
-            barFuel.setBackgroundColor(Color.RED);
+            barFuel.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
         }
 	}
 
@@ -92,9 +107,12 @@ public class ControlFragment extends Fragment{
         this.milestone = leg.getMilestone();
         this.nextStopClock = leg.getDuration();
         this.nextStopName = milestone.getName();
+        this.distanceToNextStop = leg.getDistance();
         this.categories = milestone.getCategories();
 
         textNextStop.setText(nextStopName);
+        textTimeToNextStop.setText((int)(nextStopClock * UniversalConstants.SECONDS_TO_MINUTES) + " min");
+        textDistanceToTextStop.setText((int)(distanceToNextStop * 0.001) + " km");
 
         //Set Milestone Images
         ivFood.setVisibility(ImageView.INVISIBLE);
@@ -154,6 +172,10 @@ public class ControlFragment extends Fragment{
 
 		textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
 
+		//Get Layout Containers to easily handle states
+		navigationInfoContainer = (LinearLayout) view.findViewById(R.id.navigation_info_container);
+		suggestionButtonContainer = (RelativeLayout) view.findViewById(R.id.suggestion_buttons);
+
         //Get TextViews
         textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
 		textRatingNextStop = (TextView) view.findViewById(R.id.navigation_info_rating);
@@ -177,39 +199,132 @@ public class ControlFragment extends Fragment{
 
 		//Get and set Input buttons
 		ibRestArea = (ImageButton) view.findViewById(R.id.button_control_input_restarea);
+		intRestArea = R.drawable.input_restarea;
 		ibRestArea.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.RESTAREA);
 				Log.d("INPUTBUTTON", "Restarea");
+				if(intRestArea == R.drawable.input_restarea|| intRestArea == R.drawable.input_restarea_shaded){
+					ibRestArea.setImageResource(R.drawable.input_restarea_pressed);
+					intRestArea = R.drawable.input_restarea_pressed;
+					shadeIcons(intRestArea);
+				}
+				else {
+					ibRestArea.setImageResource(R.drawable.input_restarea);
+					intRestArea = R.drawable.input_restarea;
+				}
 			}
 		});
 		ibFood = (ImageButton) view.findViewById(R.id.button_control_input_restaurant);
+		intFood = R.drawable.input_restaurant;
 		ibFood.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				((MultiPaneActivity) getActivity()).getPauseSuggestions(IMilestone.Category.FOOD);
 				Log.d("INPUTBUTTON", "Food");
+				if(intFood == R.drawable.input_restaurant || intFood == R.drawable.input_restaurant_shaded){
+					ibFood.setImageResource(R.drawable.input_restaurant_pressed);
+					intFood = R.drawable.input_restaurant_pressed;
+					shadeIcons(intFood);
+				}
+				else {
+					ibFood.setImageResource(R.drawable.input_restaurant);
+					intFood = R.drawable.input_restaurant;
+				}
 			}
 		});
 		ibToilet = (ImageButton) view.findViewById(R.id.button_control_input_toilet);
+		intToilet = R.drawable.input_toilet;
 		ibToilet.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				//TODO: Fix Toilet...
 				Log.d("INPUTBUTTON", "Toilet");
+				if(intToilet == R.drawable.input_toilet || intToilet == R.drawable.input_toilet_shaded ){
+					ibToilet.setImageResource(R.drawable.input_toilet_pressed);
+					intToilet = R.drawable.input_toilet_pressed;
+					shadeIcons(intToilet);
+				}
+				else {
+					ibToilet.setImageResource(R.drawable.input_toilet);
+					intToilet = R.drawable.input_toilet;
+				}
 			}
 		});
 		ibGasStation = (ImageButton) view.findViewById(R.id.button_control_input_gasstation);
+		intGasStation = R.drawable.input_gasstation;
 		ibGasStation.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.GASSTATION);
 				Log.d("INPUTBUTTON", "Gas Station");
+				if(intGasStation == R.drawable.input_gasstation || intGasStation == R.drawable.input_gasstation_shaded ){
+					ibGasStation.setImageResource(R.drawable.input_gasstation_pressed);
+					intGasStation = R.drawable.input_gasstation_pressed;
+					shadeIcons(intGasStation);
+				}
+				else {
+					ibGasStation.setImageResource(R.drawable.input_gasstation);
+					intGasStation = R.drawable.input_gasstation;
+				}
 			}
 		});
 
+		((MultiPaneActivity)getActivity()).readyToSetState();
+
 		return view;
+	}
+
+	private void shadeIcons(int status){
+		if(status == R.drawable.input_gasstation_pressed){
+			ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
+			ibToilet.setImageResource(R.drawable.input_toilet_shaded);
+			ibFood.setImageResource(R.drawable.input_restaurant_shaded);
+		} else if(status == R.drawable.input_restarea_pressed){
+			ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
+			ibToilet.setImageResource(R.drawable.input_toilet_shaded);
+			ibFood.setImageResource(R.drawable.input_restaurant_shaded);
+		} else if(status == R.drawable.input_restaurant_pressed){
+			ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
+			ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
+			ibToilet.setImageResource(R.drawable.input_toilet_shaded);
+		} else if(status == R.drawable.input_toilet_pressed){
+			ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
+			ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
+			ibFood.setImageResource(R.drawable.input_restaurant_shaded);
+		} else{
+			Log.d("ControlFragment", "shadeIcons");
+		}
+	}
+
+	public void setState(State newState) {
+
+		currentState = newState;
+
+		if (currentState == State.ROUTELESS) {
+			setStateRouteless();
+		} else if (currentState == State.INFO) {
+			setStateInfo();
+		} else if (currentState == State.SUGGESTION) {
+			setStateSuggestion();
+		} else {
+			setStateRouteless();
+		}
+	}
+
+	private void setStateRouteless() {
+		navigationInfoContainer.setVisibility(View.GONE);
+		suggestionButtonContainer.setVisibility(View.GONE);
+	}
+
+	private void setStateInfo() {
+		textRatingNextStop.setVisibility(View.GONE);
+		suggestionButtonContainer.setVisibility(View.GONE);
+	}
+
+	private void setStateSuggestion() {
+		;
 	}
 
 }
