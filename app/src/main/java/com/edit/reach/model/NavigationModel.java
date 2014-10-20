@@ -236,6 +236,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 
 					case SignalType.FUEL_UPDATE:
 						Log.d("UPDATE", "TYPE: FUEL_UPDATE");
+						Log.d("Thread in NavigationModel - Fuelupdate", Thread.currentThread().getName());
 
 						// Send the amount of fuel in tank to the UI.
 						message.obj = vehicleSystem.getFuelLevel();
