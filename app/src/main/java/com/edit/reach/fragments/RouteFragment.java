@@ -45,6 +45,7 @@ public class RouteFragment extends Fragment {
 	private TextView tvMatchedListItem;
 	private ProgressBar spinner;
 	private ArrayAdapter<String> adapter;
+	private ImageButton ibNext;
 	private boolean myCurrentLocationActivated;
 
 
@@ -64,6 +65,7 @@ public class RouteFragment extends Fragment {
 		fragment.setArguments(args);
 		return fragment;
 	}
+
 
 
 	public RouteFragment() {
@@ -86,6 +88,15 @@ public class RouteFragment extends Fragment {
 
         spinner = (ProgressBar)view.findViewById(R.id.spinner);
         etListOfVia = new ArrayList<EditText>();
+
+
+		ibNext = (ImageButton) view.findViewById(R.id.ib_next_fragment_route);
+		ibNext.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				getNearestRoute();
+			}
+		});
 
 		actFrom = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_route_from);
 		if(myCurrentLocationActivated){
@@ -162,16 +173,25 @@ public class RouteFragment extends Fragment {
 	private View.OnClickListener getNearestRouteListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View view) {
-			String strTo = actTo.getText().toString();
-			((MultiPaneActivity)getActivity()).showSpinner();
-			if(myCurrentLocationActivated){
-				((MultiPaneActivity)getActivity()).createRouteWithMyLocation(strTo);
-			}else {
-				String strFrom = actFrom.getText().toString();
-				((MultiPaneActivity)getActivity()).createRoute(strFrom, strTo);
-			}
+			getNearestRoute();
 		}
 	};
+
+	/**
+	 * Finds the nearest route
+	 * Sends to MultipaneActivity with either my location or user input from and input to.
+	 */
+
+	private void getNearestRoute(){
+		String strTo = actTo.getText().toString();
+		((MultiPaneActivity)getActivity()).showSpinner();
+		if(myCurrentLocationActivated){
+			((MultiPaneActivity)getActivity()).createRouteWithMyLocation(strTo);
+		}else {
+			String strFrom = actFrom.getText().toString();
+			((MultiPaneActivity)getActivity()).createRoute(strFrom, strTo);
+		}
+	}
 
 	public void onTextEntered(String text) {
 		((MultiPaneActivity)getActivity()).getMatchedStringResults(text);

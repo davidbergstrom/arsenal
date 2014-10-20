@@ -11,11 +11,37 @@
               android:paddingRight="@dimen/fragment_left_right_padding"
 			  >
 
+
+        <RelativeLayout
+            android:id="@+id/rl_wizard_milestones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/ib_previous_fragment_milestones"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                />
+            <TextView
+                android:id="@+id/tv_current_fragment_milestones"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Milestones Fragment"
+                android:textColor="@color/text_fragment_route"
+                />
+
+
+
+    </RelativeLayout>
+
 	<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="0dp"
 			android:layout_weight="4"
 			android:orientation="vertical">
+
 
 		<!-- The starting point -->
 		<TextView
@@ -70,16 +96,9 @@
 			android:layout_gravity="bottom"
 			android:layout_marginTop="@dimen/fragment_milestones_button_holder_margin_top">
 
-		<Button
-				android:id="@+id/button_edit_route"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/button_edit_route"
-				android:textColor="@color/text_fragment_route"
-				android:layout_alignParentStart="true"
-				android:layout_marginLeft="@dimen/button_edit_route_margin_left"
-				style="?android:attr/borderlessButtonStyle"
-				/>
+
+
+
 
         <Button
                 android:id="@+id/button_start_route"
@@ -87,8 +106,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/button_start_route"
                 android:textColor="@color/text_fragment_route"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="@dimen/button_start_route_margin_right"
+                android:layout_centerInParent="true"
                 style="?android:attr/borderlessButtonStyle"
                 />
 
