@@ -3,6 +3,7 @@ package com.edit.reach.model;
 import android.location.Location;
 import android.os.Handler;
 import android.util.Log;
+import com.edit.reach.constants.SignalType;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.RouteListener;
 import com.edit.reach.system.GoogleMapsEndpoints;
@@ -15,15 +16,16 @@ import com.google.android.gms.maps.model.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 /**
  * Created by Joakim Berntsson on 2014-09-29.
  * Class containing all logic for handling map actions.
  */
-public class Map {
+public class Map extends Observable{
 
     // Constant, the refresh rate of the navigation loop in milliseconds
-    private final int UPDATE_INTERVAL_NORMAL = 300, UPDATE_INTERVAL_FAST = 40, UPDATE_INTERVAL_SLOW = 500;
+    private final int UPDATE_INTERVAL_NORMAL = 300, UPDATE_INTERVAL_FAST = 40, UPDATE_INTERVAL_SLOW = 500, ROUTE_INTERVAL = 60000;
 
     // The map which modifies the map view in the activity
     private GoogleMap map;
@@ -32,14 +34,13 @@ public class Map {
     private Handler handler;
 
     private Route currentRoute;
-    private Location lastLocation;
+    private LatLng lastLocation;
 
     // The state which is used internally in a state pattern
     private State state;
 
     // All the markers on the map
     private List<Marker> markersOnMap;
-    //private List<IMilestone> milestonesOnMap;
 
     // Class name for logging
     private String DEBUG_TAG = "Map";
@@ -57,6 +58,12 @@ public class Map {
             // When the route has been initialized, draw it
             if(success){
                 updateState();  // Update all the state specific changes when route initialized.
+                Log.d(DEBUG_TAG, "Notified observers that the initialization succeeded!");
+                setChanged();
+                notifyObservers(SignalType.ROUTE_INITIALIZATION_SUCCEDED);
+            }else{
+                setChanged();
+                notifyObservers(SignalType.ROUTE_INITIALIZATION_FAILED);
             }
         }
 
@@ -76,12 +83,14 @@ public class Map {
 
         @Override
         public void onLegFinished(Leg finishedLeg) {
-
+            setChanged();
+            notifyObservers(SignalType.LEG_FINISHED);
         }
 
         @Override
         public void onStepFinished(Step finishedStep) {
-
+            setChanged();
+            notifyObservers(SignalType.LEG_UPDATE);
         }
     };
 
@@ -89,31 +98,46 @@ public class Map {
     private Runnable navigationRunnable = new Runnable() {
         @Override
         public void run() {
-            if(state == State.MOVING && isRouteSet() && currentRoute.isInitialized()){
-                Location myLocation = map.getMyLocation();
-                LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            if(state == State.MOVING){
+                if(isRouteSet() && currentRoute.isInitialized()){
+                    Location myLocation = map.getMyLocation();
+                    LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
 
-                // Move arrow to the current position on the route
+                    // Move arrow to the current position on the route
 
-                if(!myLocation.equals(lastLocation)) {
-                    currentRoute.goTo(map, position);
-                }
-                lastLocation = myLocation;
-                handler.postDelayed(this, UPDATE_INTERVAL_FAST);
-            }else if(state == State.MOVING && !isRouteSet()){
-                Location myLocation = map.getMyLocation();
-                LatLng position;
-                if(myLocation != null){
-                    position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                    if(!position.equals(lastLocation)) {
+                        currentRoute.goTo(map, position);
+                    }
+                    lastLocation = position;
+                }else if(!isRouteSet()){
+                    Location myLocation = map.getMyLocation();
+                    LatLng position;
+                    if(myLocation != null){
+                        position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                    }else{
+                        position = new LatLng(0, 0);
+                    }
+
+                    moveCameraTo(position);
                 }else{
-                    position = new LatLng(0, 0);
+                    Log.d(DEBUG_TAG, "Current route not initialized!");
                 }
 
-                moveCameraTo(position);
                 handler.postDelayed(this, UPDATE_INTERVAL_FAST);
             }else{
-                Log.d(DEBUG_TAG, "Current route null or not initialized!");
+                Log.d(DEBUG_TAG, "Not in moving mode, NavigationRunnable is aborting.");
             }
+
+        }
+    };
+
+    /** Runnable for alerting observers of the route. */
+    private Runnable routeUpdate = new Runnable() {
+        @Override
+        public void run() {
+            setChanged();
+            notifyObservers(SignalType.ROUTE_TOTAL_TIME_UPDATE);
+            handler.postDelayed(this, ROUTE_INTERVAL);
         }
     };
 
@@ -244,6 +268,7 @@ public class Map {
 
             // Start navigation runnable
             handler.postDelayed(navigationRunnable, UPDATE_INTERVAL_NORMAL);
+            handler.postDelayed(routeUpdate, ROUTE_INTERVAL);
         }
     }
 
