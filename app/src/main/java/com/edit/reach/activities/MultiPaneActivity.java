@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -126,6 +127,12 @@ public class MultiPaneActivity extends FragmentActivity{
 
     }
 
+	@Override
+	protected void onPause(){
+		super.onPause();
+		navigationModel.getMap().setState(Map.State.STATIONARY);
+	}
+
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
@@ -164,8 +171,7 @@ public class MultiPaneActivity extends FragmentActivity{
 
 	public void initializeMovingUI(){
 		controlFragment = ControlFragment.newInstance("MovingMode");
-		getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, controlFragment).
-				addToBackStack("ControlFragment").commit();
+		getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, controlFragment).commit();
 	}
 	public void initializeMovingBackend(){
 		navigationModel.getMap().setState(Map.State.MOVING);
@@ -179,6 +185,7 @@ public class MultiPaneActivity extends FragmentActivity{
 		routeFragment = RouteFragment.newInstance("Route");
 		getSupportFragmentManager().beginTransaction()
 				.add(R.id.container_fragment_left, routeFragment).commit();
+
 	}
 
     private void setupMap(){
@@ -258,7 +265,10 @@ public class MultiPaneActivity extends FragmentActivity{
         Log.d("MultiPaneActivity", "goBackFragment");
 	    //msFragmentHasBeenCreated = false;
         getSupportFragmentManager().beginTransaction().replace
-                (R.id.container_fragment_left, routeFragment).addToBackStack("routeFragment").commit();
+                (R.id.container_fragment_left, routeFragment).commit();
+
+
+
     }
 
     public Location getMyLocation(){
@@ -300,7 +310,9 @@ public class MultiPaneActivity extends FragmentActivity{
             spinner.setVisibility(View.GONE);
             milestonesFragment = MilestonesFragment.newInstance(route.getOriginAddress(), route.getDestinationAddress());
             getSupportFragmentManager().beginTransaction().
-		            replace(R.id.container_fragment_left, milestonesFragment).addToBackStack("milestonesFragment").commit();
+		            replace(R.id.container_fragment_left, milestonesFragment).commit();
+
+
 
         }
     }
