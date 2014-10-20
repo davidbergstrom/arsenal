@@ -12,19 +12,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.edit.reach.app.R;
 import com.edit.reach.constants.SignalType;
-import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.fragments.ControlFragment;
 import com.edit.reach.fragments.MapFragment;
 import com.edit.reach.fragments.MilestonesFragment;
 import com.edit.reach.fragments.RouteFragment;
 import com.edit.reach.model.*;
 import com.edit.reach.model.interfaces.IMilestone;
-import com.edit.reach.model.interfaces.RouteListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -74,15 +71,20 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
                     break;
 
                 case SignalType.FUEL_UPDATE:
-                    controlFragment.setFuelBar((Float)message.obj);
+                    controlFragment.setBarFuel((Float) message.obj);
+
                     break;
 
                 case SignalType.UPTIME_UPDATE:
-                    controlFragment.setTimeClockBar((Double)message.obj);
+                    controlFragment.setBarTimeClock((Double) message.obj);
+                    break;
+
+                case SignalType.ROUTE_TOTAL_TIME_UPDATE:
+                    controlFragment.setTotalTime((Long)message.obj);
                     break;
 
                 case SignalType.LEG_UPDATE:
-                    // TODO what here?
+                    controlFragment.setNextLeg((Leg)message.obj);
                     break;
             }
         }
@@ -232,7 +234,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         Log.d("MultiPaneActivity", "goBackFragment");
 	    //msFragmentHasBeenCreated = false;
         getSupportFragmentManager().beginTransaction().replace
-		        (R.id.container_fragment_left, routeFragment).addToBackStack("routeFragment").commit();
+                (R.id.container_fragment_left, routeFragment).addToBackStack("routeFragment").commit();
     }
 
     public Location getMyLocation(){

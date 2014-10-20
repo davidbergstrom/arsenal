@@ -1,4 +1,5 @@
 package com.edit.reach.fragments;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ImageButton;
@@ -15,7 +17,11 @@ import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 
 import com.edit.reach.constants.UniversalConstants;
+import com.edit.reach.model.Leg;
+import com.edit.reach.model.Milestone;
 import com.edit.reach.model.interfaces.IMilestone;
+
+import java.util.List;
 
 
 /**
@@ -30,29 +36,63 @@ public class ControlFragment extends Fragment{
 	private ImageButton ibToilet;
 	private ImageButton ibGasStation;
 
+    private IMilestone milestone;
+    private List<IMilestone.Category> categorys;
+
 	private float fuelLevel;
 	private double nextStopClock; //in sec
 	private double timeClock;   //in sec
 	private double totalTime;   //in sec
 	private String nextStopName = null;
 
-	//Progressbar
-	private ProgressBar fuelBar;
-	private ProgressBar nextStopBar;
-	private ProgressBar timeClockBar;
+	//Progressbars
+	private ProgressBar barFuel;
+	private ProgressBar barTimeClock;
 
-	public void setTimeClockBar(double timeClock) {
+    //TextViews
+    private TextView textTimeToNextStop;
+    private TextView textNextStop;
+
+    //MileStone Images
+    private ImageView ivFood;
+    private ImageView ivGastation;
+    private ImageView ivRestArea;
+    private ImageView ivToilet;
+
+	public void setBarTimeClock(double timeClock) {
 		this.timeClock = timeClock;
-		timeClockBar.setMax((int)(UniversalConstants.LEGAL_UPTIME_IN_SECONDS * UniversalConstants.SECONDS_TO_MINUTES));
-		timeClockBar.setProgress((int) (timeClock * UniversalConstants.SECONDS_TO_MINUTES));
+        barTimeClock.setBackgroundColor(Color.GREEN);
+		barTimeClock.setMax((int) (UniversalConstants.LEGAL_UPTIME_IN_SECONDS * UniversalConstants.SECONDS_TO_MINUTES));
+		barTimeClock.setProgress((int) (timeClock * UniversalConstants.SECONDS_TO_MINUTES));
+
+        if (timeClock <= UniversalConstants.TIME_THRESHOLD) {
+            barTimeClock.setBackgroundColor(Color.RED);
+        }
 	}
 
 
-	public void setFuelBar(float fuelLevel) {
+	public void setBarFuel(float fuelLevel) {
 		this.fuelLevel = fuelLevel;
-		fuelBar.setMax(100);
-		fuelBar.setProgress((int) fuelLevel);
+        barFuel.setBackgroundColor(Color.GREEN);
+		barFuel.setMax(100);
+		barFuel.setProgress((int) fuelLevel);
+
+        if (fuelLevel <= UniversalConstants.FUEL_THRESHOLD) {
+            barFuel.setBackgroundColor(Color.RED);
+        }
 	}
+
+    public void setNextLeg(Leg leg) {
+        Leg thisLeg = leg;
+        this.milestone = leg.getMilestone();
+        this.nextStopClock = leg.getDuration();
+        this.nextStopName = milestone.getName();
+        this.categorys = milestone.getCategory();
+    }
+
+    public void setTotalTime(double totalTime) {
+        this.totalTime = totalTime;
+    }
 
 	public static ControlFragment newInstance(String id){
 		ControlFragment fragment = new ControlFragment();
@@ -73,7 +113,6 @@ public class ControlFragment extends Fragment{
 		}
 	}
 
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                         Bundle savedInstanceState) {
@@ -81,18 +120,29 @@ public class ControlFragment extends Fragment{
 
 		View view = inflater.inflate(R.layout.fragment_control, container, false);
 
-		TextView stopNameView = (TextView) view.findViewById(R.id.tv_control_info_top_card_title);
+		textNextStop = (TextView) view.findViewById(R.id.tv_control_info_top_card_title);
 
 		if(nextStopName != null) {
-			stopNameView.setText(nextStopName);
+			textNextStop.setText(nextStopName);
 		} else {
-			stopNameView.setText("N/A");
+			textNextStop.setText("N/A");
 		}
 
+        //Set Milestone Images
+        for (IMilestone.Category cat : categorys) {
+
+            switch (cat) {
+                case FOOD:
+            }
+
+        }
+
+        //Get TextViews
+
+
 		//Get progressbars
-		fuelBar = (ProgressBar) view.findViewById(R.id.progress_gas);
-		timeClockBar = (ProgressBar) view.findViewById(R.id.progress_time_clock);
-		nextStopBar = (ProgressBar) view.findViewById(R.id.progress_next_stop);
+		barFuel = (ProgressBar) view.findViewById(R.id.progress_gas);
+		barTimeClock = (ProgressBar) view.findViewById(R.id.progress_time_clock);
 
 		ibRestArea = (ImageButton) view.findViewById(R.id.button_control_input_restarea);
 		ibRestArea.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +175,5 @@ public class ControlFragment extends Fragment{
 
 		return view;
 	}
-
-
 
 }

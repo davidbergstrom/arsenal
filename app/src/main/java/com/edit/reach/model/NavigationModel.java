@@ -183,21 +183,19 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 				mainHandler.sendMessage(message);
 
 				// Send time left until first milestone.
-				message.obj = r.getLegs().get(0).getDuration();
-				message.what = SignalType.ROUTE_MILESTONE_TIME_UPDATE;
+				message.obj = r.getLegs().get(0);
+				message.what = SignalType.LEG_UPDATE;
 				mainHandler.sendMessage(message);
 
 				// If vehicle is low on fuel.
 				if ((Integer) data == SignalType.LOW_FUEL) {
-					// TODO what to do here?
+					// TODO what to do here? Not used
 					Log.d("UPDATE", "TYPE: LOW_FUEL");
-					Log.d("GET", "Km to refuel: " + vehicleSystem.getKilometersUntilRefuel());
 
 				// If vehicles up time is short relative to the legal up time.
 				} else if ((Integer) data == SignalType.SHORT_TIME) {
-					// TODO what to do here?
+					// TODO what to do here? Not used
 					Log.d("UPDATE", "TYPE: SHORT_TIME");
-					Log.d("GET", "Time until rest: " + vehicleSystem.getTimeUntilForcedRest());
 
 				// If vehicle stopped or started
 				} else if ((Integer) data == SignalType.VEHICLE_STOPPED_OR_STARTED) {
