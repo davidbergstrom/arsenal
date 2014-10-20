@@ -37,7 +37,7 @@ public class ControlFragment extends Fragment{
 	private double nextStopClock; //in sec
 	private double timeClock;   //in sec
 	private double totalTime;   //in sec
-	private String nextStopName = null;
+	private String nextStopName = "N/A";
 
 	//Progressbars
 	private ProgressBar barFuel;
@@ -83,6 +83,33 @@ public class ControlFragment extends Fragment{
         this.nextStopClock = leg.getDuration();
         this.nextStopName = milestone.getName();
         this.categories = milestone.getCategories();
+
+        textNextStop.setText(nextStopName);
+
+        //Set Milestone Images
+        ivFood.setVisibility(ImageView.INVISIBLE);
+        ivGastation.setVisibility(ImageView.INVISIBLE);
+        ivRestArea.setVisibility(ImageView.INVISIBLE);
+        ivToilet.setVisibility(ImageView.INVISIBLE);
+
+        for (IMilestone.Category cat : categories) {
+
+            switch (cat) {
+                case FOOD: ivFood.setVisibility(ImageView.VISIBLE);
+                    break;
+
+                case GASSTATION: ivGastation.setVisibility(ImageView.VISIBLE);
+                    break;
+
+                case RESTAREA: ivGastation.setVisibility(ImageView.VISIBLE);
+                    break;
+
+                case TOILET: ivToilet.setVisibility(ImageView.VISIBLE);
+                    break;
+
+            }
+
+        }
     }
 
     public void setTotalTime(double totalTime) {
@@ -123,43 +150,17 @@ public class ControlFragment extends Fragment{
         //TODO delete setVisibility
         //Get ImageViews
         ivFood = (ImageView) view.findViewById(R.id.control_info_top_card_type_food);
-        //ivFood.setVisibility(ImageView.INVISIBLE);
+
         ivGastation = (ImageView) view.findViewById(R.id.control_info_top_card_type_gasstation);
-        //ivGastation.setVisibility(ImageView.INVISIBLE);
+
         ivRestArea = (ImageView) view.findViewById(R.id.control_info_top_card_type_restarea);
-        //ivRestArea.setVisibility(ImageView.INVISIBLE);
+
         ivToilet = (ImageView) view.findViewById(R.id.control_info_top_card_type_toilet);
-        //ivToilet.setVisibility(ImageView.INVISIBLE);
+
 
         //Get progressbars
         barFuel = (ProgressBar) view.findViewById(R.id.progress_gas);
         barTimeClock = (ProgressBar) view.findViewById(R.id.progress_time_clock);
-
-		if(nextStopName != null) {
-			textNextStop.setText(nextStopName);
-		} else {
-			textNextStop.setText("N/A");
-		}
-
-        //Set Milestone Images
-        for (IMilestone.Category cat : categories) {
-
-            switch (cat) {
-                case FOOD: ivFood.setVisibility(ImageView.VISIBLE);
-                break;
-
-                case GASSTATION: ivGastation.setVisibility(ImageView.VISIBLE);
-                break;
-
-                case RESTAREA: ivGastation.setVisibility(ImageView.VISIBLE);
-                break;
-
-                case TOILET: ivToilet.setVisibility(ImageView.VISIBLE);
-                break;
-
-            }
-
-        }
 
 		ibRestArea = (ImageButton) view.findViewById(R.id.button_control_input_restarea);
 		ibRestArea.setOnClickListener(new View.OnClickListener() {
