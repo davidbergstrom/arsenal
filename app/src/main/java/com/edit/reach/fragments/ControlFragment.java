@@ -217,6 +217,7 @@ public class ControlFragment extends Fragment{
 				}
 				else {
 					ibRestArea.setImageResource(R.drawable.input_restarea);
+					intRestArea = R.drawable.input_restarea;
 				}
 			}
 		});
@@ -234,6 +235,7 @@ public class ControlFragment extends Fragment{
 				}
 				else {
 					ibFood.setImageResource(R.drawable.input_restaurant);
+					intFood = R.drawable.input_restaurant;
 				}
 			}
 		});
@@ -251,6 +253,7 @@ public class ControlFragment extends Fragment{
 				}
 				else {
 					ibToilet.setImageResource(R.drawable.input_toilet);
+					intToilet = R.drawable.input_toilet;
 				}
 			}
 		});
@@ -268,6 +271,7 @@ public class ControlFragment extends Fragment{
 				}
 				else {
 					ibGasStation.setImageResource(R.drawable.input_gasstation);
+					intGasStation = R.drawable.input_gasstation;
 				}
 			}
 		});
@@ -282,15 +286,15 @@ public class ControlFragment extends Fragment{
 			ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
 			ibToilet.setImageResource(R.drawable.input_toilet_shaded);
 			ibFood.setImageResource(R.drawable.input_restaurant_shaded);
-		} else if(status == R.drawable.input_restarea_shaded){
+		} else if(status == R.drawable.input_restarea_pressed){
 			ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
 			ibToilet.setImageResource(R.drawable.input_toilet_shaded);
 			ibFood.setImageResource(R.drawable.input_restaurant_shaded);
-		} else if(status == R.drawable.input_restaurant_shaded){
+		} else if(status == R.drawable.input_restaurant_pressed){
 			ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
 			ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
 			ibToilet.setImageResource(R.drawable.input_toilet_shaded);
-		} else if(status == R.drawable.input_toilet_shaded){
+		} else if(status == R.drawable.input_toilet_pressed){
 			ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
 			ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
 			ibFood.setImageResource(R.drawable.input_restaurant_shaded);
