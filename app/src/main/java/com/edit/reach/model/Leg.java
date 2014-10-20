@@ -83,17 +83,9 @@ public class Leg {
     void draw(GoogleMap map){
         this.erase();
 
-        if(endMilestone != null){
-            BitmapDescriptor icon;
-            if(endMilestone.getCategory() == IMilestone.Category.GASSTATION){
-                icon = NavigationUtil.gasMarker;
-            }else if(endMilestone.getCategory() == IMilestone.Category.RESTAURANT){
-                icon = NavigationUtil.foodMarker;
-            }else if(endMilestone.getCategory() == IMilestone.Category.RESTAREA){
-                icon = NavigationUtil.restMarker;
-            }else{
-                icon = NavigationUtil.bathroomMarker;
-            }
+        if (endMilestone != null){
+            BitmapDescriptor icon = NavigationUtil.getMilestoneIcon(endMilestone);
+
             milestoneMarker = map.addMarker(new MarkerOptions()
                     .position(endMilestone.getLocation())
                     .title(endMilestone.getName())

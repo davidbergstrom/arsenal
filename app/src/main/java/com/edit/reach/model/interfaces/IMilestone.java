@@ -36,6 +36,12 @@ public interface IMilestone {
      */
     public boolean hasCategories(ArrayList<Category> requestedCategories);
 
+    /**
+     * Checks wether the milestone has the requested category or not
+     * @return true if the milestone has the requested category
+     */
+    public boolean hasCategory(Category requestedCategory);
+
 	/**
 	 * Returns the categories associated with the milestone
 	 * @return a list with the milestone's categories
