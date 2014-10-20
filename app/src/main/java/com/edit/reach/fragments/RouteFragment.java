@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.*;
+import com.edit.reach.activities.MainActivity;
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.model.Route;
@@ -24,7 +25,6 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link RouteFragment.OnRouteInteractionListener} interface
  * to handle interaction events.
  * Use the {@link RouteFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -47,7 +47,7 @@ public class RouteFragment extends Fragment {
 	private ArrayAdapter<String> adapter;
 	private boolean myCurrentLocationActivated;
 
-	private OnRouteInteractionListener mListener;
+
 
 	/**
 	 * Use this factory method to create a new instance of
@@ -151,16 +151,8 @@ public class RouteFragment extends Fragment {
 		}
 	};
 
-	public void onSetRoute(Route route) {
-		if (mListener != null) {
-			mListener.onRouteInteraction(route);
-		}
-	}
-
 	public void onTextEntered(String text) {
-		if (mListener != null) {
-			mListener.onRouteInteraction(text);
-		}
+		((MultiPaneActivity)getActivity()).getMatchedStringResults(text);
 	}
 
 	public void setRouteText(String from, String to){
@@ -185,36 +177,7 @@ public class RouteFragment extends Fragment {
 		actFrom.setAdapter(adapter);
 	}
 
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		try {
-			mListener = (OnRouteInteractionListener) activity;
-		} catch (ClassCastException e) {
-			throw new ClassCastException("Must implement OnRouteInteractionListener");
-		}
-	}
 
-	@Override
-	public void onDetach() {
-		super.onDetach();
-		mListener = null;
-	}
-
-	/**
-	 * This interface must be implemented by activities that contain this
-	 * fragment to allow an interaction in this fragment to be communicated
-	 * to the activity and potentially other fragments contained in that
-	 * activity.
-	 * <p>
-	 * See the Android Training lesson <a href=
-	 * "http://developer.android.com/training/basics/fragments/communicating.html"
-	 * >Communicating with Other Fragments</a> for more information.
-	 */
-	public interface OnRouteInteractionListener {
-		// TODO: Update argument type and name
-		public void onRouteInteraction(Object o);
-	}
 
 
 

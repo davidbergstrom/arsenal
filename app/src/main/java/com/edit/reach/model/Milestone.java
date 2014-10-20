@@ -22,6 +22,7 @@ public class Milestone implements IMilestone {
         name = properties.getString("name");
         description = properties.getString("description");
         rank = properties.getInt("rating");
+	    categories = new ArrayList<Category>();
 
         int categoryNumber = properties.getInt("category");
         setCategories(categoryNumber);

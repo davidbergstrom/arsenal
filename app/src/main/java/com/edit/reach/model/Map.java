@@ -102,8 +102,13 @@ public class Map {
                 handler.postDelayed(this, UPDATE_INTERVAL_FAST);
             }else if(state == State.MOVING && !isRouteSet()){
                 Location myLocation = map.getMyLocation();
-                LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-
+                LatLng position;
+                if(myLocation != null){
+                    position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                }else{
+                    position = new LatLng(0, 0);
+                }
+                
                 moveCameraTo(position);
                 handler.postDelayed(this, UPDATE_INTERVAL_FAST);
             }else{
@@ -210,7 +215,12 @@ public class Map {
 
 
             Location myLocation = map.getMyLocation();
-            LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            LatLng position;
+            if(myLocation != null){
+                position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            }else{
+                position = new LatLng(0, 0);
+            }
 
             if(isRouteSet()){
                 // Start moving with a route set.

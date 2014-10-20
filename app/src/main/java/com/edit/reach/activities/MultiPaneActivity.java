@@ -31,8 +31,7 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiPaneActivity extends FragmentActivity implements MapFragment.OnMapInteractionListener,
-        RouteFragment.OnRouteInteractionListener, MilestonesFragment.OnMilestonesInteractionListener {
+public class MultiPaneActivity extends FragmentActivity{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
@@ -86,6 +85,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
                 case SignalType.LEG_UPDATE:
                     controlFragment.setNextLeg((Leg)message.obj);
                     break;
+
             }
         }
     };
@@ -94,21 +94,25 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_pane);
-
         //Create a FragmentManager and add a Fragment to it
+        setUpMapIfNeeded();
+        preliminaryMilestones = new ArrayList<IMilestone>();
+        navigationModel = new NavigationModel(mMap, mainHandler);
+	    Bundle bundle = getIntent().getExtras();
         if(findViewById(R.id.container_fragment_left) != null){
             if(savedInstanceState != null){
                 return;
             }
 
-            routeFragment = RouteFragment.newInstance("Route");
-            getSupportFragmentManager().beginTransaction()
-		            .add(R.id.container_fragment_left, routeFragment).commit();
+	        if(bundle.getBoolean("Moving")){
+			    initializeMovingBackend();
+		        initializeMovingUI();
+		    } else {
+	            initializeStationaryUI();
+		    }
+
         }
 
-        setUpMapIfNeeded();
-        preliminaryMilestones = new ArrayList<IMilestone>();
-        navigationModel = new NavigationModel(mMap, mainHandler);
     }
 
     @Override
@@ -142,6 +146,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
                     .getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
+	            Log.d("setUpMapIfNeeded", "mMap != null");
                 setupMap();
             }else{
                 // TODO: Alert user that application wont work properly
@@ -153,6 +158,25 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         strings = navigationModel.getMatchedStringResults(input);
         return strings;
     }
+
+	public void initializeMovingUI(){
+		controlFragment = ControlFragment.newInstance("MovingMode");
+		getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, controlFragment).
+				addToBackStack("ControlFragment").commit();
+	}
+	public void initializeMovingBackend(){
+		navigationModel.getMap().setState(Map.State.MOVING);
+	}
+
+	public void addMilestones(){
+		navigationModel.addMilestones(preliminaryMilestones);
+	}
+
+	public void initializeStationaryUI(){
+		routeFragment = RouteFragment.newInstance("Route");
+		getSupportFragmentManager().beginTransaction()
+				.add(R.id.container_fragment_left, routeFragment).commit();
+	}
 
     private void setupMap(){
         // Enable GoogleMap to track the user's location
@@ -225,10 +249,7 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onMapInteraction(Uri uri) {
 
-    }
 
     public void goBackToRouteFragment(){
         Log.d("MultiPaneActivity", "goBackFragment");
@@ -285,27 +306,9 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         navigationModel.getPauseSuggestions(category);
     }
 
-    public void startMovingMode(){
-        navigationModel.addMilestones(preliminaryMilestones);
-        navigationModel.getMap().setState(Map.State.MOVING);
-        controlFragment = ControlFragment.newInstance("Control");
-        getSupportFragmentManager().beginTransaction().
-		        replace(R.id.container_fragment_left, controlFragment).addToBackStack("controlFragment").commit();
-    }
+	public void getMatchedStringResults(String str){
+		List<String> list = navigationModel.getMatchedStringResults(str);
+		routeFragment.suggestionList(list);
+	}
 
-    @Override
-    public void onRouteInteraction(Object o) {
-        // Sends the text from search field and receives a list of
-        // places and sends the list back to the fragment
-        if(o.getClass() == String.class) {
-            List<String> list = navigationModel.getMatchedStringResults((String)o);
-            routeFragment.suggestionList(list);
-        }
-    }
-
-    @Override
-    public void onMilestonesInteraction(Object o) {
-
-
-    }
 }
