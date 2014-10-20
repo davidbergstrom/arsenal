@@ -130,32 +130,17 @@
 			android:layout_height="wrap_content"
 			android:id="@+id/control_info_progressbar_holder"
 			android:columnCount="3"
-			android:rowCount="3"
+			android:rowCount="2"
 			android:layout_below="@+id/suggestion_buttons"
 			android:layout_centerHorizontal="true">
 
-		<!-- Three ProgressBars-->
-		<ProgressBar
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:id="@+id/progress_next_stop"
-				android:layout_column="1"
-				android:layout_row="0"
-				android:minWidth="@dimen/progress_bar_min_width"
-				android:minHeight="@dimen/progress_bar_min_height"
-				android:maxWidth="@dimen/progress_bar_max_width"
-				android:maxHeight="@dimen/progress_bar_max_height"
-				android:layout_marginStart="@dimen/progress_bar_margin_side"
-				android:layout_marginEnd="@dimen/progress_bar_margin_side"
-				style="@android:style/Widget.Holo.ProgressBar.Horizontal">
-		</ProgressBar>
-
+		<!-- Two ProgressBars-->
 		<ProgressBar
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/progress_gas"
 				android:layout_column="1"
-				android:layout_row="1"
+				android:layout_row="0"
 				android:minWidth="@dimen/progress_bar_min_width"
 				android:minHeight="@dimen/progress_bar_min_height"
 				android:maxWidth="@dimen/progress_bar_max_width"
@@ -170,7 +155,7 @@
 				android:layout_height="wrap_content"
 				android:id="@+id/progress_time_clock"
 				android:layout_column="1"
-				android:layout_row="2"
+				android:layout_row="1"
 				android:minWidth="@dimen/progress_bar_min_width"
 				android:minHeight="@dimen/progress_bar_min_height"
 				android:maxWidth="@dimen/progress_bar_max_width"
@@ -182,28 +167,9 @@
 
 		<!-- TextViews to accompany the ProgressBars -->
 		<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:id="@+id/tv_control_info_next_stop_left"
-				android:layout_column="0"
-				android:layout_row="0"
-				android:text="@string/tv_control_info_next_stop_left"
-				android:textSize="@dimen/tv_control_info_progress_bar_text"
-				android:layout_gravity="end"
-				android:textColor="@color/text_navigation_info_progressbar"/>
-
-		<TextView
-				android:id="@+id/tv_control_info_next_stop_right"
-				android:layout_column="2"
-				android:layout_row="0"
-				android:text="@string/tv_control_info_next_stop_right"
-				android:textSize="@dimen/tv_control_info_progress_bar_text"
-				android:textColor="@color/text_navigation_info_progressbar"/>
-
-		<TextView
 				android:id="@+id/tv_control_info_gas_left"
 				android:layout_column="0"
-				android:layout_row="1"
+				android:layout_row="0"
 				android:text="@string/tv_control_info_gas_left"
 				android:textSize="@dimen/tv_control_info_progress_bar_text"
 				android:layout_gravity="end"
@@ -212,7 +178,7 @@
 		<TextView
 				android:id="@+id/tv_control_info_gas_right"
 				android:layout_column="2"
-				android:layout_row="1"
+				android:layout_row="0"
 				android:text="@string/tv_control_info_gas_right"
 				android:textSize="@dimen/tv_control_info_progress_bar_text"
 				android:textColor="@color/text_navigation_info_progressbar"/>
@@ -220,7 +186,7 @@
 		<TextView
 				android:id="@+id/tv_control_info_time_clock_left"
 				android:layout_column="0"
-				android:layout_row="2"
+				android:layout_row="1"
 				android:text="@string/tv_control_info_time_clock_left"
 				android:textSize="@dimen/tv_control_info_progress_bar_text"
 				android:layout_gravity="end"
@@ -229,7 +195,7 @@
 		<TextView
 				android:id="@+id/tv_control_info_time_clock_right"
 				android:layout_column="2"
-				android:layout_row="2"
+				android:layout_row="1"
 				android:text="@string/tv_control_info_time_clock_right"
 				android:textSize="@dimen/tv_control_info_progress_bar_text"
 				android:textColor="@color/text_navigation_info_progressbar"/>
