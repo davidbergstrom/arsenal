@@ -2,6 +2,17 @@ package com.edit.reach.fragments;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+
+
+
+import android.support.v4.app.FragmentManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import android.widget.*;
+
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +20,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.model.Leg;
 import com.edit.reach.model.interfaces.IMilestone;
+import com.google.android.gms.tagmanager.Container;
 
 import java.util.List;
 
@@ -30,16 +43,22 @@ public class ControlFragment extends Fragment{
 	private ImageButton ibToilet;
 	private ImageButton ibGasStation;
 
+
     private IMilestone milestone;
     private List<IMilestone.Category> categories;
+
 
 	private float fuelLevel;
 	private double nextStopClock; //in sec
 	private double timeClock;   //in sec
 	private double totalTime;   //in sec
+<<<<<<< HEAD
 	private String nextStopName = "N/A";
+=======
+	private String nextStopName;
+>>>>>>> 6d468c903a34b1acb02686864c8ab8a5f71d9b4e
 
-	//Progressbars
+	//Progressbar
 	private ProgressBar barFuel;
 	private ProgressBar barTimeClock;
 
@@ -162,6 +181,35 @@ public class ControlFragment extends Fragment{
         barFuel = (ProgressBar) view.findViewById(R.id.progress_gas);
         barTimeClock = (ProgressBar) view.findViewById(R.id.progress_time_clock);
 
+<<<<<<< HEAD
+=======
+		if(!nextStopName.isEmpty()) {
+			textNextStop.setText(nextStopName);
+		} else {
+			textNextStop.setText("N/A");
+		}
+
+        //Set Milestone Images
+        for (IMilestone.Category cat : categories) {
+
+            switch (cat) {
+                case FOOD: ivFood.setVisibility(ImageView.VISIBLE);
+                break;
+
+                case GASSTATION: ivGastation.setVisibility(ImageView.VISIBLE);
+                break;
+
+                case RESTAREA: ivGastation.setVisibility(ImageView.VISIBLE);
+                break;
+
+                case TOILET: ivToilet.setVisibility(ImageView.VISIBLE);
+                break;
+
+            }
+
+        }
+
+>>>>>>> 6d468c903a34b1acb02686864c8ab8a5f71d9b4e
 		ibRestArea = (ImageButton) view.findViewById(R.id.button_control_input_restarea);
 		ibRestArea.setOnClickListener(new View.OnClickListener() {
 			@Override
