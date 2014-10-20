@@ -46,6 +46,7 @@ public class ControlFragment extends Fragment{
 	private double nextStopClock; //in sec
 	private double timeClock;   //in sec
 	private double totalTime;   //in sec
+    private float distanceToNextStop;
 	private String nextStopName = "N/A";
 
 
@@ -69,7 +70,7 @@ public class ControlFragment extends Fragment{
     private ImageView ivRestArea;
     private ImageView ivToilet;
 
-	public void setBarTimeClock(double timeClock) {
+    public void setBarTimeClock(double timeClock) {
 		this.timeClock = timeClock;
         barTimeClock.setBackgroundColor(Color.GREEN);
 		barTimeClock.setMax((int) (UniversalConstants.LEGAL_UPTIME_IN_SECONDS * UniversalConstants.SECONDS_TO_MINUTES));
@@ -97,9 +98,12 @@ public class ControlFragment extends Fragment{
         this.milestone = leg.getMilestone();
         this.nextStopClock = leg.getDuration();
         this.nextStopName = milestone.getName();
+        this.distanceToNextStop = leg.getDistance();
         this.categories = milestone.getCategories();
 
         textNextStop.setText(nextStopName);
+        textTimeToNextStop.setText("" + nextStopClock * UniversalConstants.SECONDS_TO_MINUTES);
+        textDistanceToTextStop.setText("" + distanceToNextStop * 0.001);
 
         //Set Milestone Images
         ivFood.setVisibility(ImageView.INVISIBLE);
