@@ -27,13 +27,12 @@ import java.util.Observer;
  * Time: 19:27
  * Last Edit: 2014-10-17
  */
-public class NavigationModel implements Runnable, Observer, SuggestionListener, RouteListener {
+public final class NavigationModel implements Runnable, Observer, SuggestionListener, RouteListener {
 
 	private final VehicleSystem vehicleSystem;
-
+	private final Map map;
 	private final Thread pipelineThread;
 	private final Handler mainHandler;
-	private final Map map;
 
 	private Handler pipelineHandler;
 
@@ -166,7 +165,7 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 	 * @param data The id of the signal that initiated this update.
 	 */
 	@Override
-	public synchronized void update(Observable observable, final Object data) {
+	public void update(Observable observable, final Object data) {
 		Log.d("NavigationModel", "update()");
 		pipelineHandler.post(new Runnable() {
 			@Override
@@ -187,75 +186,80 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 				message.what = SignalType.LEG_UPDATE;
 				mainHandler.sendMessage(message);
 
-				// If vehicle is low on fuel.
-				if ((Integer) data == SignalType.LOW_FUEL) {
-					// TODO what to do here? Not used
-					Log.d("UPDATE", "TYPE: LOW_FUEL");
+				switch ((Integer) data) {
+					// If vehicle is low on fuel.
+					case SignalType.LOW_FUEL:
+						// TODO what to do here? Not used
+						Log.d("UPDATE", "TYPE: LOW_FUEL");
+						break;
 
-				// If vehicles up time is short relative to the legal up time.
-				} else if ((Integer) data == SignalType.SHORT_TIME) {
-					// TODO what to do here? Not used
-					Log.d("UPDATE", "TYPE: SHORT_TIME");
+					// If vehicles up time is short relative to the legal up time.
+					case SignalType.SHORT_TIME:
+						// TODO what to do here? Not used
+						Log.d("UPDATE", "TYPE: SHORT_TIME");
+						break;
 
-				// If vehicle stopped or started
-				} else if ((Integer) data == SignalType.VEHICLE_STOPPED_OR_STARTED) {
-					Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
-					Log.d("GET", "Vehicle State: " + vehicleSystem.getVehicleState());
+					// If vehicle stopped or started
+					case SignalType.VEHICLE_STOPPED_OR_STARTED:
+						Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
+						Log.d("GET", "Vehicle State: " + vehicleSystem.getVehicleState());
 
-					// Send the MovingState to the UI.
-					message.obj = vehicleSystem.getVehicleState();
-					message.what = SignalType.VEHICLE_STOPPED_OR_STARTED;
-					mainHandler.sendMessage(message);
+						// Send the MovingState to the UI.
+						message.obj = vehicleSystem.getVehicleState();
+						message.what = SignalType.VEHICLE_STOPPED_OR_STARTED;
+						mainHandler.sendMessage(message);
+						break;
 
-				// If a vehicle took a break longer than or equal to 45 minutes.
-				} else if ((Integer) data == SignalType.VEHICLE_TOOK_FINAL_BREAK) {
-					Log.d("UPDATE", "TYPE: VEHICLE_TOOK_FINAL_BREAK");
+					// If a vehicle took a break longer than or equal to 45 minutes.
+					case SignalType.VEHICLE_TOOK_FINAL_BREAK:
+						Log.d("UPDATE", "TYPE: VEHICLE_TOOK_FINAL_BREAK");
 
-					// This has to be done in UI thread because of Googles Map.
-					mainHandler.post(new Runnable() {
-						@Override
-						public void run() {
-							// Remove all pauses and add them again.
-							map.getRoute().removeAllPauses();
-							addTimePause();
-						}
-					});
+						// This has to be done in UI thread because of Googles Map.
+						mainHandler.post(new Runnable() {
+							@Override
+							public void run() {
+								// Remove all pauses and add them again.
+								map.getRoute().removeAllPauses();
+								addTimePause();
+							}
+						});
+						break;
 
-				// If the up time is updated.
-				} else if ((Integer) data == SignalType.UPTIME_UPDATE) {
-					Log.d("UPDATE", "TYPE: UP_TIME_UPDATE");
+					case SignalType.UPTIME_UPDATE:
+						Log.d("UPDATE", "TYPE: UP_TIME_UPDATE");
 
-					// Send the number of seconds until break to UI.
-					message.obj = vehicleSystem.getTimeUntilForcedRest();
-					message.what = SignalType.UPTIME_UPDATE;
-					mainHandler.sendMessage(message);
+						// Send the number of seconds until break to UI.
+						message.obj = vehicleSystem.getTimeUntilForcedRest();
+						message.what = SignalType.UPTIME_UPDATE;
+						mainHandler.sendMessage(message);
+						break;
 
-				// If the fuel level is updated.
-				} else if ((Integer) data == SignalType.FUEL_UPDATE) {
-					Log.d("UPDATE", "TYPE: FUEL_UPDATE");
+					case SignalType.FUEL_UPDATE:
+						Log.d("UPDATE", "TYPE: FUEL_UPDATE");
 
-					// Send the amount of fuel in tank to the UI.
-					message.obj = vehicleSystem.getFuelLevel();
-					message.what = SignalType.FUEL_UPDATE;
-					mainHandler.sendMessage(message);
+						// Send the amount of fuel in tank to the UI.
+						message.obj = vehicleSystem.getFuelLevel();
+						message.what = SignalType.FUEL_UPDATE;
+						mainHandler.sendMessage(message);
+						break;
 
-				// If it is possible to get km to refuel.
-				} else if ((Integer) data == SignalType.TANK_SIZE_CALCULATED) {
-					Log.d("UPDATE", "TYPE: TANK_SIZE_CALCULATED");
+					case SignalType.TANK_SIZE_CALCULATED:
+						Log.d("UPDATE", "TYPE: TANK_SIZE_CALCULATED");
 
-					final double kmToRefuel = vehicleSystem.getKilometersUntilRefuel();
+						final double kmToRefuel = vehicleSystem.getKilometersUntilRefuel();
 
-					// This has to be done in UI thread because of Googles Map.
-					mainHandler.post(new Runnable() {
-						@Override
-						public void run() {
-							addFuelPause(kmToRefuel);
-						}
-					});
+						// This has to be done in UI thread because of Googles Map.
+						mainHandler.post(new Runnable() {
+							@Override
+							public void run() {
+								addFuelPause(kmToRefuel);
+							}
+						});
+						break;
 
-				// If No signal matches
-				} else {
-					Log.d("TYPE ERROR", "Type error in update");
+					default:
+						Log.d("TYPE ERROR", "Type error in update");
+						break;
 				}
 			}
 		});
