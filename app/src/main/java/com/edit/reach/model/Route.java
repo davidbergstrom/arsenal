@@ -614,8 +614,23 @@ public class Route {
                     }
                 });
             }
-
         }
+    }
+
+    /**
+     * Returns the bearing of the pointer.
+     * @return the bearing
+     */
+    float getPointerBearing(){
+        return pointerWithBearing.getBearing();
+    }
+
+    /**
+     * Returns the position of the pointer.
+     * @return the coordinate
+     */
+    LatLng getPointerLocation(){
+        return pointerWithBearing.getPosition();
     }
 
     private LatLng getNextSubStep(){

@@ -26,7 +26,6 @@ import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
@@ -146,7 +145,7 @@ public class MultiPaneActivity extends FragmentActivity{
 	@Override
 	protected  void onStop() {
 		super.onStop();
-		navigationModel.getMap().setState(Map.State.STATIONARY);
+		navigationModel.getMap().setMapState(Map.MapState.STATIONARY);
 	}
 
     /**
@@ -198,7 +197,7 @@ public class MultiPaneActivity extends FragmentActivity{
 	 * Init the functionality for moving-mode.
 	 */
 	public void initializeMovingBackend(){
-		navigationModel.getMap().setState(Map.State.MOVING);
+		navigationModel.getMap().setMapState(Map.MapState.MOVING);
 	}
 
 	public void addMilestones(){
