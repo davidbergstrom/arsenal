@@ -87,8 +87,8 @@ public final class VehicleSystem extends Observable implements Runnable {
 			if (startTime.get() != 0) {
 				Log.d("determineTimeUpdate()", "passed startTime.ger() != 0");
 				determineTimeUpdate();
-				signalHandler.postDelayed(this, 50);
 			}
+			signalHandler.postDelayed(this, 50);
 		}
 	};
 
@@ -230,8 +230,6 @@ public final class VehicleSystem extends Observable implements Runnable {
 		vehicleSignals = new Thread(VehicleSystem.this, VEHICLE_SIGNALS_THREAD);
 		vehicleSignals.start();
 
-		signalHandler.post(timeRunnable);
-
 		// Register Listeners
 		synchronized (automotiveManager) {
 			automotiveManager.register(
@@ -244,7 +242,14 @@ public final class VehicleSystem extends Observable implements Runnable {
 					AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED,
 					AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED,
 					AutomotiveSignalId.FMS_HIGH_RESOLUTION_TOTAL_VEHICLE_DISTANCE);
+
 		}
+
+		// TODO this is not beautiful
+		while(signalHandler == null) {
+		}
+
+		signalHandler.post(timeRunnable);
 	}
 
 	@Override

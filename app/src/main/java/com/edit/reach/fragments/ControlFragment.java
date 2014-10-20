@@ -321,11 +321,11 @@ public class ControlFragment extends Fragment{
 	private void setStateRouteless() {
 		navigationInfoContainer.setVisibility(View.GONE);
 		suggestionButtonContainer.setVisibility(View.GONE);
-		Log.d("STATE", "setStateRouteless");
 	}
 
 	private void setStateInfo() {
-		;
+		textRatingNextStop.setVisibility(View.GONE);
+		suggestionButtonContainer.setVisibility(View.GONE);
 	}
 
 	private void setStateSuggestion() {
