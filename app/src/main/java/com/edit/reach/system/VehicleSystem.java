@@ -96,6 +96,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 						// How much fuel is left in tank.
 						case AutomotiveSignalId.FMS_FUEL_LEVEL_1:
 							float prevFuelLevel = fuelLevel.get();
+							Log.d("Thread in VehicleSystem - fuellevel update", Thread.currentThread().getName());
 							fuelLevel.set(((SCSFloat) (automotiveSignal.getData())).getFloatValue());
 
 							// Call methods to determine critical states
@@ -257,6 +258,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 	 * @return a float from 0-100 that represents the fuel level
 	 */
 	public float getFuelLevel() {
+		Log.d("Thread in VehicleSystem - getFuelLevel()", Thread.currentThread().getName());
 		return fuelLevel.get();
 	}
 
@@ -314,6 +316,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 	// Method that notifies observers if the fuellevel changed more than 1%.
 	private void determineFuelUpdate(float prevFuelLevel, float fuelLevel) {
+		Log.d("Thread in VehicleSystem - determineFuelUpdate()", Thread.currentThread().getName());
 		if(fuelLevel - prevFuelLevel >= 1) {
 			setChanged();
 			notifyObservers(SignalType.FUEL_UPDATE);
