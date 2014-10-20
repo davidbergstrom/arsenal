@@ -27,7 +27,7 @@ import java.util.Observer;
  * Time: 19:27
  * Last Edit: 2014-10-17
  */
-public final class NavigationModel implements Runnable, Observer, SuggestionListener, RouteListener {
+public final class NavigationModel implements Runnable, Observer, SuggestionListener {
 
 	private final VehicleSystem vehicleSystem;
 	private final Map map;
@@ -49,6 +49,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		this.vehicleSystem.addObserver(this);
 
 		this.map = new Map(googleMap);
+        this.map.addObserver(this);
 
 		this.mainHandler = mainHandler;
 	}
@@ -120,7 +121,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	public void setRoute(final Route newRoute) {
 		Log.d("NavigationModel", "setRoute()");
 		map.setRoute(newRoute);
-		newRoute.addListener(this);
+		//newRoute.addListener(this);
 	}
 
 	@Override
@@ -128,7 +129,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		searchResults = results;
 	}
 
-	@Override
+	/*@Override
 	public void onInitialization(boolean success) {
 		Log.d("NavigationModel", "onInitialization()");
 		Message message = mainHandler.obtainMessage();
@@ -157,7 +158,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	@Override
 	public void onStepFinished(Step finishedStep) {
 		// TODO do nothing?
-	}
+	}*/
 
 	/**
 	 * Do not call this method. It is called automatically when the observable changes.
@@ -175,16 +176,6 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 
 				// Get the route.
 				Route r = map.getRoute();
-
-				// Send time left on route.
-				message.obj = r.getDuration();
-				message.what = SignalType.ROUTE_TOTAL_TIME_UPDATE;
-				mainHandler.sendMessage(message);
-
-				// Send time left until first milestone.
-				message.obj = r.getLegs().get(0);
-				message.what = SignalType.LEG_UPDATE;
-				mainHandler.sendMessage(message);
 
 				switch ((Integer) data) {
 					// If vehicle is low on fuel.
@@ -257,6 +248,38 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 							}
 						});
 						break;
+
+                    case SignalType.ROUTE_TOTAL_TIME_UPDATE:
+                        Log.d("UPDATE", "TYPE: ROUTE_TOTAL_TIME_UPDATE");
+                        message.obj = r.getDuration();
+                        message.what = SignalType.ROUTE_TOTAL_TIME_UPDATE;
+                        mainHandler.sendMessage(message);
+                        break;
+
+                    case SignalType.LEG_FINISHED:
+                        Log.d("UPDATE", "TYPE: LEG_FINISHED");
+                        // TODO : Does the UI need this information? If it does will it need the information from the finished leg?
+                        break;
+
+                    case SignalType.LEG_UPDATE:
+                        Log.d("UPDATE", "TYPE: LEG_UPDATE");
+                        message.obj = r.getLegs().get(0);
+                        message.what = SignalType.LEG_UPDATE;
+                        mainHandler.sendMessage(message);
+                        break;
+
+                    case SignalType.ROUTE_INITIALIZATION_SUCCEDED:
+                        Log.d("UPDATE", "TYPE: ROUTE_INITIALIZATION_SUCCEEDED");
+                        addTimePause();
+                        message.what = SignalType.ROUTE_INITIALIZATION_SUCCEDED;
+                        mainHandler.sendMessage(message);
+                        break;
+
+                    case SignalType.ROUTE_INITIALIZATION_FAILED:
+                        Log.d("UPDATE", "TYPE: ROUTE_INITIALIZATION_FAILED");
+                        message.what = SignalType.ROUTE_INITIALIZATION_FAILED;
+                        mainHandler.sendMessage(message);
+                        break;
 
 					default:
 						Log.d("TYPE ERROR", "Type error in update");
