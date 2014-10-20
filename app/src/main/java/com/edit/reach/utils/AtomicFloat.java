@@ -1,6 +1,7 @@
 package com.edit.reach.utils;
 
 /**
+ * This class is used to model an AtomicFloat
  * Created by: Tim Kerschbaumer
  * Project: arsenal
  * Date: 14-10-20

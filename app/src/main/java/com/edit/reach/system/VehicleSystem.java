@@ -9,6 +9,7 @@ import android.util.Log;
 import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.constants.MovingState;
 import com.edit.reach.constants.SignalType;
+import com.edit.reach.utils.AtomicFloat;
 import com.swedspot.automotiveapi.AutomotiveFactory;
 import com.swedspot.automotiveapi.AutomotiveListener;
 import com.swedspot.automotiveapi.AutomotiveManager;
@@ -19,6 +20,8 @@ import com.swedspot.vil.policy.AutomotiveCertificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -34,20 +37,22 @@ public final class VehicleSystem extends Observable implements Runnable {
 	/* --- INSTANCE VARIABLES --- */
 
 	// The fuel economy.
-	private float instantFuelEconomy = 0f;
+	private AtomicFloat instantFuelEconomy = new AtomicFloat(0f);
 
 	// The fuel rate.
-	private float fuelRate = 0f;
+	private AtomicFloat fuelRate = new AtomicFloat(0f);
 
 	// The fuel level.
-	private float fuelLevel = -1f;
+	private AtomicFloat fuelLevel = new AtomicFloat(-1f);
+
 	// The fuel level in percent when starting calculation for the tank size.
-	private float startFuelLevel = -1f;
+	private AtomicFloat startFuelLevel = new AtomicFloat(-1f);
 
 	// 0 if not moving 1 if moving
-	private volatile int isMoving = -1;
+	private AtomicInteger isMoving = new AtomicInteger(-1);
+
 	// The working state of the driver.
-	private int workingState = -1;
+	private AtomicInteger workingState = new AtomicInteger(-1);
 
 	// A list with the instant fuel economy
 	private final List<Float> instantFuelEconomyList = new ArrayList<Float>();
@@ -55,19 +60,19 @@ public final class VehicleSystem extends Observable implements Runnable {
 	private final List<Float> fuelRateList = new ArrayList<Float>();
 
 	// Time that vehicle started driving.
-	private long startTime = 0;
+	private AtomicLong startTime = new AtomicLong(0);
 
 	// Time that the vehicle stopped driving.
-	private long stopTime = 0;
+	private AtomicLong stopTime = new AtomicLong(0);
 
 	// Previous time used to calculate when to notify observers.
-	private long prevTime = 0;
+	private AtomicLong prevTime = new AtomicLong(0);
 
 	// The size of the tank.
-	private double tankSize = 0.0;
+	private AtomicFloat tankSize = new AtomicFloat(0);
 
 	// Keeps track if navigationModel has been notified for "short time".
-	private boolean timeHasBeenNotified = false;
+	private AtomicBoolean timeHasBeenNotified = new AtomicBoolean(false);
 
 	// A handler for the signals
 	private Handler signalHandler;
@@ -90,15 +95,16 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 						// How much fuel is left in tank.
 						case AutomotiveSignalId.FMS_FUEL_LEVEL_1:
-							float prevFuelLevel = fuelLevel;
-							fuelLevel = ((SCSFloat) (automotiveSignal.getData())).getFloatValue();
+							float prevFuelLevel = fuelLevel.get();
+							Log.d("Thread in VehicleSystem - fuellevel update", Thread.currentThread().getName());
+							fuelLevel.set(((SCSFloat) (automotiveSignal.getData())).getFloatValue());
 
 							// Call methods to determine critical states
-							determineLowFuel(prevFuelLevel, fuelLevel);
-							determineFuelUpdate(prevFuelLevel, fuelLevel);
+							determineLowFuel(prevFuelLevel, fuelLevel.get());
+							determineFuelUpdate(prevFuelLevel, fuelLevel.get());
 
 							// TODO where to put the time updates?
-							if (startTime != 0) {
+							if (startTime.get() != 0) {
 								determineShortTime();
 								determineTimeUpdate();
 							}
@@ -108,39 +114,39 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 						// Working state of driver
 						case AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE:
-							int prevWorkState = workingState;
-							workingState = ((Uint8) automotiveSignal.getData()).getIntValue();
+							int prevWorkState = workingState.get();
+							workingState.set(((Uint8) automotiveSignal.getData()).getIntValue());
 
 							// If trucker just started driving
-							if (workingState == 3 && prevWorkState != 3) {
+							if (workingState.get() == 3 && prevWorkState != 3) {
 								// Determine if the break was final.
-								if (stopTime != 0) {
+								if (stopTime.get() != 0) {
 									if (determineBreakWasFinal()) {
 										// Set start time
-										startTime = System.nanoTime();
-										timeHasBeenNotified = false;
+										startTime.set(System.nanoTime());
+										timeHasBeenNotified.set(false);
 									}
 								} else {
 									// First run - set start time
-									startTime = System.nanoTime();
-									timeHasBeenNotified = false;
+									startTime.set(System.nanoTime());
+									timeHasBeenNotified.set(false);
 								}
 							}
 
 							// If trucker just stopped
-							if (workingState != 3 && prevWorkState == 3) {
-								stopTime = System.nanoTime();
+							if (workingState.get() != 3 && prevWorkState == 3) {
+								stopTime.set(System.nanoTime());
 							}
 
 							// Call method to determine critical states
-							determineWorkStateChange(prevWorkState, workingState);
+							determineWorkStateChange(prevWorkState, workingState.get());
 
 							Log.d("Signal: WorkingState", "State: " + workingState);
 							break;
 
 						// Is vehicle moving
 						case AutomotiveSignalId.FMS_VEHICLE_MOTION:
-							isMoving = ((Uint8) (automotiveSignal.getData())).getIntValue();
+							isMoving.set(((Uint8) (automotiveSignal.getData())).getIntValue());
 							determineMovingChange();
 
 							Log.d("Signal: Motion", "Motion: " + isMoving);
@@ -148,31 +154,35 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 						// Instantaneous Fuel economy
 						case AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY:
-							instantFuelEconomy = ((SCSFloat) automotiveSignal.getData()).getFloatValue();
+							instantFuelEconomy.set(((SCSFloat) automotiveSignal.getData()).getFloatValue());
 
 							// Only add to fuel consumption list if the vehicle is moving
-							if (isMoving == 1) {
-								instantFuelEconomyList.add(instantFuelEconomy);
+							if (isMoving.get() == 1) {
+								synchronized (instantFuelEconomyList) {
+									instantFuelEconomyList.add(instantFuelEconomy.get());
+								}
 							}
 
 							Log.d("Signal: FuelEconomy", "Fuel economy: " + instantFuelEconomy);
 							break;
 
 						case AutomotiveSignalId.FMS_FUEL_RATE:
-							fuelRate = ((SCSFloat) automotiveSignal.getData()).getFloatValue();
+							fuelRate.set(((SCSFloat) automotiveSignal.getData()).getFloatValue());
 
-							if (isMoving == 1) {
-								fuelRateList.add(fuelRate);
+							if (isMoving.get() == 1) {
+								synchronized (fuelRateList) {
+									fuelRateList.add(fuelRate.get());
+								}
 							}
 
-							if (startFuelLevel != -1f && fuelLevel != -1f) {
-								startFuelLevel = fuelLevel;
+							if (startFuelLevel.get() != -1f && fuelLevel.get() != -1f) {
+								startFuelLevel.set(fuelLevel.get());
 							}
 
 							calculateTankSize();
 							determineTankSizeEstimated();
 
-							Log.d("Signal: FuelRate", "Fuel rate: " + instantFuelEconomy);
+							Log.d("Signal: FuelRate", "Fuel rate: " + instantFuelEconomy.get());
 							break;
 
 						default:
@@ -217,16 +227,18 @@ public final class VehicleSystem extends Observable implements Runnable {
 		vehicleSignals.start();
 
 		// Register Listeners
-		automotiveManager.register(
-				AutomotiveSignalId.FMS_FUEL_LEVEL_1,
-				AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE,
-				AutomotiveSignalId.FMS_FUEL_RATE,
-				AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY,
-				AutomotiveSignalId.FMS_SERVICE_DISTANCE,
-				AutomotiveSignalId.FMS_VEHICLE_MOTION,
-				AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED,
-				AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED,
-				AutomotiveSignalId.FMS_HIGH_RESOLUTION_TOTAL_VEHICLE_DISTANCE);
+		synchronized (automotiveManager) {
+			automotiveManager.register(
+					AutomotiveSignalId.FMS_FUEL_LEVEL_1,
+					AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE,
+					AutomotiveSignalId.FMS_FUEL_RATE,
+					AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY,
+					AutomotiveSignalId.FMS_SERVICE_DISTANCE,
+					AutomotiveSignalId.FMS_VEHICLE_MOTION,
+					AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED,
+					AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED,
+					AutomotiveSignalId.FMS_HIGH_RESOLUTION_TOTAL_VEHICLE_DISTANCE);
+		}
 	}
 
 	@Override
@@ -246,23 +258,26 @@ public final class VehicleSystem extends Observable implements Runnable {
 	 * @return a float from 0-100 that represents the fuel level
 	 */
 	public float getFuelLevel() {
-		return fuelLevel;
+		Log.d("Thread in VehicleSystem - getFuelLevel()", Thread.currentThread().getName());
+		return fuelLevel.get();
 	}
 
 	/** Estimates how long until a refuel is recommended.
 	 * @return how many km until a stop for fueling is recommended. Returns -1 if not applicable.
 	 */
 	public double getKilometersUntilRefuel() {
-		double currentLitersInTank = ((fuelLevel/100.0) * tankSize);
+		double currentLitersInTank = ((fuelLevel.get()/100.0) * tankSize.get());
 
 		if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
 			return calculateKmToRefuel(currentLitersInTank);
 		} else {
-			if(tankSize == 0 || instantFuelEconomyList.size() == 0) {
-				// Not applicable because no record of driving is available.
-				return -1;
-			} else {
-				return calculateKmToRefuel(currentLitersInTank);
+			synchronized (instantFuelEconomyList) {
+				if (tankSize.get() == 0 || instantFuelEconomyList.size() == 0) {
+					// Not applicable because no record of driving is available.
+					return -1;
+				} else {
+					return calculateKmToRefuel(currentLitersInTank);
+				}
 			}
 		}
 	}
@@ -275,7 +290,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 	 */
 	public double getTimeUntilForcedRest() {
 		if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
-			return (UniversalConstants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * UniversalConstants.NANOSECONDS_TO_SECONDS));
+			return (UniversalConstants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS));
 		} else {
 			return UniversalConstants.LEGAL_UPTIME_IN_SECONDS;
 		}
@@ -285,10 +300,10 @@ public final class VehicleSystem extends Observable implements Runnable {
 	 * @return a constant int value from class MovingState.
 	 */
 	public int getVehicleState() {
-		if (isMoving == 1 && workingState == 3) {
+		if (isMoving.get() == 1 && workingState.get() == 3) {
 			// Is in drive and vehicle is moving.
 			return MovingState.DRIVE_AND_MOVING;
-		} else if (isMoving == 0 && workingState == 3) {
+		} else if (isMoving.get() == 0 && workingState.get() == 3) {
 			// Is in drive but vehicle not moving.
 			return MovingState.DRIVE_BUT_NOT_MOVING;
 		} else {
@@ -301,6 +316,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 	// Method that notifies observers if the fuellevel changed more than 1%.
 	private void determineFuelUpdate(float prevFuelLevel, float fuelLevel) {
+		Log.d("Thread in VehicleSystem - determineFuelUpdate()", Thread.currentThread().getName());
 		if(fuelLevel - prevFuelLevel >= 1) {
 			setChanged();
 			notifyObservers(SignalType.FUEL_UPDATE);
@@ -333,12 +349,12 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 	// Method that notifies observers if the vehicle has been in drive close to threshold.
 	private void determineShortTime() {
-		if(workingState == 3) {
-			if ((UniversalConstants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime) * UniversalConstants.NANOSECONDS_TO_SECONDS)) < UniversalConstants.TIME_THRESHOLD) {
-				if (!timeHasBeenNotified) {
+		if(workingState.get() == 3) {
+			if ((UniversalConstants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS)) < UniversalConstants.TIME_THRESHOLD) {
+				if (!timeHasBeenNotified.get()) {
 					setChanged();
 					notifyObservers(SignalType.SHORT_TIME);
-					timeHasBeenNotified = true;
+					timeHasBeenNotified.set(true);
 				}
 			}
 		}
@@ -347,7 +363,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 	// Notify observers if the vehicle took a break longer than or equal to the break time.
 	private boolean determineBreakWasFinal() {
 		boolean wasFinal = false;
-		if (((System.nanoTime() - stopTime) * UniversalConstants.NANOSECONDS_TO_SECONDS) >= UniversalConstants.BREAKTIME_IN_SECONDS) {
+		if (((System.nanoTime() - stopTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) >= UniversalConstants.BREAKTIME_IN_SECONDS) {
 			setChanged();
 			notifyObservers(SignalType.VEHICLE_TOOK_FINAL_BREAK);
 			wasFinal = true;
@@ -357,15 +373,15 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 	// Method that notifies observers if the time changed more than 60 seconds.
 	private void determineTimeUpdate() {
-		if(prevTime == 0) {
+		if(prevTime.get() == 0) {
 			setChanged();
 			notifyObservers(SignalType.UPTIME_UPDATE);
-			prevTime = System.nanoTime();
+			prevTime.set(System.nanoTime());
 		} else {
-			if(((System.nanoTime() - prevTime) * UniversalConstants.NANOSECONDS_TO_SECONDS) >= 60) {
+			if(((System.nanoTime() - prevTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) >= 60) {
 				setChanged();
 				notifyObservers(SignalType.UPTIME_UPDATE);
-				prevTime = System.nanoTime();
+				prevTime.set(System.nanoTime());
 			} else {
 				// Do nothing
 			}
@@ -374,7 +390,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 	// Notifies observers if the tank size has been estimated.
 	private void determineTankSizeEstimated() {
-		if(tankSize != 0) {
+		if(tankSize.get() != 0) {
 			setChanged();
 			notifyObservers(SignalType.TANK_SIZE_CALCULATED);
 		}
@@ -384,27 +400,34 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 	// Method that calculates and sets the size of the vehicles tank.
 	private void calculateTankSize() {
-		if(((System.nanoTime() - startTime) * UniversalConstants.NANOSECONDS_TO_SECONDS) <= FUEL_TIME_CALCULATION_THRESHOLD && tankSize != 0.0) {
-			float deltaFuelLevel = fuelLevel - startFuelLevel;
-			double deltaTime = (((System.nanoTime() - startTime) * UniversalConstants.NANOSECONDS_TO_SECONDS) * UniversalConstants.SECONDS_TO_HOURS);
+		if(((System.nanoTime() - startTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) <= FUEL_TIME_CALCULATION_THRESHOLD && tankSize.get() != 0.0) {
+			float deltaFuelLevel = fuelLevel.get() - startFuelLevel.get();
+			float deltaTime = ((float)(((System.nanoTime() - startTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) * UniversalConstants.SECONDS_TO_HOURS));
 			float fuelRateSum = 0;
-			for(Float fuelRate : fuelRateList) {
-				fuelRateSum = fuelRateSum + fuelRate;
-			}
-			float meanFuelRate = fuelRateSum / fuelRateList.size();
+			synchronized (fuelRateList) {
+				for (Float fuelRate : fuelRateList) {
+					fuelRateSum = fuelRateSum + fuelRate;
+				}
+				float meanFuelRate = fuelRateSum / fuelRateList.size();
 
-			tankSize = (100/deltaFuelLevel) * (meanFuelRate * deltaTime);
-			automotiveManager.unregister(AutomotiveSignalId.FMS_FUEL_RATE);
+				tankSize.set((100 / deltaFuelLevel) * (meanFuelRate * deltaTime));
+			}
+			synchronized (automotiveManager) {
+				automotiveManager.unregister(AutomotiveSignalId.FMS_FUEL_RATE);
+			}
+
 		}
 	}
 
 	// Method that calculates the number of kilometers until a refuel is needed.
 	private double calculateKmToRefuel(final double currentLitersInTank) {
 		float addedConsumption = 0;
-		for(Float consumption : instantFuelEconomyList) {
-			addedConsumption = addedConsumption + consumption;
+		synchronized (instantFuelEconomyList) {
+			for (Float consumption : instantFuelEconomyList) {
+				addedConsumption = addedConsumption + consumption;
+			}
+			double meanFuelEconomy = (double) addedConsumption / instantFuelEconomyList.size();
+			return (meanFuelEconomy * currentLitersInTank);
 		}
-		double meanFuelEconomy =  (double) addedConsumption / instantFuelEconomyList.size();
-		return (meanFuelEconomy * currentLitersInTank);
 	}
 }

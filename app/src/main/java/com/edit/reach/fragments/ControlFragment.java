@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 
-
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +12,6 @@ import android.view.ViewGroup;
 import android.widget.*;
 
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -26,7 +21,6 @@ import com.edit.reach.app.R;
 import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.model.Leg;
 import com.edit.reach.model.interfaces.IMilestone;
-import com.google.android.gms.tagmanager.Container;
 
 import java.util.List;
 
@@ -63,16 +57,17 @@ public class ControlFragment extends Fragment{
     private TextView textTimeToNextStop;
     private TextView textNextStop;
     private TextView textDistanceToTextStop;
+	private TextView textRatingNextStop;
+
+	//Suggestion Buttons
+	private Button btNextSuggestion;
+	private Button btOkSuggestion;
 
     //MileStone Images
     private ImageView ivFood;
     private ImageView ivGastation;
     private ImageView ivRestArea;
     private ImageView ivToilet;
-
-	//Fragment Containers
-	private RelativeLayout containerTop;
-	private RelativeLayout containerBottom;
 
 	public void setBarTimeClock(double timeClock) {
 		this.timeClock = timeClock;
@@ -162,37 +157,31 @@ public class ControlFragment extends Fragment{
 
 		View view = inflater.inflate(R.layout.fragment_control, container, false);
 
-		containerTop = (RelativeLayout) view.findViewById(R.id.container_control_top);
-		containerBottom = (RelativeLayout) view.findViewById(R.id.container_control_bottom);
-
-		View controlInfo = inflater.inflate(R.layout.control_info, container, false);
-		containerTop.addView(controlInfo);
-		View controlInput = inflater.inflate(R.layout.control_input, container, false);
-		containerBottom.addView(controlInput);
-
-		textNextStop = (TextView) controlInfo.findViewById(R.id.tv_control_info_top_card_title);
+		textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
 
         //Get TextViews
-        textNextStop = (TextView) controlInfo.findViewById(R.id.tv_control_info_top_card_title);
-        textTimeToNextStop = (TextView) controlInfo.findViewById(R.id.control_info_top_card_time);
-        textDistanceToTextStop = (TextView) controlInfo.findViewById(R.id.control_info_top_card_distance);
+        textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
+		textRatingNextStop = (TextView) view.findViewById(R.id.navigation_info_rating);
+        textTimeToNextStop = (TextView) view.findViewById(R.id.navigation_info_time);
+        textDistanceToTextStop = (TextView) view.findViewById(R.id.navigation_info_distance);
+
+		//Get Suggestion Buttons
+		btNextSuggestion = (Button) view.findViewById(R.id.suggestion_button_next);
+		btOkSuggestion = (Button) view.findViewById(R.id.suggestion_button_ok);
 
         //TODO delete setVisibility
         //Get ImageViews
-        ivFood = (ImageView) controlInfo.findViewById(R.id.control_info_top_card_type_food);
-
-        ivGastation = (ImageView) controlInfo.findViewById(R.id.control_info_top_card_type_gasstation);
-
-        ivRestArea = (ImageView) controlInfo.findViewById(R.id.control_info_top_card_type_restarea);
-
-        ivToilet = (ImageView) controlInfo.findViewById(R.id.control_info_top_card_type_toilet);
+        ivFood = (ImageView) view.findViewById(R.id.navigation_info_icon_type_food);
+        ivGastation = (ImageView) view.findViewById(R.id.navigation_info_icon_type_gasstation);
+        ivRestArea = (ImageView) view.findViewById(R.id.navigation_info_icon_type_restarea);
+        ivToilet = (ImageView) view.findViewById(R.id.navigation_info_icon_type_toilet);
 
         //Get progressbars
-        barFuel = (ProgressBar) controlInfo.findViewById(R.id.progress_gas);
-        barTimeClock = (ProgressBar) controlInfo.findViewById(R.id.progress_time_clock);
+        barFuel = (ProgressBar) view.findViewById(R.id.progress_gas);
+        barTimeClock = (ProgressBar) view.findViewById(R.id.progress_time_clock);
 
 		//Get and set Input buttons
-		ibRestArea = (ImageButton) controlInput.findViewById(R.id.button_control_input_restarea);
+		ibRestArea = (ImageButton) view.findViewById(R.id.button_control_input_restarea);
 		ibRestArea.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -200,7 +189,7 @@ public class ControlFragment extends Fragment{
 				Log.d("INPUTBUTTON", "Restarea");
 			}
 		});
-		ibFood = (ImageButton) controlInput.findViewById(R.id.button_control_input_restaurant);
+		ibFood = (ImageButton) view.findViewById(R.id.button_control_input_restaurant);
 		ibFood.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -208,7 +197,7 @@ public class ControlFragment extends Fragment{
 				Log.d("INPUTBUTTON", "Food");
 			}
 		});
-		ibToilet = (ImageButton) controlInput.findViewById(R.id.button_control_input_toilet);
+		ibToilet = (ImageButton) view.findViewById(R.id.button_control_input_toilet);
 		ibToilet.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -216,7 +205,7 @@ public class ControlFragment extends Fragment{
 				Log.d("INPUTBUTTON", "Toilet");
 			}
 		});
-		ibGasStation = (ImageButton) controlInput.findViewById(R.id.button_control_input_gasstation);
+		ibGasStation = (ImageButton) view.findViewById(R.id.button_control_input_gasstation);
 		ibGasStation.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {

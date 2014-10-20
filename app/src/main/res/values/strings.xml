@@ -39,12 +39,11 @@
 	<string name="tv_control_info_gas_right">Full</string>
 	<string name="tv_control_info_time_clock_left">4h 38m</string>
 	<string name="tv_control_info_time_clock_right">3h 12m</string>
-	<string name="tv_control_info_top_card_title">Title for Milestone</string>
-	<string name="tv_control_info_top_card_time">21 min</string>
-	<string name="tv_control_info_top_card_distance">17 km</string>
-	<string name="tv_control_suggestion_top_card_title">Title for Suggestion</string>
-	<string name="tv_control_suggestion_top_card_rating">4/5</string>
-	<string name="tv_control_suggestion_top_card_time">12 min</string>
-	<string name="tv_control_suggestion_top_card_distance">8 km</string>
+	<string name="tv_navigation_info_title">Title</string>
+	<string name="tv_navigation_info_rating">4/5</string>
+	<string name="tv_navigation_info_time">12 min</string>
+	<string name="tv_navigation_info_distance">8 km</string>
+	<string name="suggestion_button_next">NEXT</string>
+	<string name="suggestion_button_ok">OK</string>
 
 </resources>

@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/background_fragment_left"
     android:paddingTop="@dimen/fragment_control_top_padding"
     android:paddingBottom="@dimen/fragment_control_bottom_padding"
@@ -9,20 +9,287 @@
     android:paddingEnd="@dimen/fragment_control_end_padding"
     tools:context="com.edit.reach.fragments.ControlFragment">
 
-		<!-- Holder for top content in ControlFragment -->
-		<RelativeLayout
-			android:id="@+id/container_control_top"
+	<!-- Container for Navigation Info -->
+	<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/navigation_info_container"
+			android:orientation="vertical"
+			android:layout_marginTop="@dimen/navigation_info_margin_top"
+			android:layout_marginBottom="@dimen/navigation_info_margin_bottom">
+
+		<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/tv_navigation_info_title"
+				android:text="@string/tv_navigation_info_title"
+				android:textSize="@dimen/tv_navigation_info_title"
+				android:textColor="@color/tv_navigation_info_title"/>
+
+		<!-- Icons Holder -->
+		<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:layout_marginTop="@dimen/navigation_info_icons_holder_margin_top"
+				android:layout_marginBottom="@dimen/navigation_info_icons_holder_margin_bottom">
+
+			<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/navigation_info_icon_type_food"
+					android:src="@drawable/milestone_restaurant"
+					android:visibility="visible"/>
+
+			<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/navigation_info_icon_type_gasstation"
+					android:src="@drawable/milestone_gasstation"
+					android:visibility="visible"/>
+
+			<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/navigation_info_icon_type_restarea"
+					android:src="@drawable/milestone_restarea"
+					android:visibility="visible"/>
+
+			<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/navigation_info_icon_type_toilet"
+					android:src="@drawable/milestone_restarea"
+					android:visibility="visible"/>
+
+		</LinearLayout>
+
+		<!-- Specifications holder -->
+		<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
+
+			<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/navigation_info_rating"
+					android:text="@string/tv_navigation_info_rating"
+					android:textSize="@dimen/tv_navigation_info_specs"
+					android:textColor="@color/text_navigation_info_specs"/>
+
+			<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/navigation_info_distance"
+					android:text="@string/tv_navigation_info_distance"
+					android:textSize="@dimen/tv_navigation_info_specs"
+					android:textColor="@color/text_navigation_info_specs"/>
+
+			<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/navigation_info_time"
+					android:text="@string/tv_navigation_info_time"
+					android:textSize="@dimen/tv_navigation_info_specs"
+					android:textColor="@color/text_navigation_info_specs"/>
+		</LinearLayout>
+
+	</LinearLayout>
+
+	<RelativeLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_alignParentTop="true">
-		</RelativeLayout>
+			android:id="@+id/suggestion_buttons"
+			android:layout_below="@+id/navigation_info_container"
+			android:layout_marginBottom="@dimen/suggestion_buttons_margin_bottom">
 
-		<!-- Holder for bottom content in ControlFragment -->
-		<RelativeLayout
-				android:id="@+id/container_control_bottom"
-				android:layout_width="match_parent"
+		<Button
+				android:layout_width="100dp"
 				android:layout_height="wrap_content"
-				android:layout_alignParentBottom="true">
-		</RelativeLayout>
+				android:id="@+id/suggestion_button_next"
+				android:text="@string/suggestion_button_next"
+				style="@android:style/Widget.Holo.Button.Small"
+				android:layout_alignParentStart="true"
+				android:textSize="@dimen/suggestion_button"/>
+
+		<Button
+				android:layout_width="100dp"
+				android:layout_height="wrap_content"
+				android:id="@+id/suggestion_button_ok"
+				android:text="@string/suggestion_button_ok"
+				style="@android:style/Widget.Holo.Button.Small"
+				android:layout_alignParentEnd="true"
+				android:textSize="@dimen/suggestion_button"/>
+
+	</RelativeLayout>
+
+	<!-- Holder for three progress bars with either text or icons on each side -->
+	<GridLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/control_info_progressbar_holder"
+			android:columnCount="3"
+			android:rowCount="3"
+			android:layout_below="@+id/suggestion_buttons"
+			android:layout_centerHorizontal="true">
+
+		<!-- Three ProgressBars-->
+		<ProgressBar
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/progress_next_stop"
+				android:layout_column="1"
+				android:layout_row="0"
+				android:minWidth="@dimen/progress_bar_min_width"
+				android:minHeight="@dimen/progress_bar_min_height"
+				android:maxWidth="@dimen/progress_bar_max_width"
+				android:maxHeight="@dimen/progress_bar_max_height"
+				android:layout_marginStart="@dimen/progress_bar_margin_side"
+				android:layout_marginEnd="@dimen/progress_bar_margin_side"
+				style="@android:style/Widget.Holo.ProgressBar.Horizontal">
+		</ProgressBar>
+
+		<ProgressBar
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/progress_gas"
+				android:layout_column="1"
+				android:layout_row="1"
+				android:minWidth="@dimen/progress_bar_min_width"
+				android:minHeight="@dimen/progress_bar_min_height"
+				android:maxWidth="@dimen/progress_bar_max_width"
+				android:maxHeight="@dimen/progress_bar_max_height"
+				android:layout_marginStart="@dimen/progress_bar_margin_side"
+				android:layout_marginEnd="@dimen/progress_bar_margin_side"
+				style="@android:style/Widget.Holo.ProgressBar.Horizontal">
+		</ProgressBar>
+
+		<ProgressBar
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/progress_time_clock"
+				android:layout_column="1"
+				android:layout_row="2"
+				android:minWidth="@dimen/progress_bar_min_width"
+				android:minHeight="@dimen/progress_bar_min_height"
+				android:maxWidth="@dimen/progress_bar_max_width"
+				android:maxHeight="@dimen/progress_bar_max_height"
+				android:layout_marginStart="@dimen/progress_bar_margin_side"
+				android:layout_marginEnd="@dimen/progress_bar_margin_side"
+				style="@android:style/Widget.Holo.ProgressBar.Horizontal">
+		</ProgressBar>
+
+		<!-- TextViews to accompany the ProgressBars -->
+		<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/tv_control_info_next_stop_left"
+				android:layout_column="0"
+				android:layout_row="0"
+				android:text="@string/tv_control_info_next_stop_left"
+				android:textSize="@dimen/tv_control_info_progress_bar_text"
+				android:layout_gravity="end"
+				android:textColor="@color/text_navigation_info_progressbar"/>
+
+		<TextView
+				android:id="@+id/tv_control_info_next_stop_right"
+				android:layout_column="2"
+				android:layout_row="0"
+				android:text="@string/tv_control_info_next_stop_right"
+				android:textSize="@dimen/tv_control_info_progress_bar_text"
+				android:textColor="@color/text_navigation_info_progressbar"/>
+
+		<TextView
+				android:id="@+id/tv_control_info_gas_left"
+				android:layout_column="0"
+				android:layout_row="1"
+				android:text="@string/tv_control_info_gas_left"
+				android:textSize="@dimen/tv_control_info_progress_bar_text"
+				android:layout_gravity="end"
+				android:textColor="@color/text_navigation_info_progressbar"/>
+
+		<TextView
+				android:id="@+id/tv_control_info_gas_right"
+				android:layout_column="2"
+				android:layout_row="1"
+				android:text="@string/tv_control_info_gas_right"
+				android:textSize="@dimen/tv_control_info_progress_bar_text"
+				android:textColor="@color/text_navigation_info_progressbar"/>
+
+		<TextView
+				android:id="@+id/tv_control_info_time_clock_left"
+				android:layout_column="0"
+				android:layout_row="2"
+				android:text="@string/tv_control_info_time_clock_left"
+				android:textSize="@dimen/tv_control_info_progress_bar_text"
+				android:layout_gravity="end"
+				android:textColor="@color/text_navigation_info_progressbar"/>
+
+		<TextView
+				android:id="@+id/tv_control_info_time_clock_right"
+				android:layout_column="2"
+				android:layout_row="2"
+				android:text="@string/tv_control_info_time_clock_right"
+				android:textSize="@dimen/tv_control_info_progress_bar_text"
+				android:textColor="@color/text_navigation_info_progressbar"/>
+
+	</GridLayout>
+
+	<!-- Holder for 4 buttons. When button is pressed switch src to <<name>> + _pressed
+	- for example "input_restaurant_pressed" and for the other buttons "input_toilet_shaded"  -->
+	<GridLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentBottom="true"
+			android:layout_centerHorizontal="true"
+	        android:layout_marginTop="@dimen/user_input_buttons_margin_top"
+			>
+
+		<ImageButton
+				android:id="@+id/button_control_input_restaurant"
+				android:src="@drawable/input_restaurant_pressed"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_column="0"
+				android:layout_row="0"
+				android:layout_margin="@dimen/input_button_margin"
+				style="@android:style/Widget.Holo.Button.Borderless"
+				/>
+
+		<ImageButton
+				android:id="@+id/button_control_input_restarea"
+				android:src="@drawable/input_restarea_shaded"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_column="0"
+				android:layout_row="1"
+				android:layout_margin="@dimen/input_button_margin"
+				style="@android:style/Widget.Holo.Button.Borderless"
+				/>
+
+		<ImageButton
+				android:id="@+id/button_control_input_toilet"
+				android:src="@drawable/input_toilet_shaded"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_column="1"
+				android:layout_row="0"
+				android:layout_margin="@dimen/input_button_margin"
+				style="@android:style/Widget.Holo.Button.Borderless"
+				/>
+
+		<ImageButton
+				android:id="@+id/button_control_input_gasstation"
+				android:src="@drawable/input_gasstation_pressed"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_column="1"
+				android:layout_row="1"
+				android:layout_margin="@dimen/input_button_margin"
+				style="@android:style/Widget.Holo.Button.Borderless"
+				/>
+
+	</GridLayout>
 
 </RelativeLayout>
