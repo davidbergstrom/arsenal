@@ -16,7 +16,7 @@
             android:maxWidth="65dp"
             android:maxHeight="65dp"
             android:scaleType="fitCenter"
-            android:padding="10dp"/>
+            android:padding="@dimen/card_milestone_icon_padding"/>
 
 	<TextView
 			android:id="@+id/card_milestone_text"
@@ -25,5 +25,5 @@
             android:layout_gravity="center_vertical"
 			android:text="@string/card_milestone_text"
 			android:textColor="@color/card_milestone_text"
-			android:textSize="18sp"/>
+			android:textSize="@dimen/card_milestone_text"/>
 </LinearLayout>

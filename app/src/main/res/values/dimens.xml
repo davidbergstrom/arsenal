@@ -17,6 +17,7 @@
 	<dimen name="fragment_milestones_button_holder_margin_top">20dp</dimen>
 
 	<dimen name="card_milestone_icon_margin_right">20dp</dimen>
+	<dimen name="card_milestone_icon_padding">10dp</dimen>
 	<dimen name="card_milestone_text_margin_left">10dp</dimen>
 	<dimen name="card_milestone_text">18sp</dimen>
 
