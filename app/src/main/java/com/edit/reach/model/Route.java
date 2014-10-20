@@ -56,8 +56,7 @@ public class Route {
                 for(int i = 0; i < arrayLegs.length(); i++) {
                     JSONObject legJSON = arrayLegs.getJSONObject(i);
                     Leg newLeg = new Leg(legJSON);
-                    Log.d(DEBUG_TAG, "New Leg "+newLeg.toString());
-                    //TODO Matching wont match exactly and will never work, fix!
+                    // Get the milestone associated
                     if(milestoneOrder.size() - 1 >= i){
                         newLeg.setMilestone(milestones.get(milestoneOrder.get(i))); // Set the milestone to a milestone with the endlocation of the leg
                     }
@@ -215,18 +214,6 @@ public class Route {
                 if(milestone.getLocation().equals(location)){
                     return milestone;
                 }
-            }
-        }
-        return null;
-    }
-
-    private IMilestone getBestMilestone(LatLng location){
-        for(IMilestone milestone : milestones){
-            LatLng milestoneLocation = milestone.getLocation();
-            double distance = NavigationUtil.getDistance(milestoneLocation, location);
-            Log.d(DEBUG_TAG, "Location :"+location+", milestone :"+milestoneLocation+", distance :"+distance);
-            if(distance < 5){
-                return milestone;
             }
         }
         return null;
