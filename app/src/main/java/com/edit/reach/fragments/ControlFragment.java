@@ -44,7 +44,7 @@ public class ControlFragment extends Fragment{
 
 
 	private float fuelLevel;
-	private double nextStopClock; //in sec
+	private float nextStopClock; //in sec
 	private double timeClock;   //in sec
 	private double totalTime;   //in sec
     private float distanceToNextStop;
@@ -111,8 +111,8 @@ public class ControlFragment extends Fragment{
         this.categories = milestone.getCategories();
 
         textNextStop.setText(nextStopName);
-        textTimeToNextStop.setText("" + nextStopClock * UniversalConstants.SECONDS_TO_MINUTES);
-        textDistanceToTextStop.setText("" + distanceToNextStop * 0.001);
+        textTimeToNextStop.setText((int)(nextStopClock * UniversalConstants.SECONDS_TO_MINUTES) + " min");
+        textDistanceToTextStop.setText((int)(distanceToNextStop * 0.001) + " km");
 
         //Set Milestone Images
         ivFood.setVisibility(ImageView.INVISIBLE);
