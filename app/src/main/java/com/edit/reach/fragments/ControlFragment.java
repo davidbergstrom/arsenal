@@ -185,6 +185,7 @@ public class ControlFragment extends Fragment{
 		ibRestArea.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				Log.d("INPUTBUTTON RESTAREA", "" + ibRestArea.getBackground().toString());
 				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.RESTAREA);
 				Log.d("INPUTBUTTON", "Restarea");
 			}

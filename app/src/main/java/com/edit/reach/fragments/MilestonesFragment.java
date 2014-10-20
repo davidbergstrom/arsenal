@@ -43,8 +43,7 @@ public class MilestonesFragment extends Fragment {
 	private ArrayList <String> mMilestonesList;
     private ArrayList <String> mMilestonesType;
 
-    private Button btEditRoute;
-    private Button btStartRoute;
+	private Button btStartRoute;
 
     private static int n = 0;
 
@@ -52,6 +51,7 @@ public class MilestonesFragment extends Fragment {
 	private	TextView mFromTextView;
 	private	TextView mToTextView;
     private LinearLayout cardList;
+	private ImageButton ibPrevious;
 
 
     /**
@@ -95,19 +95,20 @@ public class MilestonesFragment extends Fragment {
 		mFromTextView = (TextView) view.findViewById(R.id.tv_text_from);
 		mToTextView = (TextView) view.findViewById(R.id.tv_text_to);
         cardList = (LinearLayout) view.findViewById(R.id.cardList);
-        btEditRoute = (Button) view.findViewById(R.id.button_edit_route);
+
         btStartRoute = (Button) view.findViewById(R.id.button_start_route);
+	    ibPrevious = (ImageButton) view.findViewById(R.id.ib_previous_fragment_milestones);
+	    ibPrevious.setOnClickListener(new View.OnClickListener() {
+		    @Override
+		    public void onClick(View view) {
+			    ((MultiPaneActivity)getActivity()).changeMsFragmentHasBeenCreated(false);
+			    ((MultiPaneActivity)getActivity()).goBackToRouteFragment();
+		    }
+	    });
 
 
 
-        btEditRoute.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MultiPaneActivity)getActivity()).goBackToRouteFragment();
 
-
-            }
-        });
         btStartRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

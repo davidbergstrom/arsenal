@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="horizontal"
+              android:orientation="vertical"
               android:background="@color/background_fragment_left"
               android:paddingTop="@dimen/fragment_left_top_padding"
               android:paddingBottom="@dimen/fragment_left_bottom_padding"
@@ -13,6 +13,7 @@
               android:focusableInTouchMode="true"
 	>
 
+
     <!-- Lägg till fler layouter för att få en TextView bredvid +-knappen -->
     <LinearLayout
             android:orientation="vertical"
@@ -20,6 +21,28 @@
             android:layout_height="match_parent"
             >
 
+    <RelativeLayout
+            android:id="@+id/rl_wizard_route"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:id="@+id/tv_current_fragment_route"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Route Fragment"
+                android:textColor="@color/text_fragment_route"
+                />
+        <ImageButton
+                android:id="@+id/ib_next_fragment_route"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                />
+
+
+    </RelativeLayout>
         <AutoCompleteTextView
                 android:id="@+id/autocomplete_route_from"
                 android:inputType="textAutoComplete"
