@@ -204,6 +204,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 							});
 							break;
 
+						// TODO Not working
 						case SignalType.UPTIME_UPDATE:
 							Log.d("UPDATE", "TYPE: UP_TIME_UPDATE");
 
