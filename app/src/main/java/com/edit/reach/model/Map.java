@@ -101,10 +101,10 @@ public class Map {
                 lastLocation = myLocation;
                 handler.postDelayed(this, UPDATE_INTERVAL_FAST);
             }else if(state == State.MOVING && !isRouteSet()){
-                Location myLocation = map.getMyLocation();
-                LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                //Location myLocation = map.getMyLocation();
+                //LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
 
-                moveCameraTo(position);
+                //moveCameraTo(position);
                 handler.postDelayed(this, UPDATE_INTERVAL_FAST);
             }else{
                 Log.d(DEBUG_TAG, "Current route null or not initialized!");
