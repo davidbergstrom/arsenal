@@ -33,20 +33,30 @@
 			<ImageView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:id="@+id/control_info_top_card_type_icon"
-					android:src="@drawable/milestone_restaurant"/>
+					android:id="@+id/control_info_top_card_type_food"
+					android:src="@drawable/milestone_restaurant"
+					android:visibility="invisible"/>
 
 			<ImageView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-		            android:id="@+id/control_info_top_card_type_icon_2"
-		            android:src="@drawable/milestone_restarea"/>
+		            android:id="@+id/control_info_top_card_type_gasstation"
+		            android:src="@drawable/milestone_gasstation"
+		            android:visibility="invisible"/>
 
 			<ImageView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-		            android:id="@+id/control_info_top_card_type_icon_3"
-		            android:src="@drawable/milestone_gasstation"/>
+		            android:id="@+id/control_info_top_card_type_restarea"
+		            android:src="@drawable/milestone_restarea"
+		            android:visibility="invisible"/>
+
+			<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/control_info_top_card_type_toilet"
+					android:src="@drawable/milestone_restarea"
+					android:visibility="invisible"/>
 
 		</LinearLayout>
 
