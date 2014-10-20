@@ -62,7 +62,9 @@ public class Map extends Observable{
                 Log.d(DEBUG_TAG, "Notified observers that the initialization succeeded!");
                 setChanged();
                 notifyObservers(SignalType.ROUTE_INITIALIZATION_SUCCEDED);
+                setChanged();
                 notifyObservers(SignalType.LEG_UPDATE);
+                setChanged();
                 notifyObservers(SignalType.ROUTE_TOTAL_TIME_UPDATE);
             }else{
                 setChanged();
