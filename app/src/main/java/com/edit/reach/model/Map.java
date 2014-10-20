@@ -108,7 +108,7 @@ public class Map {
                 }else{
                     position = new LatLng(0, 0);
                 }
-                
+
                 moveCameraTo(position);
                 handler.postDelayed(this, UPDATE_INTERVAL_FAST);
             }else{
