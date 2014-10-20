@@ -79,7 +79,15 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 	 * @return a IMilestone that matches the category specified.
 	 */
 	public IMilestone getPauseSuggestions(IMilestone.Category category) {
-		// TODO The AISA method for one category
+		if(category == IMilestone.Category.FOOD) {
+
+		} else if(category == IMilestone.Category.RESTAREA) {
+
+		} else if(category == IMilestone.Category.GASSTATION) {
+
+		} else {
+			// TODO
+		}
 		return null;
 	}
 
@@ -166,9 +174,17 @@ public class NavigationModel implements Runnable, Observer, SuggestionListener, 
 				// Obtain message from handler.
 				Message message = Message.obtain(mainHandler);
 
-				// Sets the message to the routes legs and send it to the UI.
-				message.obj = map.getRoute().getLegs();
-				message.what = SignalType.LEG_UPDATE;
+				// Get the route.
+				Route r = map.getRoute();
+
+				// Send time left on route.
+				message.obj = r.getDuration();
+				message.what = SignalType.ROUTE_TOTAL_TIME_UPDATE;
+				mainHandler.sendMessage(message);
+
+				// Send time left until first milestone.
+				message.obj = r.getLegs().get(0).getDuration();
+				message.what = SignalType.ROUTE_MILESTONE_TIME_UPDATE;
 				mainHandler.sendMessage(message);
 
 				// If vehicle is low on fuel.
