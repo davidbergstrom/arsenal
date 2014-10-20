@@ -46,6 +46,7 @@ public class RouteFragment extends Fragment {
 	private ProgressBar spinner;
 	private ArrayAdapter<String> adapter;
 	private ImageButton ibNext;
+	private Button btNext;
 	private boolean myCurrentLocationActivated;
 
 
@@ -89,9 +90,15 @@ public class RouteFragment extends Fragment {
         spinner = (ProgressBar)view.findViewById(R.id.spinner);
         etListOfVia = new ArrayList<EditText>();
 
-
-		ibNext = (ImageButton) view.findViewById(R.id.ib_next_fragment_route);
+		ibNext = (ImageButton) view.findViewById(R.id.ib_route_navigation_next);
 		ibNext.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				getNearestRoute();
+			}
+		});
+		btNext = (Button) view.findViewById(R.id.bt_route_navigation_next);
+		btNext.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				getNearestRoute();
@@ -164,8 +171,8 @@ public class RouteFragment extends Fragment {
 				}
 			}
 		});
-		Button btGetNearestRoute = (Button) view.findViewById(R.id.btSubmitNearestRoute);
-		btGetNearestRoute.setOnClickListener(getNearestRouteListener);
+/*		Button btGetNearestRoute = (Button) view.findViewById(R.id.btSubmitNearestRoute);
+		btGetNearestRoute.setOnClickListener(getNearestRouteListener);*/
 
 		return view;
 	}

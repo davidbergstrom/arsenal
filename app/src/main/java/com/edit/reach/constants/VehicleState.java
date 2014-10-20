@@ -7,7 +7,7 @@ package com.edit.reach.constants;
  * Date: 2014-10-13
  * Time: 19:31
  */
-public class MovingState {
+public class VehicleState {
 	public static final int DRIVE_AND_MOVING = 101;
 	public static final int DRIVE_BUT_NOT_MOVING = 102;
 	public static final int NOT_IN_DRIVE = 103;

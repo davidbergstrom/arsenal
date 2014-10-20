@@ -23,6 +23,8 @@
 
 	<dimen name="button_edit_route_margin_left">20dp</dimen>
 	<dimen name="button_start_route_margin_right">20dp</dimen>
+	<dimen name="text_button_milestone_navigation">22sp</dimen>
+	<dimen name="milestone_navigation_margin_top">20dp</dimen>
 
 	<!-- Route Fragment -->
 	<dimen name="use_current_location_top">5dp</dimen>
@@ -38,6 +40,7 @@
 	<dimen name="image_my_location_margin_right">20dp</dimen>
 	<dimen name="text_my_location_margin_right">10dp</dimen>
 	<dimen name="button_get_route_top_margin">30dp</dimen>
+	<dimen name="text_button_route_navigation">22sp</dimen>
 
 	<!-- Custom info window on Map Fragment -->
 	<dimen name="custom_info_window_top">20dp</dimen>
@@ -52,15 +55,15 @@
 	<dimen name="fragment_control_end_padding">10dp</dimen>
 	<dimen name="user_input_buttons_margin_top">10dp</dimen>
 	<dimen name="input_button_margin">5dp</dimen>
-	<dimen name="tv_control_info_progress_bar_text">20sp</dimen>
-	<dimen name="suggestion_button">22sp</dimen>
+	<dimen name="tv_control_info_progress_bar_text">18sp</dimen>
+	<dimen name="suggestion_button">24sp</dimen>
 	<dimen name="suggestion_buttons_margin_bottom">15dp</dimen>
 
 	<!-- Control Fragment - Top Info Box -->
 	<dimen name="navigation_info_margin_bottom">20dp</dimen>
 	<dimen name="navigation_info_margin_top">10dp</dimen>
-	<dimen name="tv_navigation_info_title">28sp</dimen>
-	<dimen name="tv_navigation_info_specs">22sp</dimen>
+	<dimen name="tv_navigation_info_title">24sp</dimen>
+	<dimen name="tv_navigation_info_specs">18sp</dimen>
 	<dimen name="navigation_info_icons_holder_margin_top">5dp</dimen>
 	<dimen name="navigation_info_icons_holder_margin_bottom">10dp</dimen>
 

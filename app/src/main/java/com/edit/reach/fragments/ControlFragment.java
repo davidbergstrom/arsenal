@@ -3,16 +3,11 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.*;
-
-
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -107,8 +102,8 @@ public class ControlFragment extends Fragment{
             List<IMilestone.Category> categories = milestone.getCategories();
 
             textNextStop.setText(nextStopName);
-            textTimeToNextStop.setText((int)(nextStopClock * UniversalConstants.SECONDS_TO_MINUTES) + " min");
-            textDistanceToTextStop.setText((int)(distanceToNextStop * 0.001) + " km");
+            textTimeToNextStop.setText("Time to stop: " + (int)(nextStopClock * UniversalConstants.SECONDS_TO_MINUTES) + " min");
+            textDistanceToTextStop.setText("Distance to stop: " + (int)(distanceToNextStop * 0.001) + " km");
 
             //Set Milestone Images
             ivFood.setVisibility(ImageView.GONE);

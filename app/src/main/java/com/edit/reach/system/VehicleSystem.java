@@ -7,7 +7,7 @@ import android.swedspot.automotiveapi.AutomotiveSignalId;
 import android.swedspot.scs.data.*;
 import android.util.Log;
 import com.edit.reach.constants.UniversalConstants;
-import com.edit.reach.constants.MovingState;
+import com.edit.reach.constants.VehicleState;
 import com.edit.reach.constants.SignalType;
 import com.edit.reach.utils.AtomicFloat;
 import com.swedspot.automotiveapi.AutomotiveFactory;
@@ -83,12 +83,10 @@ public final class VehicleSystem extends Observable implements Runnable {
 	private final Runnable timeRunnable = new Runnable() {
 		@Override
 		public void run() {
-			Log.d("determineTimeUpdate()", "in timeRunnable");
 			if (startTime.get() != 0) {
-				Log.d("determineTimeUpdate()", "passed startTime.ger() != 0");
 				determineTimeUpdate();
 			}
-			signalHandler.postDelayed(this, 50);
+			signalHandler.postDelayed(this, 1000);
 		}
 	};
 
@@ -237,18 +235,12 @@ public final class VehicleSystem extends Observable implements Runnable {
 					AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE,
 					AutomotiveSignalId.FMS_FUEL_RATE,
 					AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY,
-					AutomotiveSignalId.FMS_SERVICE_DISTANCE,
-					AutomotiveSignalId.FMS_VEHICLE_MOTION,
-					AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED,
-					AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED,
-					AutomotiveSignalId.FMS_HIGH_RESOLUTION_TOTAL_VEHICLE_DISTANCE);
-
+					AutomotiveSignalId.FMS_VEHICLE_MOTION);
 		}
 
 		// TODO this is not beautiful
 		while(signalHandler == null) {
 		}
-
 		signalHandler.post(timeRunnable);
 	}
 
@@ -279,7 +271,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 	public double getKilometersUntilRefuel() {
 		double currentLitersInTank = ((fuelLevel.get()/100.0) * tankSize.get());
 
-		if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
+		if (getVehicleState() != VehicleState.NOT_IN_DRIVE) {
 			return calculateKmToRefuel(currentLitersInTank);
 		} else {
 			synchronized (instantFuelEconomyList) {
@@ -300,7 +292,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 	Negative number if drive longer than legal.
 	 */
 	public double getTimeUntilForcedRest() {
-		if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
+		if (getVehicleState() != VehicleState.NOT_IN_DRIVE) {
 			return (UniversalConstants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS));
 		} else {
 			return UniversalConstants.LEGAL_UPTIME_IN_SECONDS;
@@ -313,13 +305,13 @@ public final class VehicleSystem extends Observable implements Runnable {
 	public int getVehicleState() {
 		if (isMoving.get() == 1 && workingState.get() == 3) {
 			// Is in drive and vehicle is moving.
-			return MovingState.DRIVE_AND_MOVING;
+			return VehicleState.DRIVE_AND_MOVING;
 		} else if (isMoving.get() == 0 && workingState.get() == 3) {
 			// Is in drive but vehicle not moving.
-			return MovingState.DRIVE_BUT_NOT_MOVING;
+			return VehicleState.DRIVE_BUT_NOT_MOVING;
 		} else {
 			// Vehicle not in drive
-			return MovingState.NOT_IN_DRIVE;
+			return VehicleState.NOT_IN_DRIVE;
 		}
 	}
 
@@ -391,32 +383,29 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 	// Method that notifies observers if the time changed more than 60 seconds.
 	private void determineTimeUpdate() {
-		Log.d("determineTimeUpdate()", "hit");
 		if (prevTime.get() == 0) {
-			Log.d("determineTimeUpdate()", "passed prevTime.get() == 0");
 			setChanged();
 			notifyObservers(SignalType.UPTIME_UPDATE);
 			prevTime.set(System.nanoTime());
 		} else {
-			Log.d("determineTimeUpdate()", "did not pass prevTime.get() == 0");
 			if (((System.nanoTime() - prevTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) >= 60) {
 				setChanged();
 				notifyObservers(SignalType.UPTIME_UPDATE);
 				prevTime.set(System.nanoTime());
 			} else {
 				// Do nothing
-				Log.d("determineTimeUpdate()", "in: do nothing");
 			}
 		}
 		determineShortTime();
-		Log.d("determineTimeUpdate()", "called determineShortTime()");
 	}
 
 	// ********** OTHER PRIVATE METHODS ********** //
 
 	// Method that calculates and sets the size of the vehicles tank.
 	private void calculateTankSize() {
-		if(((System.nanoTime() - startTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) <= FUEL_TIME_CALCULATION_THRESHOLD && tankSize.get() != 0.0) {
+		Log.d("Calculate tank size", "");
+		if((((System.nanoTime() - startTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) <= FUEL_TIME_CALCULATION_THRESHOLD) && tankSize.get() != 0.0) {
+			Log.d("Tank size", "Passed if statement");
 			float deltaFuelLevel = fuelLevel.get() - startFuelLevel.get();
 			float deltaTime = ((float)(((System.nanoTime() - startTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) * UniversalConstants.SECONDS_TO_HOURS));
 			float fuelRateSum = 0;
@@ -437,6 +426,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 	// Method that calculates the number of kilometers until a refuel is needed.
 	private double calculateKmToRefuel(final double currentLitersInTank) {
+		Log.d("Calculate time to refuel", "");
 		float addedConsumption = 0;
 		synchronized (instantFuelEconomyList) {
 			for (Float consumption : instantFuelEconomyList) {

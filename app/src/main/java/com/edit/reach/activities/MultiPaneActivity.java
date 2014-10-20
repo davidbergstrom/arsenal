@@ -2,14 +2,12 @@ package com.edit.reach.activities;
 
 import android.content.Intent;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,15 +16,16 @@ import android.widget.TextView;
 import com.edit.reach.app.R;
 import com.edit.reach.constants.SignalType;
 import com.edit.reach.fragments.ControlFragment;
-import com.edit.reach.fragments.MapFragment;
 import com.edit.reach.fragments.MilestonesFragment;
 import com.edit.reach.fragments.RouteFragment;
-import com.edit.reach.model.*;
+import com.edit.reach.model.Leg;
+import com.edit.reach.model.Map;
+import com.edit.reach.model.NavigationModel;
+import com.edit.reach.model.Route;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
@@ -146,7 +145,7 @@ public class MultiPaneActivity extends FragmentActivity{
 	@Override
 	protected  void onStop() {
 		super.onStop();
-		navigationModel.getMap().setState(Map.State.STATIONARY);
+		navigationModel.getMap().setMapState(Map.MapState.STATIONARY);
 	}
 
     /**
@@ -198,7 +197,7 @@ public class MultiPaneActivity extends FragmentActivity{
 	 * Init the functionality for moving-mode.
 	 */
 	public void initializeMovingBackend(){
-		navigationModel.getMap().setState(Map.State.MOVING);
+		navigationModel.getMap().setMapState(Map.MapState.MOVING);
 	}
 
 	public void addMilestones(){
