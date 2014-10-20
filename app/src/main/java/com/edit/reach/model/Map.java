@@ -25,7 +25,7 @@ import java.util.Observable;
 public class Map extends Observable{
 
     // Constant, the refresh rate of the navigation loop in milliseconds
-    private final int UPDATE_INTERVAL_NORMAL = 300, UPDATE_INTERVAL_FAST = 40, UPDATE_INTERVAL_SLOW = 500, ROUTE_INTERVAL = 60000;
+    private final int UPDATE_INTERVAL_NORMAL = 300, UPDATE_INTERVAL_FAST = 80, UPDATE_INTERVAL_SLOW = 500, ROUTE_INTERVAL = 60000;
 
     // The map which modifies the map view in the activity
     private GoogleMap map;
@@ -62,6 +62,8 @@ public class Map extends Observable{
                 Log.d(DEBUG_TAG, "Notified observers that the initialization succeeded!");
                 setChanged();
                 notifyObservers(SignalType.ROUTE_INITIALIZATION_SUCCEDED);
+                notifyObservers(SignalType.LEG_UPDATE);
+                notifyObservers(SignalType.ROUTE_TOTAL_TIME_UPDATE);
             }else{
                 setChanged();
                 notifyObservers(SignalType.ROUTE_INITIALIZATION_FAILED);
