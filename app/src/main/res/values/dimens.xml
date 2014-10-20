@@ -49,16 +49,19 @@
 	<dimen name="fragment_control_bottom_padding">10dp</dimen>
 	<dimen name="fragment_control_start_padding">10dp</dimen>
 	<dimen name="fragment_control_end_padding">10dp</dimen>
+	<dimen name="user_input_buttons_margin_top">10dp</dimen>
 	<dimen name="input_button_margin">5dp</dimen>
 	<dimen name="tv_control_info_progress_bar_text">20sp</dimen>
+	<dimen name="suggestion_button">22sp</dimen>
+	<dimen name="suggestion_buttons_margin_bottom">15dp</dimen>
 
 	<!-- Control Fragment - Top Info Box -->
-	<dimen name="control_info_top_card_holder_margin_bottom">20dp</dimen>
-	<dimen name="control_info_top_card_holder_margin_top">10dp</dimen>
-	<dimen name="tv_control_info_top_card_title">30sp</dimen>
-	<dimen name="tv_control_info_top_card_specs">30sp</dimen>
-	<dimen name="control_info_icons_holder_margin_top">5dp</dimen>
-	<dimen name="control_info_icons_holder_margin_bottom">10dp</dimen>
+	<dimen name="navigation_info_margin_bottom">20dp</dimen>
+	<dimen name="navigation_info_margin_top">10dp</dimen>
+	<dimen name="tv_navigation_info_title">28sp</dimen>
+	<dimen name="tv_navigation_info_specs">22sp</dimen>
+	<dimen name="navigation_info_icons_holder_margin_top">5dp</dimen>
+	<dimen name="navigation_info_icons_holder_margin_bottom">10dp</dimen>
 
 	<!-- Control Fragment - ProgressBar -->
 	<dimen name="progress_bar_min_width">150dp</dimen>
@@ -66,16 +69,6 @@
 	<dimen name="progress_bar_min_height">20dp</dimen>
 	<dimen name="progress_bar_max_height">20dp</dimen>
 	<dimen name="progress_bar_margin_side">10dp</dimen>
-
-	<!-- Control Fragment - Top Suggestion Box -->
-	<dimen name="control_suggestion_top_card_button_margin_right">50dp</dimen>
-	<dimen name="control_suggestion_top_card_holder_margin_bottom">20dp</dimen>
-	<dimen name="control_suggestion_top_card_holder_margin_top">10dp</dimen>
-	<dimen name="tv_control_suggestion_top_card_title">30sp</dimen>
-	<dimen name="tv_control_suggestion_top_card_specs">30sp</dimen>
-	<dimen name="control_suggestion_icons_holder_margin_top">5dp</dimen>
-	<dimen name="control_suggestion_icons_holder_margin_bottom">10dp</dimen>
-	<dimen name="control_suggestion_specs_margin_bottom">10dp</dimen>
 
 
 </resources>

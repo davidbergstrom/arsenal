@@ -2,7 +2,6 @@ package com.edit.reach.activities;
 
 import android.content.Intent;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,10 +16,12 @@ import android.widget.TextView;
 import com.edit.reach.app.R;
 import com.edit.reach.constants.SignalType;
 import com.edit.reach.fragments.ControlFragment;
-import com.edit.reach.fragments.MapFragment;
 import com.edit.reach.fragments.MilestonesFragment;
 import com.edit.reach.fragments.RouteFragment;
-import com.edit.reach.model.*;
+import com.edit.reach.model.Leg;
+import com.edit.reach.model.Map;
+import com.edit.reach.model.NavigationModel;
+import com.edit.reach.model.Route;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -70,22 +71,30 @@ public class MultiPaneActivity extends FragmentActivity{
                     break;
 
                 case SignalType.FUEL_UPDATE:
-                    controlFragment.setBarFuel((Float) message.obj);
+                    if(controlFragment != null) {
+                        controlFragment.setBarFuel((Float) message.obj);
+                    }
 					Log.d("HANDLER UPDATE", "Fuel update");
                     break;
 
                 case SignalType.UPTIME_UPDATE:
-                    controlFragment.setBarTimeClock((Double) message.obj);
+                    if(controlFragment != null) {
+                        controlFragment.setBarTimeClock((Double) message.obj);
+                    }
 					Log.d("HANDLER UPDATE", "Uptime update");
                     break;
 
                 case SignalType.ROUTE_TOTAL_TIME_UPDATE:
-                    controlFragment.setTotalTime((Long)message.obj);
+                    if(controlFragment != null) {
+                        controlFragment.setTotalTime((Long) message.obj);
+                    }
 					Log.d("HANDLER UPDATE", "Route total time update");
                     break;
 
                 case SignalType.LEG_UPDATE:
-                    controlFragment.setNextLeg((Leg)message.obj);
+                    if(controlFragment != null) {
+                        controlFragment.setNextLeg((Leg) message.obj);
+                    }
 					Log.d("HANDLER UPDATE", "Leg update");
                     break;
 
@@ -126,6 +135,12 @@ public class MultiPaneActivity extends FragmentActivity{
 
     }
 
+	@Override
+	protected void onPause(){
+		super.onPause();
+		navigationModel.getMap().setState(Map.State.STATIONARY);
+	}
+
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
@@ -164,8 +179,7 @@ public class MultiPaneActivity extends FragmentActivity{
 
 	public void initializeMovingUI(){
 		controlFragment = ControlFragment.newInstance("MovingMode");
-		getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, controlFragment).
-				addToBackStack("ControlFragment").commit();
+		getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, controlFragment).commit();
 	}
 	public void initializeMovingBackend(){
 		navigationModel.getMap().setState(Map.State.MOVING);
@@ -179,6 +193,7 @@ public class MultiPaneActivity extends FragmentActivity{
 		routeFragment = RouteFragment.newInstance("Route");
 		getSupportFragmentManager().beginTransaction()
 				.add(R.id.container_fragment_left, routeFragment).commit();
+
 	}
 
     private void setupMap(){
@@ -258,7 +273,10 @@ public class MultiPaneActivity extends FragmentActivity{
         Log.d("MultiPaneActivity", "goBackFragment");
 	    //msFragmentHasBeenCreated = false;
         getSupportFragmentManager().beginTransaction().replace
-                (R.id.container_fragment_left, routeFragment).addToBackStack("routeFragment").commit();
+                (R.id.container_fragment_left, routeFragment).commit();
+
+
+
     }
 
     public Location getMyLocation(){
@@ -300,7 +318,9 @@ public class MultiPaneActivity extends FragmentActivity{
             spinner.setVisibility(View.GONE);
             milestonesFragment = MilestonesFragment.newInstance(route.getOriginAddress(), route.getDestinationAddress());
             getSupportFragmentManager().beginTransaction().
-		            replace(R.id.container_fragment_left, milestonesFragment).addToBackStack("milestonesFragment").commit();
+		            replace(R.id.container_fragment_left, milestonesFragment).commit();
+
+
 
         }
     }

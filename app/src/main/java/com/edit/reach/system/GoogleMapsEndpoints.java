@@ -53,7 +53,7 @@ public class GoogleMapsEndpoints {
 		return http;
 	}
 
-	public static URL makeURL(String address) {
+	public static URL makeURLGeocode(String address) {
 		String location = address.replaceAll(" ", "+").toLowerCase();
 
 		String encodedLocation = null;
@@ -76,4 +76,28 @@ public class GoogleMapsEndpoints {
 
 		return http;
 	}
+
+    public static URL makeURLPlaces(String address) {
+        String location = address.replaceAll(" ", "+").toLowerCase();
+
+        String encodedLocation = null;
+        try {
+            encodedLocation = URLEncoder.encode(location, "UTF-8"); //Converting the string to UTF-8
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String url = "https://maps.googleapis.com/maps/api/place/autocomplete/json";
+        url += "?input=" + encodedLocation;
+        url += "&key=AIzaSyCqs-SMMT3_BIzMsPr-wsWqsJTthTgFUb8";
+
+        URL http = null;
+        try {
+            http = new URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return http;
+    }
 }

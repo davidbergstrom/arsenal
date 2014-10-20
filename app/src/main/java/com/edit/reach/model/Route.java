@@ -1,6 +1,5 @@
 package com.edit.reach.model;
 
-import android.graphics.Color;
 import android.util.Log;
 import com.edit.reach.app.R;
 import com.edit.reach.model.interfaces.IMilestone;
@@ -90,7 +89,7 @@ public class Route {
                 origin = (new LatLng(location.getDouble("lat"), location.getDouble("lng")));
                 Log.d(DEBUG_TAG, "Origin coordinate retrieved.");
 
-                URL url = GoogleMapsEndpoints.makeURL(destinationAddress);
+                URL url = GoogleMapsEndpoints.makeURLGeocode(destinationAddress);
                 Remote.get(url, destinationHandler);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -162,7 +161,7 @@ public class Route {
         this();
         this.originAddress = origin;
         this.destinationAddress = destination;
-        URL url = GoogleMapsEndpoints.makeURL(origin);
+        URL url = GoogleMapsEndpoints.makeURLGeocode(origin);
         Remote.get(url, originHandler);
     }
 
@@ -175,7 +174,7 @@ public class Route {
         this();
         this.origin = origin;
         this.destinationAddress = destination;
-        URL url = GoogleMapsEndpoints.makeURL(destinationAddress);
+        URL url = GoogleMapsEndpoints.makeURLGeocode(destinationAddress);
         Remote.get(url, destinationHandler);
     }
 

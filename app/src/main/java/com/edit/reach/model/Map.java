@@ -25,13 +25,14 @@ import java.util.Observable;
 public class Map extends Observable{
 
     // Constant, the refresh rate of the navigation loop in milliseconds
-    private final int UPDATE_INTERVAL_NORMAL = 300, UPDATE_INTERVAL_FAST = 40, UPDATE_INTERVAL_SLOW = 500, ROUTE_INTERVAL = 60000;
+    private final int UPDATE_INTERVAL_NORMAL = 300, UPDATE_INTERVAL_FAST = 80, UPDATE_INTERVAL_SLOW = 500, ROUTE_INTERVAL = 60000;
 
     // The map which modifies the map view in the activity
     private GoogleMap map;
 
     // The handler for navigation loop
     private Handler handler;
+    private Handler secondHandler;
 
     private Route currentRoute;
     private LatLng lastLocation;
@@ -61,6 +62,10 @@ public class Map extends Observable{
                 Log.d(DEBUG_TAG, "Notified observers that the initialization succeeded!");
                 setChanged();
                 notifyObservers(SignalType.ROUTE_INITIALIZATION_SUCCEDED);
+                setChanged();
+                notifyObservers(SignalType.LEG_UPDATE);
+                setChanged();
+                notifyObservers(SignalType.ROUTE_TOTAL_TIME_UPDATE);
             }else{
                 setChanged();
                 notifyObservers(SignalType.ROUTE_INITIALIZATION_FAILED);
@@ -105,9 +110,10 @@ public class Map extends Observable{
 
                     // Move arrow to the current position on the route
 
-                    if(!position.equals(lastLocation)) {
+                    //if(!position.equals(lastLocation)) {
+                        Log.d(DEBUG_TAG, "Route --> goTo()");
                         currentRoute.goTo(map, position);
-                    }
+                    //}
                     lastLocation = position;
                 }else if(!isRouteSet()){
                     Location myLocation = map.getMyLocation();
@@ -148,8 +154,8 @@ public class Map extends Observable{
 	Map(GoogleMap map){
 		this.map = map;
         this.handler = new Handler();
+        this.secondHandler = new Handler();
         this.markersOnMap = new ArrayList<Marker>();
-        //this.milestonesOnMap = new ArrayList<IMilestone>();
         this.state = State.STATIONARY;
 	}
 
@@ -267,7 +273,7 @@ public class Map extends Observable{
             }
 
             // Start navigation runnable
-            handler.postDelayed(navigationRunnable, UPDATE_INTERVAL_NORMAL);
+            handler.postDelayed(navigationRunnable, UPDATE_INTERVAL_FAST);
             handler.postDelayed(routeUpdate, ROUTE_INTERVAL);
         }
     }
@@ -296,7 +302,7 @@ public class Map extends Observable{
      * @param handler, the handler to handle the results
      */
     void requestAddressSuggestion(String partOfAddress, ResponseHandler handler){
-        URL url = GoogleMapsEndpoints.makeURL(partOfAddress);
+        URL url = GoogleMapsEndpoints.makeURLGeocode(partOfAddress);
         Remote.get(url, handler);
     }
 

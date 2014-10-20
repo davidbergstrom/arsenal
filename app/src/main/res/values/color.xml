@@ -30,8 +30,9 @@
 	<color name="card_milestone_text">#E5E5E5</color>
 
 	<!-- Control Fragment -->
-	<color name="text_control_info">#E5E5E5</color>
-	<color name="text_control_suggestion">#E5E5E5</color>
-	<color name="text_control_progress_bar">#E5E5E5</color>
+	<color name="text_navigation_info">#E5E5E5</color>
+	<color name="tv_navigation_info_title">#E5E5E5</color>
+	<color name="text_navigation_info_specs">#E5E5E5</color>
+	<color name="text_navigation_info_progressbar">#E5E5E5</color>
 
 </resources>

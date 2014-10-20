@@ -32,7 +32,8 @@
         </activity>
         <activity
             android:name="com.edit.reach.activities.MultiPaneActivity"
-            android:label="@string/title_activity_multi_pane" >
+            android:label="@string/title_activity_multi_pane"
+            android:screenOrientation="landscape">
         </activity>
         <activity
                 android:name="com.edit.reach.activities.MovingActivity"
