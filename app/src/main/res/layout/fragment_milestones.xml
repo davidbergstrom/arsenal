@@ -11,6 +11,12 @@
               android:paddingRight="@dimen/fragment_left_right_padding"
 			  >
 
+	<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="4"
+			android:orientation="vertical">
+
 		<!-- The starting point -->
 		<TextView
 				android:id="@+id/tv_text_from"
@@ -20,12 +26,6 @@
 		        android:textSize="@dimen/fragment_milestones_from_to"
 		        android:textColor="@color/text_fragment_milestones_from_to"
 				/>
-
-	<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="300dp"
-			android:orientation="vertical"
-			>
 
 		<!-- Holder for Milestones Cards -->
 		<ScrollView
@@ -45,8 +45,6 @@
 
 		</ScrollView>
 
-		</LinearLayout>
-
 		<!-- The end point -->
 		<TextView
 				android:id="@+id/tv_text_to"
@@ -54,8 +52,16 @@
 				android:layout_height="wrap_content"
 				android:text="@string/et_milestones_text_to"
 				android:textSize="@dimen/fragment_milestones_from_to"
-		        android:textColor="@color/text_fragment_milestones_from_to"
+				android:textColor="@color/text_fragment_milestones_from_to"
 				/>
+
+	</LinearLayout>
+
+	<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="1"
+			android:orientation="vertical">
 
 	<RelativeLayout
 			android:layout_width="match_parent"
@@ -71,6 +77,7 @@
 				android:text="@string/button_edit_route"
 				android:textColor="@color/text_fragment_route"
 				android:layout_alignParentStart="true"
+				android:layout_marginLeft="@dimen/button_edit_route_margin_left"
 				style="?android:attr/borderlessButtonStyle"
 				/>
 
@@ -81,9 +88,11 @@
                 android:text="@string/button_start_route"
                 android:textColor="@color/text_fragment_route"
                 android:layout_alignParentEnd="true"
+                android:layout_marginRight="@dimen/button_start_route_margin_right"
                 style="?android:attr/borderlessButtonStyle"
                 />
 
 	</RelativeLayout>
+	</LinearLayout>
 
 </LinearLayout>

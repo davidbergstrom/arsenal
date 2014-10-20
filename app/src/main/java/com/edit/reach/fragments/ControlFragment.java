@@ -50,6 +50,11 @@ public class ControlFragment extends Fragment{
     private float distanceToNextStop;
 	private String nextStopName = "N/A";
 
+	//State of Panel
+	private State currentState;
+	public enum State {
+		ROUTELESS, INFO, SUGGESTION
+	}
 
 	//Progressbar
 	private ProgressBar barFuel;
@@ -70,6 +75,9 @@ public class ControlFragment extends Fragment{
     private ImageView ivGastation;
     private ImageView ivRestArea;
     private ImageView ivToilet;
+
+	private LinearLayout navigationInfoContainer;
+	private RelativeLayout suggestionButtonContainer;
 
     public void setBarTimeClock(double timeClock) {
 		this.timeClock = timeClock;
@@ -164,6 +172,10 @@ public class ControlFragment extends Fragment{
 
 		textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
 
+		//Get Layout Containers to easily handle states
+		navigationInfoContainer = (LinearLayout) view.findViewById(R.id.navigation_info_container);
+		suggestionButtonContainer = (RelativeLayout) view.findViewById(R.id.suggestion_buttons);
+
         //Get TextViews
         textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
 		textRatingNextStop = (TextView) view.findViewById(R.id.navigation_info_rating);
@@ -220,6 +232,34 @@ public class ControlFragment extends Fragment{
 		});
 
 		return view;
+	}
+
+	public void setState(State newState) {
+		currentState = newState;
+
+		if (currentState == State.ROUTELESS) {
+			setStateRouteless();
+		} else if (currentState == State.INFO) {
+			setStateInfo();
+		} else if (currentState == State.SUGGESTION) {
+			setStateSuggestion();
+		} else {
+			setStateRouteless();
+		}
+	}
+
+	private void setStateRouteless() {
+		/*navigationInfoContainer.setVisibility(LinearLayout.GONE);
+		suggestionButtonContainer.setVisibility(RelativeLayout.GONE);*/
+		Log.d("STATE", "setStateRouteless");
+	}
+
+	private void setStateInfo() {
+		;
+	}
+
+	private void setStateSuggestion() {
+		;
 	}
 
 }

@@ -138,6 +138,11 @@ public class MultiPaneActivity extends FragmentActivity{
 	@Override
 	protected void onPause(){
 		super.onPause();
+	}
+
+	@Override
+	protected  void onStop() {
+		super.onStop();
 		navigationModel.getMap().setState(Map.State.STATIONARY);
 	}
 
@@ -179,6 +184,7 @@ public class MultiPaneActivity extends FragmentActivity{
 
 	public void initializeMovingUI(){
 		controlFragment = ControlFragment.newInstance("MovingMode");
+		controlFragment.setState(ControlFragment.State.ROUTELESS);
 		getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, controlFragment).commit();
 	}
 	public void initializeMovingBackend(){
@@ -273,7 +279,7 @@ public class MultiPaneActivity extends FragmentActivity{
         Log.d("MultiPaneActivity", "goBackFragment");
 	    //msFragmentHasBeenCreated = false;
         getSupportFragmentManager().beginTransaction().replace
-                (R.id.container_fragment_left, routeFragment).commit();
+				(R.id.container_fragment_left, routeFragment).commit();
 
 
 
