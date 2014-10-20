@@ -97,26 +97,19 @@
 			android:layout_height="wrap_content"
 			android:layout_alignParentBottom="true">
 
-		<!--<TextView
-				android:id="@+id/tv_current_fragment_route"
+		<Button
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_centerInParent="true"
-				android:text="Route Fragment"
-				android:textColor="@color/text_fragment_route"
-				/>-->
-
-		<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="NEXT"
-				android:textColor="#EFEFEF"
-				android:textSize="26sp"
-				android:layout_toLeftOf="@+id/ib_next_fragment_route"
-				android:layout_centerVertical="true"/>
+				android:id="@+id/bt_route_navigation_next"
+				android:text="@string/route_navigation_next"
+				android:textColor="@color/route_navigation_next"
+				android:textSize="@dimen/text_button_route_navigation"
+				android:layout_toStartOf="@+id/ib_route_navigation_next"
+				android:layout_centerVertical="true"
+				style="@android:style/Widget.Holo.Button.Borderless"/>
 
 		<ImageButton
-				android:id="@+id/ib_next_fragment_route"
+				android:id="@+id/ib_route_navigation_next"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_alignParentEnd="true"

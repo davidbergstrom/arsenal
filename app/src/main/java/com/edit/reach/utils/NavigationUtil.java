@@ -1,5 +1,6 @@
 package com.edit.reach.utils;
 
+import android.util.Log;
 import com.edit.reach.app.R;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -68,7 +69,7 @@ public class NavigationUtil {
      */
     public static BitmapDescriptor getMilestoneIcon(IMilestone milestone) {
         BitmapDescriptor icon;
-
+		Log.d("NavigationUtil", "Category:" + milestone.getCategories().toString());
         if (milestone.hasCategory(Category.GASSTATION)) {
             icon = NavigationUtil.gasMarker;
         } else if (milestone.hasCategory(Category.FOOD)) {

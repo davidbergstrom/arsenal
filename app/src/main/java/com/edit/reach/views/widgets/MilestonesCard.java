@@ -26,31 +26,22 @@ public class MilestonesCard extends RelativeLayout {
         this.milestone = milestone;
         //setCategoryImage(milestone.getCategories());
         setMilestoneName(milestone.getName());
+        setCategoryImage();
     }
 
-    public MilestonesCard(Context context, String name, IMilestone.Category c){
-        super(context);
-        inflate(getContext(), R.layout.card_milestone, this);
-        this.milestoneName = (TextView)findViewById(R.id.card_milestone_text);
-        this.imageView = (ImageView)findViewById(R.id.card_milestone_icon);
-        setMilestoneName(name);
-        setCategoryImage(c);
+    private void setCategoryImage(){
+	    Log.d("MilestonesCard", "SetCategoryImage");
+	    if (milestone.hasCategory(IMilestone.Category.GASSTATION)) {
+            imageView.setImageResource(R.drawable.milestone_gasstation);
+	    } else if (milestone.hasCategory(IMilestone.Category.FOOD)) {
+		    imageView.setImageResource(R.drawable.milestone_food);
+	    } else if (milestone.hasCategory(IMilestone.Category.TOILET)) {
+		    imageView.setImageResource(R.drawable.milestone_toilet);
+	    } else {
+		    imageView.setImageResource(R.drawable.milestone_restarea);
+	    }
 
-    }
 
-    private void setCategoryImage(IMilestone.Category c){
-        if(c == IMilestone.Category.RESTAURANT ){
-            Log.d("Category", "Restaurant");
-            //imageView.setImageResource(RestaurantLogo);
-        } else if (c == IMilestone.Category.GASSTATION){
-            Log.d("Category", "Gasstation");
-            //imageView.setImageResource(Gaststationlogo);
-        } else if(c == IMilestone.Category.RESTAREA){
-            Log.d("Category", "Restarea");
-            //imageView.setImageResource(RestAreaLogo);
-        } else {
-            Log.d("Wrong", "Wrong category");
-        }
     }
 
     private void setMilestoneName(String text){

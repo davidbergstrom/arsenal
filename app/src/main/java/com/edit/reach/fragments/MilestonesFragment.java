@@ -1,20 +1,13 @@
 package com.edit.reach.fragments;
 
-import android.app.Activity;
-
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.*;
-import com.edit.reach.activities.MovingActivity;
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.model.interfaces.IMilestone;
@@ -44,6 +37,9 @@ public class MilestonesFragment extends Fragment {
     private ArrayList <String> mMilestonesType;
 
 	private Button btStartRoute;
+	private ImageButton ibStartRoute;
+	private Button btPrevious;
+	private ImageButton ibPrevious;
 
     private static int n = 0;
 
@@ -51,7 +47,7 @@ public class MilestonesFragment extends Fragment {
 	private	TextView mFromTextView;
 	private	TextView mToTextView;
     private LinearLayout cardList;
-	private ImageButton ibPrevious;
+
 
 
     /**
@@ -96,8 +92,29 @@ public class MilestonesFragment extends Fragment {
 		mToTextView = (TextView) view.findViewById(R.id.tv_text_to);
         cardList = (LinearLayout) view.findViewById(R.id.cardList);
 
-        btStartRoute = (Button) view.findViewById(R.id.button_start_route);
-	    ibPrevious = (ImageButton) view.findViewById(R.id.ib_previous_fragment_milestones);
+        btStartRoute = (Button) view.findViewById(R.id.bt_milestone_navigation_start);
+		ibStartRoute = (ImageButton) view.findViewById(R.id.ib_milestone_navigation_start);
+		btStartRoute.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Log.d("StartRoute", "Performed a StartRoute-click");
+				((MultiPaneActivity)getActivity()).initializeMovingBackend();
+				((MultiPaneActivity)getActivity()).initializeMovingUI();
+				((MultiPaneActivity)getActivity()).addMilestones();
+			}
+		});
+		ibStartRoute.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Log.d("StartRoute", "Performed a StartRoute-click");
+				((MultiPaneActivity)getActivity()).initializeMovingBackend();
+				((MultiPaneActivity)getActivity()).initializeMovingUI();
+				((MultiPaneActivity)getActivity()).addMilestones();
+			}
+		});
+
+		btPrevious = (Button) view.findViewById(R.id.bt_milestone_navigation_back);
+	    ibPrevious = (ImageButton) view.findViewById(R.id.ib_milestone_navigation_back);
 	    ibPrevious.setOnClickListener(new View.OnClickListener() {
 		    @Override
 		    public void onClick(View view) {
@@ -105,19 +122,14 @@ public class MilestonesFragment extends Fragment {
 			    ((MultiPaneActivity)getActivity()).goBackToRouteFragment();
 		    }
 	    });
+		btPrevious.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				((MultiPaneActivity)getActivity()).changeMsFragmentHasBeenCreated(false);
+				((MultiPaneActivity)getActivity()).goBackToRouteFragment();
+			}
+		});
 
-
-
-
-        btStartRoute.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("StartRoute", "Performed a StartRoute-click");
-                ((MultiPaneActivity)getActivity()).initializeMovingBackend();
-	            ((MultiPaneActivity)getActivity()).initializeMovingUI();
-	            ((MultiPaneActivity)getActivity()).addMilestones();
-            }
-        });
         return view;
     }
 

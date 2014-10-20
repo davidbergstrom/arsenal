@@ -291,6 +291,7 @@ public class MultiPaneActivity extends FragmentActivity{
         Log.d("MultiPaneActivity", "goBackFragment");
 	    //msFragmentHasBeenCreated = false;
         getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, routeFragment).commit();
+	    preliminaryMilestones.clear();
 
 
     }

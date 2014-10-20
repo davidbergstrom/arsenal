@@ -123,7 +123,17 @@ public class Map extends Observable{
                         CameraPosition lastPosition = map.getCameraPosition();
                         CameraPosition currentPlace = new CameraPosition.Builder().target(currentRoute.getPointerLocation()).bearing(currentRoute.getPointerBearing())
                                 .tilt(lastPosition.tilt).zoom(lastPosition.zoom).build();
-                        map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
+                        map.animateCamera(CameraUpdateFactory.newCameraPosition(currentPlace), 100, new GoogleMap.CancelableCallback() {
+                            @Override
+                            public void onFinish() {
+
+                            }
+
+                            @Override
+                            public void onCancel() {
+
+                            }
+                        });
                     }
 
                     //}
@@ -271,7 +281,7 @@ public class Map extends Observable{
                 removeMarkers();
 
                 // Set camera to right tilt and zoom
-                CameraPosition currentPlace = new CameraPosition.Builder().target(position).tilt(65.5f).zoom(17).build();
+                CameraPosition currentPlace = new CameraPosition.Builder().target(currentRoute.getOrigin()).tilt(65.5f).zoom(17).build();
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
                 if(currentRoute.isInitialized() && mapState != MapState.OVERVIEW_MOVING){
@@ -279,8 +289,6 @@ public class Map extends Observable{
                 }
             }else{
                 // Start moving without route.
-
-                // Set camera to right zoom
                 CameraPosition currentPlace = new CameraPosition.Builder().target(position).zoom(17).build();
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
             }

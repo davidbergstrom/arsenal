@@ -8,8 +8,8 @@
 	<!-- Titles -->
 	<string name="title_activity_moving">MovingActivity</string>
 	<string name="title_activity_maps">Map</string>
-	<string name="title_activity_multi_pane">MultiPaneActivity</string>
-	<string name="title_activity_milestones">MilestonesActivity</string>
+	<string name="title_activity_multi_pane">Plan Your Route</string>
+	<string name="title_activity_milestones">Combine Stops</string>
 	<string name="title_activity_splash">Splash</string>
 
     <!-- Route Fragment -->
@@ -17,6 +17,7 @@
     <string name="et_route_to">To</string>
     <string name="bt_route_get_route">GET ROUTE</string>
     <string name="bt_current_location">My Location</string>
+	<string name="route_navigation_next">NEXT</string>
 
     <!-- Map Fragment -->
     <string name="tv_fragment_map">This is where the map will show...</string>
@@ -31,6 +32,8 @@
     <string name="card_milestone_text">Milestone Card</string>
     <string name="button_edit_route">EDIT</string>
 	<string name="button_start_route">START</string>
+	<string name="milestone_navigation_back">BACK</string>
+	<string name="milestone_navigation_start">START</string>
 
 	<!-- Control Fragment -->
 	<string name="tv_control_info_next_stop_left">2h 34m</string>
@@ -40,9 +43,9 @@
 	<string name="tv_control_info_time_clock_left">4h 38m</string>
 	<string name="tv_control_info_time_clock_right">3h 12m</string>
 	<string name="tv_navigation_info_title">Title</string>
-	<string name="tv_navigation_info_rating">4/5</string>
-	<string name="tv_navigation_info_time">12 min</string>
-	<string name="tv_navigation_info_distance">8 km</string>
+	<string name="tv_navigation_info_rating">Rating</string>
+	<string name="tv_navigation_info_time">Time</string>
+	<string name="tv_navigation_info_distance">Distance</string>
 	<string name="suggestion_button_next">NEXT</string>
 	<string name="suggestion_button_ok">OK</string>
 
