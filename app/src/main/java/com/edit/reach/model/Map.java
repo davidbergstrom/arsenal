@@ -32,6 +32,7 @@ public class Map extends Observable{
 
     // The handler for navigation loop
     private Handler handler;
+    private Handler secondHandler;
 
     private Route currentRoute;
     private LatLng lastLocation;
@@ -105,9 +106,10 @@ public class Map extends Observable{
 
                     // Move arrow to the current position on the route
 
-                    if(!position.equals(lastLocation)) {
+                    //if(!position.equals(lastLocation)) {
+                        Log.d(DEBUG_TAG, "Route --> goTo()");
                         currentRoute.goTo(map, position);
-                    }
+                    //}
                     lastLocation = position;
                 }else if(!isRouteSet()){
                     Location myLocation = map.getMyLocation();
@@ -148,8 +150,8 @@ public class Map extends Observable{
 	Map(GoogleMap map){
 		this.map = map;
         this.handler = new Handler();
+        this.secondHandler = new Handler();
         this.markersOnMap = new ArrayList<Marker>();
-        //this.milestonesOnMap = new ArrayList<IMilestone>();
         this.state = State.STATIONARY;
 	}
 
@@ -267,7 +269,7 @@ public class Map extends Observable{
             }
 
             // Start navigation runnable
-            handler.postDelayed(navigationRunnable, UPDATE_INTERVAL_NORMAL);
+            handler.postDelayed(navigationRunnable, UPDATE_INTERVAL_FAST);
             handler.postDelayed(routeUpdate, ROUTE_INTERVAL);
         }
     }
