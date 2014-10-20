@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import com.edit.reach.constants.VehicleState;
 import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.constants.SignalType;
 import com.edit.reach.model.interfaces.IMilestone;
@@ -40,6 +39,8 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 
 	/* --- CONSTANTS --- */
 	private static final String PIPELINE_THREAD_NAME = "PipelineThread";
+
+	// TODO Constants for AISA
 	private static final int FOOD_THRESHOLD = 30*60;
 	private static final int REST_THRESHOLD = 15*60;
 	private static final int GAS_THRESHOLD = 20*60;
@@ -47,11 +48,12 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	public NavigationModel(GoogleMap googleMap, Handler mainHandler) {
 		this.pipelineThread = new Thread(this, PIPELINE_THREAD_NAME);
 		this.pipelineThread.start();
+
 		this.vehicleSystem = new VehicleSystem();
 		this.vehicleSystem.addObserver(this);
 
 		this.map = new Map(googleMap);
-        this.map.addObserver(this);
+		this.map.addObserver(this);
 
 		this.mainHandler = mainHandler;
 	}
@@ -134,7 +136,6 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	 * @param newRoute the route to be set.
 	 */
 	public void setRoute(final Route newRoute) {
-		Log.d("NavigationModel", "setRoute()");
 		synchronized (map) {
 			map.setRoute(newRoute);
 		}
@@ -152,29 +153,17 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	 */
 	@Override
 	public void update(Observable observable, final Object data) {
-		Log.d("NavigationModel", "update()");
 		pipelineHandler.post(new Runnable() {
 			@Override
 			public void run() {
 				// Obtain message from handler.
 				Message message = Message.obtain(mainHandler);
 
-				// Get the route.
 				synchronized (map) {
+					// Gets the route from the map;
 					Route route = map.getRoute();
 
 					switch ((Integer) data) {
-						// If vehicle is low on fuel.
-						case SignalType.LOW_FUEL:
-							// TODO what to do here? Not used
-							Log.d("UPDATE", "TYPE: LOW_FUEL");
-							break;
-
-						// If vehicles up time is short relative to the legal up time.
-						case SignalType.SHORT_TIME:
-							// TODO what to do here? Not used
-							Log.d("UPDATE", "TYPE: SHORT_TIME");
-							break;
 
 						// If vehicle stopped or started
 						case SignalType.VEHICLE_STOPPED_OR_STARTED:
@@ -185,17 +174,64 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 							message.obj = vehicleSystem.getVehicleState();
 							message.what = SignalType.VEHICLE_STOPPED_OR_STARTED;
 							mainHandler.sendMessage(message);
+							break;
 
-							if(vehicleSystem.getVehicleState() == VehicleState.NOT_IN_DRIVE) {
-								map.setState(Map.State.STATIONARY);
-							} else {
-								map.setState(Map.State.MOVING);
-							}
+						// If fuel changes
+						case SignalType.FUEL_UPDATE:
+							Log.d("UPDATE", "TYPE: FUEL_UPDATE");
 
+							// Send the amount of fuel in tank to the UI.
+							message.obj = vehicleSystem.getFuelLevel();
+							message.what = SignalType.FUEL_UPDATE;
+							mainHandler.sendMessage(message);
+							break;
+
+						// If up time changes
+						case SignalType.UPTIME_UPDATE:
+							Log.d("UPDATE", "TYPE: UP_TIME_UPDATE");
+
+							// Send the number of seconds until break to UI.
+							message.obj = vehicleSystem.getTimeUntilForcedRest();
+							message.what = SignalType.UPTIME_UPDATE;
+							mainHandler.sendMessage(message);
+							break;
+
+						// If leg changes
+						case SignalType.LEG_UPDATE:
+							Log.d("UPDATE", "TYPE: LEG_UPDATE");
+
+							message.obj = route.getLegs().get(0);
+							message.what = SignalType.LEG_UPDATE;
+							mainHandler.sendMessage(message);
+							break;
+
+						// If route total time changes
+						case SignalType.ROUTE_TOTAL_TIME_UPDATE:
+							Log.d("UPDATE", "TYPE: ROUTE_TOTAL_TIME_UPDATE");
+
+							message.obj = route.getDuration();
+							message.what = SignalType.ROUTE_TOTAL_TIME_UPDATE;
+							mainHandler.sendMessage(message);
+							break;
+
+						// If route initialization succeeded
+						case SignalType.ROUTE_INITIALIZATION_SUCCEDED:
+							Log.d("UPDATE", "TYPE: ROUTE_INITIALIZATION_SUCCEEDED");
+							addTimePause();
+							message.what = SignalType.ROUTE_INITIALIZATION_SUCCEDED;
+							mainHandler.sendMessage(message);
+							break;
+
+						// If route initialization failed.
+						case SignalType.ROUTE_INITIALIZATION_FAILED:
+							Log.d("UPDATE", "TYPE: ROUTE_INITIALIZATION_FAILED");
+							message.what = SignalType.ROUTE_INITIALIZATION_FAILED;
+							mainHandler.sendMessage(message);
 							break;
 
 						// If a vehicle took a break longer than or equal to 45 minutes.
 						case SignalType.VEHICLE_TOOK_FINAL_BREAK:
+							// TODO Does this work?
 							Log.d("UPDATE", "TYPE: VEHICLE_TOOK_FINAL_BREAK");
 
 							// This has to be done in UI thread because of Googles Map.
@@ -211,56 +247,22 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 							});
 							break;
 
-						case SignalType.UPTIME_UPDATE:
-							Log.d("UPDATE", "TYPE: UP_TIME_UPDATE");
-
-							// Send the number of seconds until break to UI.
-							message.obj = vehicleSystem.getTimeUntilForcedRest();
-							message.what = SignalType.UPTIME_UPDATE;
-							mainHandler.sendMessage(message);
-							break;
-
-						case SignalType.FUEL_UPDATE:
-							Log.d("UPDATE", "TYPE: FUEL_UPDATE");
-							Log.d("Thread in NavigationModel - Fuelupdate", Thread.currentThread().getName());
-
-							// Send the amount of fuel in tank to the UI.
-							message.obj = vehicleSystem.getFuelLevel();
-							message.what = SignalType.FUEL_UPDATE;
-							mainHandler.sendMessage(message);
-							break;
-
+						// If the tank size has been calculated
 						case SignalType.TANK_SIZE_CALCULATED:
+							// TODO what to do here? Not used
 							Log.d("UPDATE", "TYPE: TANK_SIZE_CALCULATED");
-							final double kmToRefuel = vehicleSystem.getKilometersUntilRefuel();
-							addFuelPause(kmToRefuel);
 							break;
 
-						case SignalType.LEG_UPDATE:
-							Log.d("UPDATE", "TYPE: LEG_UPDATE");
-							message.obj = route.getLegs().get(0);
-							message.what = SignalType.LEG_UPDATE;
-							mainHandler.sendMessage(message);
+						// If vehicle is low on fuel.
+						case SignalType.LOW_FUEL:
+							// TODO what to do here? Not used
+							Log.d("UPDATE", "TYPE: LOW_FUEL");
 							break;
 
-						case SignalType.ROUTE_TOTAL_TIME_UPDATE:
-							Log.d("UPDATE", "TYPE: ROUTE_TOTAL_TIME_UPDATE");
-							message.obj = route.getDuration();
-							message.what = SignalType.ROUTE_TOTAL_TIME_UPDATE;
-							mainHandler.sendMessage(message);
-							break;
-
-						case SignalType.ROUTE_INITIALIZATION_SUCCEDED:
-							Log.d("UPDATE", "TYPE: ROUTE_INITIALIZATION_SUCCEEDED");
-							addTimePause();
-							message.what = SignalType.ROUTE_INITIALIZATION_SUCCEDED;
-							mainHandler.sendMessage(message);
-							break;
-
-						case SignalType.ROUTE_INITIALIZATION_FAILED:
-							Log.d("UPDATE", "TYPE: ROUTE_INITIALIZATION_FAILED");
-							message.what = SignalType.ROUTE_INITIALIZATION_FAILED;
-							mainHandler.sendMessage(message);
+						// If vehicles up time is short relative to the legal up time.
+						case SignalType.SHORT_TIME:
+							// TODO what to do here? Not used
+							Log.d("UPDATE", "TYPE: SHORT_TIME");
 							break;
 
 						default:
@@ -275,20 +277,19 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	// Method that adds time-pauses in the map.
 	private void addTimePause() {
 		synchronized (map) {
-		long routeTime = map.getRoute().getDuration();
-		long nmbrOfPauses = routeTime / UniversalConstants.LEGAL_UPTIME_IN_SECONDS;
+			long routeTime = map.getRoute().getDuration();
+			long nmbrOfPauses = routeTime / UniversalConstants.LEGAL_UPTIME_IN_SECONDS;
 
-		for (int i = 1; i < nmbrOfPauses; i++) {
-			Log.d("NavModel", "Adding pause: ");
-			map.getRoute().addPause(i * UniversalConstants.LEGAL_UPTIME_IN_SECONDS);
+			for (int i = 1; i < nmbrOfPauses; i++) {
+				map.getRoute().addPause(i * UniversalConstants.LEGAL_UPTIME_IN_SECONDS);
 			}
 		}
 	}
 
 	// Method that add fuel-pause in the map.
-	private void addFuelPause(double kmToRefuel) {
+	private void addFuelPause(double secondsToRefuel) {
 		synchronized (map) {
-			map.getRoute().addPause(kmToRefuel);
+			map.getRoute().addPause(secondsToRefuel);
 		}
 	}
 }

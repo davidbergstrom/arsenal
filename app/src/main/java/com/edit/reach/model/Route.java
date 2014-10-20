@@ -585,7 +585,9 @@ public class Route {
                 float bearing = NavigationUtil.finalBearing(nextLocation, nearestLocation);
                 pointerWithBearing.setBearing(bearing);
 
-                final LatLngInterpolator latLngInterpolator = new LatLngInterpolator.Linear();
+	            pointerWithBearing.setPosition(nearestLocation);
+
+                /* final LatLngInterpolator latLngInterpolator = new LatLngInterpolator.Linear();
 
                 TypeEvaluator<LatLng> typeEvaluator = new TypeEvaluator<LatLng>() {
                     @Override
@@ -597,7 +599,7 @@ public class Route {
                 Property<GroundOverlay, LatLng> property = Property.of(GroundOverlay.class, LatLng.class, "position");
                 ObjectAnimator animator = ObjectAnimator.ofObject(pointerWithBearing, property, typeEvaluator, nearestLocation);
                 animator.setDuration(NavigationUtil.UPDATE_INTERVAL_FAST);
-                animator.start();
+                animator.start(); */
 
                 CameraPosition lastPosition = map.getCameraPosition();
                 CameraPosition currentPlace = new CameraPosition.Builder().target(nearestLocation).bearing(bearing)
