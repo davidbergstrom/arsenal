@@ -72,7 +72,7 @@ public class Leg {
      * (That means that it is the last leg of the route and the end is the destination)
      * @return the milestone at the end of the leg
      */
-    IMilestone getMilestone(){
+    public IMilestone getMilestone(){
         return endMilestone;
     }
 
@@ -83,17 +83,9 @@ public class Leg {
     void draw(GoogleMap map){
         this.erase();
 
-        if(endMilestone != null){
-            BitmapDescriptor icon;
-            if(endMilestone.getCategory() == IMilestone.Category.GASSTATION){
-                icon = NavigationUtil.gasMarker;
-            }else if(endMilestone.getCategory() == IMilestone.Category.RESTAURANT){
-                icon = NavigationUtil.foodMarker;
-            }else if(endMilestone.getCategory() == IMilestone.Category.RESTAREA){
-                icon = NavigationUtil.restMarker;
-            }else{
-                icon = NavigationUtil.bathroomMarker;
-            }
+        if (endMilestone != null){
+            BitmapDescriptor icon = NavigationUtil.getMilestoneIcon(endMilestone);
+
             milestoneMarker = map.addMarker(new MarkerOptions()
                     .position(endMilestone.getLocation())
                     .title(endMilestone.getName())

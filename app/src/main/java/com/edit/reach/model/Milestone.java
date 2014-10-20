@@ -101,6 +101,11 @@ public class Milestone implements IMilestone {
         return this.categories.containsAll(requestedCategories);
     }
 
+    @Override
+    public boolean hasCategory(Category requestedCategory) {
+        return this.categories.contains(requestedCategory);
+    }
+
     /**
      * Returns the categories associated with the milestone
      *

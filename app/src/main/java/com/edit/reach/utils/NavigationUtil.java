@@ -1,12 +1,15 @@
 package com.edit.reach.utils;
 
 import com.edit.reach.app.R;
+import com.edit.reach.model.interfaces.IMilestone;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.edit.reach.model.interfaces.IMilestone.*;
 
 /**
  * Created by Joakim Berntsson on 2014-10-01.
@@ -28,6 +31,23 @@ public class NavigationUtil {
             gasMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_gas);
 
 	private NavigationUtil(){}
+
+    public static BitmapDescriptor getMilestoneIcon(IMilestone milestone) {
+
+        BitmapDescriptor icon;
+
+        if (milestone.hasCategory(Category.GASSTATION)) {
+            icon = NavigationUtil.gasMarker;
+        } else if (milestone.hasCategory(Category.FOOD)) {
+            icon = NavigationUtil.foodMarker;
+        } else if (milestone.hasCategory(Category.TOILET)) {
+            icon = NavigationUtil.bathroomMarker;
+        } else {
+            icon = NavigationUtil.restMarker;
+        }
+
+        return icon;
+    }
 
     public static List<LatLng> decodePoly(String encoded) {
 
