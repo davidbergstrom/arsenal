@@ -298,7 +298,7 @@ public class Map extends Observable{
      * @param handler, the handler to handle the results
      */
     void requestAddressSuggestion(String partOfAddress, ResponseHandler handler){
-        URL url = GoogleMapsEndpoints.makeURL(partOfAddress);
+        URL url = GoogleMapsEndpoints.makeURLGeocode(partOfAddress);
         Remote.get(url, handler);
     }
 

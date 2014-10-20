@@ -30,31 +30,25 @@ public class SuggestionUtil implements ResponseHandler {
     @Override
     public void onGetSuccess(JSONObject json) {
         try {
-            JSONArray resultsArray = json.getJSONArray("results");
+            JSONArray predictions = json.getJSONArray("predictions");
+
+            Log.d("Suggestion", " " + predictions);
 
             List<String> resultList = new ArrayList<String>();
 
-            for (int i = 0; i < resultsArray.length(); i++) {
-                JSONArray addressComponent = ((JSONObject)resultsArray.get(i)).getJSONArray("address_components");
+                for (int i = 0; i < predictions.length(); i++) {
 
-                for (int j = 0; j < addressComponent.length(); j++) {
+                    resultList.add(((JSONObject)predictions.get(i)).getString("description"));
+                    Log.d("Suggestion", " " + ((JSONObject)predictions.get(i)).getString("description"));
 
-                    String potentialMatch = ((JSONObject)addressComponent.get(j)).getString("short_name").toLowerCase();
-
-                    if (potentialMatch.contains(searchString)) {
-
-                        resultList.add(potentialMatch);
-                        Log.d("TestClass", "" + "" + resultList.size() + ": "+ potentialMatch);
-                        break;
-                    }
                 }
-            }
 
             suggestionListener.onGetSuccess(resultList);
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
         }
+
     }
 
     @Override
@@ -67,8 +61,10 @@ public class SuggestionUtil implements ResponseHandler {
      * @param str, search String
      */
     public void searchForAddresses(String str) {
+        Log.d("Suggestion", " " + str);
         searchString = str.toLowerCase();
-        URL url = GoogleMapsEndpoints.makeURL(searchString);
+        URL url = GoogleMapsEndpoints.makeURLPlaces(searchString);
         Remote.get(url, this);
     }
 }
+
