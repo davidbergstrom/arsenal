@@ -9,6 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 
+import java.util.ArrayList;
+
 public class MilestoneTest extends InstrumentationTestCase {
 
     private Milestone milestone;
@@ -31,7 +33,7 @@ public class MilestoneTest extends InstrumentationTestCase {
                 + "<owner_lastname>Kauppinen</owner_lastname>"
                 + "<name>Arsenal FC</name>"
                 + "<description>The world's greatest team</description>"
-                + "<category>" + 3 + "</category>"
+                + "<category>" + 25 + "</category>"
                 + "<rating>" + 2 + "</rating>"
                 + "</properties>"
                 + "<type>Feature</type>";
@@ -55,8 +57,12 @@ public class MilestoneTest extends InstrumentationTestCase {
         assertEquals("The world's greatest team", milestone.getDescription());
     }
 
-    public void testGetCategory() throws Exception {
-        assertEquals(IMilestone.Category.GASSTATION, milestone.getCategory());
+    public void testGetCategories() throws Exception {
+        ArrayList<IMilestone.Category> expectedCategories = new ArrayList<IMilestone.Category>();
+        expectedCategories.add(IMilestone.Category.FOOD);
+        expectedCategories.add(IMilestone.Category.TOILET);
+
+        assertTrue(milestone.hasCategories(expectedCategories));
     }
 
     public void testGetRank() throws Exception {

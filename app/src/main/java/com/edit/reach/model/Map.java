@@ -89,7 +89,7 @@ public class Map {
     private Runnable navigationRunnable = new Runnable() {
         @Override
         public void run() {
-            if(state == State.MOVING && currentRoute != null && currentRoute.isInitialized()){
+            if(state == State.MOVING && isRouteSet() && currentRoute.isInitialized()){
                 Location myLocation = map.getMyLocation();
                 LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
 
@@ -99,6 +99,17 @@ public class Map {
                     currentRoute.goTo(map, position);
                 }
                 lastLocation = myLocation;
+                handler.postDelayed(this, UPDATE_INTERVAL_FAST);
+            }else if(state == State.MOVING && !isRouteSet()){
+                Location myLocation = map.getMyLocation();
+                LatLng position;
+                if(myLocation != null){
+                    position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                }else{
+                    position = new LatLng(0, 0);
+                }
+
+                moveCameraTo(position);
                 handler.postDelayed(this, UPDATE_INTERVAL_FAST);
             }else{
                 Log.d(DEBUG_TAG, "Current route null or not initialized!");
@@ -195,25 +206,41 @@ public class Map {
 
             Log.d("Map", "In overview mode.");
         }else if(newState == State.MOVING){
-            // Remove markers when navigation is starting
-            removeMarkers();
-
-            // Set camera to right tilt and zoom
-            Location myLocation = map.getMyLocation();
-            LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-            CameraPosition currentPlace = new CameraPosition.Builder().target(position).tilt(65.5f).zoom(17).build();
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
-
-            if(currentRoute.isInitialized()){
-                currentRoute.drawNavigation(map);
-            }
 
             // Disable all interactions the user is not allowed to do.
-
             map.getUiSettings().setScrollGesturesEnabled(false);
             map.getUiSettings().setTiltGesturesEnabled(false);
             map.getUiSettings().setCompassEnabled(false);
             map.getUiSettings().setRotateGesturesEnabled(false);
+
+
+            Location myLocation = map.getMyLocation();
+            LatLng position;
+            if(myLocation != null){
+                position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            }else{
+                position = new LatLng(0, 0);
+            }
+
+            if(isRouteSet()){
+                // Start moving with a route set.
+                // Remove markers when navigation is starting
+                removeMarkers();
+
+                // Set camera to right tilt and zoom
+                CameraPosition currentPlace = new CameraPosition.Builder().target(position).tilt(65.5f).zoom(17).build();
+                map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
+
+                if(currentRoute.isInitialized()){
+                    currentRoute.drawNavigation(map);
+                }
+            }else{
+                // Start moving without route.
+
+                // Set camera to right zoom
+                CameraPosition currentPlace = new CameraPosition.Builder().target(position).zoom(17).build();
+                map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
+            }
 
             // Start navigation runnable
             handler.postDelayed(navigationRunnable, UPDATE_INTERVAL_NORMAL);
@@ -222,6 +249,10 @@ public class Map {
 
     private void updateState(){
         setState(state);
+    }
+
+    public boolean isRouteSet(){
+        return currentRoute != null;
     }
 
     /**

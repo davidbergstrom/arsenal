@@ -1,7 +1,6 @@
 package com.edit.reach.views.widgets;
 
 import android.content.Context;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -25,7 +24,7 @@ public class MilestonesCard extends RelativeLayout {
         this.milestoneName = (TextView)findViewById(R.id.card_milestone_text);
         this.imageView = (ImageView)findViewById(R.id.card_milestone_icon);
         this.milestone = milestone;
-        setCategoryImage(milestone.getCategory());
+        //setCategoryImage(milestone.getCategories());
         setMilestoneName(milestone.getName());
     }
 
