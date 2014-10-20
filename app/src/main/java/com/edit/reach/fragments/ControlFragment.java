@@ -1,24 +1,18 @@
 package com.edit.reach.fragments;
 import android.graphics.Color;
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.ImageButton;
-
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
-
 import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.model.Leg;
-import com.edit.reach.model.Milestone;
 import com.edit.reach.model.interfaces.IMilestone;
 
 import java.util.List;
@@ -37,7 +31,7 @@ public class ControlFragment extends Fragment{
 	private ImageButton ibGasStation;
 
     private IMilestone milestone;
-    private List<IMilestone.Category> categorys;
+    private List<IMilestone.Category> categories;
 
 	private float fuelLevel;
 	private double nextStopClock; //in sec
@@ -87,7 +81,7 @@ public class ControlFragment extends Fragment{
         this.milestone = leg.getMilestone();
         this.nextStopClock = leg.getDuration();
         this.nextStopName = milestone.getName();
-        this.categorys = milestone.getCategory();
+        this.categories = milestone.getCategories();
     }
 
     public void setTotalTime(double totalTime) {
@@ -129,7 +123,7 @@ public class ControlFragment extends Fragment{
 		}
 
         //Set Milestone Images
-        for (IMilestone.Category cat : categorys) {
+        for (IMilestone.Category cat : categories) {
 
             switch (cat) {
                 case FOOD:
