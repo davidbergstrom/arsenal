@@ -214,7 +214,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_restaurant"
-				android:src="@drawable/input_restaurant_pressed"
+				android:src="@drawable/input_restaurant"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_column="0"
@@ -225,7 +225,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_restarea"
-				android:src="@drawable/input_restarea_shaded"
+				android:src="@drawable/input_restarea"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_column="0"
@@ -236,7 +236,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_toilet"
-				android:src="@drawable/input_toilet_shaded"
+				android:src="@drawable/input_toilet"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_column="1"
@@ -247,7 +247,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_gasstation"
-				android:src="@drawable/input_gasstation_pressed"
+				android:src="@drawable/input_gasstation"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_column="1"
