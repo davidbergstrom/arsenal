@@ -51,11 +51,8 @@ public class ControlFragment extends Fragment{
 	private double nextStopClock; //in sec
 	private double timeClock;   //in sec
 	private double totalTime;   //in sec
-<<<<<<< HEAD
 	private String nextStopName = "N/A";
-=======
-	private String nextStopName;
->>>>>>> 6d468c903a34b1acb02686864c8ab8a5f71d9b4e
+
 
 	//Progressbar
 	private ProgressBar barFuel;
@@ -167,8 +164,9 @@ public class ControlFragment extends Fragment{
 		containerTop = (RelativeLayout) view.findViewById(R.id.container_control_top);
 		containerBottom = (RelativeLayout) view.findViewById(R.id.container_control_bottom);
 
-		containerTop.inflate(this.getActivity(), R.layout.control_info, container);
-		containerBottom.inflate(this.getActivity(), R.layout.control_input, container);
+		View controlInfo = inflater.inflate(R.layout.control_info, container, false);
+		containerTop.addView(controlInfo);
+		//containerBottom.inflate(this.getActivity(), R.layout.control_input, container);
 
 		textNextStop = (TextView) view.findViewById(R.id.tv_control_info_top_card_title);
 
@@ -187,41 +185,11 @@ public class ControlFragment extends Fragment{
 
         ivToilet = (ImageView) view.findViewById(R.id.control_info_top_card_type_toilet);
 
-
         //Get progressbars
         barFuel = (ProgressBar) view.findViewById(R.id.progress_gas);
         barTimeClock = (ProgressBar) view.findViewById(R.id.progress_time_clock);
 
-<<<<<<< HEAD
-=======
-		if(!nextStopName.isEmpty()) {
-			textNextStop.setText(nextStopName);
-		} else {
-			textNextStop.setText("N/A");
-		}
-
-        //Set Milestone Images
-        for (IMilestone.Category cat : categories) {
-
-            switch (cat) {
-                case FOOD: ivFood.setVisibility(ImageView.VISIBLE);
-                break;
-
-                case GASSTATION: ivGastation.setVisibility(ImageView.VISIBLE);
-                break;
-
-                case RESTAREA: ivGastation.setVisibility(ImageView.VISIBLE);
-                break;
-
-                case TOILET: ivToilet.setVisibility(ImageView.VISIBLE);
-                break;
-
-            }
-
-        }
-
->>>>>>> 6d468c903a34b1acb02686864c8ab8a5f71d9b4e
-		ibRestArea = (ImageButton) view.findViewById(R.id.button_control_input_restarea);
+		/*ibRestArea = (ImageButton) containerBottom.findViewById(R.id.button_control_input_restarea);
 		ibRestArea.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -248,7 +216,7 @@ public class ControlFragment extends Fragment{
 			public void onClick(View view) {
 				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.GASSTATION);
 			}
-		});
+		});*/
 
 		return view;
 	}
