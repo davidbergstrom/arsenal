@@ -531,8 +531,6 @@ public class Route {
      * @param location, the location to move to
      */
     public void goTo(GoogleMap map, LatLng location){
-        long startTime = System.nanoTime();
-
         if(TEST_MODE){
             location = getNextSubStep();
         }
@@ -586,9 +584,8 @@ public class Route {
                 LatLng nextLocation = getNextSubStep();
                 float bearing = NavigationUtil.finalBearing(nextLocation, nearestLocation);
                 pointerWithBearing.setBearing(bearing);
-                //pointerWithBearing.setPosition(nearestLocation);
 
-                final LatLngInterpolator latLngInterpolator = new LatLngInterpolator.Spherical();
+                final LatLngInterpolator latLngInterpolator = new LatLngInterpolator.Linear();
 
                 TypeEvaluator<LatLng> typeEvaluator = new TypeEvaluator<LatLng>() {
                     @Override
@@ -599,20 +596,26 @@ public class Route {
 
                 Property<GroundOverlay, LatLng> property = Property.of(GroundOverlay.class, LatLng.class, "position");
                 ObjectAnimator animator = ObjectAnimator.ofObject(pointerWithBearing, property, typeEvaluator, nearestLocation);
-                animator.setDuration(300);
+                animator.setDuration(NavigationUtil.UPDATE_INTERVAL_FAST);
                 animator.start();
 
                 CameraPosition lastPosition = map.getCameraPosition();
                 CameraPosition currentPlace = new CameraPosition.Builder().target(nearestLocation).bearing(bearing)
                         .tilt(lastPosition.tilt).zoom(lastPosition.zoom).build();
-                map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
+                map.animateCamera(CameraUpdateFactory.newCameraPosition(currentPlace), 100, new GoogleMap.CancelableCallback() {
+                    @Override
+                    public void onFinish() {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                });
             }
 
         }
-        long endTime = System.nanoTime();
-
-        long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
-        Log.d(DEBUG_TAG, "GoTo method duration: "+(duration/1000000) + "ms");
     }
 
     private LatLng getNextSubStep(){

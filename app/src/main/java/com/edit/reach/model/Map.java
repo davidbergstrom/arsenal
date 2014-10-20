@@ -9,6 +9,7 @@ import com.edit.reach.model.interfaces.RouteListener;
 import com.edit.reach.system.GoogleMapsEndpoints;
 import com.edit.reach.system.Remote;
 import com.edit.reach.system.ResponseHandler;
+import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.*;
@@ -24,8 +25,6 @@ import java.util.Observable;
  */
 public class Map extends Observable{
 
-    // Constant, the refresh rate of the navigation loop in milliseconds
-    private final int UPDATE_INTERVAL_NORMAL = 300, UPDATE_INTERVAL_FAST = 80, UPDATE_INTERVAL_SLOW = 500, ROUTE_INTERVAL = 60000;
 
     // The map which modifies the map view in the activity
     private GoogleMap map;
@@ -135,7 +134,7 @@ public class Map extends Observable{
                     Log.d(DEBUG_TAG, "Current route not initialized!");
                 }
 
-                handler.postDelayed(this, UPDATE_INTERVAL_NORMAL);
+                handler.postDelayed(this, NavigationUtil.UPDATE_INTERVAL_FAST);
             }else{
                 Log.d(DEBUG_TAG, "Not in moving mode, NavigationRunnable is aborting.");
             }
@@ -150,7 +149,7 @@ public class Map extends Observable{
             if(state == State.MOVING && isRouteSet() && currentRoute.isInitialized()) {
                 setChanged();
                 notifyObservers(SignalType.ROUTE_TOTAL_TIME_UPDATE);
-                secondHandler.postDelayed(this, ROUTE_INTERVAL);
+                secondHandler.postDelayed(this, NavigationUtil.ROUTE_INTERVAL);
             }
         }
     };
@@ -280,8 +279,8 @@ public class Map extends Observable{
             }
 
             // Start navigation runnable
-            handler.postDelayed(navigationRunnable, UPDATE_INTERVAL_FAST);
-            secondHandler.postDelayed(routeUpdate, ROUTE_INTERVAL);
+            handler.postDelayed(navigationRunnable, NavigationUtil.UPDATE_INTERVAL_FAST);
+            secondHandler.postDelayed(routeUpdate, NavigationUtil.ROUTE_INTERVAL);
         }
     }
 
