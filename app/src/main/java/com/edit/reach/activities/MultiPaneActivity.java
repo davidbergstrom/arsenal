@@ -138,6 +138,11 @@ public class MultiPaneActivity extends FragmentActivity{
 	@Override
 	protected void onPause(){
 		super.onPause();
+	}
+
+	@Override
+	protected  void onStop() {
+		super.onStop();
 		navigationModel.getMap().setState(Map.State.STATIONARY);
 	}
 
@@ -182,6 +187,7 @@ public class MultiPaneActivity extends FragmentActivity{
 	 */
 	public void initializeMovingUI(){
 		controlFragment = ControlFragment.newInstance("MovingMode");
+		controlFragment.setState(ControlFragment.State.ROUTELESS);
 		getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, controlFragment).commit();
 	}
 
@@ -282,8 +288,9 @@ public class MultiPaneActivity extends FragmentActivity{
     public void goBackToRouteFragment(){
         Log.d("MultiPaneActivity", "goBackFragment");
 	    //msFragmentHasBeenCreated = false;
-        getSupportFragmentManager().beginTransaction().replace
-                (R.id.container_fragment_left, routeFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, routeFragment).commit();
+
+
     }
 
     public Location getMyLocation(){

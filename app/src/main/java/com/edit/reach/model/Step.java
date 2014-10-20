@@ -22,7 +22,6 @@ import java.util.List;
  */
 public class Step {
     private float distancePerSubStep, durationPerSubStep;
-    //private LatLng startLocation, endLocation; // Using the sub steps instead;
     private String instructions;
     private Polyline polyline;
     private List<LatLng> subSteps;
@@ -35,11 +34,8 @@ public class Step {
     public Step(JSONObject stepJSON){
         Log.d(DEBUG_TAG, "Creating step.");
         try {
-
             JSONObject startLocation = stepJSON.getJSONObject("start_location");
-            //this.startLocation = new LatLng(startLocation.getDouble("lat"), startLocation.getDouble("lng"));
             JSONObject endLocation = stepJSON.getJSONObject("end_location");
-            //this.endLocation = new LatLng(endLocation.getDouble("lat"), endLocation.getDouble("lng"));
             try {
                 instructions = URLDecoder.decode(Html.fromHtml(stepJSON.getString("html_instructions")).toString(), "UTF-8");
             } catch (UnsupportedEncodingException e) {

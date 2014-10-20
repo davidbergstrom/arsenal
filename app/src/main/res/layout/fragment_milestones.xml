@@ -11,6 +11,7 @@
               android:paddingRight="@dimen/fragment_left_right_padding"
 			  >
 
+
         <RelativeLayout
             android:id="@+id/rl_wizard_milestones"
             android:layout_width="match_parent"
@@ -35,6 +36,13 @@
 
     </RelativeLayout>
 
+	<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="4"
+			android:orientation="vertical">
+
+
 		<!-- The starting point -->
 		<TextView
 				android:id="@+id/tv_text_from"
@@ -44,12 +52,6 @@
 		        android:textSize="@dimen/fragment_milestones_from_to"
 		        android:textColor="@color/text_fragment_milestones_from_to"
 				/>
-
-	<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="300dp"
-			android:orientation="vertical"
-			>
 
 		<!-- Holder for Milestones Cards -->
 		<ScrollView
@@ -69,8 +71,6 @@
 
 		</ScrollView>
 
-		</LinearLayout>
-
 		<!-- The end point -->
 		<TextView
 				android:id="@+id/tv_text_to"
@@ -78,8 +78,16 @@
 				android:layout_height="wrap_content"
 				android:text="@string/et_milestones_text_to"
 				android:textSize="@dimen/fragment_milestones_from_to"
-		        android:textColor="@color/text_fragment_milestones_from_to"
+				android:textColor="@color/text_fragment_milestones_from_to"
 				/>
+
+	</LinearLayout>
+
+	<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="1"
+			android:orientation="vertical">
 
 	<RelativeLayout
 			android:layout_width="match_parent"
@@ -87,6 +95,8 @@
 			android:id="@+id/milestones_button_holder"
 			android:layout_gravity="bottom"
 			android:layout_marginTop="@dimen/fragment_milestones_button_holder_margin_top">
+
+
 
 
 
@@ -101,5 +111,6 @@
                 />
 
 	</RelativeLayout>
+	</LinearLayout>
 
 </LinearLayout>

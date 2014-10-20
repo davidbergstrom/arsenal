@@ -21,9 +21,6 @@ import java.util.List;
  */
 public class Leg {
     private List<Step> steps;
-    //private long duration;	// Seconds
-    //private long distance;	// Metres
-    //private LatLng startLocation, endLocation;
     private IMilestone endMilestone; // Milestones at the end of this leg
     private Marker milestoneMarker;
     private String DEBUG_TAG = "Leg";
@@ -36,13 +33,6 @@ public class Leg {
         Log.d(DEBUG_TAG, "Creating leg.");
         steps = new ArrayList<Step>();
         try {
-            //distance = legJSON.getJSONObject("distance").getLong("value");
-            //long duration = legJSON.getJSONObject("duration").getLong("value");
-            //JSONObject startPosition = legJSON.getJSONObject("start_location");
-            //this.startLocation = new LatLng(startPosition.getDouble("lat"), startPosition.getDouble("lng"));
-            //JSONObject endPosition = legJSON.getJSONObject("end_location");
-            //this.endLocation = new LatLng(endPosition.getDouble("lat"), endPosition.getDouble("lng"));
-
             JSONArray stepsArray = legJSON.getJSONArray("steps");
             for(int i = 0; i < stepsArray.length(); i++){
                 Step step = new Step(stepsArray.getJSONObject(i));
