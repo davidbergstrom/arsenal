@@ -26,13 +26,37 @@ public class NavigationUtil {
     /** Icons for the markers */
     public static final BitmapDescriptor
             foodMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_food),
-
+            selectedFoodMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_food_selected),
             bathroomMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_bathroom),
+            selectedBathroomMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_bathroom_selected),
             pauseMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_pause),
             restMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_reststop),
-            gasMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_gas);
+            selectedRestMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_reststop_selected),
+            gasMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_gas),
+            selectedGasMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_gas_selected);
 
 	private NavigationUtil(){}
+
+    /**
+     * Returns the icon for the specified milestone as a selected icon.
+     * @param milestone the milstone to find the selected image for
+     * @return the icon as a BitmapDescriptor
+     */
+    public static BitmapDescriptor getSelectedMilestoneIcon(IMilestone milestone){
+        BitmapDescriptor icon;
+
+        if (milestone.hasCategory(Category.GASSTATION)) {
+            icon = NavigationUtil.selectedGasMarker;
+        } else if (milestone.hasCategory(Category.FOOD)) {
+            icon = NavigationUtil.selectedFoodMarker;
+        } else if (milestone.hasCategory(Category.TOILET)) {
+            icon = NavigationUtil.selectedBathroomMarker;
+        } else {
+            icon = NavigationUtil.selectedRestMarker;
+        }
+
+        return icon;
+    }
 
     /**
      * Returns the icon for the specified milestone.
