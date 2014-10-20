@@ -249,8 +249,8 @@ public class ControlFragment extends Fragment{
 	}
 
 	private void setStateRouteless() {
-		navigationInfoContainer.setVisibility(LinearLayout.GONE);
-		suggestionButtonContainer.setVisibility(RelativeLayout.GONE);
+		/*navigationInfoContainer.setVisibility(LinearLayout.GONE);
+		suggestionButtonContainer.setVisibility(RelativeLayout.GONE);*/
 		Log.d("STATE", "setStateRouteless");
 	}
 
