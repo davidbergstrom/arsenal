@@ -46,7 +46,6 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	public NavigationModel(GoogleMap googleMap, Handler mainHandler) {
 		this.pipelineThread = new Thread(this, PIPELINE_THREAD_NAME);
 		this.pipelineThread.start();
-
 		this.vehicleSystem = new VehicleSystem();
 		this.vehicleSystem.addObserver(this);
 
@@ -204,7 +203,6 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 							});
 							break;
 
-						// TODO Not working
 						case SignalType.UPTIME_UPDATE:
 							Log.d("UPDATE", "TYPE: UP_TIME_UPDATE");
 

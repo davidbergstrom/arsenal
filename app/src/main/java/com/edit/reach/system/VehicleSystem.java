@@ -83,12 +83,10 @@ public final class VehicleSystem extends Observable implements Runnable {
 	private final Runnable timeRunnable = new Runnable() {
 		@Override
 		public void run() {
-			Log.d("determineTimeUpdate()", "in timeRunnable");
 			if (startTime.get() != 0) {
-				Log.d("determineTimeUpdate()", "passed startTime.ger() != 0");
 				determineTimeUpdate();
 			}
-			signalHandler.postDelayed(this, 50);
+			signalHandler.postDelayed(this, 1000);
 		}
 	};
 
@@ -248,7 +246,6 @@ public final class VehicleSystem extends Observable implements Runnable {
 		// TODO this is not beautiful
 		while(signalHandler == null) {
 		}
-
 		signalHandler.post(timeRunnable);
 	}
 
@@ -391,32 +388,29 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 	// Method that notifies observers if the time changed more than 60 seconds.
 	private void determineTimeUpdate() {
-		Log.d("determineTimeUpdate()", "hit");
 		if (prevTime.get() == 0) {
-			Log.d("determineTimeUpdate()", "passed prevTime.get() == 0");
 			setChanged();
 			notifyObservers(SignalType.UPTIME_UPDATE);
 			prevTime.set(System.nanoTime());
 		} else {
-			Log.d("determineTimeUpdate()", "did not pass prevTime.get() == 0");
 			if (((System.nanoTime() - prevTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) >= 60) {
 				setChanged();
 				notifyObservers(SignalType.UPTIME_UPDATE);
 				prevTime.set(System.nanoTime());
 			} else {
 				// Do nothing
-				Log.d("determineTimeUpdate()", "in: do nothing");
 			}
 		}
 		determineShortTime();
-		Log.d("determineTimeUpdate()", "called determineShortTime()");
 	}
 
 	// ********** OTHER PRIVATE METHODS ********** //
 
 	// Method that calculates and sets the size of the vehicles tank.
 	private void calculateTankSize() {
-		if(((System.nanoTime() - startTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) <= FUEL_TIME_CALCULATION_THRESHOLD && tankSize.get() != 0.0) {
+		Log.d("Calculate tank size", "");
+		if((((System.nanoTime() - startTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) <= FUEL_TIME_CALCULATION_THRESHOLD) && tankSize.get() != 0.0) {
+			Log.d("Tank size", "Passed if statement");
 			float deltaFuelLevel = fuelLevel.get() - startFuelLevel.get();
 			float deltaTime = ((float)(((System.nanoTime() - startTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) * UniversalConstants.SECONDS_TO_HOURS));
 			float fuelRateSum = 0;
@@ -437,6 +431,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 	// Method that calculates the number of kilometers until a refuel is needed.
 	private double calculateKmToRefuel(final double currentLitersInTank) {
+		Log.d("Calculate time to refuel", "");
 		float addedConsumption = 0;
 		synchronized (instantFuelEconomyList) {
 			for (Float consumption : instantFuelEconomyList) {

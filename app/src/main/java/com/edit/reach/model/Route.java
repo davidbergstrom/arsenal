@@ -559,7 +559,7 @@ public class Route {
                         subSteps.remove(i);
 
                     }else{   // If the new point is also closer to current location then the end of step
-                        step.draw(map);
+                        //step.draw(map);
                         break outerLoop; // Break the outer loop
                     }
                 }
