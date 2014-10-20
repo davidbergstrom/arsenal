@@ -6,13 +6,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class Milestone implements IMilestone {
 
-    String name;
-    String description;
-    Category category;
-    int rank;
-    LatLng location;
+    private String name;
+    private String description;
+    private ArrayList<Category> categories;
+    private int rank;
+    private LatLng location;
 
     public Milestone(JSONObject json) throws JSONException {
         JSONObject properties = json.getJSONObject("properties");
@@ -21,8 +23,8 @@ public class Milestone implements IMilestone {
         description = properties.getString("description");
         rank = properties.getInt("rating");
 
-        int cat = properties.getInt("category");
-        category = getCategoryGroup(cat);
+        int categoryNumber = properties.getInt("category");
+        setCategories(categoryNumber);
 
         JSONObject geometry = json.getJSONObject("geometry");
         JSONArray coordinates = geometry.getJSONArray("coordinates");
@@ -31,34 +33,43 @@ public class Milestone implements IMilestone {
         location = new LatLng(latitude, longitude);
     }
 
+    public String getSnippet() {
+        return name + "\n"
+               + description + "\n"
+               + rank;
+    }
+
     /**
      * Takes a category number between 1-27 and
      * places it in the appropriate category group
      * @ return enum category
      */
-    private Category getCategoryGroup(int category) {
-        Category categoryGroup = Category.GASSTATION;
+    private void setCategories(int category) {
         switch(category) {
             case 1:
             case 2:
             case 4:
             case 12:
-            case 25: categoryGroup = Category.FOOD;
+            case 25:
+                categories.add(Category.FOOD);
+                categories.add(Category.TOILET);
                 break;
-            case 3: categoryGroup = Category.GASSTATION;
+            case 3:
+                categories.add(Category.GASSTATION);
                 break;
             case 8:
-            case 9: categoryGroup = Category.SLEEP;
+            case 9:
+                categories.add(Category.SLEEP);
+                categories.add(Category.TOILET);
                 break;
             case 22:
-            case 23: categoryGroup = Category.OBSTRUCTION;
+            case 23:
+                categories.add(Category.OBSTRUCTION);
                 break;
-            case 24: categoryGroup = Category.ROAD_CAMERA;
+            case 24:
+                categories.add(Category.ROAD_CAMERA);
                 break;
-            default: categoryGroup =  Category.RESTAREA;
         }
-
-       return categoryGroup;
     }
 
     /**
@@ -82,13 +93,27 @@ public class Milestone implements IMilestone {
     }
 
     /**
-     * Returns the category of the milestone
-     *
-     * @return the milestones category
+     * Checks wether the milestone has the requested categories or not
+     * @return true if the milestone has the requested categories
      */
     @Override
-    public Category getCategory() {
-        return category;
+    public boolean hasCategories(ArrayList<Category> requestedCategories) {
+        return this.categories.containsAll(requestedCategories);
+    }
+
+    @Override
+    public boolean hasCategory(Category requestedCategory) {
+        return this.categories.contains(requestedCategory);
+    }
+
+    /**
+     * Returns the categories associated with the milestone
+     *
+     * @return a list with the milestone's categories
+     */
+    @Override
+    public ArrayList<Category> getCategories() {
+        return categories;
     }
 
     /**

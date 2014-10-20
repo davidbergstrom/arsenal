@@ -34,7 +34,7 @@ public class NavModelAndVehSystemTest extends TestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 
-		m = new NavigationModel(mainHandler);
+		//m = new NavigationModel(mainHandler);
 	}
 
 
