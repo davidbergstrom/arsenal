@@ -57,7 +57,7 @@ public class SuggestionUtil implements ResponseHandler {
     }
 
     /**
-     * Search in the Google Geocode API for the given String
+     * Search in the Google Places API for the given String
      * @param str, search String
      */
     public void searchForAddresses(String str) {

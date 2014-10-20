@@ -150,7 +150,7 @@ public class Map extends Observable{
             if(state == State.MOVING && isRouteSet() && currentRoute.isInitialized()) {
                 setChanged();
                 notifyObservers(SignalType.ROUTE_TOTAL_TIME_UPDATE);
-                handler.postDelayed(this, ROUTE_INTERVAL);
+                secondHandler.postDelayed(this, ROUTE_INTERVAL);
             }
         }
     };
@@ -281,7 +281,7 @@ public class Map extends Observable{
 
             // Start navigation runnable
             handler.postDelayed(navigationRunnable, UPDATE_INTERVAL_FAST);
-            handler.postDelayed(routeUpdate, ROUTE_INTERVAL);
+            secondHandler.postDelayed(routeUpdate, ROUTE_INTERVAL);
         }
     }
 

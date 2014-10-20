@@ -44,20 +44,10 @@ public class ControlFragment extends Fragment{
 	private int intGasStation;
 
 
-    private IMilestone milestone;
-    private List<IMilestone.Category> categories;
-
-
-	private float fuelLevel;
-	private float nextStopClock; //in sec
-	private double timeClock;   //in sec
-	private double totalTime;   //in sec
-    private float distanceToNextStop;
-	private String nextStopName = "N/A";
-
-	//State of Panel
+    //State of Panel
 	private State currentState;
-	public enum State {
+
+    public enum State {
 		ROUTELESS, INFO, SUGGESTION
 	}
 
@@ -66,12 +56,13 @@ public class ControlFragment extends Fragment{
 	private ProgressBar barTimeClock;
 
     //TextViews
+    private TextView textTotalTime;
     private TextView textTimeToNextStop;
     private TextView textNextStop;
     private TextView textDistanceToTextStop;
-	private TextView textRatingNextStop;
+    private TextView textRatingNextStop;
 
-	//Suggestion Buttons
+    //Suggestion Buttons
 	private Button btNextSuggestion;
 	private Button btOkSuggestion;
 
@@ -85,7 +76,6 @@ public class ControlFragment extends Fragment{
 	private RelativeLayout suggestionButtonContainer;
 
     public void setBarTimeClock(double timeClock) {
-		this.timeClock = timeClock;
         barTimeClock.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
 		barTimeClock.setMax((int) (UniversalConstants.LEGAL_UPTIME_IN_SECONDS * UniversalConstants.SECONDS_TO_MINUTES));
 		barTimeClock.setProgress((int) (timeClock * UniversalConstants.SECONDS_TO_MINUTES));
@@ -97,7 +87,6 @@ public class ControlFragment extends Fragment{
 
 
 	public void setBarFuel(float fuelLevel) {
-		this.fuelLevel = fuelLevel;
         barFuel.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
 		barFuel.setMax(100);
 		barFuel.setProgress((int) fuelLevel);
@@ -108,45 +97,57 @@ public class ControlFragment extends Fragment{
 	}
 
     public void setNextLeg(Leg leg) {
-        Leg thisLeg = leg;
-        this.milestone = leg.getMilestone();
-        this.nextStopClock = leg.getDuration();
-        this.nextStopName = milestone.getName();
-        this.distanceToNextStop = leg.getDistance();
-        this.categories = milestone.getCategories();
 
-        textNextStop.setText(nextStopName);
-        textTimeToNextStop.setText((int)(nextStopClock * UniversalConstants.SECONDS_TO_MINUTES) + " min");
-        textDistanceToTextStop.setText((int)(distanceToNextStop * 0.001) + " km");
+        if (leg.getMilestone() != null) {
+            IMilestone milestone = leg.getMilestone();
+            float nextStopClock = leg.getDuration();
+            String nextStopName = milestone.getName();
+            float distanceToNextStop = leg.getDistance();
+            Log.d("ControlFragment", "Mile :"+milestone.toString() + ", cat :"+milestone.getCategories());
+            List<IMilestone.Category> categories = milestone.getCategories();
 
-        //Set Milestone Images
-        ivFood.setVisibility(ImageView.INVISIBLE);
-        ivGastation.setVisibility(ImageView.INVISIBLE);
-        ivRestArea.setVisibility(ImageView.INVISIBLE);
-        ivToilet.setVisibility(ImageView.INVISIBLE);
+            textNextStop.setText(nextStopName);
+            textTimeToNextStop.setText("Time to stop: " + (int)(nextStopClock * UniversalConstants.SECONDS_TO_MINUTES) + " min");
+            textDistanceToTextStop.setText("Distance to stop: " + (int)(distanceToNextStop * 0.001) + " km");
 
-        for (IMilestone.Category cat : categories) {
+            //Set Milestone Images
+            ivFood.setVisibility(ImageView.GONE);
+            ivGastation.setVisibility(ImageView.GONE);
+            ivRestArea.setVisibility(ImageView.GONE);
+            ivToilet.setVisibility(ImageView.GONE);
 
-            switch (cat) {
-                case FOOD: ivFood.setVisibility(ImageView.VISIBLE);
-                    break;
+            for (IMilestone.Category cat : categories) {
 
-                case GASSTATION: ivGastation.setVisibility(ImageView.VISIBLE);
-                    break;
+                Log.d("ControlFragment:", "" + cat);
 
-                case RESTAREA: ivGastation.setVisibility(ImageView.VISIBLE);
-                    break;
+                switch (cat) {
+                    case FOOD:
+                        ivFood.setVisibility(ImageView.VISIBLE);
+                        Log.d("ControlFragment:", "Set FOOD Visible");
+                        break;
 
-                case TOILET: ivToilet.setVisibility(ImageView.VISIBLE);
-                    break;
+                    case GASSTATION:
+                        ivGastation.setVisibility(ImageView.VISIBLE);
+                        Log.d("ControlFragment:", "Set GASSTATION Visible");
+                        break;
 
+                    case RESTAREA:
+                        ivRestArea.setVisibility(ImageView.VISIBLE);
+                        Log.d("ControlFragment:", "Set RESTAREA Visible");
+                        break;
+
+                    case TOILET:
+                        ivToilet.setVisibility(ImageView.VISIBLE);
+                        Log.d("ControlFragment:", "Set TOILET Visible");
+                        break;
+
+                }
             }
-
         }
     }
 
     public void setTotalTime(double totalTime) {
-        this.totalTime = totalTime;
+         //textTotalTime.setText((int)(totalTime * UniversalConstants.SECONDS_TO_MINUTES) + " min");
     }
 
 	public static ControlFragment newInstance(String id){
@@ -183,7 +184,7 @@ public class ControlFragment extends Fragment{
 
         //Get TextViews
         textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
-		textRatingNextStop = (TextView) view.findViewById(R.id.navigation_info_rating);
+        textRatingNextStop = (TextView) view.findViewById(R.id.navigation_info_rating);
         textTimeToNextStop = (TextView) view.findViewById(R.id.navigation_info_time);
         textDistanceToTextStop = (TextView) view.findViewById(R.id.navigation_info_distance);
 
@@ -191,7 +192,6 @@ public class ControlFragment extends Fragment{
 		btNextSuggestion = (Button) view.findViewById(R.id.suggestion_button_next);
 		btOkSuggestion = (Button) view.findViewById(R.id.suggestion_button_ok);
 
-        //TODO delete setVisibility
         //Get ImageViews
         ivFood = (ImageView) view.findViewById(R.id.navigation_info_icon_type_food);
         ivGastation = (ImageView) view.findViewById(R.id.navigation_info_icon_type_gasstation);
@@ -217,6 +217,7 @@ public class ControlFragment extends Fragment{
 				}
 				else {
 					ibRestArea.setImageResource(R.drawable.input_restarea);
+					intRestArea = R.drawable.input_restarea;
 				}
 			}
 		});
@@ -234,6 +235,7 @@ public class ControlFragment extends Fragment{
 				}
 				else {
 					ibFood.setImageResource(R.drawable.input_restaurant);
+					intFood = R.drawable.input_restaurant;
 				}
 			}
 		});
@@ -251,6 +253,7 @@ public class ControlFragment extends Fragment{
 				}
 				else {
 					ibToilet.setImageResource(R.drawable.input_toilet);
+					intToilet = R.drawable.input_toilet;
 				}
 			}
 		});
@@ -268,6 +271,7 @@ public class ControlFragment extends Fragment{
 				}
 				else {
 					ibGasStation.setImageResource(R.drawable.input_gasstation);
+					intGasStation = R.drawable.input_gasstation;
 				}
 			}
 		});
@@ -282,15 +286,15 @@ public class ControlFragment extends Fragment{
 			ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
 			ibToilet.setImageResource(R.drawable.input_toilet_shaded);
 			ibFood.setImageResource(R.drawable.input_restaurant_shaded);
-		} else if(status == R.drawable.input_restarea_shaded){
+		} else if(status == R.drawable.input_restarea_pressed){
 			ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
 			ibToilet.setImageResource(R.drawable.input_toilet_shaded);
 			ibFood.setImageResource(R.drawable.input_restaurant_shaded);
-		} else if(status == R.drawable.input_restaurant_shaded){
+		} else if(status == R.drawable.input_restaurant_pressed){
 			ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
 			ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
 			ibToilet.setImageResource(R.drawable.input_toilet_shaded);
-		} else if(status == R.drawable.input_toilet_shaded){
+		} else if(status == R.drawable.input_toilet_pressed){
 			ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
 			ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
 			ibFood.setImageResource(R.drawable.input_restaurant_shaded);

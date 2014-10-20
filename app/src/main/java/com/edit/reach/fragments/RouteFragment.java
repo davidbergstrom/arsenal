@@ -164,8 +164,8 @@ public class RouteFragment extends Fragment {
 				}
 			}
 		});
-		Button btGetNearestRoute = (Button) view.findViewById(R.id.btSubmitNearestRoute);
-		btGetNearestRoute.setOnClickListener(getNearestRouteListener);
+/*		Button btGetNearestRoute = (Button) view.findViewById(R.id.btSubmitNearestRoute);
+		btGetNearestRoute.setOnClickListener(getNearestRouteListener);*/
 
 		return view;
 	}
