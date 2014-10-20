@@ -79,6 +79,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	 * @return a IMilestone that matches the category specified.
 	 */
 	public IMilestone getPauseSuggestions(IMilestone.Category category) {
+		// TODO AISA for one category.
 		if(category == IMilestone.Category.FOOD) {
 
 		} else if(category == IMilestone.Category.RESTAREA) {
@@ -86,7 +87,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		} else if(category == IMilestone.Category.GASSTATION) {
 
 		} else {
-			// TODO
+
 		}
 		return null;
 	}
@@ -256,17 +257,21 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 
 	// Method that adds time-pauses in the map.
 	private void addTimePause() {
+		synchronized (map) {
 		long routeTime = map.getRoute().getDuration();
 		long nmbrOfPauses = routeTime / UniversalConstants.LEGAL_UPTIME_IN_SECONDS;
 
 		for (int i = 1; i < nmbrOfPauses; i++) {
 			Log.d("NavModel", "Adding pause: ");
 			map.getRoute().addPause(i * UniversalConstants.LEGAL_UPTIME_IN_SECONDS);
+			}
 		}
 	}
 
 	// Method that add fuel-pause in the map.
 	private void addFuelPause(double kmToRefuel) {
-		map.getRoute().addPause(kmToRefuel);
+		synchronized (map) {
+			map.getRoute().addPause(kmToRefuel);
+		}
 	}
 }
