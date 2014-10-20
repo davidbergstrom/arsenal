@@ -1,5 +1,6 @@
 package com.edit.reach.activities;
 
+import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -214,6 +215,8 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -272,7 +275,6 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
             spinner.setVisibility(View.GONE);
             milestonesFragment = MilestonesFragment.newInstance(route.getOriginAddress(), route.getDestinationAddress());
             getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, milestonesFragment).commit();
-            navigationModel.addMilestones(preliminaryMilestones);
         }
     }
 
@@ -281,8 +283,8 @@ public class MultiPaneActivity extends FragmentActivity implements MapFragment.O
     }
 
     public void startMovingMode(){
+        navigationModel.addMilestones(preliminaryMilestones);
         navigationModel.getMap().setState(Map.State.MOVING);
-        //TODO: Gav nullpointer (oklart varför..)
         controlFragment = ControlFragment.newInstance("Control");
         getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
     }

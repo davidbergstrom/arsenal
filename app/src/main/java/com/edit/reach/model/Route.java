@@ -48,11 +48,20 @@ public class Route {
                 JSONObject route = routeArray.getJSONObject(0);
                 Log.d(DEBUG_TAG, route.toString());
                 JSONArray arrayLegs = route.getJSONArray("legs");
+                JSONArray wayPointOrder = route.getJSONArray("waypoint_order");
+                List<Integer> milestoneOrder = new ArrayList<Integer>();
+                for(int i = 0; i < wayPointOrder.length(); i++){
+                    milestoneOrder.add(wayPointOrder.getInt(i));
+                }
                 for(int i = 0; i < arrayLegs.length(); i++) {
                     JSONObject legJSON = arrayLegs.getJSONObject(i);
                     Leg newLeg = new Leg(legJSON);
+                    Log.d(DEBUG_TAG, "New Leg "+newLeg.toString());
                     //TODO Matching wont match exactly and will never work, fix!
-                    newLeg.setMilestone(getMilestone(newLeg.getEndLocation())); // Set the milestone to a milestone with the endlocation of the leg
+                    if(milestoneOrder.size() - 1 >= i){
+                        newLeg.setMilestone(milestones.get(milestoneOrder.get(i))); // Set the milestone to a milestone with the endlocation of the leg
+                    }
+
                     legs.add(newLeg);
                 }
 
@@ -206,6 +215,18 @@ public class Route {
                 if(milestone.getLocation().equals(location)){
                     return milestone;
                 }
+            }
+        }
+        return null;
+    }
+
+    private IMilestone getBestMilestone(LatLng location){
+        for(IMilestone milestone : milestones){
+            LatLng milestoneLocation = milestone.getLocation();
+            double distance = NavigationUtil.getDistance(milestoneLocation, location);
+            Log.d(DEBUG_TAG, "Location :"+location+", milestone :"+milestoneLocation+", distance :"+distance);
+            if(distance < 5){
+                return milestone;
             }
         }
         return null;
@@ -404,7 +425,8 @@ public class Route {
             this.milestones.addAll(milestones);
             // Recalculate the route
             initialized = false;
-            URL url = GoogleMapsEndpoints.makeURL(origin, destination, milestones, true);
+            URL url = GoogleMapsEndpoints.makeURL(origin, destination, this.milestones, true);
+            Log.d(DEBUG_TAG, "URL: "+url);
             Remote.get(url, routeHandler);
         }
     }
@@ -509,7 +531,7 @@ public class Route {
      * Get the legs of this route. A leg is a part of the route.
      * @return the legs
      */
-    public List getLegs(){
+    public List<Leg> getLegs(){
         return legs;
     }
 
