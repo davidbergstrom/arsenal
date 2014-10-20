@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import com.edit.reach.constants.VehicleState;
 import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.constants.SignalType;
 import com.edit.reach.model.interfaces.IMilestone;
@@ -184,6 +185,13 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 							message.obj = vehicleSystem.getVehicleState();
 							message.what = SignalType.VEHICLE_STOPPED_OR_STARTED;
 							mainHandler.sendMessage(message);
+
+							if(vehicleSystem.getVehicleState() == VehicleState.NOT_IN_DRIVE) {
+								map.setState(Map.State.STATIONARY);
+							} else {
+								map.setState(Map.State.MOVING);
+							}
+
 							break;
 
 						// If a vehicle took a break longer than or equal to 45 minutes.

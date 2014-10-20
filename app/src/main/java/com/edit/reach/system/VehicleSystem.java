@@ -7,7 +7,7 @@ import android.swedspot.automotiveapi.AutomotiveSignalId;
 import android.swedspot.scs.data.*;
 import android.util.Log;
 import com.edit.reach.constants.UniversalConstants;
-import com.edit.reach.constants.MovingState;
+import com.edit.reach.constants.VehicleState;
 import com.edit.reach.constants.SignalType;
 import com.edit.reach.utils.AtomicFloat;
 import com.swedspot.automotiveapi.AutomotiveFactory;
@@ -235,12 +235,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 					AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE,
 					AutomotiveSignalId.FMS_FUEL_RATE,
 					AutomotiveSignalId.FMS_INSTANTANEOUS_FUEL_ECONOMY,
-					AutomotiveSignalId.FMS_SERVICE_DISTANCE,
-					AutomotiveSignalId.FMS_VEHICLE_MOTION,
-					AutomotiveSignalId.FMS_TACHOGRAPH_VEHICLE_SPEED,
-					AutomotiveSignalId.FMS_HIGH_RESOLUTION_ENGINE_TOTAL_FUEL_USED,
-					AutomotiveSignalId.FMS_HIGH_RESOLUTION_TOTAL_VEHICLE_DISTANCE);
-
+					AutomotiveSignalId.FMS_VEHICLE_MOTION);
 		}
 
 		// TODO this is not beautiful
@@ -276,7 +271,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 	public double getKilometersUntilRefuel() {
 		double currentLitersInTank = ((fuelLevel.get()/100.0) * tankSize.get());
 
-		if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
+		if (getVehicleState() != VehicleState.NOT_IN_DRIVE) {
 			return calculateKmToRefuel(currentLitersInTank);
 		} else {
 			synchronized (instantFuelEconomyList) {
@@ -297,7 +292,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 	Negative number if drive longer than legal.
 	 */
 	public double getTimeUntilForcedRest() {
-		if (getVehicleState() != MovingState.NOT_IN_DRIVE) {
+		if (getVehicleState() != VehicleState.NOT_IN_DRIVE) {
 			return (UniversalConstants.LEGAL_UPTIME_IN_SECONDS - ((System.nanoTime() - startTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS));
 		} else {
 			return UniversalConstants.LEGAL_UPTIME_IN_SECONDS;
@@ -310,13 +305,13 @@ public final class VehicleSystem extends Observable implements Runnable {
 	public int getVehicleState() {
 		if (isMoving.get() == 1 && workingState.get() == 3) {
 			// Is in drive and vehicle is moving.
-			return MovingState.DRIVE_AND_MOVING;
+			return VehicleState.DRIVE_AND_MOVING;
 		} else if (isMoving.get() == 0 && workingState.get() == 3) {
 			// Is in drive but vehicle not moving.
-			return MovingState.DRIVE_BUT_NOT_MOVING;
+			return VehicleState.DRIVE_BUT_NOT_MOVING;
 		} else {
 			// Vehicle not in drive
-			return MovingState.NOT_IN_DRIVE;
+			return VehicleState.NOT_IN_DRIVE;
 		}
 	}
 
