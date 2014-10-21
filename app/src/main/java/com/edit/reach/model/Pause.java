@@ -30,6 +30,9 @@ public class Pause {
     public Pause(LatLng location, List<IMilestone> milestones){
         this.location = location;
         this.milestones = milestones;
+	    for(IMilestone m : this.milestones ) {
+		    Log.d("MILESTONE IN PAUSE", m.getName());
+	    }
         this.milestoneMarkers = new ArrayList<Marker>();
     }
 
@@ -51,6 +54,7 @@ public class Pause {
                 .icon(NavigationUtil.pauseMarker));
 
         for(IMilestone milestone : milestones){
+	        Log.d("Pause:", milestone.getName());
             BitmapDescriptor icon = NavigationUtil.getMilestoneIcon(milestone);
 
             milestoneMarkers.add(map.addMarker(new MarkerOptions()

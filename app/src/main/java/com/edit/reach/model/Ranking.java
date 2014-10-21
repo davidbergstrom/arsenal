@@ -49,8 +49,8 @@ public class Ranking {
                 + "<id>192</id>"
                 + "<geometry>"
                 + "<type>Point</type>"
-                + "<coordinates>"+ 62.23378 + "</coordinates>"
-                + "<coordinates>"+ 25.9186515808105 + "</coordinates>"
+                + "<coordinates>"+ 59.329323 + "</coordinates>"
+                + "<coordinates>"+ 18.068581 + "</coordinates>"
                 + "<coordinates>"+ 0.0 + "</coordinates>"
                 + "<coordinates>"+ 1366281091 + "</coordinates>"
                 + "</geometry>"
@@ -60,7 +60,7 @@ public class Ranking {
                 + "<owner_lastname>Kauppinen</owner_lastname>"
                 + "<name>Arsenal FC</name>"
                 + "<description>The world's greatest team</description>"
-                + "<category>" + 25 + "</category>"
+                + "<category>" + 3 + "</category>" // should be 25
                 + "<rating>" + 2 + "</rating>"
                 + "</properties>"
                 + "<type>Feature</type>";
@@ -71,6 +71,7 @@ public class Ranking {
             jsonObj = XML.toJSONObject(milestoneXML);
             IMilestone milestone = new Milestone(jsonObj);
             for (int i = 0; i < 5; i++) {
+	            Log.d("Ranking:", milestone.getName());
                 milestonesList.add(milestone);
             }
 
