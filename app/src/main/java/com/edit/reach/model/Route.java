@@ -667,7 +667,7 @@ public class Route {
     }
 
     private void onInitialize(boolean success){
-        Log.d(DEBUG_TAG, "Has been initialized: " + success);
+        Log.d(DEBUG_TAG, this.toString() + ", Has been initialized: " + success);
         initialized = success;
         for(RouteListener listener : listeners){
             listener.onInitialization(success);

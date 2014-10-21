@@ -281,6 +281,11 @@ public class Map extends Observable{
                 CameraPosition currentPlace = new CameraPosition.Builder().target(currentRoute.getOrigin()).tilt(65.5f).zoom(17).build();
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
+
+                List<Pause> pauses = currentRoute.getPauses();
+                for (Pause p : pauses) {
+                    p.erase();
+                }
                 if(currentRoute.isInitialized() && mapState != MapState.OVERVIEW_MOVING){
                     currentRoute.drawNavigation(map);
                 }
