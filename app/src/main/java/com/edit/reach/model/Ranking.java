@@ -7,6 +7,8 @@ import com.edit.reach.model.interfaces.MilestonesReceiver;
 import com.edit.reach.system.Remote;
 import com.edit.reach.system.ResponseHandler;
 import com.edit.reach.system.WorldTruckerEndpoints;
+import com.edit.reach.utils.RankingDistanceUtil;
+import com.edit.reach.utils.RankingUtil;
 import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,7 +18,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 import static com.edit.reach.model.interfaces.IMilestone.Category;
 
@@ -28,9 +29,16 @@ public class Ranking {
         status = GetStatus.PENDING;
     }
 
-    public static void getMilestones(LatLng bottomLeftPoint, LatLng topLeftPoint, Category category, final MilestonesReceiver milestonesReceiver) {
-        BoundingBox bbox = new BoundingBox(bottomLeftPoint, topLeftPoint);
-        performGet(bbox, category, milestonesReceiver);
+    public static void getMilestonesByRank(LatLng driverPoint, LatLng maxPoint, Category category, final MilestonesReceiver milestonesReceiver) {
+        BoundingBox bbox = new BoundingBox(driverPoint, maxPoint);
+        RankingUtil rankingUtil = new RankingUtil(category);
+        performGet(bbox, rankingUtil, milestonesReceiver);
+    }
+
+    public static void getMilestonesByDistance(LatLng driverPoint, LatLng maxPoint, Category category, final MilestonesReceiver milestonesReceiver) {
+        BoundingBox bbox = new BoundingBox(driverPoint, maxPoint);
+        RankingUtil rankingUtil = new RankingDistanceUtil(category, driverPoint);
+        performGet(bbox, rankingUtil, milestonesReceiver);
     }
 
     public static void getMilestones(final MilestonesReceiver milestonesReceiver, LatLng centralPoint, double sideLength) {
@@ -38,7 +46,7 @@ public class Ranking {
         performGet(bbox, null, milestonesReceiver);
     }
 
-    private static void performGet(BoundingBox bbox, final Category category, final MilestonesReceiver milestonesReceiver) {
+    private static void performGet(BoundingBox bbox, final RankingUtil rankingUtil, final MilestonesReceiver milestonesReceiver) {
         status = GetStatus.RUNNING;
 
         try {
@@ -66,24 +74,10 @@ public class Ranking {
                         Log.d("RankingTest", e.getMessage());
                     }
 
-                    if (category != null) {
-                        for (int i = 0; i < milestones.size(); i++) {
-                            if (!milestones.get(i).hasCategory(category)) {
-                               milestones.remove(milestones.get(i));
-                            }
-                        }
+                    if (rankingUtil != null) {
+                        rankingUtil.removeUnwanted(milestones);
+                        Collections.sort(milestones, rankingUtil);
                     }
-
-                    Collections.sort(milestones, new Comparator<IMilestone>() {
-                        @Override
-                        public int compare(IMilestone m1, IMilestone m2) {
-                            if (m1.getRank() > m2.getRank())
-                                return 1;
-                            if (m1.getRank() < m2.getRank())
-                                return -1;
-                            return 0;
-                        }
-                    });
 
                     milestonesReceiver.onMilestonesRecieved(milestones);
 

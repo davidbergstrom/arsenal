@@ -15,16 +15,31 @@ public class BoundingBox {
         topRight = new LatLng(center.latitude + d, center.longitude + d);
     }
 
-    public BoundingBox(LatLng bottomLeft, LatLng topRight) {
-        this.bottomLeft = bottomLeft;
-        this.topRight = topRight;
+    public BoundingBox(LatLng driverPoint, LatLng maxPoint) {
+        if (driverPoint.latitude < maxPoint.latitude) {
+            if (driverPoint.longitude < maxPoint.longitude) {
+                bottomLeft = driverPoint;
+                topRight = maxPoint;
+            } else {
+                bottomLeft = new LatLng(driverPoint.latitude, maxPoint.longitude);
+                topRight = new LatLng(maxPoint.latitude, driverPoint.longitude);
+            }
+        } else {
+            if (maxPoint.longitude < driverPoint.longitude) {
+                bottomLeft = maxPoint;
+                topRight = driverPoint;
+            } else {
+                bottomLeft = new LatLng(maxPoint.latitude, driverPoint.longitude);
+                topRight = new LatLng(driverPoint.latitude, maxPoint.longitude);
+            }
+        }
     }
 
-    LatLng getBottomLeft() {
+    public LatLng getBottomLeft() {
        return bottomLeft;
     }
 
-    LatLng getTopRight() {
+    public LatLng getTopRight() {
         return topRight;
     }
 
