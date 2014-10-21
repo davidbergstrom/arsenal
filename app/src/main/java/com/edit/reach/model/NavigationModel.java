@@ -35,7 +35,12 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 
 	private Handler pipelineHandler;
 
+	private IMilestone milestone;
+
 	private List<String> searchResults;
+
+	private int milestoneAlgorithmStage = 0;
+	private IMilestone.Category milestoneCategory;
 
 	/* --- CONSTANTS --- */
 	private static final String PIPELINE_THREAD_NAME = "PipelineThread";
@@ -44,6 +49,8 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	private static final int FOOD_THRESHOLD = 30*60;
 	private static final int REST_THRESHOLD = 15*60;
 	private static final int GAS_THRESHOLD = 20*60;
+	private static final int TOILET_THRESHOLD = 10*60;
+
 
 	public NavigationModel(GoogleMap googleMap, Handler mainHandler) {
 		this.pipelineThread = new Thread(this, PIPELINE_THREAD_NAME);
@@ -73,18 +80,60 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	 * @param category a category with what the user wants.
 	 * @return a IMilestone that matches the category specified.
 	 */
-	public void getPauseSuggestions(IMilestone.Category category) {
+	public void getPauseSuggestions(final IMilestone.Category category) {
+		this.milestoneCategory = category;
+		List<Leg> legs = map.getRoute().getLegs();
 
 		if(category == IMilestone.Category.FOOD) {
+			if(inThreshold(FOOD_THRESHOLD) && this.milestoneAlgorithmStage == 0) {
+				if(hasCategory(category)) {
+					notifyUI(legs.get(0).getMilestone());
+				}
+
+			} else if (milestoneAlgorithmStage == 1) {
+
+			} else {
+
+			}
 
 		} else if(category == IMilestone.Category.GASSTATION) {
+			if(inThreshold(GAS_THRESHOLD)) {
+				if(hasCategory(category)) {
+					notifyUI(legs.get(0).getMilestone());
+				}
+
+			} else if (milestoneAlgorithmStage == 1) {
+
+			} else {
+
+			}
 
 		} else if(category == IMilestone.Category.RESTAREA) {
+			if(inThreshold(REST_THRESHOLD)) {
+				if (hasCategory(category)) {
+					notifyUI(legs.get(0).getMilestone());
+				}
+
+			} else if (milestoneAlgorithmStage == 1) {
+
+			} else {
+
+			}
 
 		} else if(category == IMilestone.Category.TOILET) {
+			if(inThreshold(TOILET_THRESHOLD)) {
+				if (hasCategory(category)) {
+					notifyUI(legs.get(0).getMilestone());
+				}
+
+			} else if (milestoneAlgorithmStage == 1) {
+
+			} else {
+
+			}
 
 		} else {
-
+			// TODO
 		}
 	}
 
@@ -101,23 +150,39 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		boolean hasCategory = false;
 		List<Leg> legs = map.getRoute().getLegs();
 		if (legs.get(0).getMilestone().hasCategory(category)) {
-			map.showMilestone(legs.get(0).getMilestone());
-
-			Message message = mainHandler.obtainMessage();
-			message.obj = legs.get(0).getMilestone();
-			message.what = SignalType.MILESTONE;
-
 			hasCategory = true;
 		}
 		return hasCategory;
 	}
 
-	public void acceptedMilestone(final boolean accepted) {
+	private void notifyUI(IMilestone milestone) {
+		this.milestone = milestone;
+		map.showMilestone(this.milestone);
+
+		Message message = mainHandler.obtainMessage();
+		message.obj = this.milestone;
+		message.what = SignalType.MILESTONE;
+	}
+
+	public void acceptedMilestone(boolean accepted) {
+		// If milestone was accepted by the user.
 		if(accepted) {
+			boolean milestoneExists = false;
 			map.setMapState(Map.MapState.MOVING);
+			for(Leg l : map.getRoute().getLegs()) {
+				if(l.getMilestone().equals(this.milestone)) {
+					milestoneExists = true;
+				}
+			}
 
+			if(!milestoneExists) {
+				map.getRoute().addMilestone(this.milestone);
+			}
+
+		// If milestone was not accepted by the user.
 		} else {
-
+			milestoneAlgorithmStage += milestoneAlgorithmStage;
+			getPauseSuggestions(milestoneCategory);
 		}
 	}
 
