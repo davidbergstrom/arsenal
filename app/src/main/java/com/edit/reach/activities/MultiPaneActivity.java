@@ -45,6 +45,7 @@ public class MultiPaneActivity extends FragmentActivity {
 
     private List<IMilestone> preliminaryMilestones;
     private ProgressBar spinner;
+	private IMilestone suggestionMilestone;
 
     private MilestonesFragment milestonesFragment;
     private RouteFragment routeFragment;
@@ -103,6 +104,11 @@ public class MultiPaneActivity extends FragmentActivity {
                     }
 					Log.d("HANDLER UPDATE", "Leg update");
                     break;
+
+	            case SignalType.MILESTONE:
+		            suggestionMilestone = (IMilestone)message.obj;
+		            initializeSuggestionUI();
+
 
             }
         }
@@ -301,14 +307,25 @@ public class MultiPaneActivity extends FragmentActivity {
 
 
 
+	public void suggestionAcceptMilestone(boolean status){
+		navigationModel.acceptedMilestone(status);
+		if(status){
+			goBackToControlFragment();
+		}
+	}
+
+
     public void goBackToRouteFragment(){
         Log.d("MultiPaneActivity", "goBackFragment");
 	    //msFragmentHasBeenCreated = false;
         getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, routeFragment).commit();
 	    preliminaryMilestones.clear();
-
-
     }
+
+	public void goBackToControlFragment(){
+		getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
+
+	}
 
     public Location getMyLocation(){
         return mMap.getMyLocation();
@@ -381,9 +398,6 @@ public class MultiPaneActivity extends FragmentActivity {
             milestonesFragment = MilestonesFragment.newInstance(route.getOriginAddress(), route.getDestinationAddress());
             getSupportFragmentManager().beginTransaction().
 		            replace(R.id.container_fragment_left, milestonesFragment).commit();
-
-
-
         }
     }
 

@@ -32,13 +32,13 @@ public class MilestonesCard extends RelativeLayout {
     private void setCategoryImage(){
 	    Log.d("MilestonesCard", "SetCategoryImage");
 	    if (milestone.hasCategory(IMilestone.Category.GASSTATION)) {
-            imageView.setImageResource(R.drawable.milestone_gasstation);
+            imageView.setImageResource(R.drawable.milestone_gas);
 	    } else if (milestone.hasCategory(IMilestone.Category.FOOD)) {
 		    imageView.setImageResource(R.drawable.milestone_food);
 	    } else if (milestone.hasCategory(IMilestone.Category.TOILET)) {
 		    imageView.setImageResource(R.drawable.milestone_toilet);
 	    } else {
-		    imageView.setImageResource(R.drawable.milestone_restarea);
+		    imageView.setImageResource(R.drawable.milestone_rest);
 	    }
 
 

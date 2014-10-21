@@ -254,11 +254,15 @@ public class Route {
 
                     final LatLng pauseLocation = subSteps.get(subIndex);
                     final double addedTime = actualSecondsIntoRoute - subIndexTooFar * subDuration;
-
+					Log.d("Route", "Contacting ranking");
                     // Start a request for milestones at the pause location. Then create the pause with the location and milestones.
                     Ranking.getMilestones(new MilestonesReceiver() {
                         @Override
                         public void onMilestonesRecieved(ArrayList<IMilestone> milestones) {
+	                        for(IMilestone m : milestones) {
+		                        Log.d("MILESTONES", m.getName());
+	                        }
+
                             Pause p = new Pause(pauseLocation, milestones);
                             pauses.add(p);
 
@@ -270,7 +274,7 @@ public class Route {
 
                         @Override
                         public void onMilestonesGetFailed() {
-
+	                        Log.d("onMilestonesGetFailed", "");
                         }
                     }, pauseLocation, NavigationUtil.RADIUS_IN_DEGREES*2);
 
@@ -278,6 +282,7 @@ public class Route {
                 }
             }
         }
+	    Log.d("LOG", "LOG");
     }
 
     /**

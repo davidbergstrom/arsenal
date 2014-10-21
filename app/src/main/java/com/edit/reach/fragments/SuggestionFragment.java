@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.model.interfaces.IMilestone;
 
@@ -104,9 +105,26 @@ public class SuggestionFragment extends Fragment {
 
         //Get Suggestion Buttons
         Button buttonConfirm = (Button) view.findViewById(R.id.button_confirm);
+		buttonConfirm.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				((MultiPaneActivity)getActivity()).suggestionAcceptMilestone(true);
+			}
+		});
         Button buttonNext = (Button) view.findViewById(R.id.button_next);
+		buttonNext.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				((MultiPaneActivity)getActivity()).suggestionAcceptMilestone(false);
+			}
+		});
         Button buttonCancel = (Button) view.findViewById(R.id.button_cancel);
+		buttonCancel.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
 
+			}
+		});
         buttonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

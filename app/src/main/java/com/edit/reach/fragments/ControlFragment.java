@@ -204,10 +204,10 @@ public class ControlFragment extends Fragment{
 
 				}
 				else {
-					ibRestArea.setImageResource(R.drawable.restarea);
+					ibRestArea.setImageResource(R.drawable.restarea_150);
 					isRestArea = ImageState.ORIGINAL;
 				}
-				((MultiPaneActivity)getActivity()).initializeSuggestionUI();
+
 			}
 		});
 		ibFood = (ImageButton) view.findViewById(R.id.button_control_input_restaurant);
@@ -222,10 +222,10 @@ public class ControlFragment extends Fragment{
 					isFood = ImageState.PRESSED;
 					showTheOtherIcons();
 				} else {
-					ibFood.setImageResource(R.drawable.food);
+					ibFood.setImageResource(R.drawable.food_150);
 					isFood = ImageState.ORIGINAL;
 				}
-				((MultiPaneActivity)getActivity()).initializeSuggestionUI();
+
 			}
 		});
 		ibRestroom = (ImageButton) view.findViewById(R.id.button_control_input_toilet);
@@ -233,17 +233,17 @@ public class ControlFragment extends Fragment{
 		ibRestroom.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				//TODO: Fix Toilet...
+				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.TOILET);
 				Log.d("INPUTBUTTON", "Toilet");
 				if (isRestroom == ImageState.ORIGINAL) {
 					ibRestroom.setImageResource(R.drawable.restroom_pressed);
 					isRestroom = ImageState.PRESSED;
 					showTheOtherIcons();
 				} else {
-					ibRestroom.setImageResource(R.drawable.restroom);
+					ibRestroom.setImageResource(R.drawable.restroom_150);
 					isRestroom = ImageState.ORIGINAL;
 				}
-				((MultiPaneActivity)getActivity()).initializeSuggestionUI();
+
 			}
 		});
 		ibGasStation = (ImageButton) view.findViewById(R.id.button_control_input_gasstation);
@@ -259,10 +259,10 @@ public class ControlFragment extends Fragment{
 					showTheOtherIcons();
 				}
 				else {
-					ibGasStation.setImageResource(R.drawable.gasstation);
+					ibGasStation.setImageResource(R.drawable.gasstation_150);
 					isGasStation = ImageState.ORIGINAL;
 				}
-				((MultiPaneActivity)getActivity()).initializeSuggestionUI();
+
 			}
 		});
 
@@ -273,46 +273,46 @@ public class ControlFragment extends Fragment{
 	//TODO: Use if we going to have Multiple choices.
 	private void showTheOtherIcons(){
 		if(isGasStation == ImageState.PRESSED){
-			ibRestArea.setImageResource(R.drawable.restarea);
+			ibRestArea.setImageResource(R.drawable.restarea_150);
 			isRestArea = ImageState.ORIGINAL;
 
-			ibRestroom.setImageResource(R.drawable.restroom);
+			ibRestroom.setImageResource(R.drawable.restroom_150);
 			isRestroom = ImageState.ORIGINAL;
 
-			ibFood.setImageResource(R.drawable.food);
+			ibFood.setImageResource(R.drawable.food_150);
 			isFood = ImageState.ORIGINAL;
 
 		} else if(isRestArea == ImageState.PRESSED){
 
-			ibGasStation.setImageResource(R.drawable.gasstation);
+			ibGasStation.setImageResource(R.drawable.gasstation_150);
 			isGasStation = ImageState.ORIGINAL;
 
-			ibRestroom.setImageResource(R.drawable.restroom);
+			ibRestroom.setImageResource(R.drawable.restroom_150);
 			isRestroom = ImageState.ORIGINAL;
 
-			ibFood.setImageResource(R.drawable.food);
+			ibFood.setImageResource(R.drawable.food_150);
 			isFood = ImageState.ORIGINAL;
 
 		} else if(isFood == ImageState.PRESSED){
 
-			ibGasStation.setImageResource(R.drawable.gasstation);
+			ibGasStation.setImageResource(R.drawable.gasstation_150);
 			isGasStation = ImageState.ORIGINAL;
 
-			ibRestArea.setImageResource(R.drawable.restarea);
+			ibRestArea.setImageResource(R.drawable.restarea_150);
 			isRestArea = ImageState.ORIGINAL;
 
-			ibRestroom.setImageResource(R.drawable.restroom);
+			ibRestroom.setImageResource(R.drawable.restroom_150);
 			isRestroom = ImageState.ORIGINAL;
 
 		} else if(isRestroom == ImageState.PRESSED){
 
-			ibGasStation.setImageResource(R.drawable.gasstation);
+			ibGasStation.setImageResource(R.drawable.gasstation_150);
 			isGasStation = ImageState.ORIGINAL;
 
-			ibRestArea.setImageResource(R.drawable.restarea);
+			ibRestArea.setImageResource(R.drawable.restarea_150);
 			isRestArea = ImageState.ORIGINAL;
 
-			ibFood.setImageResource(R.drawable.food);
+			ibFood.setImageResource(R.drawable.food_150);
 			isFood = ImageState.ORIGINAL;
 
 		} else{
@@ -321,10 +321,10 @@ public class ControlFragment extends Fragment{
 	}
 
 	private void showAllIcons(){
-		ibFood.setImageResource(R.drawable.input_restaurant);
-		ibRestArea.setImageResource(R.drawable.input_restarea);
-		ibRestroom.setImageResource(R.drawable.input_toilet);
-		ibGasStation.setImageResource(R.drawable.input_gasstation);
+		ibFood.setImageResource(R.drawable.food_150);
+		ibRestArea.setImageResource(R.drawable.restarea_150);
+		ibRestroom.setImageResource(R.drawable.restroom_150);
+		ibGasStation.setImageResource(R.drawable.gasstation_150);
 
 		isFood = ImageState.ORIGINAL;
 		isRestArea = ImageState.ORIGINAL;
