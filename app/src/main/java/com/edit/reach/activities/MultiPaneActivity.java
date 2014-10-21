@@ -20,6 +20,7 @@ import com.edit.reach.constants.SignalType;
 import com.edit.reach.fragments.ControlFragment;
 import com.edit.reach.fragments.MilestonesFragment;
 import com.edit.reach.fragments.RouteFragment;
+import com.edit.reach.fragments.SuggestionFragment;
 import com.edit.reach.model.Leg;
 import com.edit.reach.model.Map;
 import com.edit.reach.model.NavigationModel;
@@ -48,6 +49,7 @@ public class MultiPaneActivity extends FragmentActivity {
     private MilestonesFragment milestonesFragment;
     private RouteFragment routeFragment;
     private ControlFragment controlFragment;
+	private SuggestionFragment suggestionFragment;
 
     private boolean msFragmentHasBeenCreated = false;
 
@@ -219,6 +221,11 @@ public class MultiPaneActivity extends FragmentActivity {
 		getSupportFragmentManager().beginTransaction()
 				.add(R.id.container_fragment_left, routeFragment).commit();
 
+	}
+
+	public void initializeSuggestionUI(){
+		suggestionFragment = SuggestionFragment.newInstance("Suggestion");
+		getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, suggestionFragment).commit();
 	}
 
     private void setupMap(){
