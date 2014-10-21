@@ -199,6 +199,8 @@ public class MultiPaneActivity extends FragmentActivity {
         return strings;
     }
 
+
+
 	/**
 	 * Init the UI-Fragment for moving-mode and adds it to the container.
 	 */
