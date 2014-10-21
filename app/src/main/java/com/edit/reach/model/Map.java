@@ -66,11 +66,12 @@ public class Map extends Observable{
 
         @Override
         public void onPauseAdded(Pause pause) {
-            Log.d("Map", "Pause added");
+            Log.d(DEBUG_TAG, "Pause added");
             if(mapState == MapState.STATIONARY){
                 // If the current state is overview, draw the pause circle and add the markers to the map
                 pause.draw(map);
-                Log.d("Map", "Getting milestones");
+            }else if(mapState == MapState.MOVING){
+                pause.drawNavigation(map);
             }
 
         }
