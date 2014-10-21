@@ -127,6 +127,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 
 			if (milestoneAlgorithmStage >= 1) {
 				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(REST_THRESHOLD), category, this);
+
 			}
 
 		} else if (category == IMilestone.Category.TOILET) {
