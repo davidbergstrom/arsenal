@@ -1,4 +1,4 @@
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -63,45 +63,7 @@
 					android:visibility="visible"/>
 
 		</LinearLayout>
-
-		<!-- Specifications holder -->
-		<LinearLayout
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:orientation="vertical">
-
-        <!-- TODO Remove or take back TextView -->
-
-		</LinearLayout>
-
 	</LinearLayout>
-
-	<RelativeLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:id="@+id/suggestion_buttons"
-			android:layout_below="@+id/navigation_info_container"
-			android:layout_marginBottom="@dimen/suggestion_buttons_margin_bottom">
-
-		<Button
-				android:layout_width="100dp"
-				android:layout_height="wrap_content"
-				android:id="@+id/suggestion_button_next"
-				android:text="@string/suggestion_button_next"
-				style="@android:style/Widget.Holo.Button.Small"
-				android:layout_alignParentStart="true"
-				android:textSize="@dimen/suggestion_button"/>
-
-		<Button
-				android:layout_width="100dp"
-				android:layout_height="wrap_content"
-				android:id="@+id/suggestion_button_ok"
-				android:text="@string/suggestion_button_ok"
-				style="@android:style/Widget.Holo.Button.Small"
-				android:layout_alignParentEnd="true"
-				android:textSize="@dimen/suggestion_button"/>
-
-	</RelativeLayout>
 
 	<!-- Holder for three progress bars with either text or icons on each side -->
 	<GridLayout
@@ -110,23 +72,31 @@
 			android:id="@+id/control_info_progressbar_holder"
 			android:columnCount="2"
 			android:rowCount="4"
-			android:layout_below="@+id/suggestion_buttons"
-			android:layout_centerHorizontal="false">
+			android:layout_below="@+id/navigation_info_container">
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/navigation_info_rating"
-                android:text="@string/tv_navigation_info_rating"
-                android:textSize="@dimen/tv_navigation_info_specs"
-                android:textColor="@color/text_navigation_info_specs"/>
+		<ImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/navigation_info_distance_icon"
+				android:layout_row="0"
+				android:layout_column="0"
+				android:src="@drawable/info_fuel_icon"/>
+
+		<ImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/navigation_info_time_icon"
+				android:layout_row="1"
+				android:layout_column="0"
+				android:src="@drawable/info_time_icon"/>
 
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/navigation_info_distance"
                 android:layout_row="0"
-                android:layout_column="0"
+                android:layout_column="1"
+                android:layout_marginStart="20dp"
                 android:text="@string/tv_navigation_info_distance"
                 android:textSize="@dimen/tv_navigation_info_specs"
                 android:textColor="@color/text_navigation_info_specs"/>
@@ -136,7 +106,9 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/navigation_info_time"
                 android:layout_row="1"
-                android:layout_column="0"
+                android:layout_column="1"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="10dp"
                 android:text="@string/tv_navigation_info_time"
                 android:textSize="@dimen/tv_navigation_info_specs"
                 android:textColor="@color/text_navigation_info_specs"/>
@@ -153,8 +125,7 @@
 				android:minHeight="@dimen/progress_bar_min_height"
 				android:maxWidth="@dimen/progress_bar_max_width"
 				android:maxHeight="@dimen/progress_bar_max_height"
-				android:layout_marginStart="@dimen/progress_bar_margin_side"
-				android:layout_marginEnd="@dimen/progress_bar_margin_side"
+				android:layout_marginStart="20dp"
 				style="@android:style/Widget.Holo.ProgressBar.Horizontal">
 		</ProgressBar>
 
@@ -169,12 +140,11 @@
 				android:minHeight="@dimen/progress_bar_min_height"
 				android:maxWidth="@dimen/progress_bar_max_width"
 				android:maxHeight="@dimen/progress_bar_max_height"
-				android:layout_marginStart="@dimen/progress_bar_margin_side"
-				android:layout_marginEnd="@dimen/progress_bar_margin_side"
+				android:layout_marginStart="20dp"
 				style="@android:style/Widget.Holo.ProgressBar.Horizontal">
 		</ProgressBar>
 
-		<!-- TextViews to accompany the ProgressBars -->
+		<!-- Icons for the ProgressBars -->
 		<ImageView
 				android:id="@+id/tv_control_info_gas_left"
 				android:layout_column="0"

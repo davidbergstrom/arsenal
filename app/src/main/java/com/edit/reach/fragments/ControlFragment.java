@@ -59,11 +59,6 @@ public class ControlFragment extends Fragment{
     private TextView textTimeToNextStop;
     private TextView textNextStop;
     private TextView textDistanceToTextStop;
-    private TextView textRatingNextStop;
-
-    //Suggestion Buttons
-	private Button btNextSuggestion;
-	private Button btOkSuggestion;
 
     //MileStone Images
     private ImageView ivFood;
@@ -72,7 +67,6 @@ public class ControlFragment extends Fragment{
     private ImageView ivToilet;
 
 	private LinearLayout navigationInfoContainer;
-	private RelativeLayout suggestionButtonContainer;
 
     public void setBarTimeClock(double timeClock) {
         barTimeClock.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
@@ -179,17 +173,11 @@ public class ControlFragment extends Fragment{
 
 		//Get Layout Containers to easily handle states
 		navigationInfoContainer = (LinearLayout) view.findViewById(R.id.navigation_info_container);
-		suggestionButtonContainer = (RelativeLayout) view.findViewById(R.id.suggestion_buttons);
 
         //Get TextViews
         textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
-        textRatingNextStop = (TextView) view.findViewById(R.id.navigation_info_rating);
         textTimeToNextStop = (TextView) view.findViewById(R.id.navigation_info_time);
         textDistanceToTextStop = (TextView) view.findViewById(R.id.navigation_info_distance);
-
-		//Get Suggestion Buttons
-		btNextSuggestion = (Button) view.findViewById(R.id.suggestion_button_next);
-		btOkSuggestion = (Button) view.findViewById(R.id.suggestion_button_ok);
 
         //Get ImageViews
         ivFood = (ImageView) view.findViewById(R.id.navigation_info_icon_type_food);
@@ -219,6 +207,7 @@ public class ControlFragment extends Fragment{
 					ibRestArea.setImageResource(R.drawable.restarea);
 					isRestArea = ImageState.ORIGINAL;
 				}
+				((MultiPaneActivity)getActivity()).initializeSuggestionUI();
 			}
 		});
 		ibFood = (ImageButton) view.findViewById(R.id.button_control_input_restaurant);
@@ -236,6 +225,7 @@ public class ControlFragment extends Fragment{
 					ibFood.setImageResource(R.drawable.food);
 					isFood = ImageState.ORIGINAL;
 				}
+				((MultiPaneActivity)getActivity()).initializeSuggestionUI();
 			}
 		});
 		ibRestroom = (ImageButton) view.findViewById(R.id.button_control_input_toilet);
@@ -253,6 +243,7 @@ public class ControlFragment extends Fragment{
 					ibRestroom.setImageResource(R.drawable.restroom);
 					isRestroom = ImageState.ORIGINAL;
 				}
+				((MultiPaneActivity)getActivity()).initializeSuggestionUI();
 			}
 		});
 		ibGasStation = (ImageButton) view.findViewById(R.id.button_control_input_gasstation);
@@ -271,6 +262,7 @@ public class ControlFragment extends Fragment{
 					ibGasStation.setImageResource(R.drawable.gasstation);
 					isGasStation = ImageState.ORIGINAL;
 				}
+				((MultiPaneActivity)getActivity()).initializeSuggestionUI();
 			}
 		});
 
@@ -357,12 +349,10 @@ public class ControlFragment extends Fragment{
 
 	private void setStateRouteless() {
 		navigationInfoContainer.setVisibility(View.GONE);
-		suggestionButtonContainer.setVisibility(View.GONE);
 	}
 
 	private void setStateInfo() {
-		textRatingNextStop.setVisibility(View.GONE);
-		suggestionButtonContainer.setVisibility(View.GONE);
+		;
 	}
 
 	private void setStateSuggestion() {

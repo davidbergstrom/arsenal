@@ -7,11 +7,13 @@ import android.util.Log;
 import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.constants.SignalType;
 import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.model.interfaces.MilestonesReceiver;
 import com.edit.reach.model.interfaces.SuggestionListener;
 import com.edit.reach.system.VehicleSystem;
 import com.edit.reach.utils.SuggestionUtil;
 import com.google.android.gms.maps.GoogleMap;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -26,7 +28,7 @@ import java.util.Observer;
  * Time: 19:27
  * Last Edit: 2014-10-17
  */
-public final class NavigationModel implements Runnable, Observer, SuggestionListener {
+public final class NavigationModel implements Runnable, Observer, SuggestionListener, MilestonesReceiver {
 
 	private final VehicleSystem vehicleSystem;
 	private final Map map;
@@ -41,14 +43,15 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 
 	private int milestoneAlgorithmStage = 0;
 	private IMilestone.Category milestoneCategory;
+	private int milestoneListIndex = 0;
 
 	/* --- CONSTANTS --- */
 	private static final String PIPELINE_THREAD_NAME = "PipelineThread";
 
-	private static final int FOOD_THRESHOLD = 45*60;
-	private static final int GAS_THRESHOLD = 30*60;
-	private static final int REST_THRESHOLD = 15*60;
-	private static final int TOILET_THRESHOLD = 10*60;
+	private int FOOD_THRESHOLD = 45*60;
+	private int GAS_THRESHOLD = 30*60;
+	private int REST_THRESHOLD = 15*60;
+	private int TOILET_THRESHOLD = 10*60;
 
 	public NavigationModel(GoogleMap googleMap, Handler mainHandler) {
 		this.pipelineThread = new Thread(this, PIPELINE_THREAD_NAME);
@@ -80,7 +83,8 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	 */
 	public void getPauseSuggestions(final IMilestone.Category category) {
 		this.milestoneCategory = category;
-		List<Leg> legs = map.getRoute().getLegs();
+		Route route = map.getRoute();
+		List<Leg> legs = route.getLegs();
 
 		if(category == IMilestone.Category.FOOD) {
 			if(inThreshold(FOOD_THRESHOLD) && this.milestoneAlgorithmStage == 0) {
@@ -88,12 +92,11 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 					notifyUI(legs.get(0).getMilestone());
 				}
 
-			// TODO Time and rating
 			} else if (milestoneAlgorithmStage == 1) {
+				Ranking.getMilestonesByRank(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category , this);
 
-			// TODO Time
 			} else {
-
+				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category , this);
 			}
 
 		} else if(category == IMilestone.Category.GASSTATION) {
@@ -102,12 +105,11 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 					notifyUI(legs.get(0).getMilestone());
 				}
 
-			// TODO Time and rating
 			} else if (milestoneAlgorithmStage == 1) {
+				Ranking.getMilestonesByRank(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category , this);
 
-			// TODO Time
 			} else {
-
+				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category , this);
 			}
 
 		} else if(category == IMilestone.Category.RESTAREA) {
@@ -116,12 +118,11 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 					notifyUI(legs.get(0).getMilestone());
 				}
 
-			// TODO Time and rating
 			} else if (milestoneAlgorithmStage == 1) {
+				Ranking.getMilestonesByRank(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category , this);
 
-			// TODO Time
 			} else {
-
+				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category , this);
 			}
 
 		} else if(category == IMilestone.Category.TOILET) {
@@ -130,12 +131,11 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 					notifyUI(legs.get(0).getMilestone());
 				}
 
-			// TODO Time and rating
 			} else if (milestoneAlgorithmStage == 1) {
+				Ranking.getMilestonesByRank(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category , this);
 
-			// TODO Time
 			} else {
-
+				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category , this);
 			}
 
 		} else {
@@ -163,9 +163,28 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 
 		// If milestone was not accepted by the user.
 		} else {
-			milestoneAlgorithmStage += milestoneAlgorithmStage;
+			milestoneAlgorithmStage += 1;
+			if(milestoneAlgorithmStage >= 2) {
+				milestoneListIndex += 1;
+			}
 			getPauseSuggestions(milestoneCategory);
 		}
+	}
+
+	@Override
+	public void onMilestonesRecieved(ArrayList<IMilestone> milestones) {
+		if(milestones.size() == 0) {
+			extendMilestoneSearch();
+			milestoneAlgorithmStage += 1;
+			getPauseSuggestions(this.milestoneCategory);
+		} else {
+			notifyUI(milestones.get(milestoneListIndex));
+		}
+	}
+
+	@Override
+	public void onMilestonesGetFailed() {
+		Log.d("onMilestonesGetFailed", "Failed to get milestones");
 	}
 
 	/** Returns a map object.
@@ -203,6 +222,13 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		synchronized (map) {
 			map.setRoute(newRoute);
 		}
+	}
+
+	/** Toggles demomode on the map.
+	 * @param demo true if demomode should be activated, false otherwise.
+	 */
+	public void setDemo(boolean demo) {
+		map.setDemoMode(demo);
 	}
 
 	@Override
@@ -314,7 +340,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 						// If the tank size has been calculated
 						case SignalType.TANK_SIZE_CALCULATED:
 							Log.d("UPDATE", "TYPE: TANK_SIZE_CALCULATED");
-							map.getRoute().addPause((long)vehicleSystem.getTimeUntilRefuel());
+							map.getRoute().addPause((long) vehicleSystem.getTimeUntilRefuel());
 							break;
 
 						// If vehicle is low on fuel.
@@ -380,4 +406,11 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		}
 	}
 
+	// Extend search perimiter with one hour.
+	private void extendMilestoneSearch() {
+		FOOD_THRESHOLD += 60*60;
+		GAS_THRESHOLD += 60*60;
+		REST_THRESHOLD += 60*60;
+		TOILET_THRESHOLD = 60*60;
+	}
 }

@@ -1,11 +1,13 @@
 package com.edit.reach.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -18,6 +20,7 @@ import com.edit.reach.constants.SignalType;
 import com.edit.reach.fragments.ControlFragment;
 import com.edit.reach.fragments.MilestonesFragment;
 import com.edit.reach.fragments.RouteFragment;
+import com.edit.reach.fragments.SuggestionFragment;
 import com.edit.reach.model.Leg;
 import com.edit.reach.model.Map;
 import com.edit.reach.model.NavigationModel;
@@ -46,6 +49,7 @@ public class MultiPaneActivity extends FragmentActivity {
     private MilestonesFragment milestonesFragment;
     private RouteFragment routeFragment;
     private ControlFragment controlFragment;
+	private SuggestionFragment suggestionFragment;
 
     private boolean msFragmentHasBeenCreated = false;
 
@@ -133,8 +137,13 @@ public class MultiPaneActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+        boolean demoMode = sharedPrefs.getBoolean("demonstration_mode", false);
 
+        Log.d("MultiPaneActivity", "Demo MODE:"+demoMode);
+
+        navigationModel.setDemo(demoMode);
     }
 
 	@Override
@@ -212,6 +221,11 @@ public class MultiPaneActivity extends FragmentActivity {
 		getSupportFragmentManager().beginTransaction()
 				.add(R.id.container_fragment_left, routeFragment).commit();
 
+	}
+
+	public void initializeSuggestionUI(){
+		suggestionFragment = SuggestionFragment.newInstance("Suggestion");
+		getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, suggestionFragment).commit();
 	}
 
     private void setupMap(){
