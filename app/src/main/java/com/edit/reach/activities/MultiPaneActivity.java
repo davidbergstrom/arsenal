@@ -106,10 +106,9 @@ public class MultiPaneActivity extends FragmentActivity {
                     break;
 
 	            case SignalType.MILESTONE:
+		            Log.d("HANDLER UPDATE", "MILESTONE");
 		            initializeSuggestionUI();
 		            suggestionMilestone = (IMilestone)message.obj;
-
-
             }
         }
     };

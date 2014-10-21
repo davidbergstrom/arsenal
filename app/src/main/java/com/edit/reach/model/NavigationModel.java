@@ -372,7 +372,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 							Log.d("UPDATE", "TYPE: VEHICLE_TOOK_FINAL_BREAK");
 
 							// This has to be done in UI thread because of Googles Map.
-							/*mainHandler.post(new Runnable() {
+							mainHandler.post(new Runnable() {
 								@Override
 								public void run() {
 									synchronized (map) {
@@ -381,7 +381,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 										addTimePause();
 									}
 								}
-							});*/
+							});
 							break;
 
 						// If the tank size has been calculated
@@ -440,8 +440,9 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		map.showMilestone(this.milestone);
 
 		Message message = mainHandler.obtainMessage();
-		message.obj = this.milestone;
 		message.what = SignalType.MILESTONE;
+		message.obj = this.milestone;
+		mainHandler.sendMessage(message);
 	}
 
 	// Method that adds time-pauses in the map.
