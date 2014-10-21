@@ -106,8 +106,8 @@ public class MultiPaneActivity extends FragmentActivity {
                     break;
 
 	            case SignalType.MILESTONE:
-		            suggestionMilestone = (IMilestone)message.obj;
 		            initializeSuggestionUI();
+		            suggestionMilestone = (IMilestone)message.obj;
 
 
             }
@@ -145,7 +145,7 @@ public class MultiPaneActivity extends FragmentActivity {
         setUpMapIfNeeded();
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        boolean demoMode = sharedPrefs.getBoolean("demonstration_mode", false);
+        boolean demoMode = sharedPrefs.getBoolean("demonstration_mode", true);
 
         Log.d("MultiPaneActivity", "Demo MODE:"+demoMode);
 
@@ -198,6 +198,8 @@ public class MultiPaneActivity extends FragmentActivity {
         strings = navigationModel.getMatchedStringResults(input);
         return strings;
     }
+
+
 
 	/**
 	 * Init the UI-Fragment for moving-mode and adds it to the container.
@@ -310,7 +312,9 @@ public class MultiPaneActivity extends FragmentActivity {
 	public void suggestionAcceptMilestone(boolean status){
 		navigationModel.acceptedMilestone(status);
 		if(status){
-			goBackToControlFragment();
+			goBackToControlFragment(
+
+			);
 		}
 	}
 

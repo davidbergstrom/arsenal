@@ -23,8 +23,8 @@ public class NavModelAndVehSystemTest extends TestCase {
 				Log.d("Vehicle-State: ", message.obj + "");
 			} else if(message.what == SignalType.SHORT_TIME) {
 				Log.d("Time-to-stop: ", message.obj + "");
-			} else if(message.what == SignalType.SHORT_TO_SERVICE) {
-				Log.d("Distance-to-service: ", message.obj + "");
+			//} else if(message.what == SignalType.SHORT_TO_SERVICE) {
+			//	Log.d("Distance-to-service: ", message.obj + "");
 			} else {
 				Log.d("handleMessage", "Error");
 			}

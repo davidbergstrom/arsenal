@@ -170,7 +170,7 @@ public class Map extends Observable{
 		this.map = map;
         this.handler = new Handler();
         this.mapState = MapState.STATIONARY;
-        demoMode = false;
+        demoMode = true;
 	}
 
     /**
@@ -225,7 +225,7 @@ public class Map extends Observable{
     Marker showMilestone(IMilestone milestone){
         mapState = MapState.OVERVIEW_MOVING;
         LatLng milestoneLocation = milestone.getLocation();
-        Marker tempMarker = map.addMarker(new MarkerOptions().position(milestoneLocation).snippet(milestone.getSnippet()).title(milestone.getName()));
+        Marker tempMarker = map.addMarker(new MarkerOptions().position(milestoneLocation).icon(NavigationUtil.getMilestoneIcon(milestone)).snippet(milestone.getSnippet()).title(milestone.getName()));
         moveCameraTo(milestoneLocation, 13);
         return tempMarker;
     }
@@ -281,6 +281,11 @@ public class Map extends Observable{
                 CameraPosition currentPlace = new CameraPosition.Builder().target(currentRoute.getOrigin()).tilt(65.5f).zoom(17).build();
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
+
+                List<Pause> pauses = currentRoute.getPauses();
+                for (Pause p : pauses) {
+                    p.erase();
+                }
                 if(currentRoute.isInitialized() && mapState != MapState.OVERVIEW_MOVING){
                     currentRoute.drawNavigation(map);
                 }

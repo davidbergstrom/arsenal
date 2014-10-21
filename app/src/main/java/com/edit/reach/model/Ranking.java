@@ -4,14 +4,21 @@ import android.util.Log;
 import com.edit.reach.constants.GetStatus;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.MilestonesReceiver;
+import com.edit.reach.system.Remote;
+import com.edit.reach.system.ResponseHandler;
+import com.edit.reach.system.WorldTruckerEndpoints;
 import com.edit.reach.utils.RankingDistanceUtil;
 import com.edit.reach.utils.RankingUtil;
 import com.google.android.gms.maps.model.LatLng;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static com.edit.reach.model.interfaces.IMilestone.Category;
 
@@ -43,7 +50,8 @@ public class Ranking {
     private static void performGet(BoundingBox bbox, final RankingUtil rankingUtil, final MilestonesReceiver milestonesReceiver) {
         status = GetStatus.RUNNING;
 
-        ArrayList<IMilestone> milestonesList = new ArrayList<IMilestone>();
+	    // Use this if API is down.
+       /* ArrayList<IMilestone> milestonesList = new ArrayList<IMilestone>();
 
         String milestoneXML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
                 + "<id>192</id>"
@@ -80,52 +88,52 @@ public class Ranking {
             e.printStackTrace();
         }
 
-        milestonesReceiver.onMilestonesRecieved(milestonesList);
+        milestonesReceiver.onMilestonesRecieved(milestonesList);*/
 
-/*        try {
+        try {
             URL url = WorldTruckerEndpoints.getMilestonesURL(bbox);
             Remote.get(url, new ResponseHandler() {
 
-                @Override
-                public void onGetSuccess(JSONObject json) {
-                    ArrayList<IMilestone> milestones = new ArrayList<IMilestone>();
+	            @Override
+	            public void onGetSuccess(JSONObject json) {
+		            ArrayList<IMilestone> milestones = new ArrayList<IMilestone>();
 
-                    try {
-                        JSONObject paging = json.getJSONObject("paging");
-                        int milestonesCount = paging.getInt("objectcount");
+		            try {
+			            JSONObject paging = json.getJSONObject("paging");
+			            int milestonesCount = paging.getInt("objectcount");
 
 
-                        if (milestonesCount > 0) {
-                            JSONArray features = json.getJSONArray("features");
+			            if (milestonesCount > 0) {
+				            JSONArray features = json.getJSONArray("features");
 
-                            for (int i = 0; i < milestonesCount; ++i) {
-                                IMilestone milestone = new Milestone(features.getJSONObject(i));
-                                milestones.add(milestone);
-                            }
-                        }
-                    } catch (JSONException e) {
-                        Log.d("RankingTest", e.getMessage());
-                    }
+				            for (int i = 0; i < milestonesCount; ++i) {
+					            IMilestone milestone = new Milestone(features.getJSONObject(i));
+					            milestones.add(milestone);
+				            }
+			            }
+		            } catch (JSONException e) {
+			            Log.d("RankingTest", e.getMessage());
+		            }
 
-                    if (rankingUtil != null) {
-                        rankingUtil.removeUnwanted(milestones);
-                        Collections.sort(milestones, rankingUtil);
-                    }
+		            if (rankingUtil != null) {
+			            rankingUtil.removeUnwanted(milestones);
+			            Collections.sort(milestones, rankingUtil);
+		            }
 
-                    milestonesReceiver.onMilestonesRecieved(milestones);
+		            milestonesReceiver.onMilestonesRecieved(milestones);
 
-                    status = GetStatus.SUCCEEDED;
-                }
+		            status = GetStatus.SUCCEEDED;
+	            }
 
-                @Override
-                public void onGetFail() {
-                    milestonesReceiver.onMilestonesGetFailed();
-                    status = GetStatus.FAILED;
-                }
+	            @Override
+	            public void onGetFail() {
+		            milestonesReceiver.onMilestonesGetFailed();
+		            status = GetStatus.FAILED;
+	            }
             });
         } catch (MalformedURLException e) {
             Log.d("RankingTest", e.getMessage());
-        }*/
+        }
     }
 
     public static GetStatus getStatus() {
