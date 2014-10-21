@@ -99,7 +99,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 				milestoneAlgorithmStage += 1;
 			}
 
-			if (milestoneAlgorithmStage >= 1) {
+			if (milestoneAlgorithmStage >= 1 && route.getLocation(FOOD_THRESHOLD) != null) {
 				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
 			}
 
@@ -112,7 +112,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 				milestoneAlgorithmStage += 1;
 			}
 
-			if (milestoneAlgorithmStage >= 1) {
+			if (milestoneAlgorithmStage >= 1 && route.getLocation(GAS_THRESHOLD) != null) {
 				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(GAS_THRESHOLD), category, this);
 			}
 
@@ -125,7 +125,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 				milestoneAlgorithmStage += 1;
 			}
 
-			if (milestoneAlgorithmStage >= 1) {
+			if (milestoneAlgorithmStage >= 1 && route.getLocation(REST_THRESHOLD) != null) {
 				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(REST_THRESHOLD), category, this);
 
 			}
@@ -139,7 +139,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 				milestoneAlgorithmStage += 1;
 			}
 
-			if (milestoneAlgorithmStage >= 1) {
+			if (milestoneAlgorithmStage >= 1 && route.getLocation(TOILET_THRESHOLD) != null) {
 				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(TOILET_THRESHOLD), category, this);
 			}
 
