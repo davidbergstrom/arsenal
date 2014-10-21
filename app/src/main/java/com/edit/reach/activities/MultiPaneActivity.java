@@ -106,8 +106,8 @@ public class MultiPaneActivity extends FragmentActivity {
                     break;
 
 	            case SignalType.MILESTONE:
-		            suggestionMilestone = (IMilestone)message.obj;
 		            initializeSuggestionUI();
+		            suggestionMilestone = (IMilestone)message.obj;
 
 
             }
