@@ -69,7 +69,7 @@ public class Pause {
      * Draw this pause with the middle marker only.
      * @param map the map to draw it on
      */
-    public void drawWithoutCircle(GoogleMap map){
+    public void drawNavigation(GoogleMap map){
         Log.d("Pause", "Drawing Pause at " + location.toString());
         this.erase();
         this.middleOfPause = map.addMarker(new MarkerOptions()

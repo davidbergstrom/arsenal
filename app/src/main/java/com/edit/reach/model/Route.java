@@ -461,6 +461,9 @@ public class Route {
         for(Leg leg : legs){
             leg.draw(map);
         }
+        for(Pause pause : pauses){
+            pause.drawNavigation(map);
+        }
         // Add an end point
         this.endPointCircle = map.addCircle(new CircleOptions()
                 .center(legs.get(legs.size()-1).getEndLocation())
