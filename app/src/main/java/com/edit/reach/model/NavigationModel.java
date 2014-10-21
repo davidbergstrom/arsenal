@@ -89,6 +89,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		this.milestoneCategory = category;
 		Route route = map.getRoute();
 		List<Leg> legs = route.getLegs();
+		Message message = mainHandler.obtainMessage();
 
 		if (category == IMilestone.Category.FOOD) {
 			if (inThreshold(FOOD_THRESHOLD) && this.milestoneAlgorithmStage == 0) {
@@ -99,8 +100,13 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 				milestoneAlgorithmStage += 1;
 			}
 
-			if (milestoneAlgorithmStage >= 1 && route.getLocation(FOOD_THRESHOLD) != null) {
-				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
+			if (milestoneAlgorithmStage >= 1) {
+				if(route.getLocation(FOOD_THRESHOLD) == null) {
+					message.what = SignalType.MILESTONE_FAIL;
+					mainHandler.sendMessage(message);
+				} else {
+					Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
+				}
 			}
 
 		} else if (category == IMilestone.Category.GASSTATION) {
@@ -112,7 +118,10 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 				milestoneAlgorithmStage += 1;
 			}
 
-			if (milestoneAlgorithmStage >= 1 && route.getLocation(GAS_THRESHOLD) != null) {
+			if(route.getLocation(FOOD_THRESHOLD) == null) {
+				message.what = SignalType.MILESTONE_FAIL;
+				mainHandler.sendMessage(message);
+			} else {
 				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(GAS_THRESHOLD), category, this);
 			}
 
@@ -125,7 +134,10 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 				milestoneAlgorithmStage += 1;
 			}
 
-			if (milestoneAlgorithmStage >= 1 && route.getLocation(REST_THRESHOLD) != null) {
+			if(route.getLocation(FOOD_THRESHOLD) == null) {
+				message.what = SignalType.MILESTONE_FAIL;
+				mainHandler.sendMessage(message);
+			} else {
 				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(REST_THRESHOLD), category, this);
 			}
 
@@ -136,9 +148,13 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 				}
 			} else {
 				milestoneAlgorithmStage += 1;
+				mainHandler.sendMessage(message);
 			}
 
-			if (milestoneAlgorithmStage >= 1 && route.getLocation(TOILET_THRESHOLD) != null) {
+			if(route.getLocation(FOOD_THRESHOLD) == null) {
+				message.what = SignalType.MILESTONE_FAIL;
+				mainHandler.sendMessage(message);
+			} else {
 				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(TOILET_THRESHOLD), category, this);
 			}
 
@@ -182,7 +198,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	@Override
 	public void onMilestonesRecieved(ArrayList<IMilestone> milestones) {
 		Log.d("NavigationModel", "entered onMilestonesRecieved");
-		if (milestones.size() == 0 || milestones.size() > milestoneListIndex) {
+		if (milestones.size() == 0 || milestoneListIndex >= milestones.size()) {
 			milestoneAlgorithmStage += 1;
 			milestoneListIndex = 0;
 			extendMilestoneSearch();
@@ -442,7 +458,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		Marker marker = map.showMilestone(this.milestone);
 
 		Message message = mainHandler.obtainMessage();
-		message.what = SignalType.MILESTONE;
+		message.what = SignalType.MILESTONE_SUCCED;
 		message.obj = this.milestone;
 		mainHandler.sendMessage(message);
 	}
