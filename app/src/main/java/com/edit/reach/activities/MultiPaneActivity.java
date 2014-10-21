@@ -53,6 +53,7 @@ public class MultiPaneActivity extends FragmentActivity {
 	private SuggestionFragment suggestionFragment;
 
     private boolean msFragmentHasBeenCreated = false;
+	private boolean sgsFragmentHasBeenCreated = false;
 
     private Route route;
 
@@ -72,7 +73,11 @@ public class MultiPaneActivity extends FragmentActivity {
                     if(!msFragmentHasBeenCreated) {
                         createMilestonesFragment();
                         msFragmentHasBeenCreated = true;
+                    } else if(sgsFragmentHasBeenCreated) {
+	                    goBackToControlFragment();
+	                    sgsFragmentHasBeenCreated = true;
                     } else {
+
                         // TODO what to do here?
                     }
                     break;
@@ -107,8 +112,8 @@ public class MultiPaneActivity extends FragmentActivity {
 
 	            case SignalType.MILESTONE:
 		            Log.d("HANDLER UPDATE", "MILESTONE");
-		            initializeSuggestionUI();
 		            suggestionMilestone = (IMilestone)message.obj;
+		            initializeSuggestionUI();
             }
         }
     };
@@ -233,7 +238,9 @@ public class MultiPaneActivity extends FragmentActivity {
 	public void initializeSuggestionUI(){
 		suggestionFragment = SuggestionFragment.newInstance("Suggestion");
 		getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, suggestionFragment).commit();
+		suggestionFragment.setMilestone(suggestionMilestone);
 	}
+
 
     private void setupMap(){
         // Enable GoogleMap to track the user's location
@@ -306,12 +313,14 @@ public class MultiPaneActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+	public void setSgsFragmentHasBeenCreated(boolean status){
+		sgsFragmentHasBeenCreated = status;
+	}
 
 	public void suggestionAcceptMilestone(boolean status){
 		navigationModel.acceptedMilestone(status);
 		if(status){
-			goBackToControlFragment();
+
 		}
 	}
 

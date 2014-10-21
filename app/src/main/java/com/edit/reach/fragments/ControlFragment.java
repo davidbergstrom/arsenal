@@ -239,6 +239,7 @@ public class ControlFragment extends Fragment{
 					ibRestroom.setImageResource(R.drawable.restroom_pressed);
 					isRestroom = ImageState.PRESSED;
 					showTheOtherIcons();
+
 				} else {
 					ibRestroom.setImageResource(R.drawable.restroom_150);
 					isRestroom = ImageState.ORIGINAL;
@@ -331,6 +332,8 @@ public class ControlFragment extends Fragment{
 		isRestroom = ImageState.ORIGINAL;
 		isGasStation = ImageState.ORIGINAL;
 	}
+
+
 
 	public void setState(State newState) {
 

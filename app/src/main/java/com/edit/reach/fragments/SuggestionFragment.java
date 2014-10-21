@@ -2,6 +2,7 @@ package com.edit.reach.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,41 +31,53 @@ public class SuggestionFragment extends Fragment {
     private ImageView ivRestArea;
     private ImageView ivToilet;
 
+	private IMilestone milestone;
+
     public void setMilestone(IMilestone milestone) {
+	    this.milestone = milestone;
+	    Log.d("SuggestionFragment", "setMilestone");
+	    Log.d("SuggestionFragment", "" + milestone.getName());
+	    Log.d("SuggestionFragment", "" + milestone.getRank());
+
         String nextStopName = milestone.getName();
         int rating = milestone.getRank();
         List<IMilestone.Category> categories = milestone.getCategories();
 
-        textNextStop.setText(nextStopName);
-        textRating.setText(rating);
+	    if(textNextStop != null){
+		    textNextStop.setText(nextStopName);
+		    textRating.setText("" + rating + "/5");
 
-        //Set Milestone Images
-        ivFood.setVisibility(ImageView.GONE);
-        ivGasstation.setVisibility(ImageView.GONE);
-        ivRestArea.setVisibility(ImageView.GONE);
-        ivToilet.setVisibility(ImageView.GONE);
+		    //Set Milestone Images
+		    ivFood.setVisibility(ImageView.GONE);
+		    ivGasstation.setVisibility(ImageView.GONE);
+		    ivRestArea.setVisibility(ImageView.GONE);
+		    ivToilet.setVisibility(ImageView.GONE);
 
-        for (IMilestone.Category cat : categories) {
+		    for (IMilestone.Category cat : categories) {
 
-            switch (cat) {
-                case FOOD:
-                    ivFood.setVisibility(ImageView.VISIBLE);
-                    break;
+			    switch (cat) {
+				    case FOOD:
+					    ivFood.setVisibility(ImageView.VISIBLE);
+					    break;
 
-                case GASSTATION:
-                    ivGasstation.setVisibility(ImageView.VISIBLE);
-                    break;
+				    case GASSTATION:
+					    ivGasstation.setVisibility(ImageView.VISIBLE);
+					    break;
 
-                case RESTAREA:
-                    ivRestArea.setVisibility(ImageView.VISIBLE);
-                    break;
+				    case RESTAREA:
+					    ivRestArea.setVisibility(ImageView.VISIBLE);
+					    break;
 
-                case TOILET:
-                    ivToilet.setVisibility(ImageView.VISIBLE);
-                    break;
+				    case TOILET:
+					    ivToilet.setVisibility(ImageView.VISIBLE);
+					    break;
 
-            }
-        }
+			    }
+		    }
+		    ((MultiPaneActivity)getActivity()).setSgsFragmentHasBeenCreated(true);
+
+	    }
+
     }
 
 	public static SuggestionFragment newInstance(String id) {
@@ -90,7 +103,7 @@ public class SuggestionFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                         Bundle savedInstanceState) {
-
+		Log.d("SuggestionFragment", "onCreateView");
 		View view = inflater.inflate(R.layout.fragment_suggestion, container, false);
 
         //Get Suggestion Info
@@ -126,9 +139,12 @@ public class SuggestionFragment extends Fragment {
 			}
 		});
 
-
+		if(milestone != null){
+			setMilestone(milestone);
+		}
 		return view;
 	}
+
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
