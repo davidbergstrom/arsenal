@@ -145,7 +145,7 @@ public class MultiPaneActivity extends FragmentActivity {
         setUpMapIfNeeded();
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        boolean demoMode = sharedPrefs.getBoolean("demonstration_mode", false);
+        boolean demoMode = sharedPrefs.getBoolean("demonstration_mode", true);
 
         Log.d("MultiPaneActivity", "Demo MODE:"+demoMode);
 
