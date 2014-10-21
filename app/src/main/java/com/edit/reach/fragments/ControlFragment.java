@@ -207,6 +207,7 @@ public class ControlFragment extends Fragment{
 					ibRestArea.setImageResource(R.drawable.restarea);
 					isRestArea = ImageState.ORIGINAL;
 				}
+				((MultiPaneActivity)getActivity()).initializeSuggestionUI();
 			}
 		});
 		ibFood = (ImageButton) view.findViewById(R.id.button_control_input_restaurant);
@@ -224,6 +225,7 @@ public class ControlFragment extends Fragment{
 					ibFood.setImageResource(R.drawable.food);
 					isFood = ImageState.ORIGINAL;
 				}
+				((MultiPaneActivity)getActivity()).initializeSuggestionUI();
 			}
 		});
 		ibRestroom = (ImageButton) view.findViewById(R.id.button_control_input_toilet);
@@ -241,6 +243,7 @@ public class ControlFragment extends Fragment{
 					ibRestroom.setImageResource(R.drawable.restroom);
 					isRestroom = ImageState.ORIGINAL;
 				}
+				((MultiPaneActivity)getActivity()).initializeSuggestionUI();
 			}
 		});
 		ibGasStation = (ImageButton) view.findViewById(R.id.button_control_input_gasstation);
@@ -259,6 +262,7 @@ public class ControlFragment extends Fragment{
 					ibGasStation.setImageResource(R.drawable.gasstation);
 					isGasStation = ImageState.ORIGINAL;
 				}
+				((MultiPaneActivity)getActivity()).initializeSuggestionUI();
 			}
 		});
 
