@@ -2,6 +2,7 @@ package com.edit.reach.model.interfaces;
 
 import com.edit.reach.model.Leg;
 import com.edit.reach.model.Pause;
+import com.edit.reach.model.Route;
 import com.edit.reach.model.Step;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -21,6 +22,12 @@ public interface RouteListener {
      * What the listener should do when a pause has been added to the route.
      */
     public void onPauseAdded(Pause pause);
+
+    /**
+     * What the listener should do when the route has finished its navigation process.
+     * @param finishedRoute the finished route
+     */
+    public void onRouteFinished(Route finishedRoute);
 
     /**
      * What the listener should do when a leg has been completed.

@@ -19,7 +19,10 @@ import static com.edit.reach.model.interfaces.IMilestone.*;
 public class NavigationUtil {
 
     /** Constant, the refresh rate of the navigation loop in milliseconds */
-    public static final int UPDATE_INTERVAL_NORMAL = 300, UPDATE_INTERVAL_FAST = 80, UPDATE_INTERVAL_SLOW = 500, ROUTE_INTERVAL = 60000;
+    public static final int UPDATE_INTERVAL_SLOW = 500,
+                            UPDATE_INTERVAL_NORMAL = 250,
+                            UPDATE_INTERVAL_FAST = 100,
+                            ROUTE_INTERVAL = 60000;
 
     /** Radius for the pauses */
     public static final double RADIUS_IN_DEGREES = 0.2;
