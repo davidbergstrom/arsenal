@@ -31,6 +31,12 @@ public interface IMilestone {
 	public String getDescription();
 
     /**
+     * Returns a 'snippet' of the milestone, which is the rank followed by the description.
+     * @return the snippet
+     */
+    public String getSnippet();
+
+    /**
      * Checks wether the milestone has the requested categories or not
      * @return true if the milestone has the requested categories
      */

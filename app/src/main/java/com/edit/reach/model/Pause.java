@@ -57,7 +57,7 @@ public class Pause {
                     .position(milestone.getLocation())
                     .title(milestone.getName())
                     .icon(icon)
-                    .snippet("Rating: " + milestone.getRank() + "/5\n" + milestone.getDescription())));
+                    .snippet(milestone.getSnippet())));
         }
     }
 

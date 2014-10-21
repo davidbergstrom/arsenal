@@ -13,7 +13,6 @@ import com.edit.reach.system.Remote;
 import com.edit.reach.system.ResponseHandler;
 import com.edit.reach.utils.LatLngInterpolator;
 import com.edit.reach.utils.NavigationUtil;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.*;
 import org.json.JSONArray;
@@ -30,17 +29,16 @@ import java.util.List;
  * Route class containing information for one route
  */
 public class Route {
+    private List<RouteListener> listeners;
+    private List<IMilestone> milestones;
     private List<Leg> legs;
+    private List<Pause> pauses;
     private Circle endPointCircle, startPointCircle;
     private GroundOverlay pointerWithBearing;
     private LatLng origin, destination;
     private String originAddress, destinationAddress;
-    private boolean initialized;
-    private List<RouteListener> listeners;
-    private List<IMilestone> milestones;
-    private List<Pause> pauses;
+    private boolean initialized, DEMO_MODE = true;   // Specifies if the route should run in test mode
     private String DEBUG_TAG = "Route";
-    private boolean TEST_MODE = true;   // Specifies if the route should run in test mode
 
     /** Handler for receiving a route as JSON Object */
     private ResponseHandler routeHandler = new ResponseHandler() {
@@ -49,7 +47,6 @@ public class Route {
             try {
                 JSONArray routeArray = json.getJSONArray("routes");
                 JSONObject route = routeArray.getJSONObject(0);
-                Log.d(DEBUG_TAG, route.toString());
                 JSONArray arrayLegs = route.getJSONArray("legs");
                 JSONArray wayPointOrder = route.getJSONArray("waypoint_order");
                 List<Integer> milestoneOrder = new ArrayList<Integer>();
@@ -61,15 +58,14 @@ public class Route {
                     Leg newLeg = new Leg(legJSON);
                     // Get the milestone associated
                     if(milestoneOrder.size() - 1 >= i){
-                        newLeg.setMilestone(milestones.get(milestoneOrder.get(i))); // Set the milestone to a milestone with the endlocation of the leg
+                        // Set the milestone to a milestone with the endlocation of the leg
+                        newLeg.setMilestone(milestones.get(milestoneOrder.get(i)));
                     }
 
                     legs.add(newLeg);
                 }
-
-                Log.d(DEBUG_TAG, "Has been initialized.");
-                onInitialize(legs.size() > 0); // Notify the observers that the route has been initialized
-
+                // Notify the observers that the route has been initialized
+                onInitialize(legs.size() > 0);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -102,7 +98,7 @@ public class Route {
 
         @Override
         public void onGetFail() {
-
+            Log.d(DEBUG_TAG, "Receiving origin failed.");
         }
     };
 
@@ -128,7 +124,7 @@ public class Route {
 
         @Override
         public void onGetFail() {
-
+            Log.d(DEBUG_TAG, "Receiving destination failed.");
         }
     };
 
@@ -373,7 +369,7 @@ public class Route {
     }
 
     /**
-     * Get the origin of the route
+     * Get the initial origin of the route
      * @return the latitude longitude of the route
      */
     public LatLng getOrigin(){
@@ -381,7 +377,7 @@ public class Route {
     }
 
     /**
-     * Returns the origin address
+     * Returns the initial origin address
      * @return the address
      */
     public String getOriginAddress(){
@@ -527,17 +523,15 @@ public class Route {
 
     /**
      * Go to the provided location on the route.
-     * @param map, the map to use
      * @param location, the location to move to
      */
-    public void goTo(GoogleMap map, LatLng location){
-        if(TEST_MODE){
+    public void goTo(LatLng location){
+        if(DEMO_MODE){
             location = getNextSubStep();
         }
 
         LatLng nearestLocation = legs.get(0).getSteps().get(0).getSubSteps().get(0);
 
-        // TODO: This only works if the sub steps are in a relatively straight line.
         outerLoop:
         for(Iterator<Leg> iteratorLeg = legs.iterator(); iteratorLeg.hasNext(); ){
             Leg leg = iteratorLeg.next();
@@ -572,6 +566,7 @@ public class Route {
 
         if(legs.size() == 0){
             // TODO Route finished!
+            onRouteFinished();
 
         }else{
             if(NavigationUtil.getDistance(location, nearestLocation) > 0.5){    // If the nearest location is more than 500 metres away from the the real location, then reinitialize route
@@ -680,6 +675,12 @@ public class Route {
     private void onStepFinished(Step finishedStep){
         for(RouteListener listener : listeners){
             listener.onStepFinished(finishedStep);
+        }
+    }
+
+    private void onRouteFinished(){
+        for(RouteListener listener : listeners){
+            listener.onRouteFinished(this);
         }
     }
 }

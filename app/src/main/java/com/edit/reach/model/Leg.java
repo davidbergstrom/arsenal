@@ -36,7 +36,7 @@ public class Leg {
             JSONArray stepsArray = legJSON.getJSONArray("steps");
             for(int i = 0; i < stepsArray.length(); i++){
                 Step step = new Step(stepsArray.getJSONObject(i));
-                Log.d(DEBUG_TAG, "Added step "+step.toString()+" with duration: "+step.getDuration());
+                Log.d(DEBUG_TAG, "Added step " + step.toString() + " with duration: " + step.getDuration());
                 steps.add(step);
             }
         } catch (JSONException e) {
@@ -80,7 +80,7 @@ public class Leg {
                     .position(endMilestone.getLocation())
                     .title(endMilestone.getName())
                     .icon(icon)
-                    .snippet("Rating: " + endMilestone.getRank() + "/5\n" + endMilestone.getDescription()));
+                    .snippet(endMilestone.getSnippet()));
         }
 
         for(Step step : steps){

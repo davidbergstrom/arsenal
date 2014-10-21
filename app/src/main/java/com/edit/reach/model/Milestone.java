@@ -34,10 +34,9 @@ public class Milestone implements IMilestone {
         location = new LatLng(latitude, longitude);
     }
 
+    @Override
     public String getSnippet() {
-        return name + "\n"
-               + description + "\n"
-               + rank;
+        return "Rating: " + rank + "/5\n" + description;
     }
 
     /**
