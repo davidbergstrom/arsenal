@@ -398,9 +398,6 @@ public class MultiPaneActivity extends FragmentActivity {
             milestonesFragment = MilestonesFragment.newInstance(route.getOriginAddress(), route.getDestinationAddress());
             getSupportFragmentManager().beginTransaction().
 		            replace(R.id.container_fragment_left, milestonesFragment).commit();
-
-
-
         }
     }
 
