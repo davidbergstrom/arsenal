@@ -4,20 +4,14 @@ import android.util.Log;
 import com.edit.reach.constants.GetStatus;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.MilestonesReceiver;
-import com.edit.reach.system.Remote;
-import com.edit.reach.system.ResponseHandler;
-import com.edit.reach.system.WorldTruckerEndpoints;
 import com.edit.reach.utils.RankingDistanceUtil;
 import com.edit.reach.utils.RankingUtil;
 import com.google.android.gms.maps.model.LatLng;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.XML;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import static com.edit.reach.model.interfaces.IMilestone.Category;
 
@@ -49,7 +43,45 @@ public class Ranking {
     private static void performGet(BoundingBox bbox, final RankingUtil rankingUtil, final MilestonesReceiver milestonesReceiver) {
         status = GetStatus.RUNNING;
 
+        ArrayList<IMilestone> milestonesList = new ArrayList<IMilestone>();
+
+        String milestoneXML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+                + "<id>192</id>"
+                + "<geometry>"
+                + "<type>Point</type>"
+                + "<coordinates>"+ 62.23378 + "</coordinates>"
+                + "<coordinates>"+ 25.9186515808105 + "</coordinates>"
+                + "<coordinates>"+ 0.0 + "</coordinates>"
+                + "<coordinates>"+ 1366281091 + "</coordinates>"
+                + "</geometry>"
+                + "<properties>"
+                + "<owner>" + 41043 + "</owner>"
+                + "<owner_firstname>Marko</owner_firstname>"
+                + "<owner_lastname>Kauppinen</owner_lastname>"
+                + "<name>Arsenal FC</name>"
+                + "<description>The world's greatest team</description>"
+                + "<category>" + 25 + "</category>"
+                + "<rating>" + 2 + "</rating>"
+                + "</properties>"
+                + "<type>Feature</type>";
+
+        JSONObject jsonObj = null;
+
         try {
+            jsonObj = XML.toJSONObject(milestoneXML);
+            IMilestone milestone = new Milestone(jsonObj);
+            for (int i = 0; i < 5; i++) {
+                milestonesList.add(milestone);
+            }
+
+        } catch (JSONException e) {
+            Log.d("MilestoneTest", "error: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        milestonesReceiver.onMilestonesRecieved(milestonesList);
+
+/*        try {
             URL url = WorldTruckerEndpoints.getMilestonesURL(bbox);
             Remote.get(url, new ResponseHandler() {
 
@@ -92,7 +124,7 @@ public class Ranking {
             });
         } catch (MalformedURLException e) {
             Log.d("RankingTest", e.getMessage());
-        }
+        }*/
     }
 
     public static GetStatus getStatus() {
