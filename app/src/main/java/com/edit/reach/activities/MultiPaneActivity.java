@@ -45,6 +45,7 @@ public class MultiPaneActivity extends FragmentActivity {
 
     private List<IMilestone> preliminaryMilestones;
     private ProgressBar spinner;
+	private IMilestone suggestionMilestone;
 
     private MilestonesFragment milestonesFragment;
     private RouteFragment routeFragment;
@@ -103,6 +104,11 @@ public class MultiPaneActivity extends FragmentActivity {
                     }
 					Log.d("HANDLER UPDATE", "Leg update");
                     break;
+
+	            case SignalType.MILESTONE:
+		            IMilestone milestone = (IMilestone)message.obj;
+		            initializeSuggestionUI();
+		            setSuggestionMilestone(milestone);
 
             }
         }
@@ -300,6 +306,22 @@ public class MultiPaneActivity extends FragmentActivity {
     }
 
 
+
+	public void suggestionAcceptMilestone(boolean status){
+		navigationModel.acceptedMilestone(status);
+		if(status){
+			suggestAcceptedMilestone();
+		}
+	}
+
+	private void setSuggestionMilestone(IMilestone milestone){
+		suggestionMilestone = milestone;
+	}
+
+
+	public void suggestAcceptedMilestone(){
+
+	}
 
     public void goBackToRouteFragment(){
         Log.d("MultiPaneActivity", "goBackFragment");
