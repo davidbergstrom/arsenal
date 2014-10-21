@@ -240,7 +240,7 @@ public class Route {
      * Adds a rest pause the specified number of seconds into the route
      * @param secondsIntoRoute, in seconds
      */
-    public void addPause(long secondsIntoRoute) {
+    public void addPause(long secondsIntoRoute, final Pause.PauseType typeOfPause) {
         long actualSecondsIntoRoute = 0;
 
         outerLoop:
@@ -265,7 +265,7 @@ public class Route {
 		                        Log.d("MILESTONES", m.getName());
 	                        }
 
-                            Pause p = new Pause(pauseLocation, milestones);
+                            Pause p = new Pause(pauseLocation, milestones, typeOfPause);
                             pauses.add(p);
 
                             for(RouteListener l : listeners){
@@ -460,6 +460,9 @@ public class Route {
         this.erase();
         for(Leg leg : legs){
             leg.draw(map);
+        }
+        for(Pause pause : pauses){
+            pause.drawNavigation(map);
         }
         // Add an end point
         this.endPointCircle = map.addCircle(new CircleOptions()

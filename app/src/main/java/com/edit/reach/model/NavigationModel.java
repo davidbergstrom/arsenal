@@ -12,6 +12,7 @@ import com.edit.reach.model.interfaces.SuggestionListener;
 import com.edit.reach.system.VehicleSystem;
 import com.edit.reach.utils.SuggestionUtil;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,10 +100,6 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 			}
 
 			if (milestoneAlgorithmStage == 1) {
-				Ranking.getMilestonesByRank(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
-			}
-
-			if (milestoneAlgorithmStage >= 2) {
 				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
 			}
 
@@ -116,11 +113,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 			}
 
 			if (milestoneAlgorithmStage == 1) {
-				Ranking.getMilestonesByRank(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
-			}
-
-			if (milestoneAlgorithmStage >= 2) {
-				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
+				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(GAS_THRESHOLD), category, this);
 			}
 
 		} else if (category == IMilestone.Category.RESTAREA) {
@@ -133,11 +126,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 			}
 
 			if (milestoneAlgorithmStage == 1) {
-				Ranking.getMilestonesByRank(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
-			}
-
-			if (milestoneAlgorithmStage >= 2) {
-				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
+				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(REST_THRESHOLD), category, this);
 			}
 
 		} else if (category == IMilestone.Category.TOILET) {
@@ -150,11 +139,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 			}
 
 			if (milestoneAlgorithmStage == 1) {
-				Ranking.getMilestonesByRank(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
-			}
-
-			if (milestoneAlgorithmStage >= 2) {
-				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
+				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(TOILET_THRESHOLD), category, this);
 			}
 
 		} else {
@@ -170,9 +155,10 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	public void acceptedMilestone(boolean accepted) {
 		Log.d("NavigationModel", "entered acceptedMilestone");
 		// If milestone was accepted by the user.
-		if (accepted) {
-			boolean milestoneExists = false;
+		if (milestone != null && accepted) {
 			map.setMapState(Map.MapState.MOVING);
+			boolean milestoneExists = false;
+
 			for (Leg l : map.getRoute().getLegs()) {
 				if (l.getMilestone().equals(this.milestone)) {
 					milestoneExists = true;
@@ -183,10 +169,10 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 				map.getRoute().addMilestone(this.milestone);
 			}
 
-			// If milestone was not accepted by the user.
+		// If milestone was not accepted by the user.
 		} else {
 			milestoneAlgorithmStage += 1;
-			if (milestoneAlgorithmStage >= 2) {
+			if (milestoneAlgorithmStage >= 1) {
 				milestoneListIndex += 1;
 			}
 			getPauseSuggestions(milestoneCategory);
@@ -196,9 +182,10 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	@Override
 	public void onMilestonesRecieved(ArrayList<IMilestone> milestones) {
 		Log.d("NavigationModel", "entered onMilestonesRecieved");
-		if (milestones.size() == 0) {
-			extendMilestoneSearch();
+		if (milestones.size() == 0 || milestones.size() > milestoneListIndex) {
 			milestoneAlgorithmStage += 1;
+			milestoneListIndex = 0;
+			extendMilestoneSearch();
 			getPauseSuggestions(this.milestoneCategory);
 		} else {
 			notifyUI(milestones.get(milestoneListIndex));
@@ -384,10 +371,22 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 							});
 							break;
 
+						// If a pause was added
+						case SignalType.PAUSE_ADDED:
+							Pause pause = map.getRoute().getPauses().get(0);
+							// If the pause was a fuelpause.
+							if(pause.getType() == Pause.PauseType.FUEL) {
+								map.moveCameraTo(pause.getLocation(), 13);
+
+								// TODO implement in GUI. Remember to set state of map when done.
+								message.what = SignalType.PAUSE_ADDED;
+								mainHandler.sendMessage(message);
+							}
+
 						// If the tank size has been calculated
 						case SignalType.TANK_SIZE_CALCULATED:
 							Log.d("UPDATE", "TYPE: TANK_SIZE_CALCULATED");
-							//map.getRoute().addPause((long) vehicleSystem.getTimeUntilRefuel());
+							map.getRoute().addPause((long) vehicleSystem.getTimeUntilRefuel(), Pause.PauseType.FUEL);
 							break;
 
 						// If vehicle is low on fuel.
@@ -414,6 +413,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	// This method determines if a milestone is in a threshold
 	private boolean inThreshold(final int threshold) {
 		Log.d("NavigationModel", "entered inThreshold");
+
 		boolean inThreshold = false;
 		List<Leg> legs = map.getRoute().getLegs();
 		if (legs.get(0).getDuration() <= threshold) {
@@ -425,6 +425,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	// This method determines if a milestone has a category
 	private boolean hasCategory(IMilestone.Category category) {
 		Log.d("NavigationModel", "entered hasCategory");
+
 		boolean hasCategory = false;
 		List<Leg> legs = map.getRoute().getLegs();
 		if (legs.get(0).getMilestone().hasCategory(category)) {
@@ -437,12 +438,22 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	private void notifyUI(IMilestone milestone) {
 		Log.d("NavigationModel", "entered notifyUI");
 		this.milestone = milestone;
-		map.showMilestone(this.milestone);
+		// TODO remove marker when done
+		Marker marker = map.showMilestone(this.milestone);
 
 		Message message = mainHandler.obtainMessage();
 		message.what = SignalType.MILESTONE;
 		message.obj = this.milestone;
 		mainHandler.sendMessage(message);
+	}
+
+	// Extend search perimiter with one hour.
+	private void extendMilestoneSearch() {
+		Log.d("NavigationModel", "entered extendMilestoneSearch");
+		FOOD_THRESHOLD += 60*60;
+		GAS_THRESHOLD += 60*60;
+		REST_THRESHOLD += 60*60;
+		TOILET_THRESHOLD = 60*60;
 	}
 
 	// Method that adds time-pauses in the map.
@@ -456,17 +467,8 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 
 			for (int i = 1; i <= nmbrOfPauses; i++) {
 				Log.d("Adding pause", "NavigationModel");
-				map.getRoute().addPause(i * UniversalConstants.LEGAL_UPTIME_IN_SECONDS);
+				map.getRoute().addPause(i * UniversalConstants.LEGAL_UPTIME_IN_SECONDS, Pause.PauseType.TIME);
 			}
 		}
-	}
-
-	// Extend search perimiter with one hour.
-	private void extendMilestoneSearch() {
-		Log.d("NavigationModel", "entered extendMilestoneSearch");
-		FOOD_THRESHOLD += 60*60;
-		GAS_THRESHOLD += 60*60;
-		REST_THRESHOLD += 60*60;
-		TOILET_THRESHOLD = 60*60;
 	}
 }
