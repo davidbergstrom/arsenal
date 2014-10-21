@@ -49,10 +49,8 @@ public class RouteTest extends TestCase {
             }
         });
         Log.d(DEBUG_TAG, "Waiting for init");
-        //signal.await(30, TimeUnit.SECONDS);
-
-        // The task is done, and now you can assert some things!
-        assertTrue("Happiness", true);
+        signal.await(30, TimeUnit.SECONDS);
+        Log.d(DEBUG_TAG, "Init done!");
     }
 
     public void tearDown() throws Exception {
@@ -60,7 +58,7 @@ public class RouteTest extends TestCase {
     }
 
     public void testGetDuration() throws Exception {
-        assertNotNull(route.getDuration());
+        assertTrue(route.getDuration() < 60 * 60 * 2);
     }
 
     public void testGetDistance() throws Exception {

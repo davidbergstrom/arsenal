@@ -45,6 +45,7 @@ public class Route {
         @Override
         public void onGetSuccess(JSONObject json) {
             try {
+                Log.d(DEBUG_TAG, "New routeHandler call!");
                 JSONArray routeArray = json.getJSONArray("routes");
                 JSONObject route = routeArray.getJSONObject(0);
                 JSONArray arrayLegs = route.getJSONArray("legs");
@@ -137,6 +138,7 @@ public class Route {
         milestones = new ArrayList<IMilestone>();
         pauses = new ArrayList<Pause>();
         initialized = false;
+        demoMode = true;
     }
 
     /**
@@ -395,6 +397,7 @@ public class Route {
      * @param milestone, the milestone to add
      */
     public void addMilestone(IMilestone milestone){
+        Log.d(DEBUG_TAG, "Adding milestone");
         this.erase();
         legs.clear();
         pauses.clear();
@@ -410,6 +413,7 @@ public class Route {
      * @param milestones, the milestones to add
      */
     public void addMilestones(List<IMilestone> milestones){
+        Log.d(DEBUG_TAG, "Adding milestones");
         if(milestones.size() > 0){
             this.erase();
             legs.clear();
@@ -576,9 +580,9 @@ public class Route {
 
         }else{
             if(NavigationUtil.getDistance(location, nearestLocation) > 0.5){    // If the nearest location is more than 500 metres away from the the real location, then reinitialize route
-                this.origin = location;
-                URL url = GoogleMapsEndpoints.makeURL(location, destination, milestones, true);
-                Remote.get(url, routeHandler);
+                //this.origin = location;
+                //URL url = GoogleMapsEndpoints.makeURL(location, destination, milestones, true);
+                //Remote.get(url, routeHandler);
             }
             if(pointerWithBearing != null && !pointerWithBearing.getPosition().equals(nearestLocation)){
                 // Calculate new bearing and rotate the camera
@@ -667,7 +671,7 @@ public class Route {
     }
 
     private void onInitialize(boolean success){
-        Log.d(DEBUG_TAG, "Has been initialized: " + success);
+        Log.d(DEBUG_TAG, this.toString() + ", Has been initialized: " + success);
         initialized = success;
         for(RouteListener listener : listeners){
             listener.onInitialization(success);
