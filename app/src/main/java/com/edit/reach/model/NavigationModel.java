@@ -139,6 +139,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 				mainHandler.sendMessage(message);
 			} else {
 				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(REST_THRESHOLD), category, this);
+
 			}
 
 		} else if (category == IMilestone.Category.TOILET) {
