@@ -106,10 +106,9 @@ public class MultiPaneActivity extends FragmentActivity {
                     break;
 
 	            case SignalType.MILESTONE:
-		            suggestionMilestone = (IMilestone)message.obj;
+		            Log.d("HANDLER UPDATE", "MILESTONE");
 		            initializeSuggestionUI();
-
-
+		            suggestionMilestone = (IMilestone)message.obj;
             }
         }
     };
@@ -198,6 +197,8 @@ public class MultiPaneActivity extends FragmentActivity {
         strings = navigationModel.getMatchedStringResults(input);
         return strings;
     }
+
+
 
 	/**
 	 * Init the UI-Fragment for moving-mode and adds it to the container.

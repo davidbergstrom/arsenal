@@ -107,7 +107,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 			}
 
 		} else if (category == IMilestone.Category.GASSTATION) {
-			if (inThreshold(GAS_THRESHOLD)) {
+			if (inThreshold(GAS_THRESHOLD) && this.milestoneAlgorithmStage == 0) {
 				if (hasCategory(category)) {
 					notifyUI(legs.get(0).getMilestone());
 				}
@@ -117,30 +117,31 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 
 			if (milestoneAlgorithmStage == 1) {
 				Ranking.getMilestonesByRank(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
+			}
 
-				if (milestoneAlgorithmStage >= 2) {
-					Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
+			if (milestoneAlgorithmStage >= 2) {
+				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
+			}
+
+		} else if (category == IMilestone.Category.RESTAREA) {
+			if (inThreshold(REST_THRESHOLD) && this.milestoneAlgorithmStage == 0) {
+				if (hasCategory(category)) {
+					notifyUI(legs.get(0).getMilestone());
 				}
+			} else {
+				milestoneAlgorithmStage += 1;
+			}
 
-			} else if (category == IMilestone.Category.RESTAREA) {
-				if (inThreshold(REST_THRESHOLD)) {
-					if (hasCategory(category)) {
-						notifyUI(legs.get(0).getMilestone());
-					}
-				} else {
-					milestoneAlgorithmStage += 1;
-				}
+			if (milestoneAlgorithmStage == 1) {
+				Ranking.getMilestonesByRank(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
+			}
 
-				if (milestoneAlgorithmStage == 1) {
-					Ranking.getMilestonesByRank(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
-				}
-
-				if (milestoneAlgorithmStage >= 2) {
-					Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);				}
+			if (milestoneAlgorithmStage >= 2) {
+				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
 			}
 
 		} else if (category == IMilestone.Category.TOILET) {
-			if (inThreshold(TOILET_THRESHOLD)) {
+			if (inThreshold(TOILET_THRESHOLD) && this.milestoneAlgorithmStage == 0) {
 				if (hasCategory(category)) {
 					notifyUI(legs.get(0).getMilestone());
 				}
@@ -371,7 +372,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 							Log.d("UPDATE", "TYPE: VEHICLE_TOOK_FINAL_BREAK");
 
 							// This has to be done in UI thread because of Googles Map.
-							/*mainHandler.post(new Runnable() {
+							mainHandler.post(new Runnable() {
 								@Override
 								public void run() {
 									synchronized (map) {
@@ -380,7 +381,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 										addTimePause();
 									}
 								}
-							});*/
+							});
 							break;
 
 						// If the tank size has been calculated
@@ -439,8 +440,9 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		map.showMilestone(this.milestone);
 
 		Message message = mainHandler.obtainMessage();
-		message.obj = this.milestone;
 		message.what = SignalType.MILESTONE;
+		message.obj = this.milestone;
+		mainHandler.sendMessage(message);
 	}
 
 	// Method that adds time-pauses in the map.

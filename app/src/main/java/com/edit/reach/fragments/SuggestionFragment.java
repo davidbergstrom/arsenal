@@ -118,33 +118,14 @@ public class SuggestionFragment extends Fragment {
 				((MultiPaneActivity)getActivity()).suggestionAcceptMilestone(false);
 			}
 		});
-        Button buttonCancel = (Button) view.findViewById(R.id.button_cancel);
-		buttonCancel.setOnClickListener(new View.OnClickListener() {
+		Button cancel = (Button) view.findViewById(R.id.button_cancel);
+		cancel.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-
+				((MultiPaneActivity)getActivity()).goBackToControlFragment();
 			}
 		});
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
-
-        buttonNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        buttonCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
 		return view;
 	}

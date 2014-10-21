@@ -30,7 +30,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_navigation_info_rating"
-                android:text="@string/tv_navigation_info_rating"/>
+                android:text="@string/tv_navigation_info_rating"
+                android:textColor="@color/android_yellow"/>
 
 		<!-- Icons Holder -->
 		<LinearLayout
@@ -43,28 +44,28 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_food"
-					android:src="@drawable/milestone_food"
+					android:src="@drawable/sug_food_icon"
 					android:visibility="visible"/>
 
 			<ImageView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_gasstation"
-					android:src="@drawable/milestone_gas"
+					android:src="@drawable/sug_fuel_icon"
 					android:visibility="visible"/>
 
 			<ImageView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_restarea"
-					android:src="@drawable/milestone_rest"
+					android:src="@drawable/sug_restarea_icon"
 					android:visibility="visible"/>
 
 			<ImageView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_toilet"
-					android:src="@drawable/milestone_toilet"
+					android:src="@drawable/sug_toilet_icon"
 					android:visibility="visible"/>
 
 		</LinearLayout>
@@ -76,16 +77,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/suggestion_button_holder"
             android:layout_below="@+id/navigation_info_container">
-
-        <Button
-                android:id="@+id/button_cancel"
-                android:text="@string/suggestion_button_cancel"
-                android:textSize="@dimen/suggestion_button"
-                android:textColor="@color/android_red"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/input_button_margin"
-                style="@android:style/Widget.Holo.Button.Borderless"/>
 
         <Button
                 android:id="@+id/button_next"
@@ -106,7 +97,17 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/input_button_margin"
                 style="@android:style/Widget.Holo.Button.Borderless"/>
+        <Button
+                android:id="@+id/button_cancel"
+                android:text="CANCEL, BYT TILL IKON OCH PLATS!"
+                android:background="@color/android_red"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@android:style/Widget.Holo.Button.Borderless"/>
 
     </LinearLayout>
+
+
+
 
 </RelativeLayout>
