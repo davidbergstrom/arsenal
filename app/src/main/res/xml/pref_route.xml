@@ -4,6 +4,6 @@
         android:key="demonstration_mode"
         android:title="@string/pref_title_demonstration_mode"
         android:summary="@string/pre_summary_demonstration_mode"
-        android:defaultValue="false" />
+        android:defaultValue="true" />
 
 </PreferenceScreen>

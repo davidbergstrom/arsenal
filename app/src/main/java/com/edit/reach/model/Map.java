@@ -33,6 +33,8 @@ public class Map extends Observable{
     // The state which is used internally in a state pattern
     private MapState mapState;
 
+    private boolean demoMode;
+
     // Class name for logging
     private String DEBUG_TAG = "Map";
 
@@ -168,6 +170,7 @@ public class Map extends Observable{
 		this.map = map;
         this.handler = new Handler();
         this.mapState = MapState.STATIONARY;
+        demoMode = false;
 	}
 
     /**
@@ -181,6 +184,7 @@ public class Map extends Observable{
             currentRoute.removeListeners();
         }
         currentRoute = newRoute;
+        currentRoute.setDemoMode(demoMode);
         currentRoute.addListener(routeListener);
         // Set the mode to Overview
         mapState = MapState.STATIONARY;
@@ -192,6 +196,17 @@ public class Map extends Observable{
      */
     Route getRoute() {
         return currentRoute;
+    }
+
+    /**
+     * Set demonstration mode on
+     * @param on true
+     */
+    void setDemoMode(boolean on){
+        demoMode = on;
+        if(currentRoute != null){
+            currentRoute.setDemoMode(on);
+        }
     }
 
     /**

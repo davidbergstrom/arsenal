@@ -1,11 +1,13 @@
 package com.edit.reach.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -133,8 +135,13 @@ public class MultiPaneActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+        boolean demoMode = sharedPrefs.getBoolean("demonstration_mode", false);
 
+        Log.d("MultiPaneActivity", "Demo MODE:"+demoMode);
+
+        navigationModel.setDemo(demoMode);
     }
 
 	@Override
