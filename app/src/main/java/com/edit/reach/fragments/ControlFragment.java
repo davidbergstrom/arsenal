@@ -33,10 +33,10 @@ public class ControlFragment extends Fragment{
 	private ImageButton ibToilet;
 	private ImageButton ibGasStation;
 
-	private int intRestArea;
-	private int intFood;
-	private int intToilet;
-	private int intGasStation;
+	private ImageState isRestArea;
+	private ImageState isFood;
+	private ImageState isToilet;
+	private ImageState isGasStation;
 
 
     //State of Panel
@@ -44,6 +44,10 @@ public class ControlFragment extends Fragment{
 
     public enum State {
 		ROUTELESS, INFO, SUGGESTION
+	}
+
+	public enum ImageState{
+		ORIGINAL, SHADED
 	}
 
 	//Progressbar
@@ -199,79 +203,74 @@ public class ControlFragment extends Fragment{
 
 		//Get and set Input buttons
 		ibRestArea = (ImageButton) view.findViewById(R.id.button_control_input_restarea);
-		intRestArea = R.drawable.input_restarea;
+		isRestArea = ImageState.ORIGINAL;
 		ibRestArea.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.RESTAREA);
 				Log.d("INPUTBUTTON", "Restarea");
-				if(intRestArea == R.drawable.input_restarea|| intRestArea == R.drawable.input_restarea_shaded){
-					ibRestArea.setImageResource(R.drawable.input_restarea_pressed);
-					intRestArea = R.drawable.input_restarea_pressed;
-					shadeIcons(intRestArea);
+				if(isRestArea == ImageState.ORIGINAL){
+					ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
+					isRestArea = ImageState.SHADED;
+					showTheOtherIcons();
+
 				}
 				else {
 					ibRestArea.setImageResource(R.drawable.input_restarea);
-					intRestArea = R.drawable.input_restarea;
-					showIcons();
+					isRestArea = ImageState.ORIGINAL;
 				}
 			}
 		});
 		ibFood = (ImageButton) view.findViewById(R.id.button_control_input_restaurant);
-		intFood = R.drawable.input_restaurant;
+		isFood = ImageState.ORIGINAL;
 		ibFood.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				((MultiPaneActivity) getActivity()).getPauseSuggestions(IMilestone.Category.FOOD);
 				Log.d("INPUTBUTTON", "Food");
-				if(intFood == R.drawable.input_restaurant || intFood == R.drawable.input_restaurant_shaded){
-					ibFood.setImageResource(R.drawable.input_restaurant_pressed);
-					intFood = R.drawable.input_restaurant_pressed;
-					shadeIcons(intFood);
-
-				}
-				else {
+				if(isFood == ImageState.ORIGINAL) {
+					ibFood.setImageResource(R.drawable.input_restaurant_shaded);
+					isFood = ImageState.SHADED;
+					showTheOtherIcons();
+				} else {
 					ibFood.setImageResource(R.drawable.input_restaurant);
-					intFood = R.drawable.input_restaurant;
-					showIcons();
+					isFood = ImageState.ORIGINAL;
 				}
 			}
 		});
 		ibToilet = (ImageButton) view.findViewById(R.id.button_control_input_toilet);
-		intToilet = R.drawable.input_toilet;
+		isToilet = ImageState.ORIGINAL;
 		ibToilet.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				//TODO: Fix Toilet...
 				Log.d("INPUTBUTTON", "Toilet");
-				if(intToilet == R.drawable.input_toilet || intToilet == R.drawable.input_toilet_shaded ){
-					ibToilet.setImageResource(R.drawable.input_toilet_pressed);
-					intToilet = R.drawable.input_toilet_pressed;
-					shadeIcons(intToilet);
+				if(isToilet == ImageState.ORIGINAL){
+					ibToilet.setImageResource(R.drawable.input_toilet_shaded);
+					isToilet = ImageState.SHADED;
+					showTheOtherIcons();
 				}
 				else {
 					ibToilet.setImageResource(R.drawable.input_toilet);
-					intToilet = R.drawable.input_toilet;
-					showIcons();
+					isToilet = ImageState.ORIGINAL;
 				}
 			}
 		});
 		ibGasStation = (ImageButton) view.findViewById(R.id.button_control_input_gasstation);
-		intGasStation = R.drawable.input_gasstation;
+		isGasStation = ImageState.ORIGINAL;
 		ibGasStation.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.GASSTATION);
 				Log.d("INPUTBUTTON", "Gas Station");
-				if(intGasStation == R.drawable.input_gasstation || intGasStation == R.drawable.input_gasstation_shaded ){
-					ibGasStation.setImageResource(R.drawable.input_gasstation_pressed);
-					intGasStation = R.drawable.input_gasstation_pressed;
-					shadeIcons(intGasStation);
+				if(isGasStation == ImageState.ORIGINAL){
+					ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
+					isGasStation = ImageState.SHADED;
+					showTheOtherIcons();
 				}
 				else {
 					ibGasStation.setImageResource(R.drawable.input_gasstation);
-					intGasStation = R.drawable.input_gasstation;
-					showIcons();
+					isGasStation = ImageState.ORIGINAL;
 				}
 			}
 		});
@@ -280,66 +279,66 @@ public class ControlFragment extends Fragment{
 
 		return view;
 	}
+	//TODO: Use if we going to have Multiple choices.
+	private void showTheOtherIcons(){
+		if(isGasStation == ImageState.SHADED){
+			ibRestArea.setImageResource(R.drawable.input_restarea);
+			isRestArea = ImageState.ORIGINAL;
 
-	private void shadeIcons(int status){
-		if(status == R.drawable.input_gasstation_pressed){
-			ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
-			intRestArea = R.drawable.input_restarea_shaded;
+			ibToilet.setImageResource(R.drawable.input_toilet);
+			isToilet = ImageState.ORIGINAL;
 
-			ibToilet.setImageResource(R.drawable.input_toilet_shaded);
-			intToilet = R.drawable.input_toilet_shaded;
+			ibFood.setImageResource(R.drawable.input_restaurant);
+			isFood = ImageState.ORIGINAL;
 
-			ibFood.setImageResource(R.drawable.input_restaurant_shaded);
-			intFood = R.drawable.input_restaurant_shaded;
+		} else if(isRestArea == ImageState.SHADED){
 
-		} else if(status == R.drawable.input_restarea_pressed){
+			ibGasStation.setImageResource(R.drawable.input_gasstation);
+			isGasStation = ImageState.ORIGINAL;
 
-			ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
-			intGasStation = R.drawable.input_gasstation_shaded;
+			ibToilet.setImageResource(R.drawable.input_toilet);
+			isToilet = ImageState.ORIGINAL;
 
-			ibToilet.setImageResource(R.drawable.input_toilet_shaded);
-			intToilet = R.drawable.input_toilet_shaded;
+			ibFood.setImageResource(R.drawable.input_restaurant);
+			isFood = ImageState.ORIGINAL;
 
-			ibFood.setImageResource(R.drawable.input_restaurant_shaded);
-			intFood = R.drawable.input_restaurant_shaded;
+		} else if(isFood == ImageState.SHADED){
 
-		} else if(status == R.drawable.input_restaurant_pressed){
+			ibGasStation.setImageResource(R.drawable.input_gasstation);
+			isGasStation = ImageState.ORIGINAL;
 
-			ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
-			intGasStation = R.drawable.input_gasstation_shaded;
+			ibRestArea.setImageResource(R.drawable.input_restarea);
+			isRestArea = ImageState.ORIGINAL;
 
-			ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
-			intRestArea = R.drawable.input_restarea_shaded;
+			ibToilet.setImageResource(R.drawable.input_toilet);
+			isToilet = ImageState.ORIGINAL;
 
-			ibToilet.setImageResource(R.drawable.input_toilet_shaded);
-			intToilet = R.drawable.input_toilet_shaded;
+		} else if(isToilet == ImageState.SHADED){
 
-		} else if(status == R.drawable.input_toilet_pressed){
+			ibGasStation.setImageResource(R.drawable.input_gasstation);
+			isGasStation = ImageState.ORIGINAL;
 
-			ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
-			intGasStation = R.drawable.input_gasstation_shaded;
+			ibRestArea.setImageResource(R.drawable.input_restarea);
+			isRestArea = ImageState.ORIGINAL;
 
-			ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
-			intRestArea = R.drawable.input_restarea_shaded;
-
-			ibFood.setImageResource(R.drawable.input_restaurant_shaded);
-			intFood = R.drawable.input_restaurant_shaded;
+			ibFood.setImageResource(R.drawable.input_restaurant);
+			isFood = ImageState.ORIGINAL;
 
 		} else{
 			Log.d("ControlFragment", "shadeIcons");
 		}
 	}
 
-	private void showIcons(){
+	private void showAllIcons(){
 		ibFood.setImageResource(R.drawable.input_restaurant);
 		ibRestArea.setImageResource(R.drawable.input_restarea);
 		ibToilet.setImageResource(R.drawable.input_toilet);
 		ibGasStation.setImageResource(R.drawable.input_gasstation);
 
-		intFood = R.drawable.input_restaurant;
-		intRestArea = R.drawable.input_restarea;
-		intToilet = R.drawable.input_toilet;
-		intGasStation = R.drawable.input_gasstation;
+		isFood = ImageState.ORIGINAL;
+		isRestArea = ImageState.ORIGINAL;
+		isToilet = ImageState.ORIGINAL;
+		isGasStation = ImageState.ORIGINAL;
 	}
 
 	public void setState(State newState) {
