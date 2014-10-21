@@ -146,4 +146,17 @@ public class Milestone implements IMilestone {
     public LatLng getLocation() {
         return location;
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj == null){
+            return false;
+        }
+        if (obj instanceof Milestone) {
+            Milestone milestoneObj = (Milestone)obj;
+            return this.name.equals(milestoneObj.name) && this.location.equals(milestoneObj.location);
+        }else {
+            return false;
+        }
+    }
 }

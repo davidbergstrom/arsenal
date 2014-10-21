@@ -48,5 +48,7 @@
 	<string name="tv_navigation_info_distance">Distance</string>
 	<string name="suggestion_button_next">NEXT</string>
 	<string name="suggestion_button_ok">OK</string>
+    <string name="suggestion_button_confirm">YES</string>
+    <string name="suggestion_button_no">NO</string>
 
 </resources>
