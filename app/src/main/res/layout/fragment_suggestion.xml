@@ -1,0 +1,109 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_fragment_left"
+    android:paddingTop="@dimen/fragment_control_top_padding"
+    android:paddingBottom="@dimen/fragment_control_bottom_padding"
+    android:paddingStart="@dimen/fragment_control_start_padding"
+    android:paddingEnd="@dimen/fragment_control_end_padding"
+    tools:context="com.edit.reach.fragments.ControlFragment">
+
+	<!-- Container for Navigation Info -->
+	<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/navigation_info_container"
+			android:orientation="vertical"
+			android:layout_marginTop="@dimen/navigation_info_margin_top"
+			android:layout_marginBottom="@dimen/navigation_info_margin_bottom">
+
+		<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/tv_navigation_info_title"
+				android:text="@string/tv_navigation_info_title"
+				android:textSize="@dimen/tv_navigation_info_title"
+				android:textColor="@color/tv_navigation_info_title"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_navigattion_info_rating"
+                android:text="@string/tv_navigation_info_rating"/>
+
+		<!-- Icons Holder -->
+		<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:layout_marginTop="@dimen/navigation_info_icons_holder_margin_top"
+				android:layout_marginBottom="@dimen/navigation_info_icons_holder_margin_bottom">
+
+			<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/navigation_info_icon_type_food"
+					android:src="@drawable/milestone_food"
+					android:visibility="visible"/>
+
+			<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/navigation_info_icon_type_gasstation"
+					android:src="@drawable/milestone_gasstation"
+					android:visibility="visible"/>
+
+			<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/navigation_info_icon_type_restarea"
+					android:src="@drawable/milestone_restarea"
+					android:visibility="visible"/>
+
+			<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/navigation_info_icon_type_toilet"
+					android:src="@drawable/milestone_toilet"
+					android:visibility="visible"/>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+    <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/suggestion_button_holder"
+            android:columnCount="2"
+            android:rowCount="0"
+            android:layout_centerHorizontal="true">
+
+        <TextView
+                android:id="@+id/button_confirm"
+                android:text="@string/suggestion_button_confirm"
+                android:textSize="@dimen/suggestion_button"
+                android:textColor="@color/android_red"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="0"
+                android:layout_margin="@dimen/input_button_margin"
+                style="@android:style/Widget.Holo.Button.Borderless"/>
+
+        <TextView
+                android:id="@+id/button_no"
+                android:text="@string/suggestion_button_no"
+                android:textSize="@dimen/suggestion_button"
+                android:textColor="@color/android_red"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_row="0"
+                android:layout_margin="@dimen/input_button_margin"
+                style="@android:style/Widget.Holo.Button.Borderless"/>
+
+    </GridLayout>
+
+</RelativeLayout>
