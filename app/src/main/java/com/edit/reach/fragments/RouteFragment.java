@@ -125,7 +125,9 @@ public class RouteFragment extends Fragment {
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				onTextEntered(s.toString());
+                if (s.length() >= 4) {
+                    onTextEntered(s.toString());
+                }
 			}
 
 			@Override
@@ -147,7 +149,9 @@ public class RouteFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                onTextEntered(s.toString());
+                if (s.length() >= 4) {
+                    onTextEntered(s.toString());
+                }
             }
 
             @Override

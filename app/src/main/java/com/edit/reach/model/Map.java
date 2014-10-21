@@ -20,7 +20,7 @@ import java.util.Observable;
  */
 public class Map extends Observable{
 
-    private static final int UPDATE_INTERVAL = NavigationUtil.UPDATE_INTERVAL_NORMAL;
+    private static final int UPDATE_INTERVAL = NavigationUtil.UPDATE_INTERVAL_SLOW;
 
     // The map which modifies the map view in the activity
     private GoogleMap map;
@@ -136,7 +136,7 @@ public class Map extends Observable{
                         position = new LatLng(0, 0);
                     }
 
-                    moveCameraTo(position);
+                    moveCameraTo(position, map.getCameraPosition().zoom);
                 }else{
                     Log.d(DEBUG_TAG, "Current route not initialized!");
                 }
@@ -198,8 +198,8 @@ public class Map extends Observable{
      * Move the camera for the map to the new location.
      * @param location, the location to move to.
      */
-    void moveCameraTo(LatLng location){
-        CameraPosition newCameraLocation = new CameraPosition.Builder().target(location).zoom(8).build();
+    void moveCameraTo(LatLng location, float zoom){
+        CameraPosition newCameraLocation = new CameraPosition.Builder().target(location).zoom(zoom).build();
         map.moveCamera(CameraUpdateFactory.newCameraPosition(newCameraLocation));
     }
 
@@ -211,7 +211,7 @@ public class Map extends Observable{
         mapState = MapState.OVERVIEW_MOVING;
         LatLng milestoneLocation = milestone.getLocation();
         Marker tempMarker = map.addMarker(new MarkerOptions().position(milestoneLocation).snippet(milestone.getSnippet()).title(milestone.getName()));
-        moveCameraTo(milestoneLocation);
+        moveCameraTo(milestoneLocation, 13);
         return tempMarker;
     }
 
@@ -222,7 +222,7 @@ public class Map extends Observable{
      * @param newMapState, the new state of the map
      */
     public void setMapState(MapState newMapState){
-        if(newMapState == MapState.STATIONARY){
+        if(newMapState == MapState.STATIONARY && currentRoute != null){
             LatLng routeOrigin = currentRoute.getOrigin();
             LatLng routeDestination = currentRoute.getDestination();
             if(routeOrigin != null && routeDestination != null){

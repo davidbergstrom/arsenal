@@ -37,7 +37,7 @@ public class Route {
     private GroundOverlay pointerWithBearing;
     private LatLng origin, destination;
     private String originAddress, destinationAddress;
-    private boolean initialized, DEMO_MODE = true;   // Specifies if the route should run in test mode
+    private boolean initialized, demoMode;   // Specifies if the route should run in test mode
     private String DEBUG_TAG = "Route";
 
     /** Handler for receiving a route as JSON Object */
@@ -200,6 +200,22 @@ public class Route {
             distanceInMetres += leg.getDistance();
         }
         return (long)distanceInMetres;
+    }
+
+    /**
+     * Returns if demonstration mode is on.
+     * @return true if demo is on, false otherwise
+     */
+    boolean isDemoMove(){
+        return demoMode;
+    }
+
+    /**
+     * Set the demo mode.
+     * @param on the new state of demo mode
+     */
+    void setDemoMode(boolean on){
+        demoMode = on;
     }
 
     /**
@@ -526,7 +542,7 @@ public class Route {
      * @param location, the location to move to
      */
     public void goTo(LatLng location){
-        if(DEMO_MODE){
+        if(demoMode){
             location = getNextSubStep();
         }
 

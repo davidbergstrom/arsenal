@@ -70,38 +70,55 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	}
 
 	/** This method is used to find pauses in driving mode.
-	 * @param categoryList a list of categories with what the user wants.
-	 * @return a IMilestone that matches the categories specified.
-	 */
-	public IMilestone getPauseSuggestions(List<IMilestone.Category> categoryList) {
-		// TODO The AISA method for multiple categories.
-		return null;
-	}
-
-	/** This method is used to find pauses in driving mode.
 	 * @param category a category with what the user wants.
 	 * @return a IMilestone that matches the category specified.
 	 */
-	public IMilestone getPauseSuggestions(IMilestone.Category category) {
-		// TODO AISA for one category.
+	public void getPauseSuggestions(IMilestone.Category category) {
+
 		if(category == IMilestone.Category.FOOD) {
-			if(map.getRoute().getLegs().get(0).getDuration() <= FOOD_THRESHOLD) {
-
-			}
-		} else if(category == IMilestone.Category.RESTAREA) {
-			if(map.getRoute().getLegs().get(0).getDuration() <= REST_THRESHOLD) {
-
-			}
 
 		} else if(category == IMilestone.Category.GASSTATION) {
-			if(map.getRoute().getLegs().get(0).getDuration() <= GAS_THRESHOLD) {
 
-			}
+		} else if(category == IMilestone.Category.RESTAREA) {
+
+		} else if(category == IMilestone.Category.TOILET) {
 
 		} else {
 
 		}
-		return null;
+	}
+
+	private boolean inThreshold(final int threshold) {
+		boolean inThreshold = false;
+		List<Leg> legs = map.getRoute().getLegs();
+		if (legs.get(0).getDuration() <= threshold) {
+			inThreshold = true;
+		}
+		return inThreshold;
+	}
+
+	private boolean hasCategory(IMilestone.Category category) {
+		boolean hasCategory = false;
+		List<Leg> legs = map.getRoute().getLegs();
+		if (legs.get(0).getMilestone().hasCategory(category)) {
+			map.showMilestone(legs.get(0).getMilestone());
+
+			Message message = mainHandler.obtainMessage();
+			message.obj = legs.get(0).getMilestone();
+			message.what = SignalType.MILESTONE;
+
+			hasCategory = true;
+		}
+		return hasCategory;
+	}
+
+	public void acceptedMilestone(final boolean accepted) {
+		if(accepted) {
+			map.setMapState(Map.MapState.MOVING);
+
+		} else {
+
+		}
 	}
 
 	/** Returns a map object.
@@ -287,7 +304,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	}
 
 	// Method that add fuel-pause in the map.
-	private void addFuelPause(double secondsToRefuel) {
+	private void addFuelPause(long secondsToRefuel) {
 		synchronized (map) {
 			map.getRoute().addPause(secondsToRefuel);
 		}
