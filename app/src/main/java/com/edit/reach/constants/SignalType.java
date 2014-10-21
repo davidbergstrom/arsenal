@@ -21,5 +21,6 @@ public class SignalType {
 	public static final int LEG_UPDATE = 212;
     public static final int LEG_FINISHED = 213;
 	public static final int MILESTONE = 214;
+    public static final int PAUSE_ADDED = 215;
 
 }

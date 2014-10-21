@@ -67,6 +67,8 @@ public class Map extends Observable{
         @Override
         public void onPauseAdded(Pause pause) {
             Log.d(DEBUG_TAG, "Pause added");
+            setChanged();
+            notifyObservers(SignalType.PAUSE_ADDED);
             if(mapState == MapState.STATIONARY){
                 // If the current state is overview, draw the pause circle and add the markers to the map
                 pause.draw(map);
