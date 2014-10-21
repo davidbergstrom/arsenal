@@ -63,16 +63,16 @@ public final class VehicleSystem extends Observable implements Runnable {
 	// Keeps track if navigationModel has been notified for "short time".
 	private AtomicBoolean timeHasBeenNotified = new AtomicBoolean(false);
 
+	// A handler for the signals
+	private Handler signalHandler;
+
 	// A list with the fuel rate
 	private final List<Float> fuelRateList = new ArrayList<Float>();
 
 	// A thread for listening to the vehicle signals.
 	private final Thread vehicleSignals;
 
-	// A handler for the signals
-	private Handler signalHandler;
-
-	// A lockobject
+	// A lockobject used to lock the signalHandler object.
 	private final Object lockObject = new Object();
 
 	// A runnable that updates time.
@@ -298,7 +298,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 	/** Method that returns the number of seconds until a stop is required.
 	 * @return
-	270 if currently in a break
+	The legal uptime if currently in a break
 	Positive number with seconds left if driving
 	Negative number if drive longer than legal.
 	 */

@@ -45,12 +45,10 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	/* --- CONSTANTS --- */
 	private static final String PIPELINE_THREAD_NAME = "PipelineThread";
 
-	// TODO Constants for AISA
-	private static final int FOOD_THRESHOLD = 30*60;
+	private static final int FOOD_THRESHOLD = 45*60;
+	private static final int GAS_THRESHOLD = 30*60;
 	private static final int REST_THRESHOLD = 15*60;
-	private static final int GAS_THRESHOLD = 20*60;
 	private static final int TOILET_THRESHOLD = 10*60;
-
 
 	public NavigationModel(GoogleMap googleMap, Handler mainHandler) {
 		this.pipelineThread = new Thread(this, PIPELINE_THREAD_NAME);
@@ -90,8 +88,10 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 					notifyUI(legs.get(0).getMilestone());
 				}
 
+			// TODO Time and rating
 			} else if (milestoneAlgorithmStage == 1) {
 
+			// TODO Time
 			} else {
 
 			}
@@ -102,8 +102,10 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 					notifyUI(legs.get(0).getMilestone());
 				}
 
+			// TODO Time and rating
 			} else if (milestoneAlgorithmStage == 1) {
 
+			// TODO Time
 			} else {
 
 			}
@@ -114,8 +116,10 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 					notifyUI(legs.get(0).getMilestone());
 				}
 
+			// TODO Time and rating
 			} else if (milestoneAlgorithmStage == 1) {
 
+			// TODO Time
 			} else {
 
 			}
@@ -126,44 +130,22 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 					notifyUI(legs.get(0).getMilestone());
 				}
 
+			// TODO Time and rating
 			} else if (milestoneAlgorithmStage == 1) {
 
+			// TODO Time
 			} else {
 
 			}
 
 		} else {
-			// TODO
+			Log.d("getPauseSuggestions()", "Passed an illegal category");
 		}
 	}
 
-	private boolean inThreshold(final int threshold) {
-		boolean inThreshold = false;
-		List<Leg> legs = map.getRoute().getLegs();
-		if (legs.get(0).getDuration() <= threshold) {
-			inThreshold = true;
-		}
-		return inThreshold;
-	}
-
-	private boolean hasCategory(IMilestone.Category category) {
-		boolean hasCategory = false;
-		List<Leg> legs = map.getRoute().getLegs();
-		if (legs.get(0).getMilestone().hasCategory(category)) {
-			hasCategory = true;
-		}
-		return hasCategory;
-	}
-
-	private void notifyUI(IMilestone milestone) {
-		this.milestone = milestone;
-		map.showMilestone(this.milestone);
-
-		Message message = mainHandler.obtainMessage();
-		message.obj = this.milestone;
-		message.what = SignalType.MILESTONE;
-	}
-
+	/** This method is called to tell the navigationModel if a suggested milestone was accepted or not.
+	 * @param accepted
+	 */
 	public void acceptedMilestone(boolean accepted) {
 		// If milestone was accepted by the user.
 		if(accepted) {
@@ -331,8 +313,8 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 
 						// If the tank size has been calculated
 						case SignalType.TANK_SIZE_CALCULATED:
-							// TODO what to do here? Not used
 							Log.d("UPDATE", "TYPE: TANK_SIZE_CALCULATED");
+							map.getRoute().addPause((long)vehicleSystem.getTimeUntilRefuel());
 							break;
 
 						// If vehicle is low on fuel.
@@ -356,6 +338,36 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		});
 	}
 
+	// This method determines if a milestone is in a threshold
+	private boolean inThreshold(final int threshold) {
+		boolean inThreshold = false;
+		List<Leg> legs = map.getRoute().getLegs();
+		if (legs.get(0).getDuration() <= threshold) {
+			inThreshold = true;
+		}
+		return inThreshold;
+	}
+
+	// This method determines if a milestone has a category
+	private boolean hasCategory(IMilestone.Category category) {
+		boolean hasCategory = false;
+		List<Leg> legs = map.getRoute().getLegs();
+		if (legs.get(0).getMilestone().hasCategory(category)) {
+			hasCategory = true;
+		}
+		return hasCategory;
+	}
+
+	// This method notifies the UI of changes
+	private void notifyUI(IMilestone milestone) {
+		this.milestone = milestone;
+		map.showMilestone(this.milestone);
+
+		Message message = mainHandler.obtainMessage();
+		message.obj = this.milestone;
+		message.what = SignalType.MILESTONE;
+	}
+
 	// Method that adds time-pauses in the map.
 	private void addTimePause() {
 		synchronized (map) {
@@ -368,10 +380,4 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		}
 	}
 
-	// Method that add fuel-pause in the map.
-	private void addFuelPause(long secondsToRefuel) {
-		synchronized (map) {
-			map.getRoute().addPause(secondsToRefuel);
-		}
-	}
 }
