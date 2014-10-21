@@ -49,6 +49,14 @@ public class Pause {
     }
 
     /**
+     * Returns the type of the pause
+     * @return the type
+     */
+    public PauseType getType(){
+        return type;
+    }
+
+    /**
      * Draw the pause as a circle
      * @param map, the map to draw it on
      */
