@@ -43,28 +43,28 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_food"
-					android:src="@drawable/milestone_food"
+					android:src="@drawable/sug_food_icon"
 					android:visibility="visible"/>
 
 			<ImageView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_gasstation"
-					android:src="@drawable/milestone_gas"
+					android:src="@drawable/sug_fuel_icon"
 					android:visibility="visible"/>
 
 			<ImageView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_restarea"
-					android:src="@drawable/milestone_rest"
+					android:src="@drawable/sug_restarea_icon"
 					android:visibility="visible"/>
 
 			<ImageView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_toilet"
-					android:src="@drawable/milestone_toilet"
+					android:src="@drawable/sug_toilet_icon"
 					android:visibility="visible"/>
 
 		</LinearLayout>
