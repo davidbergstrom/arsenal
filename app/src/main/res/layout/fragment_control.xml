@@ -132,7 +132,7 @@
 			android:columnCount="3"
 			android:rowCount="2"
 			android:layout_below="@+id/suggestion_buttons"
-			android:layout_centerHorizontal="true">
+			android:layout_centerHorizontal="false">
 
 		<!-- Two ProgressBars-->
 		<ProgressBar
@@ -141,6 +141,7 @@
 				android:id="@+id/progress_gas"
 				android:layout_column="1"
 				android:layout_row="0"
+                android:layout_gravity="center_vertical"
 				android:minWidth="@dimen/progress_bar_min_width"
 				android:minHeight="@dimen/progress_bar_min_height"
 				android:maxWidth="@dimen/progress_bar_max_width"
@@ -156,6 +157,7 @@
 				android:id="@+id/progress_time_clock"
 				android:layout_column="1"
 				android:layout_row="1"
+                android:layout_gravity="center_vertical"
 				android:minWidth="@dimen/progress_bar_min_width"
 				android:minHeight="@dimen/progress_bar_min_height"
 				android:maxWidth="@dimen/progress_bar_max_width"
@@ -166,39 +168,19 @@
 		</ProgressBar>
 
 		<!-- TextViews to accompany the ProgressBars -->
-		<TextView
+		<ImageView
 				android:id="@+id/tv_control_info_gas_left"
 				android:layout_column="0"
 				android:layout_row="0"
-				android:text="@string/tv_control_info_gas_left"
-				android:textSize="@dimen/tv_control_info_progress_bar_text"
 				android:layout_gravity="end"
-				android:textColor="@color/text_navigation_info_progressbar"/>
+				android:background="@drawable/info_fuel_icon"/>
 
-		<TextView
-				android:id="@+id/tv_control_info_gas_right"
-				android:layout_column="2"
-				android:layout_row="0"
-				android:text="@string/tv_control_info_gas_right"
-				android:textSize="@dimen/tv_control_info_progress_bar_text"
-				android:textColor="@color/text_navigation_info_progressbar"/>
-
-		<TextView
+		<ImageView
 				android:id="@+id/tv_control_info_time_clock_left"
 				android:layout_column="0"
 				android:layout_row="1"
-				android:text="@string/tv_control_info_time_clock_left"
-				android:textSize="@dimen/tv_control_info_progress_bar_text"
 				android:layout_gravity="end"
-				android:textColor="@color/text_navigation_info_progressbar"/>
-
-		<TextView
-				android:id="@+id/tv_control_info_time_clock_right"
-				android:layout_column="2"
-				android:layout_row="1"
-				android:text="@string/tv_control_info_time_clock_right"
-				android:textSize="@dimen/tv_control_info_progress_bar_text"
-				android:textColor="@color/text_navigation_info_progressbar"/>
+				android:background="@drawable/info_time_icon"/>
 
 	</GridLayout>
 
