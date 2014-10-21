@@ -2,14 +2,11 @@ package com.edit.reach.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
-import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.model.interfaces.IMilestone;
 
 import java.util.List;
@@ -25,11 +22,9 @@ public class SuggestionFragment extends Fragment {
     //Text Views
     private TextView textNextStop;
     private TextView textRating;
-    //Suggestion Buttons
-    private Button buttonConfirm;
-    private Button buttonNext;
+
     //Images Views
-    private ImageView ivGastation;
+    private ImageView ivGasstation;
     private ImageView ivFood;
     private ImageView ivRestArea;
     private ImageView ivToilet;
@@ -44,7 +39,7 @@ public class SuggestionFragment extends Fragment {
 
         //Set Milestone Images
         ivFood.setVisibility(ImageView.GONE);
-        ivGastation.setVisibility(ImageView.GONE);
+        ivGasstation.setVisibility(ImageView.GONE);
         ivRestArea.setVisibility(ImageView.GONE);
         ivToilet.setVisibility(ImageView.GONE);
 
@@ -56,7 +51,7 @@ public class SuggestionFragment extends Fragment {
                     break;
 
                 case GASSTATION:
-                    ivGastation.setVisibility(ImageView.VISIBLE);
+                    ivGasstation.setVisibility(ImageView.VISIBLE);
                     break;
 
                 case RESTAREA:
@@ -101,15 +96,37 @@ public class SuggestionFragment extends Fragment {
         textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
         textRating = (TextView) view.findViewById(R.id.tv_navigation_info_rating);
 
-        //Get Suggestion Buttons
-        buttonNext = (Button) view.findViewById(R.id.suggestion_button_next);
-        buttonConfirm = (Button) view.findViewById(R.id.suggestion_button_ok);
-
         //Get ImageViews
         ivFood = (ImageView) view.findViewById(R.id.navigation_info_icon_type_food);
-        ivGastation = (ImageView) view.findViewById(R.id.navigation_info_icon_type_gasstation);
+        ivGasstation = (ImageView) view.findViewById(R.id.navigation_info_icon_type_gasstation);
         ivRestArea = (ImageView) view.findViewById(R.id.navigation_info_icon_type_restarea);
         ivToilet = (ImageView) view.findViewById(R.id.navigation_info_icon_type_toilet);
+
+        //Get Suggestion Buttons
+        Button buttonConfirm = (Button) view.findViewById(R.id.button_confirm);
+        Button buttonNext = (Button) view.findViewById(R.id.button_next);
+        Button buttonCancel = (Button) view.findViewById(R.id.button_cancel);
+
+        buttonConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        buttonNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
 		return view;
 	}

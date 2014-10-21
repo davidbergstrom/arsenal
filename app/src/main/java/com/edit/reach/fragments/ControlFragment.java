@@ -62,7 +62,7 @@ public class ControlFragment extends Fragment{
 
     //MileStone Images
     private ImageView ivFood;
-    private ImageView ivGastation;
+    private ImageView ivGasstation;
     private ImageView ivRestArea;
     private ImageView ivToilet;
 
@@ -105,7 +105,7 @@ public class ControlFragment extends Fragment{
 
             //Set Milestone Images
             ivFood.setVisibility(ImageView.GONE);
-            ivGastation.setVisibility(ImageView.GONE);
+            ivGasstation.setVisibility(ImageView.GONE);
             ivRestArea.setVisibility(ImageView.GONE);
             ivToilet.setVisibility(ImageView.GONE);
 
@@ -120,7 +120,7 @@ public class ControlFragment extends Fragment{
                         break;
 
                     case GASSTATION:
-                        ivGastation.setVisibility(ImageView.VISIBLE);
+                        ivGasstation.setVisibility(ImageView.VISIBLE);
                         Log.d("ControlFragment:", "Set GASSTATION Visible");
                         break;
 
@@ -181,7 +181,7 @@ public class ControlFragment extends Fragment{
 
         //Get ImageViews
         ivFood = (ImageView) view.findViewById(R.id.navigation_info_icon_type_food);
-        ivGastation = (ImageView) view.findViewById(R.id.navigation_info_icon_type_gasstation);
+        ivGasstation = (ImageView) view.findViewById(R.id.navigation_info_icon_type_gasstation);
         ivRestArea = (ImageView) view.findViewById(R.id.navigation_info_icon_type_restarea);
         ivToilet = (ImageView) view.findViewById(R.id.navigation_info_icon_type_toilet);
 

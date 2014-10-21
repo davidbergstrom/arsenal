@@ -80,11 +80,11 @@
             android:rowCount="0"
             android:layout_centerHorizontal="true">
 
-        <TextView
+        <Button
                 android:id="@+id/button_confirm"
                 android:text="@string/suggestion_button_confirm"
                 android:textSize="@dimen/suggestion_button"
-                android:textColor="@color/android_red"/>
+                android:textColor="@color/android_red"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="0"
@@ -92,11 +92,23 @@
                 android:layout_margin="@dimen/input_button_margin"
                 style="@android:style/Widget.Holo.Button.Borderless"/>
 
-        <TextView
-                android:id="@+id/button_no"
-                android:text="@string/suggestion_button_no"
+        <Button
+                android:id="@+id/button_next"
+                android:text="@string/suggestion_button_next"
                 android:textSize="@dimen/suggestion_button"
-                android:textColor="@color/android_red"/>
+                android:textColor="@color/android_yellow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_row="0"
+                android:layout_margin="@dimen/input_button_margin"
+                style="@android:style/Widget.Holo.Button.Borderless"/>
+
+        <Button
+                android:id="@+id/button_cancel"
+                android:text="@string/suggestion_button_cancel"
+                android:textSize="@dimen/suggestion_button"
+                android:textColor="@color/android_red"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"

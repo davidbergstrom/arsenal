@@ -45,14 +45,14 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_gasstation"
-					android:src="@drawable/milestone_gasstation"
+					android:src="@drawable/milestone_gas"
 					android:visibility="visible"/>
 
 			<ImageView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_restarea"
-					android:src="@drawable/milestone_restarea"
+					android:src="@drawable/milestone_rest"
 					android:visibility="visible"/>
 
 			<ImageView
