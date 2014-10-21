@@ -228,7 +228,7 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	 * @param demo true if demomode should be activated, false otherwise.
 	 */
 	public void setDemo(boolean demo) {
-		map.getRoute().setDemoMode(demo);
+		map.setDemoMode(demo);
 	}
 
 	@Override
