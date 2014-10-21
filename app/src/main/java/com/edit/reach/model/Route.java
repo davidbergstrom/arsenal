@@ -37,7 +37,7 @@ public class Route {
     private GroundOverlay pointerWithBearing;
     private LatLng origin, destination;
     private String originAddress, destinationAddress;
-    private boolean initialized, DEMO_MODE = true;   // Specifies if the route should run in test mode
+    private boolean initialized, demoMode;   // Specifies if the route should run in test mode
     private String DEBUG_TAG = "Route";
 
     /** Handler for receiving a route as JSON Object */
@@ -203,6 +203,22 @@ public class Route {
     }
 
     /**
+     * Returns if demonstration mode is on.
+     * @return true if demo is on, false otherwise
+     */
+    boolean isDemoMove(){
+        return demoMode;
+    }
+
+    /**
+     * Set the demo mode.
+     * @param on the new state of demo mode
+     */
+    void setDemoMode(boolean on){
+        demoMode = on;
+    }
+
+    /**
      * Get the milestone at the specified location
      * @param location, the location to find a milestone on.
      * @return the milestone
@@ -265,49 +281,34 @@ public class Route {
     }
 
     /**
-     * Adds a fuel pause the specified number of kilometres into the route
-     * @param kmIntoRoute, in km
+     * Returns the coordinate on the route the number of seconds into route specified.
+     * @param secondsIntoRoute how many seconds into the route to find the coordinate on
+     * @return the coordinate, null if there was an overflow and no coordinate could be found
      */
-    public void addPause(double kmIntoRoute){
-        double metresIntoRoute = kmIntoRoute * 1000;
-        double actualMetresIntoRoute = 0;
+    public LatLng getLocation(long secondsIntoRoute){
+        long actualSecondsIntoRoute = 0;
+        LatLng location = null;
 
         outerLoop:
         for(Leg leg : legs){
             for(Step step : leg.getSteps()){
                 List<LatLng> subSteps = step.getSubSteps();
-                double subDistance = ((double)step.getDistance()) / (subSteps.size()-1);
-                actualMetresIntoRoute += step.getDistance();
-                if(actualMetresIntoRoute >= metresIntoRoute){
-                    int subIndexTooFar = (int)((actualMetresIntoRoute - metresIntoRoute) / subDistance);
+                float stepDuration = step.getDuration();
+                double subDuration = ((double)stepDuration) / (subSteps.size()-1);
+                actualSecondsIntoRoute += stepDuration;
+                if(actualSecondsIntoRoute >= secondsIntoRoute){
+                    int subIndexTooFar = (int)((actualSecondsIntoRoute - secondsIntoRoute) / subDuration);
                     int subIndex = subSteps.size() - 1 - subIndexTooFar;
 
-                    final LatLng pauseLocation = subSteps.get(subIndex);
-                    final double addedDistance = actualMetresIntoRoute - subIndexTooFar * subDistance;
+                    location = subSteps.get(subIndex);
 
-                    // Start a request for milestones at the pause location. Then create the pause with the location and milestones.
-                    Ranking.getMilestones(new MilestonesReceiver() {
-                        @Override
-                        public void onMilestonesRecieved(ArrayList<IMilestone> milestones) {
-                            Pause p = new Pause(pauseLocation, milestones);
-                            pauses.add(p);
 
-                            for(RouteListener l : listeners){
-                                l.onPauseAdded(p);
-                            }
-                            Log.d(DEBUG_TAG, "Pause added " + addedDistance + " km into the route.");
-                        }
-
-                        @Override
-                        public void onMilestonesGetFailed() {
-
-                        }
-                    }, pauseLocation, NavigationUtil.RADIUS_IN_DEGREES*2);
 
                     break outerLoop;
                 }
             }
         }
+        return location;
     }
 
     /**
@@ -526,7 +527,7 @@ public class Route {
      * @param location, the location to move to
      */
     public void goTo(LatLng location){
-        if(DEMO_MODE){
+        if(demoMode){
             location = getNextSubStep();
         }
 

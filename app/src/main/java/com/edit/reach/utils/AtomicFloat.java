@@ -12,27 +12,22 @@ import static java.lang.Float.*;
 
 public class AtomicFloat extends Number {
 
-	private AtomicInteger bits;
+	private AtomicInteger intBits;
 
 	public AtomicFloat() {
 		this(0f);
 	}
 
 	public AtomicFloat(float initialValue) {
-		bits = new AtomicInteger(floatToIntBits(initialValue));
-	}
-
-	public final boolean compareAndSet(float expect, float update) {
-		return bits.compareAndSet(floatToIntBits(expect),
-				floatToIntBits(update));
+		intBits = new AtomicInteger(floatToIntBits(initialValue));
 	}
 
 	public final void set(float newValue) {
-		bits.set(floatToIntBits(newValue));
+		intBits.set(floatToIntBits(newValue));
 	}
 
 	public final float get() {
-		return intBitsToFloat(bits.get());
+		return intBitsToFloat(intBits.get());
 	}
 
 	public float floatValue() {
@@ -40,12 +35,7 @@ public class AtomicFloat extends Number {
 	}
 
 	public final float getAndSet(float newValue) {
-		return intBitsToFloat(bits.getAndSet(floatToIntBits(newValue)));
-	}
-
-	public final boolean weakCompareAndSet(float expect, float update) {
-		return bits.weakCompareAndSet(floatToIntBits(expect),
-				floatToIntBits(update));
+		return intBitsToFloat(intBits.getAndSet(floatToIntBits(newValue)));
 	}
 
 	public double doubleValue() {

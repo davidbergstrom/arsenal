@@ -35,15 +35,20 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 
 	private Handler pipelineHandler;
 
+	private IMilestone milestone;
+
 	private List<String> searchResults;
+
+	private int milestoneAlgorithmStage = 0;
+	private IMilestone.Category milestoneCategory;
 
 	/* --- CONSTANTS --- */
 	private static final String PIPELINE_THREAD_NAME = "PipelineThread";
 
-	// TODO Constants for AISA
-	private static final int FOOD_THRESHOLD = 30*60;
+	private static final int FOOD_THRESHOLD = 45*60;
+	private static final int GAS_THRESHOLD = 30*60;
 	private static final int REST_THRESHOLD = 15*60;
-	private static final int GAS_THRESHOLD = 20*60;
+	private static final int TOILET_THRESHOLD = 10*60;
 
 	public NavigationModel(GoogleMap googleMap, Handler mainHandler) {
 		this.pipelineThread = new Thread(this, PIPELINE_THREAD_NAME);
@@ -70,38 +75,97 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	}
 
 	/** This method is used to find pauses in driving mode.
-	 * @param categoryList a list of categories with what the user wants.
-	 * @return a IMilestone that matches the categories specified.
-	 */
-	public IMilestone getPauseSuggestions(List<IMilestone.Category> categoryList) {
-		// TODO The AISA method for multiple categories.
-		return null;
-	}
-
-	/** This method is used to find pauses in driving mode.
 	 * @param category a category with what the user wants.
 	 * @return a IMilestone that matches the category specified.
 	 */
-	public IMilestone getPauseSuggestions(IMilestone.Category category) {
-		// TODO AISA for one category.
-		if(category == IMilestone.Category.FOOD) {
-			if(map.getRoute().getLegs().get(0).getDuration() <= FOOD_THRESHOLD) {
+	public void getPauseSuggestions(final IMilestone.Category category) {
+		this.milestoneCategory = category;
+		List<Leg> legs = map.getRoute().getLegs();
 
-			}
-		} else if(category == IMilestone.Category.RESTAREA) {
-			if(map.getRoute().getLegs().get(0).getDuration() <= REST_THRESHOLD) {
+		if(category == IMilestone.Category.FOOD) {
+			if(inThreshold(FOOD_THRESHOLD) && this.milestoneAlgorithmStage == 0) {
+				if(hasCategory(category)) {
+					notifyUI(legs.get(0).getMilestone());
+				}
+
+			// TODO Time and rating
+			} else if (milestoneAlgorithmStage == 1) {
+
+			// TODO Time
+			} else {
 
 			}
 
 		} else if(category == IMilestone.Category.GASSTATION) {
-			if(map.getRoute().getLegs().get(0).getDuration() <= GAS_THRESHOLD) {
+			if(inThreshold(GAS_THRESHOLD)) {
+				if(hasCategory(category)) {
+					notifyUI(legs.get(0).getMilestone());
+				}
+
+			// TODO Time and rating
+			} else if (milestoneAlgorithmStage == 1) {
+
+			// TODO Time
+			} else {
+
+			}
+
+		} else if(category == IMilestone.Category.RESTAREA) {
+			if(inThreshold(REST_THRESHOLD)) {
+				if (hasCategory(category)) {
+					notifyUI(legs.get(0).getMilestone());
+				}
+
+			// TODO Time and rating
+			} else if (milestoneAlgorithmStage == 1) {
+
+			// TODO Time
+			} else {
+
+			}
+
+		} else if(category == IMilestone.Category.TOILET) {
+			if(inThreshold(TOILET_THRESHOLD)) {
+				if (hasCategory(category)) {
+					notifyUI(legs.get(0).getMilestone());
+				}
+
+			// TODO Time and rating
+			} else if (milestoneAlgorithmStage == 1) {
+
+			// TODO Time
+			} else {
 
 			}
 
 		} else {
-
+			Log.d("getPauseSuggestions()", "Passed an illegal category");
 		}
-		return null;
+	}
+
+	/** This method is called to tell the navigationModel if a suggested milestone was accepted or not.
+	 * @param accepted
+	 */
+	public void acceptedMilestone(boolean accepted) {
+		// If milestone was accepted by the user.
+		if(accepted) {
+			boolean milestoneExists = false;
+			map.setMapState(Map.MapState.MOVING);
+			for(Leg l : map.getRoute().getLegs()) {
+				if(l.getMilestone().equals(this.milestone)) {
+					milestoneExists = true;
+				}
+			}
+
+			if(!milestoneExists) {
+				map.getRoute().addMilestone(this.milestone);
+			}
+
+		// If milestone was not accepted by the user.
+		} else {
+			milestoneAlgorithmStage += milestoneAlgorithmStage;
+			getPauseSuggestions(milestoneCategory);
+		}
 	}
 
 	/** Returns a map object.
@@ -249,8 +313,8 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 
 						// If the tank size has been calculated
 						case SignalType.TANK_SIZE_CALCULATED:
-							// TODO what to do here? Not used
 							Log.d("UPDATE", "TYPE: TANK_SIZE_CALCULATED");
+							map.getRoute().addPause((long)vehicleSystem.getTimeUntilRefuel());
 							break;
 
 						// If vehicle is low on fuel.
@@ -274,6 +338,36 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		});
 	}
 
+	// This method determines if a milestone is in a threshold
+	private boolean inThreshold(final int threshold) {
+		boolean inThreshold = false;
+		List<Leg> legs = map.getRoute().getLegs();
+		if (legs.get(0).getDuration() <= threshold) {
+			inThreshold = true;
+		}
+		return inThreshold;
+	}
+
+	// This method determines if a milestone has a category
+	private boolean hasCategory(IMilestone.Category category) {
+		boolean hasCategory = false;
+		List<Leg> legs = map.getRoute().getLegs();
+		if (legs.get(0).getMilestone().hasCategory(category)) {
+			hasCategory = true;
+		}
+		return hasCategory;
+	}
+
+	// This method notifies the UI of changes
+	private void notifyUI(IMilestone milestone) {
+		this.milestone = milestone;
+		map.showMilestone(this.milestone);
+
+		Message message = mainHandler.obtainMessage();
+		message.obj = this.milestone;
+		message.what = SignalType.MILESTONE;
+	}
+
 	// Method that adds time-pauses in the map.
 	private void addTimePause() {
 		synchronized (map) {
@@ -286,10 +380,4 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		}
 	}
 
-	// Method that add fuel-pause in the map.
-	private void addFuelPause(double secondsToRefuel) {
-		synchronized (map) {
-			map.getRoute().addPause(secondsToRefuel);
-		}
-	}
 }

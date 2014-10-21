@@ -23,6 +23,7 @@ import java.util.Observable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Class that represents a VehicleSystem.
@@ -62,14 +63,17 @@ public final class VehicleSystem extends Observable implements Runnable {
 	// Keeps track if navigationModel has been notified for "short time".
 	private AtomicBoolean timeHasBeenNotified = new AtomicBoolean(false);
 
+	// A handler for the signals
+	private Handler signalHandler;
+
 	// A list with the fuel rate
 	private final List<Float> fuelRateList = new ArrayList<Float>();
 
 	// A thread for listening to the vehicle signals.
 	private final Thread vehicleSignals;
 
-	// A handler for the signals
-	private Handler signalHandler;
+	// A lockobject used to lock the signalHandler object.
+	private final Object lockObject = new Object();
 
 	// A runnable that updates time.
 	private final Runnable timeRunnable = new Runnable() {
@@ -219,9 +223,15 @@ public final class VehicleSystem extends Observable implements Runnable {
 					AutomotiveSignalId.FMS_VEHICLE_MOTION);
 		}
 
-		// TODO this is not beautiful
-		// Used to wait until the signalHandler has been initialized.
-		while(signalHandler == null) {
+		synchronized (lockObject) {
+			while (signalHandler == null) {
+				try {
+					lockObject.wait();
+				}
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		signalHandler.post(timeRunnable);
 	}
@@ -230,6 +240,10 @@ public final class VehicleSystem extends Observable implements Runnable {
 	public void run() {
 		try {
 			Looper.prepare();
+			synchronized (lockObject) {
+				signalHandler = new Handler();
+				lockObject.notifyAll();
+			}
 			signalHandler = new Handler();
 			Looper.loop();
 		} catch (Throwable t) {
@@ -284,7 +298,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 	/** Method that returns the number of seconds until a stop is required.
 	 * @return
-	270 if currently in a break
+	The legal uptime if currently in a break
 	Positive number with seconds left if driving
 	Negative number if drive longer than legal.
 	 */

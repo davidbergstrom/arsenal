@@ -7,6 +7,8 @@ import com.edit.reach.model.interfaces.MilestonesReceiver;
 import com.edit.reach.system.Remote;
 import com.edit.reach.system.ResponseHandler;
 import com.edit.reach.system.WorldTruckerEndpoints;
+import com.edit.reach.utils.RankingDistanceUtil;
+import com.edit.reach.utils.RankingUtil;
 import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,6 +17,9 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+
+import static com.edit.reach.model.interfaces.IMilestone.Category;
 
 public class Ranking {
 
@@ -24,10 +29,25 @@ public class Ranking {
         status = GetStatus.PENDING;
     }
 
-    public static void getMilestones(final MilestonesReceiver milestonesReceiver, LatLng centralPoint, double sideLength) {
-        status = GetStatus.RUNNING;
+    public static void getMilestonesByRank(LatLng driverPoint, LatLng maxPoint, Category category, final MilestonesReceiver milestonesReceiver) {
+        BoundingBox bbox = new BoundingBox(driverPoint, maxPoint);
+        RankingUtil rankingUtil = new RankingUtil(category);
+        performGet(bbox, rankingUtil, milestonesReceiver);
+    }
 
+    public static void getMilestonesByDistance(LatLng driverPoint, LatLng maxPoint, Category category, final MilestonesReceiver milestonesReceiver) {
+        BoundingBox bbox = new BoundingBox(driverPoint, maxPoint);
+        RankingUtil rankingUtil = new RankingDistanceUtil(category, driverPoint);
+        performGet(bbox, rankingUtil, milestonesReceiver);
+    }
+
+    public static void getMilestones(final MilestonesReceiver milestonesReceiver, LatLng centralPoint, double sideLength) {
         BoundingBox bbox = new BoundingBox(centralPoint, sideLength);
+        performGet(bbox, null, milestonesReceiver);
+    }
+
+    private static void performGet(BoundingBox bbox, final RankingUtil rankingUtil, final MilestonesReceiver milestonesReceiver) {
+        status = GetStatus.RUNNING;
 
         try {
             URL url = WorldTruckerEndpoints.getMilestonesURL(bbox);
@@ -52,6 +72,11 @@ public class Ranking {
                         }
                     } catch (JSONException e) {
                         Log.d("RankingTest", e.getMessage());
+                    }
+
+                    if (rankingUtil != null) {
+                        rankingUtil.removeUnwanted(milestones);
+                        Collections.sort(milestones, rankingUtil);
                     }
 
                     milestonesReceiver.onMilestonesRecieved(milestones);
