@@ -321,10 +321,10 @@ public class ControlFragment extends Fragment{
 	}
 
 	private void showAllIcons(){
-		ibFood.setImageResource(R.drawable.input_restaurant);
-		ibRestArea.setImageResource(R.drawable.input_restarea);
-		ibRestroom.setImageResource(R.drawable.input_toilet);
-		ibGasStation.setImageResource(R.drawable.input_gasstation);
+		ibFood.setImageResource(R.drawable.food_150);
+		ibRestArea.setImageResource(R.drawable.restarea_150);
+		ibRestroom.setImageResource(R.drawable.restroom_150);
+		ibGasStation.setImageResource(R.drawable.gasstation_150);
 
 		isFood = ImageState.ORIGINAL;
 		isRestArea = ImageState.ORIGINAL;
