@@ -25,9 +25,7 @@ public class SuggestionFragment extends Fragment {
     //Text Views
     private TextView textNextStop;
     private TextView textRating;
-    //Suggestion Buttons
-    private Button buttonConfirm;
-    private Button buttonNext;
+
     //Images Views
     private ImageView ivGastation;
     private ImageView ivFood;
@@ -101,15 +99,29 @@ public class SuggestionFragment extends Fragment {
         textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
         textRating = (TextView) view.findViewById(R.id.tv_navigation_info_rating);
 
-        //Get Suggestion Buttons
-        buttonNext = (Button) view.findViewById(R.id.suggestion_button_next);
-        buttonConfirm = (Button) view.findViewById(R.id.suggestion_button_ok);
-
         //Get ImageViews
         ivFood = (ImageView) view.findViewById(R.id.navigation_info_icon_type_food);
         ivGastation = (ImageView) view.findViewById(R.id.navigation_info_icon_type_gasstation);
         ivRestArea = (ImageView) view.findViewById(R.id.navigation_info_icon_type_restarea);
         ivToilet = (ImageView) view.findViewById(R.id.navigation_info_icon_type_toilet);
+
+        //Get Suggestion Buttons
+        Button buttonNext = (Button) view.findViewById(R.id.suggestion_button_next);
+        Button buttonConfirm = (Button) view.findViewById(R.id.suggestion_button_ok);
+
+        buttonNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        buttonConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
 		return view;
 	}
