@@ -60,12 +60,11 @@
 	<dimen name="suggestion_buttons_margin_bottom">15dp</dimen>
 
 	<!-- Control Fragment - Top Info Box -->
-	<dimen name="navigation_info_margin_bottom">20dp</dimen>
+	<dimen name="navigation_info_margin_bottom">10dp</dimen>
 	<dimen name="navigation_info_margin_top">10dp</dimen>
 	<dimen name="tv_navigation_info_title">24sp</dimen>
-	<dimen name="tv_navigation_info_specs">18sp</dimen>
+	<dimen name="tv_navigation_info_specs">20sp</dimen>
 	<dimen name="navigation_info_icons_holder_margin_top">5dp</dimen>
-	<dimen name="navigation_info_icons_holder_margin_bottom">10dp</dimen>
 
 	<!-- Control Fragment - ProgressBar -->
 	<dimen name="progress_bar_min_width">230dp</dimen>

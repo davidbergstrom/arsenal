@@ -37,8 +37,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:orientation="horizontal"
-				android:layout_marginTop="@dimen/navigation_info_icons_holder_margin_top"
-				android:layout_marginBottom="@dimen/navigation_info_icons_holder_margin_bottom">
+				android:layout_marginTop="@dimen/navigation_info_icons_holder_margin_top">
 
 			<ImageView
 					android:layout_width="wrap_content"
@@ -51,14 +50,14 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_gasstation"
-					android:src="@drawable/milestone_gasstation"
+					android:src="@drawable/milestone_gas"
 					android:visibility="visible"/>
 
 			<ImageView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_restarea"
-					android:src="@drawable/milestone_restarea"
+					android:src="@drawable/milestone_rest"
 					android:visibility="visible"/>
 
 			<ImageView
