@@ -170,7 +170,7 @@ public class Map extends Observable{
 		this.map = map;
         this.handler = new Handler();
         this.mapState = MapState.STATIONARY;
-        demoMode = false;
+        demoMode = true;
 	}
 
     /**
