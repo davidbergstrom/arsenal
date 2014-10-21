@@ -311,9 +311,7 @@ public class MultiPaneActivity extends FragmentActivity {
 	public void suggestionAcceptMilestone(boolean status){
 		navigationModel.acceptedMilestone(status);
 		if(status){
-			goBackToControlFragment(
-
-			);
+			goBackToControlFragment();
 		}
 	}
 
