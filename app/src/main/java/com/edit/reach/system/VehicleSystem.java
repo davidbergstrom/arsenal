@@ -23,6 +23,7 @@ import java.util.Observable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Class that represents a VehicleSystem.
@@ -70,6 +71,9 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 	// A handler for the signals
 	private Handler signalHandler;
+
+	// A lockobject
+	private final Object lockObject = new Object();
 
 	// A runnable that updates time.
 	private final Runnable timeRunnable = new Runnable() {
@@ -219,9 +223,15 @@ public final class VehicleSystem extends Observable implements Runnable {
 					AutomotiveSignalId.FMS_VEHICLE_MOTION);
 		}
 
-		// TODO this is not beautiful
-		// Used to wait until the signalHandler has been initialized.
-		while(signalHandler == null) {
+		synchronized (lockObject) {
+			while (signalHandler == null) {
+				try {
+					lockObject.wait();
+				}
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		signalHandler.post(timeRunnable);
 	}
@@ -230,6 +240,10 @@ public final class VehicleSystem extends Observable implements Runnable {
 	public void run() {
 		try {
 			Looper.prepare();
+			synchronized (lockObject) {
+				signalHandler = new Handler();
+				lockObject.notifyAll();
+			}
 			signalHandler = new Handler();
 			Looper.loop();
 		} catch (Throwable t) {
