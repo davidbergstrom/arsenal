@@ -580,6 +580,8 @@ public class Route {
                 float bearing = NavigationUtil.finalBearing(nextLocation, nearestLocation);
                 pointerWithBearing.setBearing(bearing);
 
+	            // pointerWithBearing.setPosition(nearestLocation);
+
                 final LatLngInterpolator latLngInterpolator = new LatLngInterpolator.Linear();
 
                 TypeEvaluator<LatLng> typeEvaluator = new TypeEvaluator<LatLng>() {
