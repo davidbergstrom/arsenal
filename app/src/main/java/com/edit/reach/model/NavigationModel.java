@@ -372,8 +372,8 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 							break;
 
 						// If a pause was added
-						case SignalType.PAUSE_ADDED:
-							Pause pause = map.getRoute().getPauses().get(0);
+						//case SignalType.PAUSE_ADDED:
+							/*Pause pause = map.getRoute().getPauses().get(0);
 							// If the pause was a fuelpause.
 							if(pause.getType() == Pause.PauseType.FUEL) {
 								map.moveCameraTo(pause.getLocation(), 13);
@@ -381,12 +381,12 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 								// TODO implement in GUI. Remember to set state of map when done.
 								message.what = SignalType.PAUSE_ADDED;
 								mainHandler.sendMessage(message);
-							}
+							}*/
 
 						// If the tank size has been calculated
 						case SignalType.TANK_SIZE_CALCULATED:
 							Log.d("UPDATE", "TYPE: TANK_SIZE_CALCULATED");
-							map.getRoute().addPause((long) vehicleSystem.getTimeUntilRefuel(), Pause.PauseType.FUEL);
+							//map.getRoute().addPause((long) vehicleSystem.getTimeUntilRefuel(), Pause.PauseType.FUEL);
 							break;
 
 						// If vehicle is low on fuel.
