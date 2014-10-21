@@ -174,7 +174,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_restaurant"
-				android:src="@drawable/food"
+				android:src="@drawable/food_150"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_column="0"
@@ -185,7 +185,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_restarea"
-				android:src="@drawable/restarea"
+				android:src="@drawable/restarea_150"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_column="0"
@@ -196,7 +196,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_toilet"
-				android:src="@drawable/restroom"
+				android:src="@drawable/restroom_150"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_column="1"
@@ -207,7 +207,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_gasstation"
-				android:src="@drawable/gasstation"
+				android:src="@drawable/gasstation_150"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_column="1"
