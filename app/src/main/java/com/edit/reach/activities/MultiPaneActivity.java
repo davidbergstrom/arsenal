@@ -32,7 +32,7 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiPaneActivity extends FragmentActivity{
+public class MultiPaneActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 

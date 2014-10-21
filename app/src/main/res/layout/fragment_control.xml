@@ -70,29 +70,8 @@
 				android:layout_height="wrap_content"
 				android:orientation="vertical">
 
-			<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:id="@+id/navigation_info_rating"
-					android:text="@string/tv_navigation_info_rating"
-					android:textSize="@dimen/tv_navigation_info_specs"
-					android:textColor="@color/text_navigation_info_specs"/>
+        <!-- TODO Remove or take back TextView -->
 
-			<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:id="@+id/navigation_info_distance"
-					android:text="@string/tv_navigation_info_distance"
-					android:textSize="@dimen/tv_navigation_info_specs"
-					android:textColor="@color/text_navigation_info_specs"/>
-
-			<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:id="@+id/navigation_info_time"
-					android:text="@string/tv_navigation_info_time"
-					android:textSize="@dimen/tv_navigation_info_specs"
-					android:textColor="@color/text_navigation_info_specs"/>
 		</LinearLayout>
 
 	</LinearLayout>
@@ -129,10 +108,38 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:id="@+id/control_info_progressbar_holder"
-			android:columnCount="3"
-			android:rowCount="2"
+			android:columnCount="2"
+			android:rowCount="4"
 			android:layout_below="@+id/suggestion_buttons"
 			android:layout_centerHorizontal="false">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/navigation_info_rating"
+                android:text="@string/tv_navigation_info_rating"
+                android:textSize="@dimen/tv_navigation_info_specs"
+                android:textColor="@color/text_navigation_info_specs"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/navigation_info_distance"
+                android:layout_row="0"
+                android:layout_column="0"
+                android:text="@string/tv_navigation_info_distance"
+                android:textSize="@dimen/tv_navigation_info_specs"
+                android:textColor="@color/text_navigation_info_specs"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/navigation_info_time"
+                android:layout_row="1"
+                android:layout_column="0"
+                android:text="@string/tv_navigation_info_time"
+                android:textSize="@dimen/tv_navigation_info_specs"
+                android:textColor="@color/text_navigation_info_specs"/>
 
 		<!-- Two ProgressBars-->
 		<ProgressBar
@@ -140,7 +147,7 @@
 				android:layout_height="wrap_content"
 				android:id="@+id/progress_gas"
 				android:layout_column="1"
-				android:layout_row="0"
+				android:layout_row="2"
                 android:layout_gravity="center_vertical"
 				android:minWidth="@dimen/progress_bar_min_width"
 				android:minHeight="@dimen/progress_bar_min_height"
@@ -156,7 +163,7 @@
 				android:layout_height="wrap_content"
 				android:id="@+id/progress_time_clock"
 				android:layout_column="1"
-				android:layout_row="1"
+				android:layout_row="3"
                 android:layout_gravity="center_vertical"
 				android:minWidth="@dimen/progress_bar_min_width"
 				android:minHeight="@dimen/progress_bar_min_height"
@@ -171,16 +178,17 @@
 		<ImageView
 				android:id="@+id/tv_control_info_gas_left"
 				android:layout_column="0"
-				android:layout_row="0"
-				android:layout_gravity="end"
+				android:layout_row="2"
+				android:layout_gravity="start"
 				android:background="@drawable/info_fuel_icon"/>
 
 		<ImageView
 				android:id="@+id/tv_control_info_time_clock_left"
 				android:layout_column="0"
-				android:layout_row="1"
-				android:layout_gravity="end"
+				android:layout_row="3"
+				android:layout_gravity="start"
 				android:background="@drawable/info_time_icon"/>
+
 
 	</GridLayout>
 
@@ -196,7 +204,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_restaurant"
-				android:src="@drawable/input_restaurant"
+				android:src="@drawable/food"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_column="0"
@@ -207,7 +215,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_restarea"
-				android:src="@drawable/input_restarea"
+				android:src="@drawable/restarea"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_column="0"
@@ -218,7 +226,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_toilet"
-				android:src="@drawable/input_toilet"
+				android:src="@drawable/restroom"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_column="1"
@@ -229,7 +237,7 @@
 
 		<ImageButton
 				android:id="@+id/button_control_input_gasstation"
-				android:src="@drawable/input_gasstation"
+				android:src="@drawable/gasstation"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_column="1"
