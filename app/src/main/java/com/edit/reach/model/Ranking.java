@@ -15,6 +15,10 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+import static com.edit.reach.model.interfaces.IMilestone.Category;
 
 public class Ranking {
 
@@ -24,10 +28,18 @@ public class Ranking {
         status = GetStatus.PENDING;
     }
 
-    public static void getMilestones(final MilestonesReceiver milestonesReceiver, LatLng centralPoint, double sideLength) {
-        status = GetStatus.RUNNING;
+    public static void getMilestones(LatLng bottomLeftPoint, LatLng topLeftPoint, Category category, final MilestonesReceiver milestonesReceiver) {
+        BoundingBox bbox = new BoundingBox(bottomLeftPoint, topLeftPoint);
+        performGet(bbox, category, milestonesReceiver);
+    }
 
+    public static void getMilestones(final MilestonesReceiver milestonesReceiver, LatLng centralPoint, double sideLength) {
         BoundingBox bbox = new BoundingBox(centralPoint, sideLength);
+        performGet(bbox, null, milestonesReceiver);
+    }
+
+    private static void performGet(BoundingBox bbox, final Category category, final MilestonesReceiver milestonesReceiver) {
+        status = GetStatus.RUNNING;
 
         try {
             URL url = WorldTruckerEndpoints.getMilestonesURL(bbox);
@@ -53,6 +65,25 @@ public class Ranking {
                     } catch (JSONException e) {
                         Log.d("RankingTest", e.getMessage());
                     }
+
+                    if (category != null) {
+                        for (int i = 0; i < milestones.size(); i++) {
+                            if (!milestones.get(i).hasCategory(category)) {
+                               milestones.remove(milestones.get(i));
+                            }
+                        }
+                    }
+
+                    Collections.sort(milestones, new Comparator<IMilestone>() {
+                        @Override
+                        public int compare(IMilestone m1, IMilestone m2) {
+                            if (m1.getRank() > m2.getRank())
+                                return 1;
+                            if (m1.getRank() < m2.getRank())
+                                return -1;
+                            return 0;
+                        }
+                    });
 
                     milestonesReceiver.onMilestonesRecieved(milestones);
 
