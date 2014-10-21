@@ -34,8 +34,8 @@ public class NavigationUtil {
     public static final BitmapDescriptor
             foodMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_food),
             selectedFoodMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_food_selected),
-            bathroomMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_bathroom),
-            selectedBathroomMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_bathroom_selected),
+            bathroomMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_toilet),
+            selectedBathroomMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_toilet_selected),
             pauseMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_pause),
             restMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_reststop),
             selectedRestMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_reststop_selected),
