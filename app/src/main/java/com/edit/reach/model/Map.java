@@ -225,7 +225,7 @@ public class Map extends Observable{
     Marker showMilestone(IMilestone milestone){
         mapState = MapState.OVERVIEW_MOVING;
         LatLng milestoneLocation = milestone.getLocation();
-        Marker tempMarker = map.addMarker(new MarkerOptions().position(milestoneLocation).snippet(milestone.getSnippet()).title(milestone.getName()));
+        Marker tempMarker = map.addMarker(new MarkerOptions().position(milestoneLocation).icon(NavigationUtil.getMilestoneIcon(milestone)).snippet(milestone.getSnippet()).title(milestone.getName()));
         moveCameraTo(milestoneLocation, 13);
         return tempMarker;
     }

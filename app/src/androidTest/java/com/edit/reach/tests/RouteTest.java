@@ -1,32 +1,62 @@
 package com.edit.reach.tests;
 
 import android.util.Log;
+import com.edit.reach.model.Leg;
+import com.edit.reach.model.Pause;
 import com.edit.reach.model.Route;
+import com.edit.reach.model.Step;
 import com.edit.reach.model.interfaces.RouteListener;
 import com.google.android.gms.maps.model.LatLng;
 import junit.framework.TestCase;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 public class RouteTest extends TestCase {
     private Route route;
+    private String DEBUG_TAG = "RouteTest";
 
     public void setUp() throws Exception {
+        super.setUp();
+
+        final CountDownLatch signal = new CountDownLatch(1);
         route = new Route("Trollhattan", "Goteborg");
         route.addListener(new RouteListener() {
             @Override
-            public void onInitialization() {
-                assertTrue(route.isInitialized());
+            public void onInitialization(boolean success) {
+                signal.countDown();// notify the count down latch
             }
 
             @Override
-            public void onPauseAdded(LatLng pauseLocation) {
+            public void onPauseAdded(Pause pause) {
                 assertTrue(route.getPauses().size() > 0);
-                assertNotNull(pauseLocation);
+                assertNotNull(pause.getLocation());
+            }
+
+            @Override
+            public void onRouteFinished(Route finishedRoute) {
+
+            }
+
+            @Override
+            public void onLegFinished(Leg finishedLeg) {
+
+            }
+
+            @Override
+            public void onStepFinished(Step finishedStep) {
+
             }
         });
-        while(!route.isInitialized()){
-            Log.d("RouteTest", "Waiting");
-            Thread.sleep(100);
-        }
+        Log.d(DEBUG_TAG, "Waiting for init");
+        //signal.await(30, TimeUnit.SECONDS);
+
+        // The task is done, and now you can assert some things!
+        assertTrue("Happiness", true);
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
     }
 
     public void testGetDuration() throws Exception {
@@ -39,10 +69,6 @@ public class RouteTest extends TestCase {
 
     public void testAddPause() throws Exception {
         route.addPause(100);
-    }
-
-    public void testAddPause1() throws Exception {
-        route.addPause(40.0);
     }
 
     public void testGetPauses() throws Exception {
