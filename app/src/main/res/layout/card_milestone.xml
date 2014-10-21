@@ -11,7 +11,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/milestone_rest"
+            android:src="@drawable/mini_restarea_icon"
             android:adjustViewBounds="true"
             android:maxWidth="65dp"
             android:maxHeight="65dp"

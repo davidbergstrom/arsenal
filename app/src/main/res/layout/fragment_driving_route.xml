@@ -10,8 +10,8 @@
             android:id="@+id/Restaurant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/Toilet"
-            android:src="@drawable/driving_restaurant"
+            android:layout_toRightOf="@+id/Restaurant"
+            android:src="@drawable/mini_food_icon"
 
             />
 
@@ -19,7 +19,7 @@
             android:id="@+id/Toilet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/driving_toilet"
+            android:src="@drawable/mini_toilet_icon"
 
             />
 
@@ -28,8 +28,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/Restaurant"
-        android:layout_toRightOf="@+id/Gas"
-        android:src="@drawable/driving_restarea"
+        android:layout_toRightOf="@+id/RestArea"
+        android:src="@drawable/mini_restarea_icon"
 
         />
 
@@ -37,8 +37,8 @@
             android:id="@+id/Gas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/Toilet"
-            android:src="@drawable/driving_gas"
+            android:layout_below="@+id/Gas"
+            android:src="@drawable/mini_fuel_icon"
 
             />
 
