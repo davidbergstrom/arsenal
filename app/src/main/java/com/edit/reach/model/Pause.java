@@ -20,16 +20,28 @@ public class Pause {
     private Marker middleOfPause;
     private List<IMilestone> milestones;
     private List<Marker> milestoneMarkers;
+    private BitmapDescriptor icon;
+    private PauseType type;
     private String DEBUG_TAG = "Pause";
+
+    public enum PauseType{
+        FUEL, TIME
+    }
 
     /**
      * Constructs a pause with the provided location and milestones.
      * @param location the location of the pause as coordinate
      * @param milestones the milestones available for this pause
      */
-    public Pause(LatLng location, List<IMilestone> milestones){
+    public Pause(LatLng location, List<IMilestone> milestones, PauseType type){
         this.location = location;
         this.milestones = milestones;
+        this.type = type;
+        if(type == PauseType.FUEL){
+            icon = NavigationUtil.gasMarker;
+        }else{
+            icon = NavigationUtil.pauseMarker;
+        }
 	    for(IMilestone m : this.milestones ) {
 		    Log.d("MILESTONE IN PAUSE", m.getName());
 	    }
@@ -48,10 +60,11 @@ public class Pause {
                 .fillColor(0x9971c3e2)
                 .strokeWidth(0)
                 .radius( NavigationUtil.RADIUS_IN_KM * 1000 ));
+
         this.middleOfPause = map.addMarker(new MarkerOptions()
                 .position(location)
                 .title("Pause")
-                .icon(NavigationUtil.pauseMarker));
+                .icon(icon));
 
         for(IMilestone milestone : milestones){
 	        Log.d("Pause:", milestone.getName());
@@ -75,7 +88,7 @@ public class Pause {
         this.middleOfPause = map.addMarker(new MarkerOptions()
                 .position(location)
                 .title("Pause")
-                .icon(NavigationUtil.pauseMarker));
+                .icon(icon));
     }
 
     /**
