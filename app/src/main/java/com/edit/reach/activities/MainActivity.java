@@ -3,17 +3,11 @@ package com.edit.reach.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import com.edit.reach.app.R;
-import com.edit.reach.constants.MovingState;
-import com.edit.reach.constants.SignalType;
-import com.edit.reach.model.NavigationModel;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {

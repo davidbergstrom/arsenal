@@ -3,16 +3,11 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.*;
-
-
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -218,6 +213,7 @@ public class ControlFragment extends Fragment{
 				else {
 					ibRestArea.setImageResource(R.drawable.input_restarea);
 					intRestArea = R.drawable.input_restarea;
+					showIcons();
 				}
 			}
 		});
@@ -232,10 +228,12 @@ public class ControlFragment extends Fragment{
 					ibFood.setImageResource(R.drawable.input_restaurant_pressed);
 					intFood = R.drawable.input_restaurant_pressed;
 					shadeIcons(intFood);
+
 				}
 				else {
 					ibFood.setImageResource(R.drawable.input_restaurant);
 					intFood = R.drawable.input_restaurant;
+					showIcons();
 				}
 			}
 		});
@@ -254,6 +252,7 @@ public class ControlFragment extends Fragment{
 				else {
 					ibToilet.setImageResource(R.drawable.input_toilet);
 					intToilet = R.drawable.input_toilet;
+					showIcons();
 				}
 			}
 		});
@@ -272,6 +271,7 @@ public class ControlFragment extends Fragment{
 				else {
 					ibGasStation.setImageResource(R.drawable.input_gasstation);
 					intGasStation = R.drawable.input_gasstation;
+					showIcons();
 				}
 			}
 		});
@@ -284,23 +284,62 @@ public class ControlFragment extends Fragment{
 	private void shadeIcons(int status){
 		if(status == R.drawable.input_gasstation_pressed){
 			ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
+			intRestArea = R.drawable.input_restarea_shaded;
+
 			ibToilet.setImageResource(R.drawable.input_toilet_shaded);
+			intToilet = R.drawable.input_toilet_shaded;
+
 			ibFood.setImageResource(R.drawable.input_restaurant_shaded);
+			intFood = R.drawable.input_restaurant_shaded;
+
 		} else if(status == R.drawable.input_restarea_pressed){
+
 			ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
+			intGasStation = R.drawable.input_gasstation_shaded;
+
 			ibToilet.setImageResource(R.drawable.input_toilet_shaded);
+			intToilet = R.drawable.input_toilet_shaded;
+
 			ibFood.setImageResource(R.drawable.input_restaurant_shaded);
+			intFood = R.drawable.input_restaurant_shaded;
+
 		} else if(status == R.drawable.input_restaurant_pressed){
+
 			ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
+			intGasStation = R.drawable.input_gasstation_shaded;
+
 			ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
+			intRestArea = R.drawable.input_restarea_shaded;
+
 			ibToilet.setImageResource(R.drawable.input_toilet_shaded);
+			intToilet = R.drawable.input_toilet_shaded;
+
 		} else if(status == R.drawable.input_toilet_pressed){
+
 			ibGasStation.setImageResource(R.drawable.input_gasstation_shaded);
+			intGasStation = R.drawable.input_gasstation_shaded;
+
 			ibRestArea.setImageResource(R.drawable.input_restarea_shaded);
+			intRestArea = R.drawable.input_restarea_shaded;
+
 			ibFood.setImageResource(R.drawable.input_restaurant_shaded);
+			intFood = R.drawable.input_restaurant_shaded;
+
 		} else{
 			Log.d("ControlFragment", "shadeIcons");
 		}
+	}
+
+	private void showIcons(){
+		ibFood.setImageResource(R.drawable.input_restaurant);
+		ibRestArea.setImageResource(R.drawable.input_restarea);
+		ibToilet.setImageResource(R.drawable.input_toilet);
+		ibGasStation.setImageResource(R.drawable.input_gasstation);
+
+		intFood = R.drawable.input_restaurant;
+		intRestArea = R.drawable.input_restarea;
+		intToilet = R.drawable.input_toilet;
+		intGasStation = R.drawable.input_gasstation;
 	}
 
 	public void setState(State newState) {

@@ -12,6 +12,7 @@ public class UniversalConstants {
 	public static final double NANOSECONDS_TO_SECONDS = 1.0/1000000000;
 	public static final double SECONDS_TO_HOURS = 1.0/3600;
 	public static final double SECONDS_TO_MINUTES = 1.0/60;
+	public static final double HOURS_TO_SECONDS = 60*60;
 
 	// The maximum number of seconds to drive before a 45 minute break.
 	public static final long LEGAL_UPTIME_IN_SECONDS = 16200;

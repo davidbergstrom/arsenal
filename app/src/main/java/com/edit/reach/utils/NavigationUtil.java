@@ -1,5 +1,6 @@
 package com.edit.reach.utils;
 
+import android.util.Log;
 import com.edit.reach.app.R;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -16,6 +17,12 @@ import static com.edit.reach.model.interfaces.IMilestone.*;
  * Static class for navigation utilities.
  */
 public class NavigationUtil {
+
+    /** Constant, the refresh rate of the navigation loop in milliseconds */
+    public static final int UPDATE_INTERVAL_SLOW = 500,
+                            UPDATE_INTERVAL_NORMAL = 250,
+                            UPDATE_INTERVAL_FAST = 100,
+                            ROUTE_INTERVAL = 60000;
 
     /** Radius for the pauses */
     public static final double RADIUS_IN_DEGREES = 0.2;
@@ -65,7 +72,7 @@ public class NavigationUtil {
      */
     public static BitmapDescriptor getMilestoneIcon(IMilestone milestone) {
         BitmapDescriptor icon;
-
+		Log.d("NavigationUtil", "Category:" + milestone.getCategories().toString());
         if (milestone.hasCategory(Category.GASSTATION)) {
             icon = NavigationUtil.gasMarker;
         } else if (milestone.hasCategory(Category.FOOD)) {

@@ -6,15 +6,11 @@ import android.util.Log;
 import com.edit.reach.constants.SignalType;
 import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.RouteListener;
-import com.edit.reach.system.GoogleMapsEndpoints;
-import com.edit.reach.system.Remote;
-import com.edit.reach.system.ResponseHandler;
+import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.*;
 
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
@@ -24,31 +20,25 @@ import java.util.Observable;
  */
 public class Map extends Observable{
 
-    // Constant, the refresh rate of the navigation loop in milliseconds
-    private final int UPDATE_INTERVAL_NORMAL = 300, UPDATE_INTERVAL_FAST = 80, UPDATE_INTERVAL_SLOW = 500, ROUTE_INTERVAL = 60000;
+    private static final int UPDATE_INTERVAL = NavigationUtil.UPDATE_INTERVAL_NORMAL;
 
     // The map which modifies the map view in the activity
     private GoogleMap map;
 
     // The handler for navigation loop
     private Handler handler;
-    private Handler secondHandler;
 
     private Route currentRoute;
-    private LatLng lastLocation;
 
     // The state which is used internally in a state pattern
-    private State state;
-
-    // All the markers on the map
-    private List<Marker> markersOnMap;
+    private MapState mapState;
 
     // Class name for logging
     private String DEBUG_TAG = "Map";
 
     /** Enum class for internal state pattern */
-    public enum State{
-        STATIONARY, MOVING
+    public enum MapState {
+        STATIONARY, MOVING, OVERVIEW_MOVING
     }
 
     /** A listener for a route */
@@ -75,15 +65,18 @@ public class Map extends Observable{
         @Override
         public void onPauseAdded(Pause pause) {
             Log.d("Map", "Pause added");
-            if(state == State.STATIONARY){
+            if(mapState == MapState.STATIONARY){
                 // If the current state is overview, draw the pause circle and add the markers to the map
-                //map.addCircle(new CircleOptions().center(pauseLocation).fillColor(Color.RED).radius(1000));
-                //currentRoute.drawPauses(map);
                 pause.draw(map);
                 Log.d("Map", "Getting milestones");
-                //Ranking.getMilestones(milestonesReceiver, pause.getLocation(), NavigationUtil.RADIUS_IN_DEGREES*2);
             }
 
+        }
+
+        @Override
+        public void onRouteFinished(Route finishedRoute) {
+            // When the route has finished
+            setMapState(MapState.STATIONARY);
         }
 
         @Override
@@ -103,7 +96,7 @@ public class Map extends Observable{
     private Runnable navigationRunnable = new Runnable() {
         @Override
         public void run() {
-            if(state == State.MOVING){
+            if(mapState == MapState.MOVING || mapState == MapState.OVERVIEW_MOVING){
                 if(isRouteSet() && currentRoute.isInitialized()){
                     Location myLocation = map.getMyLocation();
                     //LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
@@ -114,13 +107,26 @@ public class Map extends Observable{
 		                position = new LatLng(0, 0);
 	                }
 
-                    // Move arrow to the current position on the route
+                    // Move the route pointer to the new position
+                    currentRoute.goTo(position);
 
-                    //if(!position.equals(lastLocation)) {
-                        Log.d(DEBUG_TAG, "Route --> goTo()");
-                        currentRoute.goTo(map, position);
-                    //}
-                    lastLocation = position;
+                    if(mapState == MapState.MOVING){
+                        CameraPosition lastPosition = map.getCameraPosition();
+                        CameraPosition currentPlace = new CameraPosition.Builder().target(currentRoute.getPointerLocation()).bearing(currentRoute.getPointerBearing())
+                                .tilt(lastPosition.tilt).zoom(lastPosition.zoom).build();
+                        map.animateCamera(CameraUpdateFactory.newCameraPosition(currentPlace), 100, new GoogleMap.CancelableCallback() {
+                            @Override
+                            public void onFinish() {
+
+                            }
+
+                            @Override
+                            public void onCancel() {
+
+                            }
+                        });
+                    }
+
                 }else if(!isRouteSet()){
                     Location myLocation = map.getMyLocation();
                     LatLng position;
@@ -134,8 +140,7 @@ public class Map extends Observable{
                 }else{
                     Log.d(DEBUG_TAG, "Current route not initialized!");
                 }
-
-                handler.postDelayed(this, UPDATE_INTERVAL_FAST);
+                handler.postDelayed(this, UPDATE_INTERVAL);
             }else{
                 Log.d(DEBUG_TAG, "Not in moving mode, NavigationRunnable is aborting.");
             }
@@ -147,10 +152,10 @@ public class Map extends Observable{
     private Runnable routeUpdate = new Runnable() {
         @Override
         public void run() {
-            if(state == State.MOVING && isRouteSet() && currentRoute.isInitialized()) {
+            if((mapState == MapState.MOVING || mapState == MapState.OVERVIEW_MOVING) && isRouteSet() && currentRoute.isInitialized()) {
                 setChanged();
                 notifyObservers(SignalType.ROUTE_TOTAL_TIME_UPDATE);
-                handler.postDelayed(this, ROUTE_INTERVAL);
+                handler.postDelayed(this, NavigationUtil.ROUTE_INTERVAL);
             }
         }
     };
@@ -162,9 +167,7 @@ public class Map extends Observable{
 	Map(GoogleMap map){
 		this.map = map;
         this.handler = new Handler();
-        this.secondHandler = new Handler();
-        this.markersOnMap = new ArrayList<Marker>();
-        this.state = State.STATIONARY;
+        this.mapState = MapState.STATIONARY;
 	}
 
     /**
@@ -180,7 +183,7 @@ public class Map extends Observable{
         currentRoute = newRoute;
         currentRoute.addListener(routeListener);
         // Set the mode to Overview
-        state = State.STATIONARY;
+        mapState = MapState.STATIONARY;
     }
 
     /**
@@ -205,8 +208,9 @@ public class Map extends Observable{
      * @param milestone, the milestone to add to the map and move the camera to.
      */
     Marker showMilestone(IMilestone milestone){
+        mapState = MapState.OVERVIEW_MOVING;
         LatLng milestoneLocation = milestone.getLocation();
-        Marker tempMarker = map.addMarker(new MarkerOptions().position(milestoneLocation).snippet(milestone.getDescription()).title(milestone.getName()));
+        Marker tempMarker = map.addMarker(new MarkerOptions().position(milestoneLocation).snippet(milestone.getSnippet()).title(milestone.getName()));
         moveCameraTo(milestoneLocation);
         return tempMarker;
     }
@@ -215,11 +219,10 @@ public class Map extends Observable{
      * Sets the state of the map. Available states are:
      *      STATIONARY    -   Will zoom so the whole route is visible and with pauses and milestones added.
      *      NAVIGATION  -   Zoom to the ground and starts a automatic update of the route to follow the users current location.
-     * @param newState, the new state of the map
+     * @param newMapState, the new state of the map
      */
-    public void setState(State newState){
-        this.state = newState;
-        if(newState == State.STATIONARY){
+    public void setMapState(MapState newMapState){
+        if(newMapState == MapState.STATIONARY){
             LatLng routeOrigin = currentRoute.getOrigin();
             LatLng routeDestination = currentRoute.getDestination();
             if(routeOrigin != null && routeDestination != null){
@@ -236,13 +239,12 @@ public class Map extends Observable{
             List<Pause> pauses = currentRoute.getPauses();
             for (Pause p : pauses) {
                 p.draw(map);
-                //Ranking.getMilestones(milestonesReceiver, p.getLocation(), NavigationUtil.RADIUS_IN_DEGREES*2);
             }
 
             map.getUiSettings().setAllGesturesEnabled(true);
 
-            Log.d("Map", "In overview mode.");
-        }else if(newState == State.MOVING){
+            Log.d(DEBUG_TAG, "State: Stationary");
+        }else if(newMapState == MapState.MOVING){
 
             // Disable all interactions the user is not allowed to do.
             map.getUiSettings().setScrollGesturesEnabled(false);
@@ -260,33 +262,28 @@ public class Map extends Observable{
             }
 
             if(isRouteSet()){
-                // Start moving with a route set.
-                // Remove markers when navigation is starting
-                removeMarkers();
-
                 // Set camera to right tilt and zoom
-                CameraPosition currentPlace = new CameraPosition.Builder().target(position).tilt(65.5f).zoom(17).build();
+                CameraPosition currentPlace = new CameraPosition.Builder().target(currentRoute.getOrigin()).tilt(65.5f).zoom(17).build();
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
-                if(currentRoute.isInitialized()){
+                if(currentRoute.isInitialized() && mapState != MapState.OVERVIEW_MOVING){
                     currentRoute.drawNavigation(map);
                 }
             }else{
                 // Start moving without route.
-
-                // Set camera to right zoom
                 CameraPosition currentPlace = new CameraPosition.Builder().target(position).zoom(17).build();
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
             }
 
             // Start navigation runnable
-            handler.postDelayed(navigationRunnable, UPDATE_INTERVAL_FAST);
-            handler.postDelayed(routeUpdate, ROUTE_INTERVAL);
+            handler.post(navigationRunnable);
+            handler.post(routeUpdate);
         }
+        this.mapState = newMapState;
     }
 
     private void updateState(){
-        setState(state);
+        setMapState(mapState);
     }
 
     /**
@@ -304,25 +301,5 @@ public class Map extends Observable{
      */
     public IMilestone getMilestone(LatLng location){
         return currentRoute.getMilestone(location);
-    }
-
-    /**
-     * Make a request for suggestions of addresses based on the partOfAddress provided. The
-     * results will be provided to the handler specified as a JSON object.
-     * @param partOfAddress, a part of the address wanted
-     * @param handler, the handler to handle the results
-     */
-    void requestAddressSuggestion(String partOfAddress, ResponseHandler handler){
-        URL url = GoogleMapsEndpoints.makeURLGeocode(partOfAddress);
-        Remote.get(url, handler);
-    }
-
-    // Removes all markers from the map
-    private void removeMarkers(){
-        for(Marker marker : markersOnMap){
-            marker.remove();
-        }
-        //milestonesOnMap.clear();
-        markersOnMap.clear();
     }
 }

@@ -24,10 +24,13 @@
     <color name="text_fragment_map">#777777</color>
     <color name="text_fragment_driving_route">#E5E5E5</color>
 
+	<color name="route_navigation_next">#E5E5E5</color>
+
 	<!-- Milestones Fragment -->
 	<color name="text_fragment_milestones_from_to">#E5E5E5</color>
 	<color name="route_list_item">#000000</color>
 	<color name="card_milestone_text">#E5E5E5</color>
+	<color name="milestone_navigation">#E5E5E5</color>
 
 	<!-- Control Fragment -->
 	<color name="text_navigation_info">#E5E5E5</color>

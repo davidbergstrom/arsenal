@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical"
               android:background="@color/background_fragment_left"
               android:paddingTop="@dimen/fragment_left_top_padding"
               android:paddingBottom="@dimen/fragment_left_bottom_padding"
@@ -11,106 +10,115 @@
               android:paddingRight="@dimen/fragment_left_right_padding"
 			  >
 
-
-        <RelativeLayout
-            android:id="@+id/rl_wizard_milestones"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageButton
-                android:id="@+id/ib_previous_fragment_milestones"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                />
-            <TextView
-                android:id="@+id/tv_current_fragment_milestones"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="Milestones Fragment"
-                android:textColor="@color/text_fragment_route"
-                />
-
-
-
-    </RelativeLayout>
-
 	<LinearLayout
 			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			android:layout_weight="4"
-			android:orientation="vertical">
+			android:layout_height="fill_parent"
+			android:orientation="vertical"
+			android:layout_alignParentTop="true">
 
-
-		<!-- The starting point -->
-		<TextView
-				android:id="@+id/tv_text_from"
+		<LinearLayout
 				android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:text="@string/et_milestones_text_from"
-		        android:textSize="@dimen/fragment_milestones_from_to"
-		        android:textColor="@color/text_fragment_milestones_from_to"
-				/>
+				android:layout_height="0dp"
+				android:layout_weight="5"
+				android:orientation="vertical">
 
-		<!-- Holder for Milestones Cards -->
-		<ScrollView
-				android:id="@+id/list_of_milestones"
+			<!-- The starting point -->
+			<TextView
+					android:id="@+id/tv_text_from"
+					android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:text="@string/et_milestones_text_from"
+			        android:textSize="@dimen/fragment_milestones_from_to"
+			        android:textColor="@color/text_fragment_milestones_from_to"
+					/>
+
+			<!-- Holder for Milestones Cards -->
+			<ScrollView
+					android:id="@+id/list_of_milestones"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="@dimen/fragment_milestones_cards_holder_margin_top"
+					android:layout_marginBottom="@dimen/fragment_milestones_cards_holder_margin_bottom"
+					>
+
+	            <LinearLayout
+			            android:id="@+id/cardList"
+			            android:layout_width="match_parent"
+			            android:layout_height="wrap_content"
+			            android:orientation="vertical">
+	            </LinearLayout>
+
+			</ScrollView>
+
+		</LinearLayout>
+
+		<LinearLayout
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/fragment_milestones_cards_holder_margin_top"
-				android:layout_marginBottom="@dimen/fragment_milestones_cards_holder_margin_bottom"
-				>
+				android:layout_height="0dp"
+				android:layout_weight="1"
+				android:orientation="vertical">
 
-            <LinearLayout
-		            android:id="@+id/cardList"
-		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
-		            android:orientation="vertical">
-            </LinearLayout>
+			<!-- The end point -->
+			<TextView
+					android:id="@+id/tv_text_to"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="@string/et_milestones_text_to"
+					android:textSize="@dimen/fragment_milestones_from_to"
+					android:textColor="@color/text_fragment_milestones_from_to"
+					/>
 
-		</ScrollView>
-
-		<!-- The end point -->
-		<TextView
-				android:id="@+id/tv_text_to"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="@string/et_milestones_text_to"
-				android:textSize="@dimen/fragment_milestones_from_to"
-				android:textColor="@color/text_fragment_milestones_from_to"
-				/>
+		</LinearLayout>
 
 	</LinearLayout>
 
-	<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			android:layout_weight="1"
-			android:orientation="vertical">
+		<RelativeLayout
+				android:id="@+id/rl_wizard_milestones"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_alignParentBottom="true"
+				android:layout_marginTop="@dimen/milestone_navigation_margin_top">
 
-	<RelativeLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:id="@+id/milestones_button_holder"
-			android:layout_gravity="bottom"
-			android:layout_marginTop="@dimen/fragment_milestones_button_holder_margin_top">
+			<ImageButton
+					android:id="@+id/ib_milestone_navigation_back"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignParentStart="true"
+					android:src="@drawable/nav_left"
+					style="@android:style/Widget.Holo.Button.Borderless"
+					/>
 
+			<Button
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/bt_milestone_navigation_back"
+					android:text="@string/milestone_navigation_back"
+					android:textColor="@color/milestone_navigation"
+					android:textSize="@dimen/text_button_milestone_navigation"
+					android:layout_toEndOf="@+id/ib_milestone_navigation_back"
+					android:layout_centerVertical="true"
+					style="@android:style/Widget.Holo.Button.Borderless"/>
 
+			<Button
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/bt_milestone_navigation_start"
+					android:text="@string/milestone_navigation_start"
+					android:textColor="@color/milestone_navigation"
+					android:textSize="@dimen/text_button_milestone_navigation"
+					android:layout_toStartOf="@+id/ib_milestone_navigation_start"
+					android:layout_centerVertical="true"
+					style="@android:style/Widget.Holo.Button.Borderless"/>
 
+			<ImageButton
+					android:id="@+id/ib_milestone_navigation_start"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignParentEnd="true"
+					android:src="@drawable/nav_right"
+					style="@android:style/Widget.Holo.Button.Borderless"
+					/>
 
+		</RelativeLayout>
 
-        <Button
-                android:id="@+id/button_start_route"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/button_start_route"
-                android:textColor="@color/text_fragment_route"
-                android:layout_centerInParent="true"
-                style="?android:attr/borderlessButtonStyle"
-                />
-
-	</RelativeLayout>
-	</LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>
