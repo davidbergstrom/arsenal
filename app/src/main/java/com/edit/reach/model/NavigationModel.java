@@ -19,6 +19,12 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+// TODO remove marker.
+// TODO If last milestone is same milestone.
+// TODO If if one milestone was showed. Do not show i again.
+// TODO If milestone failed. Make map go back to original mode.
+// Maybe we should only get the milestone once and go through the list?
+
 /**
  * Class that merges data from the vehicle and the map.
  * The class finds optimal stops for the trip, among other things.
