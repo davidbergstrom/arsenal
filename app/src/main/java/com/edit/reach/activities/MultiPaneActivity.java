@@ -110,10 +110,16 @@ public class MultiPaneActivity extends FragmentActivity {
 					Log.d("HANDLER UPDATE", "Leg update");
                     break;
 
-	            case SignalType.MILESTONE:
-		            Log.d("HANDLER UPDATE", "MILESTONE");
+	            case SignalType.MILESTONE_SUCCED:
+		            Log.d("HANDLER UPDATE", "MILESTONE_SUCCED");
 		            suggestionMilestone = (IMilestone)message.obj;
 		            initializeSuggestionUI();
+		            break;
+
+	            case SignalType.MILESTONE_FAIL:
+		            Log.d("HANDLER UPDATE", "MILESTONE_FAIL");
+		            goBackToControlFragment();
+
             }
         }
     };
@@ -334,6 +340,7 @@ public class MultiPaneActivity extends FragmentActivity {
 
 	public void goBackToControlFragment(){
 		getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
+		controlFragment.showAllIcons();
 
 	}
 

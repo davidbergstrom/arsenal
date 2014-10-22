@@ -321,7 +321,7 @@ public class ControlFragment extends Fragment{
 		}
 	}
 
-	private void showAllIcons(){
+	public void showAllIcons(){
 		ibFood.setImageResource(R.drawable.food_150);
 		ibRestArea.setImageResource(R.drawable.restarea_150);
 		ibRestroom.setImageResource(R.drawable.restroom_150);

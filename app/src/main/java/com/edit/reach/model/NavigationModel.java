@@ -177,8 +177,10 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 			boolean milestoneExists = false;
 
 			for (Leg l : map.getRoute().getLegs()) {
-				if (l.getMilestone().equals(this.milestone)) {
-					milestoneExists = true;
+				if(l.getMilestone() != null) {
+					if (l.getMilestone().equals(this.milestone)) {
+						milestoneExists = true;
+					}
 				}
 			}
 
