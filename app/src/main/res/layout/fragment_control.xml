@@ -37,28 +37,28 @@
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_food"
 					android:src="@drawable/mini_food_icon"
-					android:visibility="visible"/>
+					android:visibility="gone"/>
 
 			<ImageView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_gasstation"
 					android:src="@drawable/mini_fuel_icon"
-					android:visibility="visible"/>
+					android:visibility="gone"/>
 
 			<ImageView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_restarea"
 					android:src="@drawable/mini_restarea_icon"
-					android:visibility="visible"/>
+					android:visibility="gone"/>
 
 			<ImageView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/navigation_info_icon_type_toilet"
 					android:src="@drawable/mini_toilet_icon"
-					android:visibility="visible"/>
+					android:visibility="gone"/>
 
 		</LinearLayout>
 	</LinearLayout>
