@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-// TODO remove marker.
 // TODO If last milestone is same milestone.
 // TODO If if one milestone was showed. Do not show i again.
 // TODO If milestone failed. Make map go back to original mode.
@@ -47,6 +46,10 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	private IMilestone milestone;
 
 	private List<String> searchResults;
+
+	private List<IMilestone> milestones;
+
+	private Marker marker;
 
 	private int milestoneAlgorithmStage = 0;
 	private IMilestone.Category milestoneCategory;
@@ -95,74 +98,49 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		this.milestoneCategory = category;
 		Route route = map.getRoute();
 		List<Leg> legs = route.getLegs();
-		Message message = mainHandler.obtainMessage();
 
 		if (category == IMilestone.Category.FOOD) {
-			if (inThreshold(FOOD_THRESHOLD) && this.milestoneAlgorithmStage == 0) {
-				if (hasCategory(category)) {
-					notifyUI(legs.get(0).getMilestone());
-				}
+			if (inThreshold(FOOD_THRESHOLD) && this.milestoneAlgorithmStage == 0 && hasCategory(category)) {
+				notifyUISuccess(legs.get(0).getMilestone());
 			} else {
 				milestoneAlgorithmStage += 1;
 			}
 
 			if (milestoneAlgorithmStage >= 1) {
-				if(route.getLocation(FOOD_THRESHOLD) == null) {
-					message.what = SignalType.MILESTONE_FAIL;
-					mainHandler.sendMessage(message);
-				} else {
-					Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(FOOD_THRESHOLD), category, this);
-				}
+				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getDestination(), category, this);
 			}
 
 		} else if (category == IMilestone.Category.GASSTATION) {
-			if (inThreshold(GAS_THRESHOLD) && this.milestoneAlgorithmStage == 0) {
-				if (hasCategory(category)) {
-					notifyUI(legs.get(0).getMilestone());
-				}
+			if (inThreshold(GAS_THRESHOLD) && this.milestoneAlgorithmStage == 0 && hasCategory(category)) {
+				notifyUISuccess(legs.get(0).getMilestone());
 			} else {
 				milestoneAlgorithmStage += 1;
 			}
 
-			if(route.getLocation(FOOD_THRESHOLD) == null) {
-				message.what = SignalType.MILESTONE_FAIL;
-				mainHandler.sendMessage(message);
-			} else {
-				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(GAS_THRESHOLD), category, this);
+			if(milestoneAlgorithmStage >= 1) {
+				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getDestination(), category, this);
 			}
 
 		} else if (category == IMilestone.Category.RESTAREA) {
-			if (inThreshold(REST_THRESHOLD) && this.milestoneAlgorithmStage == 0) {
-				if (hasCategory(category)) {
-					notifyUI(legs.get(0).getMilestone());
-				}
+			if (inThreshold(REST_THRESHOLD) && this.milestoneAlgorithmStage == 0 && hasCategory(category)) {
+				notifyUISuccess(legs.get(0).getMilestone());
 			} else {
 				milestoneAlgorithmStage += 1;
 			}
 
-			if(route.getLocation(FOOD_THRESHOLD) == null) {
-				message.what = SignalType.MILESTONE_FAIL;
-				mainHandler.sendMessage(message);
-			} else {
-				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(REST_THRESHOLD), category, this);
-
+			if(milestoneAlgorithmStage >= 1) {
+				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getDestination(), category, this);
 			}
 
 		} else if (category == IMilestone.Category.TOILET) {
-			if (inThreshold(TOILET_THRESHOLD) && this.milestoneAlgorithmStage == 0) {
-				if (hasCategory(category)) {
-					notifyUI(legs.get(0).getMilestone());
-				}
+			if (inThreshold(TOILET_THRESHOLD) && this.milestoneAlgorithmStage == 0 && hasCategory(category)) {
+				notifyUISuccess(legs.get(0).getMilestone());
 			} else {
 				milestoneAlgorithmStage += 1;
-				mainHandler.sendMessage(message);
 			}
 
-			if(route.getLocation(FOOD_THRESHOLD) == null) {
-				message.what = SignalType.MILESTONE_FAIL;
-				mainHandler.sendMessage(message);
-			} else {
-				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(TOILET_THRESHOLD), category, this);
+			if(milestoneAlgorithmStage >= 1) {
+				Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getDestination(), category, this);
 			}
 
 		} else {
@@ -175,18 +153,17 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	 *
 	 * @param accepted
 	 */
-	public void acceptedMilestone(boolean accepted) {
+	public void acceptedMilestone(final boolean accepted) {
 		Log.d("NavigationModel", "entered acceptedMilestone");
 		// If milestone was accepted by the user.
-		if (milestone != null && accepted) {
+		if (accepted && this.milestone != null) {
 			map.setMapState(Map.MapState.MOVING);
+
 			boolean milestoneExists = false;
 
 			for (Leg l : map.getRoute().getLegs()) {
-				if(l.getMilestone() != null) {
-					if (l.getMilestone().equals(this.milestone)) {
-						milestoneExists = true;
-					}
+				if(l.getMilestone() != null && l.getMilestone().equals(this.milestone)) {
+					milestoneExists = true;
 				}
 			}
 
@@ -197,23 +174,27 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		// If milestone was not accepted by the user.
 		} else {
 			milestoneAlgorithmStage += 1;
-			if (milestoneAlgorithmStage >= 1) {
-				milestoneListIndex += 1;
-			}
 			getPauseSuggestions(milestoneCategory);
 		}
+
+		marker.remove();
 	}
 
 	@Override
-	public void onMilestonesRecieved(ArrayList<IMilestone> milestones) {
+	public void onMilestonesRecieved(final ArrayList<IMilestone> milestones) {
 		Log.d("NavigationModel", "entered onMilestonesRecieved");
-		if (milestones.size() == 0 || milestoneListIndex >= milestones.size()) {
-			milestoneAlgorithmStage += 1;
-			milestoneListIndex = 0;
-			extendMilestoneSearch();
-			getPauseSuggestions(this.milestoneCategory);
+
+		if(this.milestones == null) {
+			this.milestones = milestones;
 		} else {
-			notifyUI(milestones.get(milestoneListIndex));
+			// Do nothing
+		}
+
+		if (this.milestones.size() == 0) {
+			notifyUIFail();
+		} else {
+			notifyUISuccess(milestones.get(0));
+			this.milestones.remove(milestones.size()-1);
 		}
 	}
 
@@ -460,11 +441,10 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 	}
 
 	// This method notifies the UI of changes
-	private void notifyUI(IMilestone milestone) {
+	private void notifyUISuccess(IMilestone milestone) {
 		Log.d("NavigationModel", "entered notifyUI");
 		this.milestone = milestone;
-		// TODO remove marker when done
-		Marker marker = map.showMilestone(this.milestone);
+		this.marker = map.showMilestone(this.milestone);
 
 		Message message = mainHandler.obtainMessage();
 		message.what = SignalType.MILESTONE_SUCCED;
@@ -472,13 +452,11 @@ public final class NavigationModel implements Runnable, Observer, SuggestionList
 		mainHandler.sendMessage(message);
 	}
 
-	// Extend search perimiter with one hour.
-	private void extendMilestoneSearch() {
-		Log.d("NavigationModel", "entered extendMilestoneSearch");
-		FOOD_THRESHOLD += 60*60;
-		GAS_THRESHOLD += 60*60;
-		REST_THRESHOLD += 60*60;
-		TOILET_THRESHOLD = 60*60;
+	// This method notifies UI that algorithm failed.
+	private void notifyUIFail() {
+		Message message = mainHandler.obtainMessage();
+		message.what = SignalType.MILESTONE_FAIL;
+		mainHandler.sendMessage(message);
 	}
 
 	// Method that adds time-pauses in the map.
