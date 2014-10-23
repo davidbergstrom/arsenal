@@ -3,12 +3,16 @@ package com.edit.reach.utils;
 import com.edit.reach.constants.UniversalConstants;
 
 /**
- * Created by iDavid on 14-10-23.
+ * A converter that converts time.
  */
 public class TimeConvert {
 
 	public TimeConvert() {}
 
+	/**
+	 * Divides minutes into hours and minutes.
+	 * @param inTime Minutes to convert.
+	 */
 	public static String convertTime(int inTime) {
 		int hours;
 		int minutes;
