@@ -92,6 +92,7 @@
                 android:textSize="@dimen/suggestion_button"
                 android:textColor="@color/white"
                 android:background="@color/android_yellow"
+                android:layout_marginStart="0dp"
                 android:layout_weight="1"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -116,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_below="@+id/suggestion_button_holder"
-                android:padding="5dp">
+                android:padding="8dp">
 
         <Button
                 android:id="@+id/button_cancel"
