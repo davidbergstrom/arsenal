@@ -24,6 +24,7 @@ public class SuggestionFragment extends Fragment {
     //Text Views
     private TextView textNextStop;
     private TextView textRating;
+    private TextView textDescription;
 
     //Images Views
     private ImageView ivGasstation;
@@ -46,6 +47,7 @@ public class SuggestionFragment extends Fragment {
 	    if(textNextStop != null){
 		    textNextStop.setText(nextStopName);
 		    textRating.setText("" + rating + "/5");
+            textDescription.setText(milestone.getDescription());
 
 		    //Set Milestone Images
 		    ivFood.setVisibility(ImageView.GONE);
@@ -109,6 +111,7 @@ public class SuggestionFragment extends Fragment {
         //Get Suggestion Info
         textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
         textRating = (TextView) view.findViewById(R.id.tv_navigation_info_rating);
+        textDescription = (TextView) view.findViewById(R.id.tv_navigation_info_description);
 
         //Get ImageViews
         ivFood = (ImageView) view.findViewById(R.id.navigation_info_icon_type_food);

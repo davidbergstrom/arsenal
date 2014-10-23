@@ -33,6 +33,13 @@
                 android:text="@string/tv_navigation_info_rating"
                 android:textColor="@color/android_yellow"/>
 
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_navigation_info_description"
+                android:text="@string/tv_navigation_info_description"
+                android:textColor="@color/white"/>
+
 		<!-- Icons Holder -->
 		<LinearLayout
 				android:layout_width="wrap_content"
