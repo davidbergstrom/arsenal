@@ -113,6 +113,7 @@ public class Step {
      * @return the duration in seconds
      */
     public float getDuration() {
+        Log.d(DEBUG_TAG, "Substeps: "+subSteps.size());
         return durationPerSubStep * (subSteps.size()-1);
     }
 

@@ -109,6 +109,7 @@ public class Leg {
         for(Step step : steps){
             duration += step.getDuration();
         }
+        Log.d(DEBUG_TAG, "Leg duration: "+duration);
         return duration;
     }
 

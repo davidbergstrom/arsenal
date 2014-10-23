@@ -159,8 +159,9 @@ public class Map extends Observable{
         public void run() {
             if((mapState == MapState.MOVING || mapState == MapState.OVERVIEW_MOVING) && isRouteSet() && currentRoute.isInitialized()) {
                 setChanged();
-                notifyObservers(SignalType.ROUTE_TOTAL_TIME_UPDATE);
-                handler.postDelayed(this, NavigationUtil.ROUTE_INTERVAL);
+                notifyObservers(SignalType.LEG_UPDATE);
+                handler.postDelayed(this, NavigationUtil.ROUTE_INTERVAL_DEMO);
+                Log.d(DEBUG_TAG, "LEG_UPDATE, d: "+currentRoute.getLegs().get(0).getDuration());
             }
         }
     };
