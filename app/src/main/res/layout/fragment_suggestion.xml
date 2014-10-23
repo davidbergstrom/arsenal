@@ -83,10 +83,10 @@
                 android:text="@string/suggestion_button_next"
                 android:textSize="@dimen/suggestion_button"
                 android:textColor="@color/white"
-                android:background="@color/android_yellow"
+                android:background="@color/android_blue"
                 android:layout_weight="1"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:layout_margin="@dimen/input_button_margin"
                 style="@android:style/Widget.Holo.Button.Borderless"/>
 
@@ -98,7 +98,7 @@
                 android:background="@color/android_green"
                 android:layout_weight="1"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:layout_margin="@dimen/input_button_margin"
                 style="@android:style/Widget.Holo.Button.Borderless"/>
     </LinearLayout>
