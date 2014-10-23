@@ -83,7 +83,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/suggestion_button_holder"
-            android:layout_below="@+id/navigation_info_container">
+            android:layout_below="@+id/navigation_info_container"
+            android:padding="5dp">
 
         <Button
                 android:id="@+id/button_next"
@@ -114,7 +115,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_below="@+id/suggestion_button_holder">
+                android:layout_below="@+id/suggestion_button_holder"
+                android:padding="5dp">
 
         <Button
                 android:id="@+id/button_cancel"
