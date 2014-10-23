@@ -256,15 +256,11 @@ public class Route {
 
                     final LatLng pauseLocation = subSteps.get(subIndex);
                     final double addedTime = actualSecondsIntoRoute - subIndexTooFar * subDuration;
-					Log.d("Route", "Contacting ranking");
+
                     // Start a request for milestones at the pause location. Then create the pause with the location and milestones.
                     Ranking.getMilestones(new MilestonesReceiver() {
                         @Override
                         public void onMilestonesRecieved(ArrayList<IMilestone> milestones) {
-	                        for(IMilestone m : milestones) {
-		                        Log.d("MILESTONES", m.getName());
-	                        }
-
                             Pause p = new Pause(pauseLocation, milestones, typeOfPause);
                             pauses.add(p);
 
@@ -276,7 +272,7 @@ public class Route {
 
                         @Override
                         public void onMilestonesGetFailed() {
-	                        Log.d("onMilestonesGetFailed", "");
+	                        Log.d(DEBUG_TAG, "onMilestonesGetFailed");
                         }
                     }, pauseLocation, NavigationUtil.RADIUS_IN_DEGREES*2);
 
@@ -284,7 +280,6 @@ public class Route {
                 }
             }
         }
-	    Log.d("LOG", "LOG");
     }
 
     /**
@@ -308,8 +303,6 @@ public class Route {
                     int subIndex = subSteps.size() - 1 - subIndexTooFar;
 
                     location = subSteps.get(subIndex);
-
-
 
                     break outerLoop;
                 }
@@ -398,6 +391,8 @@ public class Route {
      */
     public void addMilestone(IMilestone milestone){
         Log.d(DEBUG_TAG, "Adding milestone");
+        // New origin
+        this.origin = legs.get(0).getSteps().get(0).getSubSteps().get(0);
         this.erase();
         legs.clear();
         pauses.clear();
@@ -415,6 +410,8 @@ public class Route {
     public void addMilestones(List<IMilestone> milestones){
         Log.d(DEBUG_TAG, "Adding milestones");
         if(milestones.size() > 0){
+            // New origin
+            this.origin = legs.get(0).getSteps().get(0).getSubSteps().get(0);
             this.erase();
             legs.clear();
             pauses.clear();
@@ -519,9 +516,16 @@ public class Route {
         }
         if(endPointCircle != null){
             endPointCircle.remove();
+            endPointCircle = null;
         }
         if(startPointCircle != null){
             startPointCircle.remove();
+            startPointCircle = null;
+        }
+        if(pointerWithBearing != null){
+            pointerWithBearing.setImage(BitmapDescriptorFactory.defaultMarker());
+            pointerWithBearing.remove();
+            pointerWithBearing = null;
         }
         Log.d(DEBUG_TAG, "Erased route.");
     }
