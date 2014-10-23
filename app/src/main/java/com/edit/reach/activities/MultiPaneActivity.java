@@ -340,7 +340,7 @@ public class MultiPaneActivity extends FragmentActivity {
 
 	public void goBackToControlFragment(){
 		getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
-		controlFragment.showAllIcons();
+		//controlFragment.showAllIcons();
 
 	}
 
