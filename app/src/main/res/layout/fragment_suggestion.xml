@@ -83,7 +83,7 @@
                 android:text="@string/suggestion_button_next"
                 android:textSize="@dimen/suggestion_button"
                 android:textColor="@color/white"
-                android:background="@color/android_blue"
+                android:background="@color/android_yellow"
                 android:layout_weight="1"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
