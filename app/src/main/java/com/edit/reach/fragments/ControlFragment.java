@@ -17,6 +17,7 @@ import com.edit.reach.app.R;
 import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.model.Leg;
 import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.utils.TimeConvert;
 
 import java.util.List;
 
@@ -100,7 +101,7 @@ public class ControlFragment extends Fragment{
             List<IMilestone.Category> categories = milestone.getCategories();
 
             textNextStop.setText(nextStopName);
-            textTimeToNextStop.setText((int)(nextStopClock * UniversalConstants.SECONDS_TO_MINUTES) + " min");
+            textTimeToNextStop.setText(TimeConvert.convertTime(((int) (nextStopClock * UniversalConstants.SECONDS_TO_MINUTES))));
             textDistanceToTextStop.setText((int)(distanceToNextStop * 0.001) + " km");
 
             //Set Milestone Images
