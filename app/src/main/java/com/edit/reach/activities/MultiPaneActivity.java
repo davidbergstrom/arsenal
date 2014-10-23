@@ -118,7 +118,9 @@ public class MultiPaneActivity extends FragmentActivity {
 
 	            case SignalType.MILESTONE_FAIL:
 		            Log.d("HANDLER UPDATE", "MILESTONE_FAIL");
-		            goBackToControlFragment();
+		            if(sgsFragmentHasBeenCreated){
+		                goBackToControlFragment();
+		            }
 
             }
         }
