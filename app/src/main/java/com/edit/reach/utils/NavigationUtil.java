@@ -22,7 +22,8 @@ public class NavigationUtil {
     public static final int UPDATE_INTERVAL_SLOW = 500,
                             UPDATE_INTERVAL_NORMAL = 250,
                             UPDATE_INTERVAL_FAST = 100,
-                            ROUTE_INTERVAL = 60000;
+                            ROUTE_INTERVAL = 60000,
+                            ROUTE_INTERVAL_DEMO = 20000;
 
     /** Radius for the pauses */
     public static final double RADIUS_IN_DEGREES = 0.2;
