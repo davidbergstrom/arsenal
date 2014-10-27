@@ -39,7 +39,6 @@ public interface LatLngInterpolator {
     }
 
     public class Spherical implements LatLngInterpolator {
-
         /* From github.com/googlemaps/android-maps-utils */
         @Override
         public LatLng interpolate(float fraction, LatLng from, LatLng to) {

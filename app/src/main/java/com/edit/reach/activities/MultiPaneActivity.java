@@ -66,7 +66,7 @@ public class MultiPaneActivity extends FragmentActivity {
         public void handleMessage(Message message) {
             switch (message.what) {
                 case SignalType.VEHICLE_STOPPED_OR_STARTED:
-                    // TODO
+                    // Should change the UI but will not do that in this Demo version of the app.
                     break;
 
                 case SignalType.ROUTE_INITIALIZATION_SUCCEDED:
@@ -77,8 +77,7 @@ public class MultiPaneActivity extends FragmentActivity {
 	                    goBackToControlFragment();
 	                    sgsFragmentHasBeenCreated = true;
                     } else {
-
-                        // TODO what to do here?
+	                    // Do nothing
                     }
                     break;
 
@@ -86,38 +85,32 @@ public class MultiPaneActivity extends FragmentActivity {
                     if(controlFragment != null) {
                         controlFragment.setBarFuel((Float) message.obj);
                     }
-					Log.d("HANDLER UPDATE", "Fuel update");
                     break;
 
                 case SignalType.UPTIME_UPDATE:
                     if(controlFragment != null) {
                         controlFragment.setBarTimeClock((Double) message.obj);
                     }
-					Log.d("HANDLER UPDATE", "Uptime update");
                     break;
 
                 case SignalType.ROUTE_TOTAL_TIME_UPDATE:
                     if(controlFragment != null) {
                         controlFragment.setTotalTime((Long) message.obj);
                     }
-					Log.d("HANDLER UPDATE", "Route total time update");
                     break;
 
                 case SignalType.LEG_UPDATE:
                     if(controlFragment != null) {
                         controlFragment.setNextLeg((Leg) message.obj);
                     }
-					Log.d("HANDLER UPDATE", "Leg update");
                     break;
 
 	            case SignalType.MILESTONE_SUCCED:
-		            Log.d("HANDLER UPDATE", "MILESTONE_SUCCED");
 		            suggestionMilestone = (IMilestone)message.obj;
 		            initializeSuggestionUI();
 		            break;
 
 	            case SignalType.MILESTONE_FAIL:
-		            Log.d("HANDLER UPDATE", "MILESTONE_FAIL");
 		            if(sgsFragmentHasBeenCreated){
 		                goBackToControlFragment();
 		            }
@@ -146,9 +139,7 @@ public class MultiPaneActivity extends FragmentActivity {
 		    } else {
 	            initializeStationaryUI();
 		    }
-
         }
-
     }
 
     @Override
@@ -159,7 +150,7 @@ public class MultiPaneActivity extends FragmentActivity {
 
         boolean demoMode = sharedPrefs.getBoolean("demonstration_mode", true);
 
-        Log.d("MultiPaneActivity", "Demo MODE:"+demoMode);
+        Log.d("MultiPaneActivity", "Demo MODE:" + demoMode);
 
         navigationModel.setDemo(demoMode);
     }
@@ -210,8 +201,6 @@ public class MultiPaneActivity extends FragmentActivity {
         strings = navigationModel.getMatchedStringResults(input);
         return strings;
     }
-
-
 
 	/**
 	 * Init the UI-Fragment for moving-mode and adds it to the container.

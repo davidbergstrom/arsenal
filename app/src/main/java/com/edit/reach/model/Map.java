@@ -52,11 +52,14 @@ public class Map extends Observable{
             if(success){
                 updateState();  // Update all the state specific changes when route initialized.
                 Log.d(DEBUG_TAG, "Notified observers that the initialization succeeded!");
+
                 setChanged();
                 notifyObservers(SignalType.ROUTE_INITIALIZATION_SUCCEDED);
-                setChanged();
+
+	            setChanged();
                 notifyObservers(SignalType.LEG_UPDATE);
-                setChanged();
+
+	            setChanged();
                 notifyObservers(SignalType.ROUTE_TOTAL_TIME_UPDATE);
             }else{
                 setChanged();

@@ -9,12 +9,15 @@ import android.view.View;
 import android.widget.ImageButton;
 import com.edit.reach.app.R;
 
-
-class MainActivity extends Activity implements View.OnClickListener {
+/** This class is the top level UI activity.
+ * It Only starts the MultiPaneActivity which then decides which fragment to start based on
+ * what button the user clicks in this activity.
+ * The class is only for demo purposes it makes the use able to choose which state to start with.
+ */
+public class MainActivity extends Activity implements View.OnClickListener {
 
 	private ImageButton startMovingActivity, startStationaryActivity;
 
-    /** Called when the activity is first created. */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,15 +36,11 @@ class MainActivity extends Activity implements View.OnClickListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
@@ -53,7 +52,7 @@ class MainActivity extends Activity implements View.OnClickListener {
 
 	@Override
 	public void onClick(View view) {
-        Intent intent = null;
+        Intent intent;
 		if (view == startMovingActivity) {
 			intent  = new Intent(this, MultiPaneActivity.class);
 			intent.putExtra("Moving", true);

@@ -66,7 +66,7 @@ public class RouteTest extends TestCase {
     }
 
     public void testAddPause() throws Exception {
-        route.addPause(100);
+        route.addPause(100, Pause.PauseType.TIME);
     }
 
     public void testGetPauses() throws Exception {

@@ -14,10 +14,6 @@ public class AtomicFloat extends Number {
 
 	private final AtomicInteger intBits;
 
-	public AtomicFloat() {
-		this(0f);
-	}
-
 	public AtomicFloat(float initialValue) {
 		intBits = new AtomicInteger(floatToIntBits(initialValue));
 	}
@@ -32,10 +28,6 @@ public class AtomicFloat extends Number {
 
 	public float floatValue() {
 		return get();
-	}
-
-	public final float getAndSet(float newValue) {
-		return intBitsToFloat(intBits.getAndSet(floatToIntBits(newValue)));
 	}
 
 	public double doubleValue() {

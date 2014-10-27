@@ -22,7 +22,6 @@ public class Pause {
     private final List<Marker> milestoneMarkers;
     private final BitmapDescriptor icon;
     private final PauseType type;
-    private String DEBUG_TAG = "Pause";
 
     public enum PauseType{
         FUEL, TIME

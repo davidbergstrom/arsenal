@@ -205,14 +205,6 @@ public class Route {
     }
 
     /**
-     * Returns if demonstration mode is on.
-     * @return true if demo is on, false otherwise
-     */
-    boolean isDemoMove(){
-        return demoMode;
-    }
-
-    /**
      * Set the demo mode.
      * @param on the new state of demo mode
      */

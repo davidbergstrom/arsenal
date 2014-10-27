@@ -49,46 +49,6 @@ public class Ranking {
     private static void performGet(BoundingBox bbox, final RankingUtil rankingUtil, final MilestonesReceiver milestonesReceiver) {
         status = GetStatus.RUNNING;
 
-	    // Use this if API is down.
-       /* ArrayList<IMilestone> milestonesList = new ArrayList<IMilestone>();
-
-        String milestoneXML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-                + "<id>192</id>"
-                + "<geometry>"
-                + "<type>Point</type>"
-                + "<coordinates>"+ 59.329323 + "</coordinates>"
-                + "<coordinates>"+ 18.068581 + "</coordinates>"
-                + "<coordinates>"+ 0.0 + "</coordinates>"
-                + "<coordinates>"+ 1366281091 + "</coordinates>"
-                + "</geometry>"
-                + "<properties>"
-                + "<owner>" + 41043 + "</owner>"
-                + "<owner_firstname>Marko</owner_firstname>"
-                + "<owner_lastname>Kauppinen</owner_lastname>"
-                + "<name>Arsenal FC</name>"
-                + "<description>The world's greatest team</description>"
-                + "<category>" + 3 + "</category>" // should be 25
-                + "<rating>" + 2 + "</rating>"
-                + "</properties>"
-                + "<type>Feature</type>";
-
-        JSONObject jsonObj = null;
-
-        try {
-            jsonObj = XML.toJSONObject(milestoneXML);
-            IMilestone milestone = new Milestone(jsonObj);
-            for (int i = 0; i < 5; i++) {
-	            Log.d("Ranking:", milestone.getName());
-                milestonesList.add(milestone);
-            }
-
-        } catch (JSONException e) {
-            Log.d("MilestoneTest", "error: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        milestonesReceiver.onMilestonesRecieved(milestonesList);*/
-
         try {
             URL url = WorldTruckerEndpoints.getMilestonesURL(bbox);
             Remote.get(url, new ResponseHandler() {

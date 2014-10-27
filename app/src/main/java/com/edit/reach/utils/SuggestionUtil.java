@@ -37,10 +37,8 @@ public class SuggestionUtil implements ResponseHandler {
             List<String> resultList = new ArrayList<String>();
 
                 for (int i = 0; i < predictions.length(); i++) {
-
                     resultList.add(((JSONObject)predictions.get(i)).getString("description"));
                     Log.d("Suggestion", " " + ((JSONObject)predictions.get(i)).getString("description"));
-
                 }
 
             suggestionListener.onGetSuccess(resultList);
@@ -53,7 +51,7 @@ public class SuggestionUtil implements ResponseHandler {
 
     @Override
     public void onGetFail() {
-
+	    Log.d("Suggestion", "Suggestion failed");
     }
 
     /**
