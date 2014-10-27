@@ -118,7 +118,9 @@ public class MultiPaneActivity extends FragmentActivity {
 
 	            case SignalType.MILESTONE_FAIL:
 		            Log.d("HANDLER UPDATE", "MILESTONE_FAIL");
-		            goBackToControlFragment();
+		            if(sgsFragmentHasBeenCreated){
+		                goBackToControlFragment();
+		            }
 
             }
         }
@@ -340,8 +342,8 @@ public class MultiPaneActivity extends FragmentActivity {
 
 	public void goBackToControlFragment(){
 		getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
-		controlFragment.showAllIcons();
-
+		navigationModel.onSuggestionCancel();
+		//controlFragment.showAllIcons();
 	}
 
     public Location getMyLocation(){

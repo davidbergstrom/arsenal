@@ -197,7 +197,7 @@ public class ControlFragment extends Fragment{
 			public void onClick(View view) {
 				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.RESTAREA);
 				Log.d("INPUTBUTTON", "Restarea");
-				if(isRestArea == ImageState.ORIGINAL){
+				/*if(isRestArea == ImageState.ORIGINAL){
 					ibRestArea.setImageResource(R.drawable.restarea_pressed);
 					isRestArea = ImageState.PRESSED;
 					showTheOtherIcons();
@@ -206,7 +206,7 @@ public class ControlFragment extends Fragment{
 				else {
 					ibRestArea.setImageResource(R.drawable.restarea_150);
 					isRestArea = ImageState.ORIGINAL;
-				}
+				}*/
 
 			}
 		});
@@ -217,14 +217,14 @@ public class ControlFragment extends Fragment{
 			public void onClick(View view) {
 				((MultiPaneActivity) getActivity()).getPauseSuggestions(IMilestone.Category.FOOD);
 				Log.d("INPUTBUTTON", "Food");
-				if(isFood == ImageState.ORIGINAL) {
+				/*if(isFood == ImageState.ORIGINAL) {
 					ibFood.setImageResource(R.drawable.food_pressed);
 					isFood = ImageState.PRESSED;
 					showTheOtherIcons();
 				} else {
 					ibFood.setImageResource(R.drawable.food_150);
 					isFood = ImageState.ORIGINAL;
-				}
+				}*/
 
 			}
 		});
@@ -235,7 +235,7 @@ public class ControlFragment extends Fragment{
 			public void onClick(View view) {
 				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.TOILET);
 				Log.d("INPUTBUTTON", "Toilet");
-				if (isRestroom == ImageState.ORIGINAL) {
+				/*if (isRestroom == ImageState.ORIGINAL) {
 					ibRestroom.setImageResource(R.drawable.restroom_pressed);
 					isRestroom = ImageState.PRESSED;
 					showTheOtherIcons();
@@ -243,7 +243,7 @@ public class ControlFragment extends Fragment{
 				} else {
 					ibRestroom.setImageResource(R.drawable.restroom_150);
 					isRestroom = ImageState.ORIGINAL;
-				}
+				}*/
 
 			}
 		});
@@ -254,7 +254,7 @@ public class ControlFragment extends Fragment{
 			public void onClick(View view) {
 				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.GASSTATION);
 				Log.d("INPUTBUTTON", "Gas Station");
-				if(isGasStation == ImageState.ORIGINAL){
+				/*if(isGasStation == ImageState.ORIGINAL){
 					ibGasStation.setImageResource(R.drawable.gasstation_pressed);
 					isGasStation = ImageState.PRESSED;
 					showTheOtherIcons();
@@ -262,7 +262,7 @@ public class ControlFragment extends Fragment{
 				else {
 					ibGasStation.setImageResource(R.drawable.gasstation_150);
 					isGasStation = ImageState.ORIGINAL;
-				}
+				}*/
 
 			}
 		});

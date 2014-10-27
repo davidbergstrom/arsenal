@@ -4,6 +4,7 @@
               android:orientation="vertical"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
+              android:minWidth="150dp"
               android:background="@color/background_info_window"
               android:paddingTop="@dimen/custom_info_window_top"
               android:paddingBottom="@dimen/custom_info_window_bottom"
