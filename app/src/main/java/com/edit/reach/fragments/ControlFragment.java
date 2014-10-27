@@ -96,14 +96,11 @@ public class ControlFragment extends Fragment{
             IMilestone milestone = leg.getMilestone();
             float nextStopClock = leg.getDuration();
             String nextStopName = milestone.getName();
-            //TODO insert value
-            float totalTimeLeft = 0;
             float distanceToNextStop = leg.getDistance();
             Log.d("ControlFragment", "Mile :"+milestone.toString() + ", cat :"+milestone.getCategories());
             List<IMilestone.Category> categories = milestone.getCategories();
 
             textNextStop.setText(nextStopName);
-            textTotalTime.setText(TimeConvert.convertTime((int) (totalTimeLeft * UniversalConstants.SECONDS_TO_MINUTES)));
             textTimeToNextStop.setText(TimeConvert.convertTime(((int) (nextStopClock * UniversalConstants.SECONDS_TO_MINUTES))));
             textDistanceToTextStop.setText((int)(distanceToNextStop * 0.001) + " km");
 
@@ -144,7 +141,7 @@ public class ControlFragment extends Fragment{
     }
 
     public void setTotalTime(double totalTime) {
-         //textTotalTime.setText((int)(totalTime * UniversalConstants.SECONDS_TO_MINUTES) + " min");
+        textTotalTime.setText(TimeConvert.convertTime((int) (totalTime * UniversalConstants.SECONDS_TO_MINUTES)));
     }
 
 	public static ControlFragment newInstance(String id){
