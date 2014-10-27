@@ -93,7 +93,6 @@ public class SuggestionFragment extends Fragment {
 		// Required empty public constructor
 	}
 
-    //TODO delede?
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

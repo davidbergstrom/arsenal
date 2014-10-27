@@ -37,7 +37,6 @@ public class Step {
             try {
                 instructions = URLDecoder.decode(Html.fromHtml(stepJSON.getString("html_instructions")).toString(), "UTF-8");
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             JSONObject polyline = stepJSON.getJSONObject("polyline");
@@ -48,7 +47,6 @@ public class Step {
             durationPerSubStep = (float)stepJSON.getJSONObject("duration").getDouble("value") / (subSteps.size()-1);
 
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

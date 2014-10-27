@@ -185,7 +185,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 	private final DriverDistractionListener driverDistractionListener = new DriverDistractionListener() {
 		@Override
 		public void levelChanged(DriverDistractionLevel driverDistractionLevel) {
-			// TODO what here?
+			// TODO Driver distraction
 		}
 	};
 

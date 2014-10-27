@@ -271,7 +271,7 @@ public class ControlFragment extends Fragment{
 
 		return view;
 	}
-	//TODO: Use if we going to have Multiple choices.
+	// Is not used in this version of the application. For future use.
 	private void showTheOtherIcons(){
 		if(isGasStation == ImageState.PRESSED){
 			ibRestArea.setImageResource(R.drawable.restarea_150);
