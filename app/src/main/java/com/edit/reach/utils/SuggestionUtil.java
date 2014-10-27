@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class SuggestionUtil implements ResponseHandler {
 
-    private SuggestionListener suggestionListener;
+    private final SuggestionListener suggestionListener;
     private String searchString;
 
     public SuggestionUtil(SuggestionListener suggestionListener) {

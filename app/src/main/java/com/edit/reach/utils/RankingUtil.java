@@ -9,7 +9,7 @@ import static com.edit.reach.model.interfaces.IMilestone.*;
 
 public class RankingUtil implements Comparator<IMilestone> {
 
-    private Category category;
+    private final Category category;
 
     public RankingUtil(Category category) {
         this.category = category;

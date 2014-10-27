@@ -23,10 +23,10 @@ public class Map extends Observable{
     private static final int UPDATE_INTERVAL = NavigationUtil.UPDATE_INTERVAL_SLOW;
 
     // The map which modifies the map view in the activity
-    private GoogleMap map;
+    private final GoogleMap map;
 
     // The handler for navigation loop
-    private Handler handler;
+    private final Handler handler;
 
     private Route currentRoute;
 
@@ -36,7 +36,7 @@ public class Map extends Observable{
     private boolean demoMode;
 
     // Class name for logging
-    private String DEBUG_TAG = "Map";
+    private final String DEBUG_TAG = "Map";
 
     /** Enum class for internal state pattern */
     public enum MapState {
@@ -44,7 +44,7 @@ public class Map extends Observable{
     }
 
     /** A listener for a route */
-    private RouteListener routeListener = new RouteListener(){
+    private final RouteListener routeListener = new RouteListener(){
 
         @Override
         public void onInitialization(boolean success) {
@@ -98,7 +98,7 @@ public class Map extends Observable{
     };
 
     /** A runnable for navigation */
-    private Runnable navigationRunnable = new Runnable() {
+    private final Runnable navigationRunnable = new Runnable() {
         @Override
         public void run() {
             if(mapState == MapState.MOVING || mapState == MapState.OVERVIEW_MOVING){
@@ -154,7 +154,7 @@ public class Map extends Observable{
     };
 
     /** Runnable for alerting observers of the route. */
-    private Runnable routeUpdate = new Runnable() {
+    private final Runnable routeUpdate = new Runnable() {
         @Override
         public void run() {
             if((mapState == MapState.MOVING || mapState == MapState.OVERVIEW_MOVING) && isRouteSet() && currentRoute.isInitialized()) {

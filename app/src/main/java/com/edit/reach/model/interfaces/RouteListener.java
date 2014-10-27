@@ -4,7 +4,6 @@ import com.edit.reach.model.Leg;
 import com.edit.reach.model.Pause;
 import com.edit.reach.model.Route;
 import com.edit.reach.model.Step;
-import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by Joakim on 2014-10-06.

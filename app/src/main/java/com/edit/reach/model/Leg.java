@@ -20,10 +20,10 @@ import java.util.List;
  * A leg is a part of a route and contains several smaller legs called Steps.
  */
 public class Leg {
-    private List<Step> steps;
+    private final List<Step> steps;
     private IMilestone endMilestone; // Milestones at the end of this leg
     private Marker milestoneMarker;
-    private String DEBUG_TAG = "Leg";
+    private final String DEBUG_TAG = "Leg";
 
     /**
      * Constructs a leg with the information in the provided JSONObject.

@@ -5,8 +5,8 @@ import com.google.android.gms.maps.model.LatLng;
  * A square representing a geographical area.
  */
 public class BoundingBox {
-    private LatLng bottomLeft;
-    private LatLng topRight;
+    private final LatLng bottomLeft;
+    private final LatLng topRight;
 
     public BoundingBox(LatLng center, double sideLength) {
         double d = sideLength / 2;

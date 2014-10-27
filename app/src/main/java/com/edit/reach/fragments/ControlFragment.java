@@ -355,11 +355,9 @@ public class ControlFragment extends Fragment{
 	}
 
 	private void setStateInfo() {
-		;
 	}
 
 	private void setStateSuggestion() {
-		;
 	}
 
 }

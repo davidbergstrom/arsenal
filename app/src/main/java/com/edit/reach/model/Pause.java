@@ -15,13 +15,13 @@ import java.util.List;
  * before he can drive again. The pause is represented by a circle and contains available milestones.
  */
 public class Pause {
-    private LatLng location;
+    private final LatLng location;
     private Circle circle;
     private Marker middleOfPause;
-    private List<IMilestone> milestones;
-    private List<Marker> milestoneMarkers;
-    private BitmapDescriptor icon;
-    private PauseType type;
+    private final List<IMilestone> milestones;
+    private final List<Marker> milestoneMarkers;
+    private final BitmapDescriptor icon;
+    private final PauseType type;
     private String DEBUG_TAG = "Pause";
 
     public enum PauseType{

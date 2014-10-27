@@ -1,7 +1,5 @@
 package com.edit.reach.utils;
 
-import com.edit.reach.constants.UniversalConstants;
-
 /**
  * A converter that converts time.
  */

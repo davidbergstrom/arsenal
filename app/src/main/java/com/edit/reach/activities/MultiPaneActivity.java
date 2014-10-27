@@ -60,7 +60,7 @@ public class MultiPaneActivity extends FragmentActivity {
 	private ControlFragment.State state;
 
     // A handler for the UI thread. The Handler recieves messages from other thread.
-    private Handler mainHandler = new Handler(Looper.getMainLooper()) {
+    private final Handler mainHandler = new Handler(Looper.getMainLooper()) {
 
         @Override
         public void handleMessage(Message message) {
@@ -326,7 +326,7 @@ public class MultiPaneActivity extends FragmentActivity {
 	}
 
 	public void suggestionAcceptMilestone(boolean status){
-		navigationModel.acceptedMilestone(status);
+		navigationModel.acceptMilestone(status);
 		if(status){
 
 		}

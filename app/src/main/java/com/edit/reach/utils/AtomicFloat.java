@@ -12,7 +12,7 @@ import static java.lang.Float.*;
 
 public class AtomicFloat extends Number {
 
-	private AtomicInteger intBits;
+	private final AtomicInteger intBits;
 
 	public AtomicFloat() {
 		this(0f);

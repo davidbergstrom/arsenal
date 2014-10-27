@@ -29,19 +29,19 @@ import java.util.List;
  * Route class containing information for one route
  */
 public class Route {
-    private List<RouteListener> listeners;
-    private List<IMilestone> milestones;
-    private List<Leg> legs;
-    private List<Pause> pauses;
+    private final List<RouteListener> listeners;
+    private final List<IMilestone> milestones;
+    private final List<Leg> legs;
+    private final List<Pause> pauses;
     private Circle endPointCircle, startPointCircle;
     private GroundOverlay pointerWithBearing;
     private LatLng origin, destination;
     private String originAddress, destinationAddress;
     private boolean initialized, demoMode;   // Specifies if the route should run in test mode
-    private String DEBUG_TAG = "Route";
+    private final String DEBUG_TAG = "Route";
 
     /** Handler for receiving a route as JSON Object */
-    private ResponseHandler routeHandler = new ResponseHandler() {
+    private final ResponseHandler routeHandler = new ResponseHandler() {
         @Override
         public void onGetSuccess(JSONObject json) {
             try {
@@ -79,7 +79,7 @@ public class Route {
     };
 
     /** Handler for receiving the origin address as a JSON Object */
-    private ResponseHandler originHandler = new ResponseHandler() {
+    private final ResponseHandler originHandler = new ResponseHandler() {
         @Override
         public void onGetSuccess(JSONObject json) {
             try {
@@ -104,7 +104,7 @@ public class Route {
     };
 
     /** Handler for receiving the destination address as a JSON Object */
-    private ResponseHandler destinationHandler = new ResponseHandler() {
+    private final ResponseHandler destinationHandler = new ResponseHandler() {
         @Override
         public void onGetSuccess(JSONObject json) {
             try {

@@ -1,9 +1,7 @@
 package com.edit.reach.model;
 
-import android.graphics.Color;
 import android.text.Html;
 import android.util.Log;
-import com.edit.reach.app.R;
 import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -25,7 +23,7 @@ public class Step {
     private String instructions;
     private Polyline polyline;
     private List<LatLng> subSteps;
-    private String DEBUG_TAG = "Step";
+    private final String DEBUG_TAG = "Step";
 
     /**
      * Constructs a step with the information retrieved from the provided JSONObject.

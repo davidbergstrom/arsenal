@@ -10,7 +10,7 @@ import android.widget.ImageButton;
 import com.edit.reach.app.R;
 
 
-public class MainActivity extends Activity implements View.OnClickListener {
+class MainActivity extends Activity implements View.OnClickListener {
 
 	private ImageButton startMovingActivity, startStationaryActivity;
 

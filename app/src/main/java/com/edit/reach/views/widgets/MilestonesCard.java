@@ -13,9 +13,9 @@ import com.edit.reach.model.interfaces.IMilestone;
  */
 public class MilestonesCard extends RelativeLayout {
 
-    private ImageView imageView;
-    private TextView milestoneName;
-    private IMilestone milestone;
+    private final ImageView imageView;
+    private final TextView milestoneName;
+    private final IMilestone milestone;
 
 
     public MilestonesCard(Context context, IMilestone milestone) {
@@ -48,12 +48,7 @@ public class MilestonesCard extends RelativeLayout {
         milestoneName.setText(text);
     }
 
-    // Add the Milestone to the layout
-    public void addView(MilestonesCard mc, int _id){
-
-    }
-
-    public IMilestone getMilestone(){
+	public IMilestone getMilestone(){
         return milestone;
     }
 

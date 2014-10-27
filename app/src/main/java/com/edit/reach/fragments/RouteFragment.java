@@ -1,22 +1,17 @@
 package com.edit.reach.fragments;
 
-import android.app.Activity;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.*;
-import com.edit.reach.activities.MainActivity;
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
-import com.edit.reach.model.Route;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,7 +158,7 @@ public class RouteFragment extends Fragment {
 		tbCurLoc.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if(((ToggleButton) view).isChecked()){
+				if(((Checkable) view).isChecked()){
 					myCurrentLocationActivated = true;
 					actFrom.setText("My Location");
 					actFrom.setEnabled(false);

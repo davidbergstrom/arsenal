@@ -6,7 +6,7 @@ import com.google.android.gms.maps.model.LatLng;
 import static com.edit.reach.model.interfaces.IMilestone.Category;
 
 public class RankingDistanceUtil extends RankingUtil {
-    private LatLng driverPoint;
+    private final LatLng driverPoint;
 
     public RankingDistanceUtil(Category category, LatLng driverPoint) {
         super(category);
