@@ -12,6 +12,7 @@ import com.edit.reach.model.interfaces.SuggestionListener;
 import com.edit.reach.system.VehicleSystem;
 import com.edit.reach.utils.SuggestionUtil;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
@@ -122,7 +123,7 @@ public final class NavigationModel implements Runnable, Observer {
 			pipelineHandler = new Handler();
 			Looper.loop();
 		} catch (Throwable t) {
-			Log.d("Error in pipelineThread", t + "");
+			Log.d("Navigationmodel: Error in pipelineThread", t + "");
 		}
 	}
 
@@ -133,14 +134,15 @@ public final class NavigationModel implements Runnable, Observer {
 	 */
 	public void getPauseSuggestions(final IMilestone.Category category) {
 		Log.d("NavigationModel", "entered getPauseSuggestions");
+		final Route route = map.getRoute();
+		final List<Leg> legs = route.getLegs();
+		final LatLng pointerLocation = route.getPointerLocation();
 
 		pipelineHandler.post(new Runnable() {
 			@Override
 			public void run() {
 				synchronized (map) {
 					milestoneCategory = category;
-					final Route route = map.getRoute();
-					final List<Leg> legs = route.getLegs();
 
 					if (category == IMilestone.Category.FOOD) {
 						if (inThreshold(FOOD_THRESHOLD) && milestoneAlgorithmStage.get() == 0 && hasCategory(category)) {
@@ -151,7 +153,7 @@ public final class NavigationModel implements Runnable, Observer {
 
 						if (milestoneAlgorithmStage.get() >= 1) {
 							if (searchRange.get() == STANDARD_SEARCH_RANGE) {
-								Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(searchRange.get()), category, milestonesReceiver);
+								Ranking.getMilestonesByDistance(pointerLocation, route.getLocation(searchRange.get()), category, milestonesReceiver);
 							} else {
 								Ranking.getMilestonesByDistance(route.getLocation(searchRange.get() - (STANDARD_SEARCH_RANGE)), route.getLocation(searchRange.get()), category, milestonesReceiver);
 							}
@@ -166,7 +168,7 @@ public final class NavigationModel implements Runnable, Observer {
 
 						if (milestoneAlgorithmStage.get() >= 1) {
 							if (searchRange.get() == STANDARD_SEARCH_RANGE) {
-								Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(searchRange.get()), category, milestonesReceiver);
+								Ranking.getMilestonesByDistance(pointerLocation, route.getLocation(searchRange.get()), category, milestonesReceiver);
 							} else {
 								Ranking.getMilestonesByDistance(route.getLocation((searchRange.get() - (STANDARD_SEARCH_RANGE))), route.getLocation(searchRange.get()), category, milestonesReceiver);
 							}
@@ -181,7 +183,7 @@ public final class NavigationModel implements Runnable, Observer {
 
 						if (milestoneAlgorithmStage.get() >= 1) {
 							if (searchRange.get() == STANDARD_SEARCH_RANGE) {
-								Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(searchRange.get()), category, milestonesReceiver);
+								Ranking.getMilestonesByDistance(pointerLocation, route.getLocation(searchRange.get()), category, milestonesReceiver);
 							} else {
 								Ranking.getMilestonesByDistance(route.getLocation((searchRange.get() - (STANDARD_SEARCH_RANGE))), route.getLocation(searchRange.get()), category, milestonesReceiver);
 							}
@@ -196,7 +198,7 @@ public final class NavigationModel implements Runnable, Observer {
 
 						if (milestoneAlgorithmStage.get() >= 1) {
 							if (searchRange.get() == STANDARD_SEARCH_RANGE) {
-								Ranking.getMilestonesByDistance(route.getPointerLocation(), route.getLocation(searchRange.get()), category, milestonesReceiver);
+								Ranking.getMilestonesByDistance(pointerLocation, route.getLocation(searchRange.get()), category, milestonesReceiver);
 							} else {
 								Ranking.getMilestonesByDistance(route.getLocation((searchRange.get() - (STANDARD_SEARCH_RANGE))), route.getLocation(searchRange.get()), category, milestonesReceiver);
 							}
