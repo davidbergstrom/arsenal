@@ -50,5 +50,6 @@
     <string name="suggestion_button_next">Skip</string>
     <string name="suggestion_button_cancel">Cancel</string>
     <string name="tv_navigation_info_description">Description</string>
+    <string name="tv_navigation_info_total_time_left">TimeLeft</string>
 
 </resources>

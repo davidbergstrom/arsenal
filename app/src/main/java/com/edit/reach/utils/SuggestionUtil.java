@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * Created by Nordmark on 2014-10-13.
- * A class that gives location suggestions for a given search String.
+ * A class that gives location suggestions for a given search String using Google Places.
  */
 public class SuggestionUtil implements ResponseHandler {
 

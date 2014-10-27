@@ -17,13 +17,32 @@
 			android:orientation="vertical"
 			android:layout_marginBottom="@dimen/navigation_info_margin_bottom">
 
-		<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:id="@+id/tv_navigation_info_title"
-				android:text="@string/tv_navigation_info_title"
-				android:textSize="@dimen/tv_navigation_info_title"
-				android:textColor="@color/tv_navigation_info_title"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/title_container"
+            android:padding="5dp">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/tv_navigation_info_title"
+                    android:text="@string/tv_navigation_info_title"
+                    android:textSize="@dimen/tv_navigation_info_title"
+                    android:textColor="@color/tv_navigation_info_title"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="0dp"
+                    android:layout_weight="1"
+                    android:id="@+id/tv_navigation_info_total_time_left"
+                    android:text="@string/tv_navigation_info_total_time_left"
+                    android:textSize="@dimen/tv_navigation_info_title"
+                    android:textColor="@color/android_yellow"/>
+
+        </LinearLayout>
 
 		<!-- Icons Holder -->
 		<LinearLayout

@@ -68,7 +68,7 @@ public class GoogleMapsEndpointsTest extends TestCase {
         List<IMilestone> listOfWaypoints = new ArrayList<IMilestone>();
         listOfWaypoints.add(milestone);
 
-        URL actual = googleMapsEndpoints.makeURL(source, dest, listOfWaypoints, true);
+        URL actual = googleMapsEndpoints.makeURLDirections(source, dest, listOfWaypoints, true);
         URL expected = new URL("http://maps.googleapis.com/maps/api/directions/json?origin=58.3787247,12.3194581&destination=57.6886404,11.9773242&waypoints=optimize:true|58.3541,11.812722&sensor=false&mode=driving&alternatives=true&language=EN");
         assertEquals(expected, actual);
     }

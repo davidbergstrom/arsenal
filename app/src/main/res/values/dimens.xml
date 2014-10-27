@@ -56,15 +56,19 @@
 	<dimen name="user_input_buttons_margin_top">10dp</dimen>
 	<dimen name="input_button_margin">5dp</dimen>
 	<dimen name="tv_control_info_progress_bar_text">18sp</dimen>
-	<dimen name="suggestion_button">20sp</dimen>
-	<dimen name="suggestion_buttons_margin_bottom">15dp</dimen>
 
 	<!-- Control Fragment - Top Info Box -->
 	<dimen name="navigation_info_margin_bottom">10dp</dimen>
 	<dimen name="navigation_info_margin_top">10dp</dimen>
-	<dimen name="tv_navigation_info_title">24sp</dimen>
-	<dimen name="tv_navigation_info_specs">20sp</dimen>
+	<dimen name="tv_navigation_info_title">25sp</dimen>
+	<dimen name="tv_navigation_info_specs">22sp</dimen>
 	<dimen name="navigation_info_icons_holder_margin_top">5dp</dimen>
+    <dimen name="tv_navigation_info_description">21sp</dimen>
+
+    <!-- SuggestionFragment -->
+    <dimen name="suggestion_button">20sp</dimen>
+    <dimen name="suggestion_buttons_margin_bottom">15dp</dimen>
+    <dimen name="tv_navigation_info_rating">21sp</dimen>
 
 	<!-- Control Fragment - ProgressBar -->
 	<dimen name="progress_bar_min_width">230dp</dimen>
@@ -72,6 +76,5 @@
 	<dimen name="progress_bar_min_height">20dp</dimen>
 	<dimen name="progress_bar_max_height">20dp</dimen>
 	<dimen name="progress_bar_margin_side">10dp</dimen>
-
 
 </resources>

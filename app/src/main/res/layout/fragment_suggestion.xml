@@ -31,6 +31,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_navigation_info_rating"
                 android:text="@string/tv_navigation_info_rating"
+                android:textSize="@dimen/tv_navigation_info_rating"
                 android:textColor="@color/android_yellow"/>
 
         <TextView
@@ -38,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_navigation_info_description"
                 android:text="@string/tv_navigation_info_description"
+                android:textSize="@dimen/tv_navigation_info_description"
                 android:textColor="@color/white"/>
 
 		<!-- Icons Holder -->

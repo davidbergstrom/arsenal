@@ -12,14 +12,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by: Erik Nordmark
- * Project: arsenal
- * Date: 2014-10-14
- * Time: 14:15
+ * Created by: Erik Nordmark on 2014-10-14.
+ * A class that constructs all URLs for the HTTP requests
  */
 public class GoogleMapsEndpoints {
 
-	public static URL makeURL(LatLng origin, LatLng destination, List<IMilestone> milestones, boolean routeOptimization) {
+    /**
+     * Constructs the URL for Google Directions API
+     * @param origin Latlng from the starting point
+     * @param destination Latlng to the ending point
+     * @param milestones List of via stops for the route
+     * @param routeOptimization Boolean if Directions API should optimize the route (sort the stops).
+     * @return the URL
+     */
+	public static URL makeURLDirections(LatLng origin, LatLng destination, List<IMilestone> milestones, boolean routeOptimization) {
 
 		List<LatLng> wayPoints = new ArrayList<LatLng>();
 
@@ -53,6 +59,11 @@ public class GoogleMapsEndpoints {
 		return http;
 	}
 
+    /**
+     * Constructs the URL for Google Geocode API
+     * @param address, that will be converted into a Latlng point
+     * @return the URL
+     */
 	public static URL makeURLGeocode(String address) {
 		String location = address.replaceAll(" ", "+").toLowerCase();
 
@@ -77,6 +88,11 @@ public class GoogleMapsEndpoints {
 		return http;
 	}
 
+    /**
+     * Constructs the URL for Google Places API
+     * @param address, to find suggestions for.
+     * @return the URL
+     */
     public static URL makeURLPlaces(String address) {
         String location = address.replaceAll(" ", "+").toLowerCase();
 
