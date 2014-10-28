@@ -8,6 +8,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ * Representing a tip in the World Trucker API.
+ */
 public class Milestone implements IMilestone {
 
     private String name;
@@ -16,6 +19,12 @@ public class Milestone implements IMilestone {
     private int rank;
     private LatLng location;
 
+    /**
+     * Takes a JSON response from the World Trucker API
+     * and creates a single Milestone with our own categories.
+     * @param json The JSON response from the World Trucker API
+     * @throws JSONException If something goes wrong when parsing the JSON.
+     */
     public Milestone(JSONObject json) throws JSONException {
         JSONObject properties = json.getJSONObject("properties");
 
@@ -35,6 +44,10 @@ public class Milestone implements IMilestone {
     }
 
     @Override
+    /**
+     * Returns a 'snippet' of the milestone, which is the rank followed by the description.
+     * @return the snippet
+     */
     public String getSnippet() {
         return "Rating: " + rank + "/5\n" + description;
     }
