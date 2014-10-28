@@ -107,7 +107,6 @@ public class Map extends Observable{
             if(mapState == MapState.MOVING || mapState == MapState.OVERVIEW_MOVING){
                 if(isRouteSet() && currentRoute.isInitialized()){
                     Location myLocation = map.getMyLocation();
-                    //LatLng position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
 	                LatLng position;
 	                if(myLocation != null){
 		                position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
@@ -122,7 +121,8 @@ public class Map extends Observable{
                         CameraPosition lastPosition = map.getCameraPosition();
                         CameraPosition currentPlace = new CameraPosition.Builder().target(currentRoute.getPointerLocation()).bearing(currentRoute.getPointerBearing())
                                 .tilt(lastPosition.tilt).zoom(lastPosition.zoom).build();
-                        map.animateCamera(CameraUpdateFactory.newCameraPosition(currentPlace), 100, new GoogleMap.CancelableCallback() {
+                        map.animateCamera(CameraUpdateFactory.newCameraPosition(currentPlace), UPDATE_INTERVAL,
+                                new GoogleMap.CancelableCallback() {
                             @Override
                             public void onFinish() {
 
@@ -244,7 +244,20 @@ public class Map extends Observable{
      * @param newMapState, the new state of the map
      */
     public void setMapState(MapState newMapState){
-        if(newMapState == MapState.STATIONARY && currentRoute != null){
+        if(newMapState == MapState.STATIONARY){
+            startStationary();
+
+            Log.d(DEBUG_TAG, "State: Stationary");
+        }else if(newMapState == MapState.MOVING){
+            startMoving();
+
+            Log.d(DEBUG_TAG, "State: Moving");
+        }
+        this.mapState = newMapState;
+    }
+
+    private void startStationary(){
+        if(currentRoute != null){
             LatLng routeOrigin = currentRoute.getOrigin();
             LatLng routeDestination = currentRoute.getDestination();
             if(routeOrigin != null && routeDestination != null){
@@ -264,17 +277,31 @@ public class Map extends Observable{
             }
 
             map.getUiSettings().setAllGesturesEnabled(true);
+        }
+    }
 
-            Log.d(DEBUG_TAG, "State: Stationary");
-        }else if(newMapState == MapState.MOVING){
+    private void startMoving(){
+        // Disable all interactions the user is not allowed to do.
+        map.getUiSettings().setScrollGesturesEnabled(false);
+        map.getUiSettings().setTiltGesturesEnabled(false);
+        map.getUiSettings().setCompassEnabled(false);
+        map.getUiSettings().setRotateGesturesEnabled(false);
 
-            // Disable all interactions the user is not allowed to do.
-            map.getUiSettings().setScrollGesturesEnabled(false);
-            map.getUiSettings().setTiltGesturesEnabled(false);
-            map.getUiSettings().setCompassEnabled(false);
-            map.getUiSettings().setRotateGesturesEnabled(false);
+        if(isRouteSet()){
+            // Set camera to right tilt and zoom
+            CameraPosition currentPlace = new CameraPosition.Builder().target(currentRoute.getOrigin()).tilt(65.5f).zoom(17).build();
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
 
+            List<Pause> pauses = currentRoute.getPauses();
+            for (Pause p : pauses) {
+                p.erase();
+            }
+            if(currentRoute.isInitialized() && mapState != MapState.OVERVIEW_MOVING){
+                currentRoute.drawNavigation(map);
+            }
+        }else{
+            // Start moving without route.
             Location myLocation = map.getMyLocation();
             LatLng position;
             if(myLocation != null){
@@ -283,31 +310,16 @@ public class Map extends Observable{
                 position = new LatLng(0, 0);
             }
 
-            if(isRouteSet()){
-                // Set camera to right tilt and zoom
-                CameraPosition currentPlace = new CameraPosition.Builder().target(currentRoute.getOrigin()).tilt(65.5f).zoom(17).build();
-                map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
-
-
-                List<Pause> pauses = currentRoute.getPauses();
-                for (Pause p : pauses) {
-                    p.erase();
-                }
-                if(currentRoute.isInitialized() && mapState != MapState.OVERVIEW_MOVING){
-                    currentRoute.drawNavigation(map);
-                }
-            }else{
-                // Start moving without route.
-                CameraPosition currentPlace = new CameraPosition.Builder().target(position).zoom(17).build();
-                map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
-            }
-
-            // Start navigation runnable
-            handler.post(navigationRunnable);
-            handler.post(routeUpdate);
+            CameraPosition currentPlace = new CameraPosition.Builder().target(position).zoom(17).build();
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
         }
-        this.mapState = newMapState;
+
+        // Start navigation runnable
+        handler.post(navigationRunnable);
+        handler.post(routeUpdate);
     }
+
+
 
     private void updateState(){
         setMapState(mapState);
