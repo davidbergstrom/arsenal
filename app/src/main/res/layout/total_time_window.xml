@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:minWidth="150dp"
+              android:background="@color/background_info_window"
+              android:paddingTop="@dimen/custom_info_window_top"
+              android:paddingBottom="@dimen/custom_info_window_bottom"
+              android:paddingLeft="@dimen/custom_info_window_left"
+              android:paddingRight="@dimen/custom_info_window_right"
+              android:layout_alignParentRight="true"
+              android:layout_alignParentTop="true"
+              android:layout_marginEnd="0dp"
+              android:layout_marginTop="0dp">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="0dp"
+            android:id="@+id/tv_navigation_info_total_time_left"
+            android:text="@string/tv_navigation_info_total_time_left"
+            android:textSize="@dimen/tv_navigation_info_title"
+            android:textColor="@color/android_yellow"/>
+
+</RelativeLayout>
