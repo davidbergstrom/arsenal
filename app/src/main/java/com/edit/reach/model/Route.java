@@ -411,7 +411,6 @@ public class Route {
             // Recalculate the route
             initialized = false;
             URL url = GoogleMapsEndpoints.makeURLDirections(origin, destination, this.milestones, true);
-            Log.d(DEBUG_TAG, "URL: "+url);
             Remote.get(url, routeHandler);
         }
     }
@@ -460,8 +459,7 @@ public class Route {
                 .strokeWidth(0)
                 .fillColor(0x99ff3333));
 
-        //this.pointer = map.addCircle(new CircleOptions().center(legs.get(0).startLocation).fillColor(Color.GREEN).radius(8));
-        pointerWithBearing = map.addGroundOverlay(new GroundOverlayOptions()
+        this.pointerWithBearing = map.addGroundOverlay(new GroundOverlayOptions()
                 .position(legs.get(0).getStartLocation(), (float) 40)
                 .zIndex(2)
                 .image(BitmapDescriptorFactory.fromResource(R.drawable.nav_arrow))
@@ -539,6 +537,41 @@ public class Route {
             location = getNextSubStep();
         }
 
+        LatLng nearestLocation = calculateNearestLocation(location);
+
+        if(legs.size() == 0){
+            onRouteFinished();
+        }else{
+            // If the nearest location is more than 1 km away from the the real location, then reinitialize route
+            if(NavigationUtil.getDistance(location, nearestLocation) > 1 && !demoMode){
+                this.origin = location;
+                URL url = GoogleMapsEndpoints.makeURLDirections(location, destination, milestones, true);
+                Remote.get(url, routeHandler);
+            }
+            if(pointerWithBearing != null && !pointerWithBearing.getPosition().equals(nearestLocation)){
+                // Calculate new bearing and rotate the camera
+                LatLng nextLocation = getNextSubStep();
+                float bearing = NavigationUtil.getBearing(nextLocation, nearestLocation);
+                pointerWithBearing.setBearing(bearing);
+
+                final LatLngInterpolator latLngInterpolator = new LatLngInterpolator.Linear();
+
+                TypeEvaluator<LatLng> typeEvaluator = new TypeEvaluator<LatLng>() {
+                    @Override
+                    public LatLng evaluate(float fraction, LatLng startValue, LatLng endValue) {
+                        return latLngInterpolator.interpolate(fraction, startValue, endValue);
+                    }
+                };
+
+                Property<GroundOverlay, LatLng> property = Property.of(GroundOverlay.class, LatLng.class, "position");
+                ObjectAnimator animator = ObjectAnimator.ofObject(pointerWithBearing, property, typeEvaluator, nearestLocation);
+                animator.setDuration(NavigationUtil.UPDATE_INTERVAL_SLOW);
+                animator.start();
+            }
+        }
+    }
+
+    private LatLng calculateNearestLocation(LatLng location){
         LatLng nearestLocation = legs.get(0).getSteps().get(0).getSubSteps().get(0);
 
         outerLoop:
@@ -559,8 +592,8 @@ public class Route {
                         nearestLocation = subStepTwo;
                         subSteps.remove(i);
 
-                    }else{   // If the new point is also closer to current location then the end of step
-                        //step.draw(map);
+                    }else{
+                        // If the new point is also closer to current location then the end of step
                         break outerLoop; // Break the outer loop
                     }
                 }
@@ -573,39 +606,7 @@ public class Route {
             onLegFinished(leg);
         }
 
-        if(legs.size() == 0){
-            // TODO Route finished!
-            onRouteFinished();
-
-        }else{
-            if(NavigationUtil.getDistance(location, nearestLocation) > 0.5){    // If the nearest location is more than 500 metres away from the the real location, then reinitialize route
-                //this.origin = location;
-                //URL url = GoogleMapsEndpoints.makeURLDirections(location, destination, milestones, true);
-                //Remote.get(url, routeHandler);
-            }
-            if(pointerWithBearing != null && !pointerWithBearing.getPosition().equals(nearestLocation)){
-                // Calculate new bearing and rotate the camera
-                LatLng nextLocation = getNextSubStep();
-                float bearing = NavigationUtil.finalBearing(nextLocation, nearestLocation);
-                pointerWithBearing.setBearing(bearing);
-
-	            // pointerWithBearing.setPosition(nearestLocation);
-
-                final LatLngInterpolator latLngInterpolator = new LatLngInterpolator.Linear();
-
-                TypeEvaluator<LatLng> typeEvaluator = new TypeEvaluator<LatLng>() {
-                    @Override
-                    public LatLng evaluate(float fraction, LatLng startValue, LatLng endValue) {
-                        return latLngInterpolator.interpolate(fraction, startValue, endValue);
-                    }
-                };
-
-                Property<GroundOverlay, LatLng> property = Property.of(GroundOverlay.class, LatLng.class, "position");
-                ObjectAnimator animator = ObjectAnimator.ofObject(pointerWithBearing, property, typeEvaluator, nearestLocation);
-                animator.setDuration(NavigationUtil.UPDATE_INTERVAL_FAST);
-                animator.start();
-            }
-        }
+        return nearestLocation;
     }
 
     /**

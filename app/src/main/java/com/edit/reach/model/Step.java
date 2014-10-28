@@ -7,6 +7,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,8 +33,6 @@ public class Step {
     public Step(JSONObject stepJSON){
         Log.d(DEBUG_TAG, "Creating step.");
         try {
-            JSONObject startLocation = stepJSON.getJSONObject("start_location");
-            JSONObject endLocation = stepJSON.getJSONObject("end_location");
             try {
                 instructions = URLDecoder.decode(Html.fromHtml(stepJSON.getString("html_instructions")).toString(), "UTF-8");
             } catch (UnsupportedEncodingException e) {
@@ -41,11 +40,9 @@ public class Step {
             }
             JSONObject polyline = stepJSON.getJSONObject("polyline");
             String encodedString = polyline.getString("points");
-            subSteps = NavigationUtil.decodePoly(encodedString);
-            Log.d(DEBUG_TAG, "Number of sub steps: " + subSteps.size());
+            subSteps = PolyUtil.decode(encodedString);
             distancePerSubStep = (float)stepJSON.getJSONObject("distance").getDouble("value") / (subSteps.size()-1);
             durationPerSubStep = (float)stepJSON.getJSONObject("duration").getDouble("value") / (subSteps.size()-1);
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -109,7 +106,6 @@ public class Step {
      * @return the duration in seconds
      */
     public float getDuration() {
-        Log.d(DEBUG_TAG, "Substeps: "+subSteps.size());
         return durationPerSubStep * (subSteps.size()-1);
     }
 
