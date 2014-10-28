@@ -1,14 +1,15 @@
-package com.edit.reach.utils;
+package com.edit.reach.model;
 
 import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.model.LatLng;
 
 import static com.edit.reach.model.interfaces.IMilestone.Category;
 
-public class RankingDistanceUtil extends RankingUtil {
+public class RankingDistance extends RankingRating {
     private final LatLng driverPoint;
 
-    public RankingDistanceUtil(Category category, LatLng driverPoint) {
+    public RankingDistance(Category category, LatLng driverPoint) {
         super(category);
         this.driverPoint = driverPoint;
     }

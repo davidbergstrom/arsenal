@@ -7,8 +7,6 @@ import com.edit.reach.model.interfaces.MilestonesReceiver;
 import com.edit.reach.system.Remote;
 import com.edit.reach.system.ResponseHandler;
 import com.edit.reach.system.WorldTruckerEndpoints;
-import com.edit.reach.utils.RankingDistanceUtil;
-import com.edit.reach.utils.RankingUtil;
 import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,14 +29,14 @@ public class Ranking {
 
     public static void getMilestonesByRank(LatLng driverPoint, LatLng maxPoint, Category category, final MilestonesReceiver milestonesReceiver) {
         BoundingBox bbox = new BoundingBox(driverPoint, maxPoint);
-        RankingUtil rankingUtil = new RankingUtil(category);
-        performGet(bbox, rankingUtil, milestonesReceiver);
+        RankingRating rankingRating = new RankingRating(category);
+        performGet(bbox, rankingRating, milestonesReceiver);
     }
 
     public static void getMilestonesByDistance(LatLng driverPoint, LatLng maxPoint, Category category, final MilestonesReceiver milestonesReceiver) {
         BoundingBox bbox = new BoundingBox(driverPoint, maxPoint);
-        RankingUtil rankingUtil = new RankingDistanceUtil(category, driverPoint);
-        performGet(bbox, rankingUtil, milestonesReceiver);
+        RankingRating rankingDistance = new RankingDistance(category, driverPoint);
+        performGet(bbox, rankingDistance, milestonesReceiver);
     }
 
     public static void getMilestones(final MilestonesReceiver milestonesReceiver, LatLng centralPoint, double sideLength) {
@@ -46,7 +44,7 @@ public class Ranking {
         performGet(bbox, null, milestonesReceiver);
     }
 
-    private static void performGet(BoundingBox bbox, final RankingUtil rankingUtil, final MilestonesReceiver milestonesReceiver) {
+    private static void performGet(BoundingBox bbox, final RankingRating rankingRating, final MilestonesReceiver milestonesReceiver) {
         status = GetStatus.RUNNING;
 
         try {
@@ -74,9 +72,9 @@ public class Ranking {
 			            Log.d("RankingTest", e.getMessage());
 		            }
 
-		            if (rankingUtil != null) {
-			            rankingUtil.removeUnwanted(milestones);
-			            Collections.sort(milestones, rankingUtil);
+		            if (rankingRating != null) {
+			            rankingRating.removeUnwanted(milestones);
+			            Collections.sort(milestones, rankingRating);
 		            }
 
 		            milestonesReceiver.onMilestonesRecieved(milestones);
