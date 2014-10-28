@@ -1,4 +1,4 @@
-package com.edit.reach.utils;
+package com.edit.reach.model;
 
 import android.util.Log;
 import com.edit.reach.model.interfaces.SuggestionListener;
@@ -17,12 +17,12 @@ import java.util.List;
  * Created by Nordmark on 2014-10-13.
  * A class that gives location suggestions for a given search String using Google Places.
  */
-public class SuggestionUtil implements ResponseHandler {
+public class Suggestion implements ResponseHandler {
 
     private final SuggestionListener suggestionListener;
     private String searchString;
 
-    public SuggestionUtil(SuggestionListener suggestionListener) {
+    public Suggestion(SuggestionListener suggestionListener) {
         this.suggestionListener = suggestionListener;
     }
 
