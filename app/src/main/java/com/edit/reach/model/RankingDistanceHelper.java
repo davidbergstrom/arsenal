@@ -6,10 +6,10 @@ import com.google.android.gms.maps.model.LatLng;
 
 import static com.edit.reach.model.interfaces.IMilestone.Category;
 
-public class RankingDistance extends RankingRating {
+public class RankingDistanceHelper extends RankingHelper {
     private final LatLng driverPoint;
 
-    public RankingDistance(Category category, LatLng driverPoint) {
+    public RankingDistanceHelper(Category category, LatLng driverPoint) {
         super(category);
         this.driverPoint = driverPoint;
     }

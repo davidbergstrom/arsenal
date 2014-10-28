@@ -19,6 +19,10 @@ import java.util.Collections;
 
 import static com.edit.reach.model.interfaces.IMilestone.Category;
 
+/**
+ * This classed is used to deliver milestones from the
+ * WorldTrucker API to an instance of MilestonesReceiver.
+ */
 public class Ranking {
 
     private static GetStatus status;
@@ -27,24 +31,52 @@ public class Ranking {
         status = GetStatus.PENDING;
     }
 
+    /**
+     * Finds a list of milestones within a specified area
+     * and category, ordered by rating.
+     * @param driverPoint The driver's location
+     * @param maxPoint The maximum point away from the driver
+     * @param category A milestone category
+     * @param milestonesReceiver The object that will receive the ordered list of milestones.
+     */
     public static void getMilestonesByRank(LatLng driverPoint, LatLng maxPoint, Category category, final MilestonesReceiver milestonesReceiver) {
         BoundingBox bbox = new BoundingBox(driverPoint, maxPoint);
-        RankingRating rankingRating = new RankingRating(category);
-        performGet(bbox, rankingRating, milestonesReceiver);
+        RankingHelper rankingHelper = new RankingHelper(category);
+        performGet(bbox, rankingHelper, milestonesReceiver);
     }
 
+    /**
+     * Finds a list of milestones within a specified area
+     * and category, ordered by closest distance.
+     * @param driverPoint The driver's location
+     * @param maxPoint The maximum point away from the driver
+     * @param category A milestone category
+     * @param milestonesReceiver The object that will receive the ordered list of milestones.
+     */
     public static void getMilestonesByDistance(LatLng driverPoint, LatLng maxPoint, Category category, final MilestonesReceiver milestonesReceiver) {
         BoundingBox bbox = new BoundingBox(driverPoint, maxPoint);
-        RankingRating rankingDistance = new RankingDistance(category, driverPoint);
-        performGet(bbox, rankingDistance, milestonesReceiver);
+        RankingHelper rankingHelper = new RankingDistanceHelper(category, driverPoint);
+        performGet(bbox, rankingHelper, milestonesReceiver);
     }
 
+    /**
+     * Finds all milestones within a specified square
+     * @param milestonesReceiver The object that will receive the ordered list of milestones.
+     * @param centralPoint The central point of the square
+     * @param sideLength The square's side length
+     */
     public static void getMilestones(final MilestonesReceiver milestonesReceiver, LatLng centralPoint, double sideLength) {
         BoundingBox bbox = new BoundingBox(centralPoint, sideLength);
         performGet(bbox, null, milestonesReceiver);
     }
 
-    private static void performGet(BoundingBox bbox, final RankingRating rankingRating, final MilestonesReceiver milestonesReceiver) {
+    /**
+     * Starts a HTTP get request via the Remote class.
+     * @param bbox A square representing an area with milestones
+     * @param rankingHelper An object helping to fix the desired list.
+     * @param milestonesReceiver The object that will receive the ordered list of milestones.
+     */
+    private static void performGet(BoundingBox bbox, final RankingHelper rankingHelper, final MilestonesReceiver milestonesReceiver) {
         status = GetStatus.RUNNING;
 
         try {
@@ -72,9 +104,9 @@ public class Ranking {
 			            Log.d("RankingTest", e.getMessage());
 		            }
 
-		            if (rankingRating != null) {
-			            rankingRating.removeUnwanted(milestones);
-			            Collections.sort(milestones, rankingRating);
+		            if (rankingHelper != null) {
+			            rankingHelper.removeUnwanted(milestones);
+			            Collections.sort(milestones, rankingHelper);
 		            }
 
 		            milestonesReceiver.onMilestonesRecieved(milestones);
@@ -93,12 +125,18 @@ public class Ranking {
         }
     }
 
+    /**
+     * Showing the status of the Ranking class.
+     * @return The current status of the class
+     */
     public static GetStatus getStatus() {
         return status;
     }
 
+    /**
+     * Resets the class's status
+     */
     public static void reset() {
         status = GetStatus.PENDING;
     }
-
 }

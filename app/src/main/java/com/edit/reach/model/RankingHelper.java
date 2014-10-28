@@ -7,11 +7,11 @@ import java.util.Comparator;
 
 import static com.edit.reach.model.interfaces.IMilestone.*;
 
-public class RankingRating implements Comparator<IMilestone> {
+public class RankingHelper implements Comparator<IMilestone> {
 
     private final Category category;
 
-    public RankingRating(Category category) {
+    public RankingHelper(Category category) {
         this.category = category;
     }
 
