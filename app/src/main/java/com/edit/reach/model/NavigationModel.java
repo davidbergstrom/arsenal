@@ -10,7 +10,6 @@ import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.model.interfaces.MilestonesReceiver;
 import com.edit.reach.model.interfaces.SuggestionListener;
 import com.edit.reach.system.VehicleSystem;
-import com.edit.reach.utils.SuggestionUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -306,8 +305,8 @@ public final class NavigationModel implements Runnable, Observer {
 	 */
 	public List<String> getMatchedStringResults(final String searchString) {
 		Log.d("NavigationModel", "entered getMatchedStringResults");
-		SuggestionUtil suggestionUtil = new SuggestionUtil(suggestionListener);
-		suggestionUtil.searchForAddresses(searchString);
+		Suggestion suggestion = new Suggestion(suggestionListener);
+		suggestion.searchForAddresses(searchString);
 		return searchResults;
 	}
 

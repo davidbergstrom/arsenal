@@ -1,4 +1,4 @@
-package com.edit.reach.utils;
+package com.edit.reach.model;
 
 import com.edit.reach.model.interfaces.IMilestone;
 
@@ -7,11 +7,18 @@ import java.util.Comparator;
 
 import static com.edit.reach.model.interfaces.IMilestone.*;
 
-public class RankingUtil implements Comparator<IMilestone> {
+/**
+ * A class helping the Ranking class to make specialized lists
+ */
+public class RankingHelper implements Comparator<IMilestone> {
 
     private final Category category;
 
-    public RankingUtil(Category category) {
+    /**
+     * Creates a RankingHelper with a specified category
+     * @param category The category wanted inside a list
+     */
+    public RankingHelper(Category category) {
         this.category = category;
     }
 
@@ -24,6 +31,10 @@ public class RankingUtil implements Comparator<IMilestone> {
         return 0;
     }
 
+    /**
+     * Removes all milestones that are not within this instance's category
+     * @param milestones A list of milestones.
+     */
     public void removeUnwanted(ArrayList<IMilestone> milestones) {
         for (int i = 0; i < milestones.size(); i++) {
             if (!milestones.get(i).hasCategory(category)) {

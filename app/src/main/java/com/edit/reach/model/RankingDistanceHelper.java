@@ -1,14 +1,24 @@
-package com.edit.reach.utils;
+package com.edit.reach.model;
 
 import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.model.LatLng;
 
 import static com.edit.reach.model.interfaces.IMilestone.Category;
 
-public class RankingDistanceUtil extends RankingUtil {
+/**
+ * A class helping the Ranking class to make specialized lists
+ */
+public class RankingDistanceHelper extends RankingHelper {
     private final LatLng driverPoint;
 
-    public RankingDistanceUtil(Category category, LatLng driverPoint) {
+    /**
+     * Creates a RankingHelper with a specified category
+     * and the driver's current location.
+     * @param category The category wanted inside a list
+     * @param driverPoint The driver's current location
+     */
+    public RankingDistanceHelper(Category category, LatLng driverPoint) {
         super(category);
         this.driverPoint = driverPoint;
     }
