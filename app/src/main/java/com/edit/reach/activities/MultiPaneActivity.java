@@ -57,8 +57,6 @@ public class MultiPaneActivity extends FragmentActivity {
 
     private Route route;
 
-	private ControlFragment.State state;
-
     // A handler for the UI thread. The Handler recieves messages from other thread.
     private final Handler mainHandler = new Handler(Looper.getMainLooper()) {
 
@@ -207,7 +205,6 @@ public class MultiPaneActivity extends FragmentActivity {
 	 */
 	public void initializeMovingUI(){
 		controlFragment = ControlFragment.newInstance("MovingMode");
-		state = ControlFragment.State.INFO;
 		getSupportFragmentManager().beginTransaction().add(R.id.container_fragment_left, controlFragment).commit();
 	}
 
@@ -424,10 +421,6 @@ public class MultiPaneActivity extends FragmentActivity {
 	public void getMatchedStringResults(String str){
 		List<String> list = navigationModel.getMatchedStringResults(str);
 		routeFragment.suggestionList(list);
-	}
-
-	public void readyToSetState() {
-		controlFragment.setState(state);
 	}
 
 }

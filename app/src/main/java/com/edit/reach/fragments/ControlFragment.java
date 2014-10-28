@@ -39,14 +39,6 @@ public class ControlFragment extends Fragment{
 	private ImageState isRestroom;
 	private ImageState isGasStation;
 
-
-    //State of Panel
-	private State currentState;
-
-    public enum State {
-		ROUTELESS, INFO, SUGGESTION
-	}
-
 	public enum ImageState {
 		ORIGINAL, PRESSED
 	}
@@ -267,8 +259,6 @@ public class ControlFragment extends Fragment{
 			}
 		});
 
-		((MultiPaneActivity)getActivity()).readyToSetState();
-
 		return view;
 	}
 	// Is not used in this version of the application. For future use.
@@ -331,33 +321,6 @@ public class ControlFragment extends Fragment{
 		isRestArea = ImageState.ORIGINAL;
 		isRestroom = ImageState.ORIGINAL;
 		isGasStation = ImageState.ORIGINAL;
-	}
-
-
-
-	public void setState(State newState) {
-
-		currentState = newState;
-
-		if (currentState == State.ROUTELESS) {
-			setStateRouteless();
-		} else if (currentState == State.INFO) {
-			setStateInfo();
-		} else if (currentState == State.SUGGESTION) {
-			setStateSuggestion();
-		} else {
-			setStateRouteless();
-		}
-	}
-
-	private void setStateRouteless() {
-		navigationInfoContainer.setVisibility(View.GONE);
-	}
-
-	private void setStateInfo() {
-	}
-
-	private void setStateSuggestion() {
 	}
 
 }
