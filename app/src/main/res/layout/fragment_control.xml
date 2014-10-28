@@ -24,14 +24,14 @@
             android:padding="5dp">
 
             <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-
                     android:id="@+id/tv_navigation_info_title"
                     android:text="@string/tv_navigation_info_title"
                     android:textSize="@dimen/tv_navigation_info_title"
                     android:textColor="@color/tv_navigation_info_title"/>
-            <!--
+
+            <!-- Total time left
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

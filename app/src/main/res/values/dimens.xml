@@ -60,7 +60,7 @@
 	<!-- Control Fragment - Top Info Box -->
 	<dimen name="navigation_info_margin_bottom">10dp</dimen>
 	<dimen name="navigation_info_margin_top">10dp</dimen>
-	<dimen name="tv_navigation_info_title">24sp</dimen>
+	<dimen name="tv_navigation_info_title">22sp</dimen>
 	<dimen name="tv_navigation_info_specs">21sp</dimen>
 	<dimen name="navigation_info_icons_holder_margin_top">5dp</dimen>
     <dimen name="tv_navigation_info_description">20sp</dimen>
