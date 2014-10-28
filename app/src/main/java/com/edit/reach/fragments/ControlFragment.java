@@ -320,7 +320,7 @@ public class ControlFragment extends Fragment{
 			Log.d("ControlFragment", "shadeIcons");
 		}
 	}
-
+	//Is not used in this version of the application. For future use.
 	public void showAllIcons(){
 		ibFood.setImageResource(R.drawable.food_150);
 		ibRestArea.setImageResource(R.drawable.restarea_150);
@@ -334,7 +334,10 @@ public class ControlFragment extends Fragment{
 	}
 
 
-
+	/**
+	 *
+	 * @param newState
+	 */
 	public void setState(State newState) {
 
 		currentState = newState;
