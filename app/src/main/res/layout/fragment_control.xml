@@ -29,7 +29,8 @@
                     android:id="@+id/tv_navigation_info_title"
                     android:text="@string/tv_navigation_info_title"
                     android:textSize="@dimen/tv_navigation_info_title"
-                    android:textColor="@color/tv_navigation_info_title"/>
+                    android:textColor="@color/tv_navigation_info_title"
+                    android:maxLines="2"/>
 
             <!-- Total time left
             <TextView
