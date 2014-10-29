@@ -168,8 +168,12 @@ public final class VehicleSystem extends Observable implements Runnable {
 	};
 	// A thread for listening to the vehicle signals.
 	private final Thread vehicleSignals;
-	// A lock object used to lock the signalHandler object.
-	private final Object lockObject = new Object();
+
+	// Lock objects
+	private final Object handlerLock = new Object();
+	private final Object fuelRateListLock = new Object();
+	private final Object automotiveManagerLock = new Object();
+
 	// A runnable that updates time.
 	private final Runnable timeRunnable = new Runnable() {
 		@Override
@@ -204,7 +208,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 		vehicleSignals.start();
 
 		// Register Listeners
-		synchronized (automotiveManager) {
+		synchronized (automotiveManagerLock) {
 			automotiveManager.register(
 					AutomotiveSignalId.FMS_FUEL_LEVEL_1,
 					AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE,
@@ -212,10 +216,10 @@ public final class VehicleSystem extends Observable implements Runnable {
 					AutomotiveSignalId.FMS_VEHICLE_MOTION);
 		}
 
-		synchronized (lockObject) {
+		synchronized (handlerLock) {
 			while (signalHandler == null) {
 				try {
-					lockObject.wait();
+					handlerLock.wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -228,9 +232,9 @@ public final class VehicleSystem extends Observable implements Runnable {
 	public void run() {
 		try {
 			Looper.prepare();
-			synchronized (lockObject) {
+			synchronized (handlerLock) {
 				signalHandler = new Handler();
-				lockObject.notifyAll();
+				handlerLock.notifyAll();
 			}
 			//signalHandler = new Handler();
 			Looper.loop();
@@ -296,7 +300,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 		if (getVehicleState() != VehicleState.NOT_IN_DRIVE) {
 			return calculateTimeToRefuel(currentLitersInTank);
 		} else {
-			synchronized (fuelRateList) {
+			synchronized (fuelRateListLock) {
 				if (tankSize.get() == 0 || fuelRateList.size() == 0) {
 					// Not applicable because no record of driving is available.
 					return -1;
@@ -393,7 +397,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 
 	// Method that calculates and sets the size of the vehicles tank.
 	private void calculateTankSize() {
-		synchronized (fuelRateList) {
+		synchronized (fuelRateListLock) {
 			if (tankSize.get() == 0f && fuelRateList.size() > 100) {
 				float deltaFuelLevel = fuelLevel.get() - startFuelLevel.get();
 				float deltaTime = ((float) (((System.nanoTime() - startTime.get()) * UniversalConstants.NANOSECONDS_TO_SECONDS) * UniversalConstants.SECONDS_TO_HOURS));
@@ -410,7 +414,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 	// Method that calculates the time until a refuel is needed.
 	private double calculateTimeToRefuel(final float currentLitersInTank) {
 		float addedRate = 0;
-		synchronized (fuelRateList) {
+		synchronized (fuelRateListLock) {
 			for (Float rate : fuelRateList) {
 				addedRate += rate;
 			}
