@@ -25,7 +25,7 @@ import com.edit.reach.model.Leg;
 import com.edit.reach.model.Map;
 import com.edit.reach.model.NavigationModel;
 import com.edit.reach.model.Route;
-import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.model.IMilestone;
 import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -328,7 +328,7 @@ public class MultiPaneActivity extends FragmentActivity {
 
 	public void goBackToControlFragment(){
 		getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
-		navigationModel.onSuggestionCancel();
+		navigationModel.cancelMilestone();
 		//controlFragment.showAllIcons();
 	}
 

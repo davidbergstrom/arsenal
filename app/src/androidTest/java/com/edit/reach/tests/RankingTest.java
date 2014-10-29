@@ -4,8 +4,8 @@ import android.util.Log;
 import com.edit.reach.constants.GetStatus;
 import com.edit.reach.model.Milestone;
 import com.edit.reach.model.Ranking;
-import com.edit.reach.model.interfaces.IMilestone;
-import com.edit.reach.model.interfaces.MilestonesReceiver;
+import com.edit.reach.model.IMilestone;
+import com.edit.reach.model.MilestonesReceiver;
 import com.google.android.gms.maps.model.LatLng;
 import junit.framework.TestCase;
 

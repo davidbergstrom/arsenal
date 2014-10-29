@@ -3,7 +3,7 @@ package com.edit.reach.tests;
 import android.test.InstrumentationTestCase;
 import android.util.Log;
 import com.edit.reach.model.Milestone;
-import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.model.IMilestone;
 import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONException;
 import org.json.JSONObject;

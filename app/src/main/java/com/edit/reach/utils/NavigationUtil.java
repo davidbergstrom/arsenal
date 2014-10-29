@@ -1,12 +1,12 @@
 package com.edit.reach.utils;
 
 import com.edit.reach.app.R;
-import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.model.IMilestone;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 
-import static com.edit.reach.model.interfaces.IMilestone.*;
+import static com.edit.reach.model.IMilestone.*;
 
 /**
  * Created by Joakim Berntsson on 2014-10-01.

@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
-import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.model.IMilestone;
 import com.edit.reach.views.widgets.MilestonesCard;
 
 import java.util.ArrayList;

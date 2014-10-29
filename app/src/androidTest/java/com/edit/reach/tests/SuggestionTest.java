@@ -1,7 +1,7 @@
 package com.edit.reach.tests;
 
 import android.util.Log;
-import com.edit.reach.model.interfaces.SuggestionListener;
+import com.edit.reach.model.SuggestionListener;
 import com.edit.reach.model.Suggestion;
 import junit.framework.TestCase;
 

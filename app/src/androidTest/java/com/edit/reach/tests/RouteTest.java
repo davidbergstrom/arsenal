@@ -5,8 +5,7 @@ import com.edit.reach.model.Leg;
 import com.edit.reach.model.Pause;
 import com.edit.reach.model.Route;
 import com.edit.reach.model.Step;
-import com.edit.reach.model.interfaces.RouteListener;
-import com.google.android.gms.maps.model.LatLng;
+import com.edit.reach.model.RouteListener;
 import junit.framework.TestCase;
 
 import java.util.concurrent.CountDownLatch;

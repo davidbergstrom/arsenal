@@ -1,7 +1,7 @@
 package com.edit.reach.system;
 
 import android.util.Log;
-import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.model.IMilestone;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.UnsupportedEncodingException;

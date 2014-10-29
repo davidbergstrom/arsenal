@@ -3,7 +3,7 @@ package com.edit.reach.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.util.Log;
 import com.edit.reach.model.Milestone;
-import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.model.IMilestone;
 import com.edit.reach.system.GoogleMapsEndpoints;
 import com.google.android.gms.maps.model.LatLng;
 import junit.framework.TestCase;

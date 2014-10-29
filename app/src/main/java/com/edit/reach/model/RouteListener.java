@@ -1,4 +1,4 @@
-package com.edit.reach.model.interfaces;
+package com.edit.reach.model;
 
 import com.edit.reach.model.Leg;
 import com.edit.reach.model.Pause;

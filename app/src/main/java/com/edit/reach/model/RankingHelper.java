@@ -1,11 +1,9 @@
 package com.edit.reach.model;
 
-import com.edit.reach.model.interfaces.IMilestone;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import static com.edit.reach.model.interfaces.IMilestone.*;
+import static com.edit.reach.model.IMilestone.*;
 
 /**
  * A class helping the Ranking class to make specialized lists

@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * Project: Milestone
  * Date: 2014-09-27
  * Time: 19:28
- * Last Edit: 2014-10-27
+ * Last Edit: 2014-10-29
  */
 public final class VehicleSystem extends Observable implements Runnable {
 	/* --- INSTANCE VARIABLES --- */
@@ -63,6 +63,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 	private final AtomicBoolean timeHasBeenNotified = new AtomicBoolean(false);
 	// A list with the fuel rate
 	private final List<Float> fuelRateList = new ArrayList<Float>();
+
 	private final AutomotiveListener automotiveListener = new AutomotiveListener() {
 
 		@Override
@@ -181,7 +182,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 			signalHandler.postDelayed(this, 1000);
 		}
 	};
-	private final AutomotiveCertificate automotiveCertificate = new AutomotiveCertificate(new byte[0]);
+	private final AutomotiveCertificate automotiveCertificate = new AutomotiveCertificate(new byte[1]);
 	private final DriverDistractionListener driverDistractionListener = new DriverDistractionListener() {
 		@Override
 		public void levelChanged(DriverDistractionLevel driverDistractionLevel) {
@@ -231,7 +232,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 				signalHandler = new Handler();
 				lockObject.notifyAll();
 			}
-			signalHandler = new Handler();
+			//signalHandler = new Handler();
 			Looper.loop();
 		} catch (Throwable t) {
 			Log.d("Error in signalThread: ", "" + t);

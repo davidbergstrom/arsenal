@@ -1,7 +1,6 @@
 package com.edit.reach.model;
 
 import android.util.Log;
-import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.*;

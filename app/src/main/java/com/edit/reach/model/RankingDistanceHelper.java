@@ -1,10 +1,9 @@
 package com.edit.reach.model;
 
-import com.edit.reach.model.interfaces.IMilestone;
 import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.model.LatLng;
 
-import static com.edit.reach.model.interfaces.IMilestone.Category;
+import static com.edit.reach.model.IMilestone.Category;
 
 /**
  * A class helping the Ranking class to make specialized lists

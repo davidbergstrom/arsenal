@@ -2,8 +2,6 @@ package com.edit.reach.model;
 
 import android.util.Log;
 import com.edit.reach.constants.GetStatus;
-import com.edit.reach.model.interfaces.IMilestone;
-import com.edit.reach.model.interfaces.MilestonesReceiver;
 import com.edit.reach.system.Remote;
 import com.edit.reach.system.ResponseHandler;
 import com.edit.reach.system.WorldTruckerEndpoints;
@@ -17,7 +15,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static com.edit.reach.model.interfaces.IMilestone.Category;
+import static com.edit.reach.model.IMilestone.Category;
 
 /**
  * This classed is used to deliver milestones from the

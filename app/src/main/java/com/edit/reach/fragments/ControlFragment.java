@@ -16,7 +16,7 @@ import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.constants.UniversalConstants;
 import com.edit.reach.model.Leg;
-import com.edit.reach.model.interfaces.IMilestone;
+import com.edit.reach.model.IMilestone;
 import com.edit.reach.utils.TimeConvert;
 
 import java.util.List;

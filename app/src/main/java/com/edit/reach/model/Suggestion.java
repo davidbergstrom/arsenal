@@ -1,7 +1,6 @@
 package com.edit.reach.model;
 
 import android.util.Log;
-import com.edit.reach.model.interfaces.SuggestionListener;
 import com.edit.reach.system.GoogleMapsEndpoints;
 import com.edit.reach.system.Remote;
 import com.edit.reach.system.ResponseHandler;

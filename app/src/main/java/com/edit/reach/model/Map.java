@@ -4,8 +4,6 @@ import android.location.Location;
 import android.os.Handler;
 import android.util.Log;
 import com.edit.reach.constants.SignalType;
-import com.edit.reach.model.interfaces.IMilestone;
-import com.edit.reach.model.interfaces.RouteListener;
 import com.edit.reach.utils.NavigationUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
