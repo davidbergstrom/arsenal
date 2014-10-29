@@ -12,14 +12,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-
-// TODO Test Multithreading for AISA
-// Bugs:
-// Clicking on ADD not working.
-// Clicking on cancel not working properly
-// Slow reloading?
 
 /**
  * Class that merges data from the vehicle and the map.
@@ -50,8 +43,6 @@ public final class NavigationModel implements Runnable, Observer {
 	private Marker marker;
 
 	private IMilestone.Category milestoneCategory;
-
-	//private final AtomicInteger milestoneAlgorithmStage = new AtomicInteger(0);
 
 	// Using AtomicInteger for thread safety
 	private final MilestonesReceiver milestonesReceiver = new MilestonesReceiver() {
@@ -181,11 +172,8 @@ public final class NavigationModel implements Runnable, Observer {
 					map.getRoute().addMilestone(this.milestone);
 				}
 
-				//milestoneAlgorithmStage.set(0);
-
 			// If milestone was not accepted by the user.
 			} else{
-				//milestoneAlgorithmStage.getAndAdd(1);
 				getPauseSuggestions(milestoneCategory);
 			}
 		}
@@ -197,7 +185,6 @@ public final class NavigationModel implements Runnable, Observer {
 	public void cancelMilestone() {
 		// Reset the search range.
 		searchRange.set(STANDARD_SEARCH_RANGE);
-		//milestoneAlgorithmStage.set(0);
 		setMapState(Map.MapState.MOVING);
 	}
 
