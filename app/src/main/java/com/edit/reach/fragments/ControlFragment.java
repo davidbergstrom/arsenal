@@ -161,13 +161,15 @@ public class ControlFragment extends Fragment{
 		// Inflate the layout for this fragment
 
 		View view = inflater.inflate(R.layout.fragment_control, container, false);
+        View totalTimeContainer = inflater.inflate(R.layout.total_time_window, null);
+
+        textTotalTime = (TextView) totalTimeContainer.findViewById(R.id.tv_navigation_info_total_time_left);
 
 		//Get Layout Containers to easily handle states
 		navigationInfoContainer = (LinearLayout) view.findViewById(R.id.navigation_info_container);
 
         //Get TextViews
         textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
-        textTotalTime = (TextView) view.findViewById(R.id.tv_navigation_info_total_time_left);
         textTimeToNextStop = (TextView) view.findViewById(R.id.navigation_info_time);
         textDistanceToTextStop = (TextView) view.findViewById(R.id.navigation_info_distance);
 

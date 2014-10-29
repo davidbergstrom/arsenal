@@ -44,12 +44,12 @@
 	<string name="tv_control_info_time_clock_right">3h 12m</string>
 	<string name="tv_navigation_info_title">Title</string>
 	<string name="tv_navigation_info_rating">Rating</string>
-	<string name="tv_navigation_info_time">Time</string>
-	<string name="tv_navigation_info_distance">Distance</string>
+	<string name="tv_navigation_info_time">-</string>
+    <string name="tv_navigation_info_total_time_left"></string>
+	<string name="tv_navigation_info_distance">-</string>
 	<string name="suggestion_button_confirm">Add</string>
     <string name="suggestion_button_next">Skip</string>
     <string name="suggestion_button_cancel">Cancel</string>
     <string name="tv_navigation_info_description">Description</string>
-    <string name="tv_navigation_info_total_time_left">TimeLeft</string>
 
 </resources>
