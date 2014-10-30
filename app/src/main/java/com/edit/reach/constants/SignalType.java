@@ -3,7 +3,7 @@ package com.edit.reach.constants;
 /**
  * Class with static ints containing ID:s for different types of signals.
  * Created by: Tim Kerschbaumer
- * Project: arsenal
+ * Project: Milestone
  * Date: 2014-10-13
  * Time: 16:16
  */

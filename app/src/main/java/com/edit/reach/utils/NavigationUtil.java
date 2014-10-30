@@ -6,7 +6,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 
-import static com.edit.reach.model.IMilestone.*;
+import static com.edit.reach.model.IMilestone.Category;
 
 /**
  * Created by Joakim Berntsson on 2014-10-01.

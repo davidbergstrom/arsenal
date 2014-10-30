@@ -3,12 +3,15 @@ package com.edit.reach.utils;
 /**
  * This class is used to model an AtomicFloat
  * Created by: Tim Kerschbaumer
- * Project: arsenal
+ * Project: Milestone
  * Date: 14-10-20
  * Time: 15:13
  */
+
 import java.util.concurrent.atomic.AtomicInteger;
-import static java.lang.Float.*;
+
+import static java.lang.Float.floatToIntBits;
+import static java.lang.Float.intBitsToFloat;
 
 public class AtomicFloat extends Number {
 

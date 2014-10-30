@@ -3,7 +3,7 @@ package com.edit.reach.utils;
 /**
  * A converter that converts time.
  * Created by: David Bergstrom
- * Project: arsenal
+ * Project: Milestone
  * Date: 14-10-22
  * Time: 19.16
  */

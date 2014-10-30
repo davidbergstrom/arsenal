@@ -1,10 +1,5 @@
 package com.edit.reach.model;
 
-import com.edit.reach.model.Leg;
-import com.edit.reach.model.Pause;
-import com.edit.reach.model.Route;
-import com.edit.reach.model.Step;
-
 /**
  * Created by Joakim on 2014-10-06.
  * A listener for routes. The listener gets notified when the route has been initialized.

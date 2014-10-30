@@ -3,7 +3,7 @@ package com.edit.reach.constants;
 /**
  * Class that holds constants.
  * Created by: Tim Kerschbaumer
- * Project: arsenal
+ * Project: Milestone
  * Date: 2014-10-16
  * Time: 17:20
  */

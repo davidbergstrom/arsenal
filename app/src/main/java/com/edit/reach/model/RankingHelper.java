@@ -3,7 +3,7 @@ package com.edit.reach.model;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import static com.edit.reach.model.IMilestone.*;
+import static com.edit.reach.model.IMilestone.Category;
 
 /**
  * A class helping the Ranking class to make specialized lists
