@@ -3,20 +3,15 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.constants.UniversalConstants;
-import com.edit.reach.model.Leg;
 import com.edit.reach.model.IMilestone;
+import com.edit.reach.model.Leg;
 import com.edit.reach.utils.TimeConvert;
 
 import java.util.List;
@@ -110,7 +105,6 @@ public class ControlFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 ((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.RESTAREA);
-                Log.d("INPUTBUTTON", "Restarea");
             }
         });
         ibFood = (ImageButton) view.findViewById(R.id.button_control_input_restaurant);
@@ -119,7 +113,6 @@ public class ControlFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 ((MultiPaneActivity) getActivity()).getPauseSuggestions(IMilestone.Category.FOOD);
-                Log.d("INPUTBUTTON", "Food");
             }
         });
         ibRestroom = (ImageButton) view.findViewById(R.id.button_control_input_toilet);
@@ -128,7 +121,6 @@ public class ControlFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 ((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.TOILET);
-                Log.d("INPUTBUTTON", "Toilet");
             }
         });
         ibGasStation = (ImageButton) view.findViewById(R.id.button_control_input_gasstation);
@@ -137,7 +129,6 @@ public class ControlFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 ((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.GASSTATION);
-                Log.d("INPUTBUTTON", "Gas Station");
             }
         });
 
@@ -183,7 +174,6 @@ public class ControlFragment extends Fragment{
             float nextStopClock = leg.getDuration();
             String nextStopName = milestone.getName();
             float distanceToNextStop = leg.getDistance();
-            Log.d("ControlFragment", "Mile :"+milestone.toString() + ", cat :"+milestone.getCategories());
             List<IMilestone.Category> categories = milestone.getCategories();
 
             textNextStop.setText(nextStopName);
@@ -197,30 +187,22 @@ public class ControlFragment extends Fragment{
             ivToilet.setVisibility(ImageView.GONE);
 
             for (IMilestone.Category cat : categories) {
-
-                Log.d("ControlFragment:", "" + cat);
-
                 switch (cat) {
                     case FOOD:
                         ivFood.setVisibility(ImageView.VISIBLE);
-                        Log.d("ControlFragment:", "Set FOOD Visible");
                         break;
 
                     case GASSTATION:
                         ivGasstation.setVisibility(ImageView.VISIBLE);
-                        Log.d("ControlFragment:", "Set GASSTATION Visible");
                         break;
 
                     case RESTAREA:
                         ivRestArea.setVisibility(ImageView.VISIBLE);
-                        Log.d("ControlFragment:", "Set RESTAREA Visible");
                         break;
 
                     case TOILET:
                         ivToilet.setVisibility(ImageView.VISIBLE);
-                        Log.d("ControlFragment:", "Set TOILET Visible");
                         break;
-
                 }
             }
         }

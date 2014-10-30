@@ -39,6 +39,10 @@ public class SuggestionFragment extends Fragment {
 
 	private IMilestone milestone;
 
+    public SuggestionFragment() {
+        // Required empty public constructor
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,9 +108,6 @@ public class SuggestionFragment extends Fragment {
 	 */
     public void setMilestone(IMilestone milestone) {
 	    this.milestone = milestone;
-	    Log.d("SuggestionFragment", "setMilestone");
-	    Log.d("SuggestionFragment", "" + milestone.getName());
-	    Log.d("SuggestionFragment", "" + milestone.getRank());
 
         String nextStopName = milestone.getName();
         int rating = milestone.getRank();
@@ -160,9 +161,5 @@ public class SuggestionFragment extends Fragment {
 		args.putString(ARG_ID, id);
 		fragment.setArguments(args);
 		return fragment;
-	}
-
-	public SuggestionFragment() {
-		// Required empty public constructor
 	}
 }

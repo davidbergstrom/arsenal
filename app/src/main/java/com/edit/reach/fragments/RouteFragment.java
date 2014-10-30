@@ -65,7 +65,6 @@ public class RouteFragment extends Fragment {
 		if (getArguments() != null) {
 			mId = getArguments().getString(ARG_ID);
 		}
-
 	}
 
 	@Override
@@ -161,8 +160,6 @@ public class RouteFragment extends Fragment {
 				}
 			}
 		});
-/*		Button btGetNearestRoute = (Button) view.findViewById(R.id.btSubmitNearestRoute);
-		btGetNearestRoute.setOnClickListener(getNearestRouteListener);*/
 
 		return view;
 	}
@@ -208,7 +205,6 @@ public class RouteFragment extends Fragment {
 		actTo.setText(to);
 	}
 
-	//Kan behövas för att dynamiskt lägga till fler textfält för del-destinationer
 	private LinearLayout linearLayout (int _intID){
 		LinearLayout ll = new LinearLayout(getActivity());
 		ll.setId(_intID);
