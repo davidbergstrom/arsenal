@@ -36,8 +36,6 @@ public final class NavigationModel implements Runnable, Observer {
 	// Using AtomicLong for thread safety
 	private final AtomicLong searchRange = new AtomicLong(STANDARD_SEARCH_RANGE);
 
-	private final Object mapLock = new Object();
-
 	private Handler pipelineHandler;
 
 	private IMilestone milestone;
@@ -51,11 +49,11 @@ public final class NavigationModel implements Runnable, Observer {
 	private final MilestonesReceiver milestonesReceiver = new MilestonesReceiver() {
 
 		@Override
-		public void onMilestonesRecieved(ArrayList<IMilestone> milestonesList) {
+		public void onMilestonesRecieved(final ArrayList<IMilestone> milestonesList) {
 			Log.d("NavigationModel", "entered onMilestonesRecieved");
 
 			// If milestones has not been initialized.
-			if(milestones == null) {
+			if (milestones == null) {
 				milestones = milestonesList;
 			}
 			updateMilestonesList();
@@ -138,7 +136,7 @@ public final class NavigationModel implements Runnable, Observer {
 			case RESTAREA:
 				findMilestone(REST_THRESHOLD);
 				break;
-			case RESTAURANT:
+			case FOOD:
 				findMilestone(FOOD_THRESHOLD);
 				break;
 			default:
@@ -154,32 +152,30 @@ public final class NavigationModel implements Runnable, Observer {
 	public void acceptMilestone(final boolean accepted) {
 		Log.d("NavigationModel", "entered acceptMilestone");
 
-		synchronized (mapLock) {
-			// Remove marker from map.
-			marker.remove();
+		// Remove marker from map.
+		marker.remove();
 
-			// If milestone was accepted by the user.
-			if (accepted) {
-				setMapState(Map.MapState.MOVING);
-				searchRange.set(STANDARD_SEARCH_RANGE);
+		// If milestone was accepted by the user.
+		if (accepted) {
+			map.setMapState(Map.MapState.MOVING);
+			searchRange.set(STANDARD_SEARCH_RANGE);
 
-				boolean milestoneExists = false;
-				// Check if milestone already exists
-				for (Leg leg : map.getRoute().getLegs()) {
-					if (leg.getMilestone() != null && leg.getMilestone().equals(this.milestone)) {
-						milestoneExists = true;
-					}
+			boolean milestoneExists = false;
+			// Check if milestone already exists
+			for (Leg leg : map.getRoute().getLegs()) {
+				if (leg.getMilestone() != null && leg.getMilestone().equals(this.milestone)) {
+					milestoneExists = true;
 				}
-				// If milestone does not exist. Create it.
-				if (!milestoneExists) {
-					map.getRoute().addMilestone(this.milestone);
-				}
-
-				// If milestone was not accepted by the user.
-			} else{
-				// Get next milestone
-				getMilestoneSuggestions(milestoneCategory);
 			}
+			// If milestone does not exist. Create it.
+			if (!milestoneExists) {
+				map.getRoute().addMilestone(this.milestone);
+			}
+
+			// If milestone was not accepted by the user.
+		} else {
+			// Get next milestone
+			getMilestoneSuggestions(milestoneCategory);
 		}
 	}
 
@@ -187,10 +183,11 @@ public final class NavigationModel implements Runnable, Observer {
 	 * Call this method to cancel a search for milestones intiated with "getMilestoneSuggestions".
 	 */
 	public void cancelMilestoneSearch() {
+		Log.d("NavigationModel", "entered cancelMilestoneSearch");
 		// Reset the search range.
 		searchRange.set(STANDARD_SEARCH_RANGE);
 		// Set the map state to moving.
-		setMapState(Map.MapState.MOVING);
+		map.setMapState(Map.MapState.MOVING);
 		// Null out the milestones list.
 		this.milestones = null;
 	}
@@ -201,9 +198,7 @@ public final class NavigationModel implements Runnable, Observer {
 	 */
 	public Map getMap() {
 		Log.d("NavigationModel", "entered getMap");
-		synchronized (mapLock) {
-			return map;
-		}
+		return map;
 	}
 
 	/**
@@ -212,9 +207,7 @@ public final class NavigationModel implements Runnable, Observer {
 	 */
 	public void addMilestones(List<IMilestone> list) {
 		Log.d("NavigationModel", "entered addMilestones");
-		synchronized (mapLock) {
-			map.getRoute().addMilestones(list);
-		}
+		map.getRoute().addMilestones(list);
 	}
 
 	/**
@@ -223,9 +216,7 @@ public final class NavigationModel implements Runnable, Observer {
 	 */
 	public void setRoute(final Route newRoute) {
 		Log.d("NavigationModel", "entered setRoute");
-		synchronized (mapLock) {
-			map.setRoute(newRoute);
-		}
+		map.setRoute(newRoute);
 	}
 
 	/**
@@ -254,135 +245,132 @@ public final class NavigationModel implements Runnable, Observer {
 
 	@Override
 	public void update(Observable observable, final Object data) {
+		final long duration = map.getRoute().getDuration();
+		final Leg currentLeg = map.getRoute().getLegs().get(0);
 		pipelineHandler.post(new Runnable() {
 			@Override
 			public void run() {
 				// Obtain message from handler.
 				Message message = Message.obtain(mainHandler);
-				synchronized (mapLock) {
-					// Gets the route from the map;
-					Route route = map.getRoute();
+				// Gets the route from the map;
 
-					switch ((Integer) data) {
-						// If fuel changes
-						case SignalType.FUEL_UPDATE:
-							Log.d("UPDATE", "TYPE: FUEL_UPDATE");
+				switch ((Integer) data) {
+					// If fuel changes
+					case SignalType.FUEL_UPDATE:
+						Log.d("UPDATE", "TYPE: FUEL_UPDATE");
 
-							// Send the amount of fuel in tank to the UI.
-							message.obj = vehicleSystem.getFuelLevel();
-							message.what = SignalType.FUEL_UPDATE;
-							mainHandler.sendMessage(message);
-							break;
+						// Send the amount of fuel in tank to the UI.
+						message.obj = vehicleSystem.getFuelLevel();
+						message.what = SignalType.FUEL_UPDATE;
+						mainHandler.sendMessage(message);
+						break;
 
-						// If up time changes
-						case SignalType.UPTIME_UPDATE:
-							Log.d("UPDATE", "TYPE: UP_TIME_UPDATE");
+					// If up time changes
+					case SignalType.UPTIME_UPDATE:
+						Log.d("UPDATE", "TYPE: UP_TIME_UPDATE");
 
-							// Send the number of seconds until break to UI.
-							message.obj = vehicleSystem.getTimeUntilForcedRest();
-							message.what = SignalType.UPTIME_UPDATE;
-							mainHandler.sendMessage(message);
-							break;
+						// Send the number of seconds until break to UI.
+						message.obj = vehicleSystem.getTimeUntilForcedRest();
+						message.what = SignalType.UPTIME_UPDATE;
+						mainHandler.sendMessage(message);
+						break;
 
-						// If a leg changes
-						case SignalType.LEG_UPDATE:
-							Log.d("UPDATE", "TYPE: LEG_UPDATE");
+					// If a leg changes
+					case SignalType.LEG_UPDATE:
+						Log.d("UPDATE", "TYPE: LEG_UPDATE");
 
-							// Send the current leg to the UI.
-							message.obj = route.getLegs().get(0);
-							message.what = SignalType.LEG_UPDATE;
-							mainHandler.sendMessage(message);
-							break;
+						// Send the current leg to the UI.
+						message.obj = currentLeg;
+						message.what = SignalType.LEG_UPDATE;
+						mainHandler.sendMessage(message);
+						break;
 
-						// If route total time changes
-						case SignalType.ROUTE_TOTAL_TIME_UPDATE:
-							Log.d("UPDATE", "TYPE: ROUTE_TOTAL_TIME_UPDATE");
+					// If route total time changes
+					case SignalType.ROUTE_TOTAL_TIME_UPDATE:
+						Log.d("UPDATE", "TYPE: ROUTE_TOTAL_TIME_UPDATE");
 
-							// Send route duration to the UI.
-							message.obj = route.getDuration();
-							message.what = SignalType.ROUTE_TOTAL_TIME_UPDATE;
-							mainHandler.sendMessage(message);
-							break;
+						// Send route duration to the UI.
+						message.obj = duration;
+						message.what = SignalType.ROUTE_TOTAL_TIME_UPDATE;
+						mainHandler.sendMessage(message);
+						break;
 
-						// If route initialization succeeded
-						case SignalType.ROUTE_INITIALIZATION_SUCCEDED:
-							Log.d("UPDATE", "TYPE: ROUTE_INITIALIZATION_SUCCEEDED");
+					// If route initialization succeeded
+					case SignalType.ROUTE_INITIALIZATION_SUCCEDED:
+						Log.d("UPDATE", "TYPE: ROUTE_INITIALIZATION_SUCCEEDED");
 
-							// This has to be done in UI thread because of Google map.
-							mainHandler.post(new Runnable() {
-								@Override
-								public void run() {
-									addTimePause();
-								}
-							});
+						// This has to be done in UI thread because of Google map.
+						mainHandler.post(new Runnable() {
+							@Override
+							public void run() {
+								addTimePause();
+							}
+						});
 
-							message.what = SignalType.ROUTE_INITIALIZATION_SUCCEDED;
-							mainHandler.sendMessage(message);
-							break;
+						message.what = SignalType.ROUTE_INITIALIZATION_SUCCEDED;
+						mainHandler.sendMessage(message);
+						break;
 
-						// If route initialization failed.
-						case SignalType.ROUTE_INITIALIZATION_FAILED:
-							Log.d("UPDATE", "TYPE: ROUTE_INITIALIZATION_FAILED");
-							message.what = SignalType.ROUTE_INITIALIZATION_FAILED;
-							mainHandler.sendMessage(message);
-							break;
+					// If route initialization failed.
+					case SignalType.ROUTE_INITIALIZATION_FAILED:
+						Log.d("UPDATE", "TYPE: ROUTE_INITIALIZATION_FAILED");
+						message.what = SignalType.ROUTE_INITIALIZATION_FAILED;
+						mainHandler.sendMessage(message);
+						break;
 
-						// If a vehicle took a break longer than or equal to 45 minutes.
-						case SignalType.VEHICLE_TOOK_FINAL_BREAK:
-							Log.d("UPDATE", "TYPE: VEHICLE_TOOK_FINAL_BREAK");
+					// If a vehicle took a break longer than or equal to 45 minutes.
+					case SignalType.VEHICLE_TOOK_FINAL_BREAK:
+						Log.d("UPDATE", "TYPE: VEHICLE_TOOK_FINAL_BREAK");
 
-							// This has to be done in UI thread because of Googles Map.
-							// Removes and adds new time pauses
-							mainHandler.post(new Runnable() {
-								@Override
-								public void run() {
-									synchronized (mapLock) {
-										// Remove all pauses and add them again.
-										map.getRoute().removeAllPauses();
-										addTimePause();
-									}
-								}
-							});
-							break;
+						// This has to be done in UI thread because of Googles Map.
+						// Removes and adds new time pauses
+						mainHandler.post(new Runnable() {
+							@Override
+							public void run() {
+								// Remove all pauses and add them again.
+								map.getRoute().removeAllPauses();
+								addTimePause();
+							}
+						});
+						break;
 
-						// If vehicle distraction level changes.
-						case SignalType.DISTRACTION_LEVEL:
-							Log.d("UPDATE", "TYPE: DISTRACTION_LEVEL");
+					// If vehicle distraction level changes.
+					case SignalType.DISTRACTION_LEVEL:
+						Log.d("UPDATE", "TYPE: DISTRACTION_LEVEL");
 
-							message.what = SignalType.DISTRACTION_LEVEL;
-							message.obj = vehicleSystem.getDistractionLevel();
-							mainHandler.sendMessage(message);
-							break;
+						message.what = SignalType.DISTRACTION_LEVEL;
+						message.obj = vehicleSystem.getDistractionLevel();
+						mainHandler.sendMessage(message);
+						break;
 
-						// If vehicle stopped or started
-						case SignalType.VEHICLE_STOPPED_OR_STARTED:
-							// This signal basically does the same thing as the distractionlevel
-							// and is not used in the current version of this program.
-							Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
-							break;
+					// If vehicle stopped or started
+					case SignalType.VEHICLE_STOPPED_OR_STARTED:
+						// This signal basically does the same thing as the distractionlevel
+						// and is not used in the current version of this program.
+						Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
+						break;
 
-						// If the tank size has been calculated
-						case SignalType.TANK_SIZE_CALCULATED:
-							// This signal is not used in the current version of this program.
-							Log.d("UPDATE", "TYPE: TANK_SIZE_CALCULATED");
-							break;
+					// If the tank size has been calculated
+					case SignalType.TANK_SIZE_CALCULATED:
+						// This signal is not used in the current version of this program.
+						Log.d("UPDATE", "TYPE: TANK_SIZE_CALCULATED");
+						break;
 
-						// If vehicle is low on fuel.
-						case SignalType.LOW_FUEL:
-							// This signal is not used in the current version of this program.
-							Log.d("UPDATE", "TYPE: LOW_FUEL");
-							break;
+					// If vehicle is low on fuel.
+					case SignalType.LOW_FUEL:
+						// This signal is not used in the current version of this program.
+						Log.d("UPDATE", "TYPE: LOW_FUEL");
+						break;
 
-						// If vehicles up time is short relative to the legal up time.
-						case SignalType.SHORT_TIME:
-							// This signal is not used in the current version of this program.
-							Log.d("UPDATE", "TYPE: SHORT_TIME");
-							break;
+					// If vehicles up time is short relative to the legal up time.
+					case SignalType.SHORT_TIME:
+						// This signal is not used in the current version of this program.
+						Log.d("UPDATE", "TYPE: SHORT_TIME");
+						break;
 
-						default:
-							Log.d("UPDATE", "TYPE: ERROR; NOT A VALID SIGNAL");
-							break;
-					}
+					default:
+						Log.d("UPDATE", "TYPE: ERROR; NOT A VALID SIGNAL");
+						break;
 				}
 			}
 		});
@@ -392,41 +380,40 @@ public final class NavigationModel implements Runnable, Observer {
 
 	// Method that adds time-pauses in the map.
 	private void addTimePause() {
-		synchronized (mapLock) {
-			long routeTime = map.getRoute().getDuration();
-			long nmbrOfPauses = routeTime / UniversalConstants.LEGAL_UPTIME_IN_SECONDS;
+		long routeTime = map.getRoute().getDuration();
+		long nmbrOfPauses = routeTime / UniversalConstants.LEGAL_UPTIME_IN_SECONDS;
 
-			for (int i = 1; i <= nmbrOfPauses; i++) {
-				map.getRoute().addPause(i * UniversalConstants.LEGAL_UPTIME_IN_SECONDS, Pause.PauseType.TIME);
-			}
+		for (int i = 1; i <= nmbrOfPauses; i++) {
+			map.getRoute().addPause(i * UniversalConstants.LEGAL_UPTIME_IN_SECONDS, Pause.PauseType.TIME);
 		}
 	}
 
 	// Method that gets best-matched milestones
 	private void findMilestone(final int threshold) {
+		Log.d("NavigationModel", "entered findMilestone");
 		final Route route = map.getRoute();
 		final List<Leg> legs = route.getLegs();
+		final IMilestone legMilestone = legs.get(0).getMilestone();
 		final LatLng pointerLocation = route.getPointerLocation();
 
-		pipelineHandler.post(new Runnable() {
-			@Override
-			public void run() {
-				synchronized (mapLock) {
-					if (milestoneInThreshold(threshold) && milestoneHasCategory(milestoneCategory)) {
-						milestoneSuccess(legs.get(0).getMilestone());
-					} else {
-						LatLng start;
-						LatLng end = route.getLocation(searchRange.get());
-						if (searchRange.get() == STANDARD_SEARCH_RANGE) {
-							start = pointerLocation;
-						} else {
-							start = route.getLocation(searchRange.get() - (STANDARD_SEARCH_RANGE));
-						}
-						Ranking.getMilestonesByDistance(start, end, milestoneCategory, milestonesReceiver);
-					}
-				}
+		if (legMilestone != null && milestoneInThreshold(threshold) && milestoneHasCategory(milestoneCategory)) {
+			milestoneSuccess(legMilestone);
+		} else {
+			final LatLng start;
+			final LatLng end = route.getLocation(searchRange.get());
+			if (searchRange.get() == STANDARD_SEARCH_RANGE) {
+				start = pointerLocation;
+			} else {
+				start = route.getLocation(searchRange.get() - (STANDARD_SEARCH_RANGE));
 			}
-		});
+
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					Ranking.getMilestonesByDistance(start, end, milestoneCategory, milestonesReceiver);
+				}
+			}).start();
+		}
 	}
 
 	// This method determines if a milestone is in a threshold
@@ -487,7 +474,9 @@ public final class NavigationModel implements Runnable, Observer {
 
 	// This method notifies the handler with the found milestone.
 	private void milestoneSuccess(IMilestone milestone) {
+		Log.d("NavigationModel", "Thread in ms" + Thread.currentThread().getName());
 		Log.d("NavigationModel", "entered milestoneSuccess");
+
 		this.milestone = milestone;
 		this.marker = map.showMilestone(this.milestone);
 
@@ -500,20 +489,10 @@ public final class NavigationModel implements Runnable, Observer {
 	// This method notifies handler that algorithm failed to find stops.
 	private void milestoneFail() {
 		Log.d("NavigationModel", "entered milestoneFail");
-		setMapState(Map.MapState.MOVING);
+		map.setMapState(Map.MapState.MOVING);
 
 		Message message = mainHandler.obtainMessage();
 		message.what = SignalType.MILESTONE_FAIL;
 		mainHandler.sendMessage(message);
-	}
-
-	// Method that sets mapstate via the UI thread. Nessecary for google maps.
-	private void setMapState(final Map.MapState mapState) {
-		mainHandler.post(new Runnable() {
-			@Override
-			public void run() {
-				map.setMapState(mapState);
-			}
-		});
 	}
 }

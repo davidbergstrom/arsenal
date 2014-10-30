@@ -70,6 +70,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 	private final Thread vehicleSignals;
 	// A handler for the signals
 	private Handler signalHandler;
+
 	// Lock objects
 	private final Object handlerLock = new Object();
 	private final Object fuelRateListLock = new Object();
@@ -196,17 +197,18 @@ public final class VehicleSystem extends Observable implements Runnable {
 	private final DriverDistractionListener driverDistractionListener = new DriverDistractionListener() {
 		@Override
 		public void levelChanged(final DriverDistractionLevel driverDistractionLevel) {
-			signalHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					if(distractionLevel.get() != driverDistractionLevel.getLevel()) {
-						distractionLevel.set(driverDistractionLevel.getLevel());
-						setChanged();
-						notifyObservers(SignalType.DISTRACTION_LEVEL);
+			if(signalHandler != null) {
+				signalHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						if (driverDistractionLevel != null && (distractionLevel.get() != driverDistractionLevel.getLevel())) {
+							distractionLevel.set(driverDistractionLevel.getLevel());
+							setChanged();
+							notifyObservers(SignalType.DISTRACTION_LEVEL);
+						}
 					}
-				}
-			});
-
+				});
+			}
 		}
 	};
 
@@ -220,15 +222,6 @@ public final class VehicleSystem extends Observable implements Runnable {
 		vehicleSignals = new Thread(VehicleSystem.this, VEHICLE_SIGNALS_THREAD);
 		vehicleSignals.start();
 
-		// Register Listeners
-		synchronized (automotiveManagerLock) {
-			automotiveManager.register(
-					AutomotiveSignalId.FMS_FUEL_LEVEL_1,
-					AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE,
-					AutomotiveSignalId.FMS_FUEL_RATE,
-					AutomotiveSignalId.FMS_VEHICLE_MOTION);
-		}
-
 		synchronized (handlerLock) {
 			while (signalHandler == null) {
 				try {
@@ -238,7 +231,17 @@ public final class VehicleSystem extends Observable implements Runnable {
 				}
 			}
 		}
+
 		signalHandler.post(timeRunnable);
+
+		// Register Listeners
+		synchronized (automotiveManagerLock) {
+			automotiveManager.register(
+					AutomotiveSignalId.FMS_FUEL_LEVEL_1,
+					AutomotiveSignalId.FMS_DRIVER_1_WORKING_STATE,
+					AutomotiveSignalId.FMS_FUEL_RATE,
+					AutomotiveSignalId.FMS_VEHICLE_MOTION);
+		}
 	}
 
 	@Override
