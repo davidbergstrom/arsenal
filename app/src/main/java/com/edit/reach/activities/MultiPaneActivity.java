@@ -54,6 +54,7 @@ public class MultiPaneActivity extends FragmentActivity {
 
 	private boolean msFragmentHasBeenCreated = false;
 	private boolean sgsFragmentHasBeenCreated = false;
+	private boolean ctrlFragmentHasBeenCreated = false;
 
 	private Route route;
 
@@ -68,11 +69,6 @@ public class MultiPaneActivity extends FragmentActivity {
 					if(!msFragmentHasBeenCreated) {
 						createMilestonesFragment();
 						msFragmentHasBeenCreated = true;
-					} else if(sgsFragmentHasBeenCreated) {
-						goBackToControlFragment();
-						sgsFragmentHasBeenCreated = true;
-					} else {
-						// Do nothing
 					}
 					break;
 
@@ -338,9 +334,7 @@ public class MultiPaneActivity extends FragmentActivity {
 	 */
 	public void suggestionAcceptMilestone(boolean status){
 		navigationModel.acceptMilestone(status);
-		if(status){
-			goBackToControlFragment();
-		}
+
 	}
 
 	/**
@@ -359,6 +353,8 @@ public class MultiPaneActivity extends FragmentActivity {
 	public void goBackToControlFragment(){
 		getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
 		navigationModel.cancelMilestoneSearch();
+
+
 	}
 
 	/**

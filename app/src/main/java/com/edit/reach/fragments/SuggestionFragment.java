@@ -73,6 +73,7 @@ public class SuggestionFragment extends Fragment {
 			@Override
 			public void onClick(View view) {
 				((MultiPaneActivity)getActivity()).suggestionAcceptMilestone(true);
+				((MultiPaneActivity)getActivity()).goBackToControlFragment();
 			}
 		});
 		Button buttonNext = (Button) view.findViewById(R.id.button_next);
