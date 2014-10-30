@@ -200,6 +200,12 @@ public class MultiPaneActivity extends FragmentActivity {
         }
     }
 
+	/**
+	 * A method that add matched strings to a list.
+	 * @param input The input from the user we will match with other strings
+	 * @param strings the list with matched strings
+	 * @return the list with strings
+	 */
     public List<String> addMatchedStringsToList(String input, List<String> strings){
         strings = navigationModel.getMatchedSearchResults(input);
         return strings;
@@ -220,6 +226,9 @@ public class MultiPaneActivity extends FragmentActivity {
 		navigationModel.getMap().setMapState(Map.MapState.MOVING);
 	}
 
+	/**
+	 * Add a milestone to the preliminary-milestone list
+	 */
 	public void addMilestones(){
 		navigationModel.addMilestones(preliminaryMilestones);
 	}
@@ -234,6 +243,9 @@ public class MultiPaneActivity extends FragmentActivity {
 
 	}
 
+	/**
+	 * Init the UI-Fragment for SuggestionFragment and adds it to the container.
+	 */
 	public void initializeSuggestionUI(){
 		suggestionFragment = SuggestionFragment.newInstance("Suggestion");
 		getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, suggestionFragment).commit();
@@ -312,10 +324,18 @@ public class MultiPaneActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
+	/**
+	 * To change if a SuggestionFragment has been created or not
+	 * @param status
+	 */
 	public void setSgsFragmentHasBeenCreated(boolean status){
 		sgsFragmentHasBeenCreated = status;
 	}
 
+	/**
+	 * To accept your suggested Milestone
+	 * @param status value if you have accept it or not
+	 */
 	public void suggestionAcceptMilestone(boolean status){
 		navigationModel.acceptMilestone(status);
 		if(status){
@@ -323,6 +343,9 @@ public class MultiPaneActivity extends FragmentActivity {
 		}
 	}
 
+	/**
+	 * To replace the previous fragment with RouteFragment
+	 */
     public void goBackToRouteFragment(){
         Log.d("MultiPaneActivity", "goBackFragment");
 	    //msFragmentHasBeenCreated = false;
@@ -330,11 +353,18 @@ public class MultiPaneActivity extends FragmentActivity {
 	    preliminaryMilestones.clear();
     }
 
+	/**
+	 * To replace the previous fragment with ControlFragment
+	 */
 	public void goBackToControlFragment(){
 		getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
 		navigationModel.cancelMilestoneSearch();
 	}
 
+	/**
+	 * To get my location
+	 * @return my location
+	 */
     public Location getMyLocation(){
         return mMap.getMyLocation();
     }
@@ -362,7 +392,7 @@ public class MultiPaneActivity extends FragmentActivity {
     }
 
 	/**
-	 *
+	 * To change if a MilestoneFragment has been created or not
 	 * @param status
 	 */
 	public void changeMsFragmentHasBeenCreated(Boolean status){
@@ -370,16 +400,16 @@ public class MultiPaneActivity extends FragmentActivity {
 	}
 
 	/**
-	 *
-	 * @return
+	 * To see if you choose the route with start from my location
+	 * @return true/false related of the user input
 	 */
     public boolean routeWithCurrentLocation(){
         return routeWithCurrentLocation;
     }
 
 	/**
-	 *
-	 * @param to
+	 * To create a route with my Location
+	 * @param to the final destination
 	 */
     public void createRouteWithMyLocation(String to){
         Double myLocationLatitude = getMyLocation().getLatitude();
@@ -389,7 +419,7 @@ public class MultiPaneActivity extends FragmentActivity {
     }
 
 	/**
-	 *
+	 * To show the Spinner
 	 */
     public void showSpinner(){
         spinner = (ProgressBar)findViewById(R.id.spinner);
@@ -397,7 +427,7 @@ public class MultiPaneActivity extends FragmentActivity {
     }
 
 	/**
-	 *
+	 * To create the MilestonesFragment and change visual Fragment from RouteFragment to MilestonesFragment
 	 */
     public void createMilestonesFragment(){
         if(spinner != null) {
@@ -410,16 +440,16 @@ public class MultiPaneActivity extends FragmentActivity {
     }
 
 	/**
-	 *
-	 * @param category
+	 * To get a suggestion for the pause the driver want to do
+	 * @param category the type of paus the driver want to do
 	 */
     public void getPauseSuggestions(IMilestone.Category category){
         navigationModel.getMilestoneSuggestions(category);
     }
 
 	/**
-	 *
-	 * @param str
+	 * To get the string to match with other locations name
+	 * @param str the string we want to match
 	 */
 	public void getMatchedStringResults(String str){
 		List<String> list = navigationModel.getMatchedSearchResults(str);

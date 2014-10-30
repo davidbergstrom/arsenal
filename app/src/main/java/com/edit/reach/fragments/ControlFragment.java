@@ -24,6 +24,8 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Use the {@link ControlFragment#newInstance} factory method to
+ * create an instance of this fragment.
  *
  */
 public class ControlFragment extends Fragment{
@@ -61,6 +63,10 @@ public class ControlFragment extends Fragment{
 
 	private LinearLayout navigationInfoContainer;
 
+	/**
+	 * Sets the indicator value on the progressbar for time clock
+	 * @param timeClock the time to a obligatory pause
+	 */
     public void setBarTimeClock(double timeClock) {
         barTimeClock.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
 		barTimeClock.setMax((int) (UniversalConstants.LEGAL_UPTIME_IN_SECONDS * UniversalConstants.SECONDS_TO_MINUTES));
@@ -71,7 +77,10 @@ public class ControlFragment extends Fragment{
         }
 	}
 
-
+	/**
+	 * Sets the indicator value on the progressbar for fuel level
+	 * @param fuelLevel the fuel level we have in the tank
+	 */
 	public void setBarFuel(float fuelLevel) {
         barFuel.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
 		barFuel.setMax(100);
@@ -82,6 +91,10 @@ public class ControlFragment extends Fragment{
         }
 	}
 
+	/**
+	 *
+	 * @param leg
+	 */
     public void setNextLeg(Leg leg) {
 
         if (leg.getMilestone() != null) {
@@ -132,10 +145,20 @@ public class ControlFragment extends Fragment{
         }
     }
 
+	/**
+	 * Sets the total time to the next milestone
+	 * @param totalTime the totaltime to next milestone
+	 */
     public void setTotalTime(double totalTime) {
         textTotalTime.setText(TimeConvert.convertTime((int) (totalTime * UniversalConstants.SECONDS_TO_MINUTES)));
     }
 
+	/**
+	 * Use this factory method to create a new instance of
+	 * this fragment using the provided parameters.
+	 * @param id Id of the fragment
+	 * @return A new instance of ControlFragment
+	 */
 	public static ControlFragment newInstance(String id){
 		ControlFragment fragment = new ControlFragment();
 		Bundle args = new Bundle();
@@ -191,17 +214,6 @@ public class ControlFragment extends Fragment{
 			public void onClick(View view) {
 				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.RESTAREA);
 				Log.d("INPUTBUTTON", "Restarea");
-				/*if(isRestArea == ImageState.ORIGINAL){
-					ibRestArea.setImageResource(R.drawable.restarea_pressed);
-					isRestArea = ImageState.PRESSED;
-					showTheOtherIcons();
-
-				}
-				else {
-					ibRestArea.setImageResource(R.drawable.restarea_150);
-					isRestArea = ImageState.ORIGINAL;
-				}*/
-
 			}
 		});
 		ibFood = (ImageButton) view.findViewById(R.id.button_control_input_restaurant);
@@ -211,15 +223,6 @@ public class ControlFragment extends Fragment{
 			public void onClick(View view) {
 				((MultiPaneActivity) getActivity()).getPauseSuggestions(IMilestone.Category.FOOD);
 				Log.d("INPUTBUTTON", "Food");
-				/*if(isFood == ImageState.ORIGINAL) {
-					ibFood.setImageResource(R.drawable.food_pressed);
-					isFood = ImageState.PRESSED;
-					showTheOtherIcons();
-				} else {
-					ibFood.setImageResource(R.drawable.food_150);
-					isFood = ImageState.ORIGINAL;
-				}*/
-
 			}
 		});
 		ibRestroom = (ImageButton) view.findViewById(R.id.button_control_input_toilet);
@@ -229,16 +232,6 @@ public class ControlFragment extends Fragment{
 			public void onClick(View view) {
 				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.TOILET);
 				Log.d("INPUTBUTTON", "Toilet");
-				/*if (isRestroom == ImageState.ORIGINAL) {
-					ibRestroom.setImageResource(R.drawable.restroom_pressed);
-					isRestroom = ImageState.PRESSED;
-					showTheOtherIcons();
-
-				} else {
-					ibRestroom.setImageResource(R.drawable.restroom_150);
-					isRestroom = ImageState.ORIGINAL;
-				}*/
-
 			}
 		});
 		ibGasStation = (ImageButton) view.findViewById(R.id.button_control_input_gasstation);
@@ -248,82 +241,12 @@ public class ControlFragment extends Fragment{
 			public void onClick(View view) {
 				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.GASSTATION);
 				Log.d("INPUTBUTTON", "Gas Station");
-				/*if(isGasStation == ImageState.ORIGINAL){
-					ibGasStation.setImageResource(R.drawable.gasstation_pressed);
-					isGasStation = ImageState.PRESSED;
-					showTheOtherIcons();
-				}
-				else {
-					ibGasStation.setImageResource(R.drawable.gasstation_150);
-					isGasStation = ImageState.ORIGINAL;
-				}*/
-
 			}
 		});
 
 		return view;
 	}
-	// Is not used in this version of the application. For future use.
-	private void showTheOtherIcons(){
-		if(isGasStation == ImageState.PRESSED){
-			ibRestArea.setImageResource(R.drawable.restarea_150);
-			isRestArea = ImageState.ORIGINAL;
 
-			ibRestroom.setImageResource(R.drawable.restroom_150);
-			isRestroom = ImageState.ORIGINAL;
-
-			ibFood.setImageResource(R.drawable.food_150);
-			isFood = ImageState.ORIGINAL;
-
-		} else if(isRestArea == ImageState.PRESSED){
-
-			ibGasStation.setImageResource(R.drawable.gasstation_150);
-			isGasStation = ImageState.ORIGINAL;
-
-			ibRestroom.setImageResource(R.drawable.restroom_150);
-			isRestroom = ImageState.ORIGINAL;
-
-			ibFood.setImageResource(R.drawable.food_150);
-			isFood = ImageState.ORIGINAL;
-
-		} else if(isFood == ImageState.PRESSED){
-
-			ibGasStation.setImageResource(R.drawable.gasstation_150);
-			isGasStation = ImageState.ORIGINAL;
-
-			ibRestArea.setImageResource(R.drawable.restarea_150);
-			isRestArea = ImageState.ORIGINAL;
-
-			ibRestroom.setImageResource(R.drawable.restroom_150);
-			isRestroom = ImageState.ORIGINAL;
-
-		} else if(isRestroom == ImageState.PRESSED){
-
-			ibGasStation.setImageResource(R.drawable.gasstation_150);
-			isGasStation = ImageState.ORIGINAL;
-
-			ibRestArea.setImageResource(R.drawable.restarea_150);
-			isRestArea = ImageState.ORIGINAL;
-
-			ibFood.setImageResource(R.drawable.food_150);
-			isFood = ImageState.ORIGINAL;
-
-		} else{
-			Log.d("ControlFragment", "shadeIcons");
-		}
-	}
-	//Is not used in this version of the application. For future use.
-	public void showAllIcons(){
-		ibFood.setImageResource(R.drawable.food_150);
-		ibRestArea.setImageResource(R.drawable.restarea_150);
-		ibRestroom.setImageResource(R.drawable.restroom_150);
-		ibGasStation.setImageResource(R.drawable.gasstation_150);
-
-		isFood = ImageState.ORIGINAL;
-		isRestArea = ImageState.ORIGINAL;
-		isRestroom = ImageState.ORIGINAL;
-		isGasStation = ImageState.ORIGINAL;
-	}
 
 
 }

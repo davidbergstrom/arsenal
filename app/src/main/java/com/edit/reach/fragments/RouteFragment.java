@@ -19,8 +19,6 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * to handle interaction events.
  * Use the {@link RouteFragment#newInstance} factory method to
  * create an instance of this fragment.
  *
@@ -53,7 +51,6 @@ public class RouteFragment extends Fragment {
 	 * @param id Id of the fragment
 	 * @return A new instance of fragment RouteFragment.
 	 */
-	// TODO: Rename and change types and number of parameters
 	public static RouteFragment newInstance(String id) {
 		RouteFragment fragment = new RouteFragment();
 		Bundle args = new Bundle();
@@ -61,8 +58,6 @@ public class RouteFragment extends Fragment {
 		fragment.setArguments(args);
 		return fragment;
 	}
-
-
 
 	public RouteFragment() {
 		// Required empty public constructor
@@ -199,10 +194,19 @@ public class RouteFragment extends Fragment {
 		}
 	}
 
+	/**
+	 * A method to get matched string results with locations in the world
+	 * @param text the input string we will match with locations
+	 */
 	public void onTextEntered(String text) {
 		((MultiPaneActivity)getActivity()).getMatchedStringResults(text);
 	}
 
+	/**
+	 * To change and set the text on autocomplete-textviews.
+	 * @param from where you going from
+	 * @param to where you going to
+	 */
 	public void setRouteText(String from, String to){
 		actFrom.setText(from);
 		actTo.setText(to);
@@ -217,19 +221,15 @@ public class RouteFragment extends Fragment {
 		return ll;
 	}
 
-	// Receives a list of places related to the entered text in search field
-	// and gives suggestions.
+	/**
+	 * Receives a list of places related to the entered text in search field and gives suggestions.
+	 * @param resultList a list to store matched places.
+	 */
 	public void suggestionList(List<String> resultList) {
 		matchedPlaces = resultList;
 		adapter = new ArrayAdapter<String>(this.getActivity(), R.layout.route_list_item, matchedPlaces);
 		actFrom.setAdapter(adapter);
         actTo.setAdapter(adapter);
 	}
-
-
-
-
-
-
 
 }

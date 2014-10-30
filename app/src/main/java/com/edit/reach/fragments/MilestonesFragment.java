@@ -18,8 +18,6 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * to handle interaction events.
  * Use the {@link MilestonesFragment#newInstance} factory method to
  * create an instance of this fragment.
  *
@@ -151,9 +149,10 @@ public class MilestonesFragment extends Fragment {
 	}
 
 
-
-
-
+	/**
+	 * To remove the milestonecard from the list in MilestonesFragment and from the GUI
+	 * @param milestone the milestone we will remove
+	 */
     public void removeMilestoneCard(IMilestone milestone){
         List<MilestonesCard> mcList = new ArrayList<MilestonesCard>();
         for(int i =0; i < cardList.getChildCount(); i++){
@@ -169,6 +168,10 @@ public class MilestonesFragment extends Fragment {
 
     }
 
+	/**
+	 * To add the MilestoneCard to the GUI and add it to the list
+	 * @param milestone
+	 */
     public void addMilestoneCard(IMilestone milestone){
         MilestonesCard mc = new MilestonesCard(getActivity().getApplicationContext(), milestone);
         cardList.addView(mc);

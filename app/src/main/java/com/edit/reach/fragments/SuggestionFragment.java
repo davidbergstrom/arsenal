@@ -14,7 +14,10 @@ import com.edit.reach.model.IMilestone;
 import java.util.List;
 
 /**
- * Created by Erik Nordmark on 2014-10-21.
+ * A simple {@link Fragment} subclass.
+ * Use the {@link SuggestionFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ *
  */
 public class SuggestionFragment extends Fragment {
 
@@ -34,6 +37,10 @@ public class SuggestionFragment extends Fragment {
 
 	private IMilestone milestone;
 
+	/**
+	 * Sets the suggested Milestone information to the GUI
+	 * @param milestone A IMilestone-object we get from the handler
+	 */
     public void setMilestone(IMilestone milestone) {
 	    this.milestone = milestone;
 	    Log.d("SuggestionFragment", "setMilestone");
@@ -82,6 +89,12 @@ public class SuggestionFragment extends Fragment {
 
     }
 
+	/**
+	 * Use this factory method to create a new instance of
+	 * this fragment using the provided parameters.
+	 * @param id Id of the fragment
+	 * @return A new instance of SuggestionFragment
+	 */
 	public static SuggestionFragment newInstance(String id) {
 		SuggestionFragment fragment = new SuggestionFragment();
 		Bundle args = new Bundle();

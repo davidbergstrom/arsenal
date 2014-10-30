@@ -9,7 +9,7 @@ import com.edit.reach.app.R;
 import com.edit.reach.model.IMilestone;
 
 /**
- * Created by simonlarssontakman on 2014-10-11.
+ * MilestonesCard, to create visual info from the Milestone, extends RelativeLayout
  */
 public class MilestonesCard extends RelativeLayout {
 
@@ -17,7 +17,11 @@ public class MilestonesCard extends RelativeLayout {
     private final TextView milestoneName;
     private final IMilestone milestone;
 
-
+	/**
+	 * A constructor to create visual info from the Milestone
+	 * @param context calls for super
+	 * @param milestone the Milestone we will show
+	 */
     public MilestonesCard(Context context, IMilestone milestone) {
         super(context);
         inflate(getContext(), R.layout.card_milestone, this);
@@ -48,6 +52,10 @@ public class MilestonesCard extends RelativeLayout {
         milestoneName.setText(text);
     }
 
+	/**
+	 * To get the Milestone
+	 * @return the Milestone
+	 */
 	public IMilestone getMilestone(){
         return milestone;
     }
