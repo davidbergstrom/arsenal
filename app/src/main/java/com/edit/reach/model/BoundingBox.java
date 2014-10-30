@@ -45,14 +45,6 @@ public class BoundingBox {
         }
     }
 
-    public LatLng getBottomLeft() {
-       return bottomLeft;
-    }
-
-    public LatLng getTopRight() {
-        return topRight;
-    }
-
     @Override
     public String toString() {
         String bboxParams = "";

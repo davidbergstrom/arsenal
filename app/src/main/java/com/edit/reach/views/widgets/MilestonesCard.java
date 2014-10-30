@@ -28,7 +28,6 @@ public class MilestonesCard extends RelativeLayout {
         this.milestoneName = (TextView)findViewById(R.id.card_milestone_text);
         this.imageView = (ImageView)findViewById(R.id.card_milestone_icon);
         this.milestone = milestone;
-        //setCategoryImage(milestone.getCategories());
         setMilestoneName(milestone.getName());
         setCategoryImage();
     }

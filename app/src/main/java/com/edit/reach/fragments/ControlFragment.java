@@ -177,7 +177,7 @@ public class ControlFragment extends Fragment{
             List<IMilestone.Category> categories = milestone.getCategories();
 
             textNextStop.setText(nextStopName);
-            textTimeToNextStop.setText(TimeConvert.convertTime(((int) (nextStopClock * UniversalConstants.SECONDS_TO_MINUTES))));
+            textTimeToNextStop.setText(TimeConvert.convertToHoursAndMinutes(((int) (nextStopClock * UniversalConstants.SECONDS_TO_MINUTES))));
             textDistanceToTextStop.setText((int)(distanceToNextStop * 0.001) + " km");
 
             //Set Milestone Images
@@ -213,7 +213,7 @@ public class ControlFragment extends Fragment{
 	 * @param totalTime the totaltime to next milestone
 	 */
     public void setTotalTime(double totalTime) {
-        textTotalTime.setText(TimeConvert.convertTime((int) (totalTime * UniversalConstants.SECONDS_TO_MINUTES)));
+        textTotalTime.setText(TimeConvert.convertToHoursAndMinutes((int) (totalTime * UniversalConstants.SECONDS_TO_MINUTES)));
     }
 
 	/**

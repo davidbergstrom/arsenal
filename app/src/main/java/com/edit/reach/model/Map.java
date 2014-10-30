@@ -16,7 +16,7 @@ import java.util.Observable;
  * Created by Joakim Berntsson on 2014-09-29.
  * Class containing all logic for handling map actions.
  */
-public class Map extends Observable{
+public class Map extends Observable {
 
     private static final int UPDATE_INTERVAL = NavigationUtil.UPDATE_INTERVAL_SLOW;
 
@@ -98,7 +98,7 @@ public class Map extends Observable{
         }
     };
 
-    /** A runnable for navigation */
+    /* A runnable for navigation */
     private final Runnable navigationRunnable = new Runnable() {
         @Override
         public void run() {
@@ -154,7 +154,7 @@ public class Map extends Observable{
         }
     };
 
-    /** Runnable for alerting observers of the route. */
+    /* Runnable for alerting observers of the route. */
     private final Runnable routeUpdate = new Runnable() {
         @Override
         public void run() {

@@ -6,8 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Responsible for handling all
- * server endpoints to the WorldTrucker API.
+ * Responsible for handling all server endpoints to the WorldTrucker API.
  */
 public class WorldTruckerEndpoints {
 	private static final String baseURL = "https://api.worldtrucker.com/v1/";
