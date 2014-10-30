@@ -57,15 +57,12 @@ public class MultiPaneActivity extends FragmentActivity {
 
     private Route route;
 
-    // A handler for the UI thread. The Handler recieves messages from other thread.
+    // A handler for the UI thread. The Handler recieves messages from worker threads.
     private final Handler mainHandler = new Handler(Looper.getMainLooper()) {
 
         @Override
         public void handleMessage(Message message) {
             switch (message.what) {
-                case SignalType.VEHICLE_STOPPED_OR_STARTED:
-                    // Should change the UI but will not do that in this Demo version of the app.
-                    break;
 
                 case SignalType.ROUTE_INITIALIZATION_SUCCEDED:
                     if(!msFragmentHasBeenCreated) {
@@ -112,6 +109,14 @@ public class MultiPaneActivity extends FragmentActivity {
 		            if(sgsFragmentHasBeenCreated){
 		                goBackToControlFragment();
 		            }
+		            break;
+
+	            // Should change the UI but will not do that in this Demo version of the app.
+	            case SignalType.DISTRACTION_LEVEL:
+		            if((Integer)message.obj != 0) {
+			            // Do not allow the stationairy user interface
+		            }
+		            break;
 
             }
         }
@@ -196,7 +201,7 @@ public class MultiPaneActivity extends FragmentActivity {
     }
 
     public List<String> addMatchedStringsToList(String input, List<String> strings){
-        strings = navigationModel.getMatchedStringResults(input);
+        strings = navigationModel.getMatchedSearchResults(input);
         return strings;
     }
 
@@ -318,7 +323,6 @@ public class MultiPaneActivity extends FragmentActivity {
 		}
 	}
 
-
     public void goBackToRouteFragment(){
         Log.d("MultiPaneActivity", "goBackFragment");
 	    //msFragmentHasBeenCreated = false;
@@ -328,8 +332,7 @@ public class MultiPaneActivity extends FragmentActivity {
 
 	public void goBackToControlFragment(){
 		getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
-		navigationModel.cancelMilestone();
-		//controlFragment.showAllIcons();
+		navigationModel.cancelMilestoneSearch();
 	}
 
     public Location getMyLocation(){
@@ -411,7 +414,7 @@ public class MultiPaneActivity extends FragmentActivity {
 	 * @param category
 	 */
     public void getPauseSuggestions(IMilestone.Category category){
-        navigationModel.getPauseSuggestions(category);
+        navigationModel.getMilestoneSuggestions(category);
     }
 
 	/**
@@ -419,7 +422,7 @@ public class MultiPaneActivity extends FragmentActivity {
 	 * @param str
 	 */
 	public void getMatchedStringResults(String str){
-		List<String> list = navigationModel.getMatchedStringResults(str);
+		List<String> list = navigationModel.getMatchedSearchResults(str);
 		routeFragment.suggestionList(list);
 	}
 

@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Class that represents a VehicleSystem.
- * This class handles all communication with the AGA SDK.
+ * This class handles all communication with the AGA Signals.
  * Created by: Tim Kerschbaumer
  * Project: Milestone
  * Date: 2014-09-27
@@ -59,10 +59,21 @@ public final class VehicleSystem extends Observable implements Runnable {
 	private final AtomicInteger isMoving = new AtomicInteger(-1);
 	// The working state of the driver.
 	private final AtomicInteger workingState = new AtomicInteger(-1);
+	// The distraction leve.
+	private final AtomicInteger distractionLevel = new AtomicInteger(-1);
 	// Keeps track if navigationModel has been notified for "short time".
 	private final AtomicBoolean timeHasBeenNotified = new AtomicBoolean(false);
 	// A list with the fuel rate
 	private final List<Float> fuelRateList = new ArrayList<Float>();
+
+	// A thread for listening to the vehicle signals.
+	private final Thread vehicleSignals;
+	// A handler for the signals
+	private Handler signalHandler;
+	// Lock objects
+	private final Object handlerLock = new Object();
+	private final Object fuelRateListLock = new Object();
+	private final Object automotiveManagerLock = new Object();
 
 	private final AutomotiveListener automotiveListener = new AutomotiveListener() {
 
@@ -166,13 +177,6 @@ public final class VehicleSystem extends Observable implements Runnable {
 			Log.d("NOTALLOWED", "Signal ID: " + i);
 		}
 	};
-	// A thread for listening to the vehicle signals.
-	private final Thread vehicleSignals;
-
-	// Lock objects
-	private final Object handlerLock = new Object();
-	private final Object fuelRateListLock = new Object();
-	private final Object automotiveManagerLock = new Object();
 
 	// A runnable that updates time.
 	private final Runnable timeRunnable = new Runnable() {
@@ -186,22 +190,31 @@ public final class VehicleSystem extends Observable implements Runnable {
 			signalHandler.postDelayed(this, 1000);
 		}
 	};
+
 	private final AutomotiveCertificate automotiveCertificate = new AutomotiveCertificate(new byte[1]);
+
 	private final DriverDistractionListener driverDistractionListener = new DriverDistractionListener() {
 		@Override
-		public void levelChanged(DriverDistractionLevel driverDistractionLevel) {
-			// TODO Driver distraction
+		public void levelChanged(final DriverDistractionLevel driverDistractionLevel) {
+			signalHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					if(distractionLevel.get() != driverDistractionLevel.getLevel()) {
+						distractionLevel.set(driverDistractionLevel.getLevel());
+						setChanged();
+						notifyObservers(SignalType.DISTRACTION_LEVEL);
+					}
+				}
+			});
+
 		}
 	};
 
 	private final AutomotiveManager automotiveManager = AutomotiveFactory.createAutomotiveManagerInstance(automotiveCertificate, automotiveListener, driverDistractionListener);
 
-	/* --- CONSTANTS --- */
-	// A handler for the signals
-	private Handler signalHandler;
-
 	/**
 	 * Constructor.
+	 * Creates a VehicleSystem and starts listening to signals from vehicle.
 	 */
 	public VehicleSystem() {
 		vehicleSignals = new Thread(VehicleSystem.this, VEHICLE_SIGNALS_THREAD);
@@ -236,7 +249,6 @@ public final class VehicleSystem extends Observable implements Runnable {
 				signalHandler = new Handler();
 				handlerLock.notifyAll();
 			}
-			//signalHandler = new Handler();
 			Looper.loop();
 		} catch (Throwable t) {
 			Log.d("Error in signalThread: ", "" + t);
@@ -248,7 +260,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 	/**
 	 * This methods returns the level of fuel left in tank in percent from 0 to 100.
 	 *
-	 * @return a float from 0-100 that represents the fuel level
+	 * @return a float from 0-100 that represents the fuel level. -1 if fuelLevel not intialized.
 	 */
 	public float getFuelLevel() {
 		return fuelLevel.get();
@@ -257,7 +269,7 @@ public final class VehicleSystem extends Observable implements Runnable {
 	/**
 	 * Method that returns the current state of the vehicle.
 	 *
-	 * @return a constant int value from class MovingState.
+	 * @return a constant int value representing the state of the vehicle.
 	 */
 	public int getVehicleState() {
 		if (isMoving.get() == 1 && workingState.get() == 3) {
@@ -288,7 +300,6 @@ public final class VehicleSystem extends Observable implements Runnable {
 	}
 
 	// This method is not used in current version.
-
 	/**
 	 * Estimates how long until a refuel is recommended.
 	 *
@@ -309,6 +320,16 @@ public final class VehicleSystem extends Observable implements Runnable {
 				}
 			}
 		}
+	}
+
+	// This method is not used in current version.
+	/**
+	 * This method returns the current distractionLevel.
+	 * If it has not been set it returns -1.
+	 * @return the distractionLevel of the driver.
+	 */
+	public int getDistractionLevel() {
+		return distractionLevel.get();
 	}
 
 	// ********** PRIVATE METHODS THAT NOTIFY OBSERVERS ********** //

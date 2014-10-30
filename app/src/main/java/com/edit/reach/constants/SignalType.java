@@ -23,4 +23,5 @@ public class SignalType {
 	public static final int MILESTONE_SUCCED = 214;
     public static final int PAUSE_ADDED = 215;
 	public static final int MILESTONE_FAIL = 216;
+	public static final int DISTRACTION_LEVEL = 217;
 }

@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Class that merges data from the vehicle and the map.
  * The class finds optimal stops for the trip, among other things.
- * This class is using the singleton pattern.
  * Created by: Tim Kerschbaumer
  * Project: Milestone
  * Date: 2014-09-27
@@ -30,19 +29,20 @@ public final class NavigationModel implements Runnable, Observer {
 	private final Map map;
 	private final Thread pipelineThread;
 	private final Handler mainHandler;
+
+	// Using AtomicLong for thread safety
+	private final AtomicLong searchRange = new AtomicLong(STANDARD_SEARCH_RANGE);
+
 	private final Object mapLock = new Object();
 
 	private Handler pipelineHandler;
 
 	private IMilestone milestone;
-
-	private List<String> searchResults;
-
-	private List<IMilestone> milestones;
-
+	private IMilestone.Category milestoneCategory;
 	private Marker marker;
 
-	private IMilestone.Category milestoneCategory;
+	private List<String> searchResults;
+	private List<IMilestone> milestones;
 
 	// Using AtomicInteger for thread safety
 	private final MilestonesReceiver milestonesReceiver = new MilestonesReceiver() {
@@ -75,14 +75,13 @@ public final class NavigationModel implements Runnable, Observer {
 	/* --- CONSTANTS --- */
 	private static final String PIPELINE_THREAD_NAME = "PipelineThread";
 
+	// These could be made dynamic / customizeable by user
 	private static final int FOOD_THRESHOLD = 45 * 60;
 	private static final int GAS_THRESHOLD = 30 * 60;
 	private static final int REST_THRESHOLD = 15 * 60;
 	private static final int TOILET_THRESHOLD = 10 * 60;
-	private static final long STANDARD_SEARCH_RANGE = 15 * 60;
 
-	// Using AtomicLong for thread safety
-	private final AtomicLong searchRange = new AtomicLong(STANDARD_SEARCH_RANGE);
+	private static final long STANDARD_SEARCH_RANGE = 15 * 60;
 
 	/** Constructor
 	 * @param googleMap a google map
@@ -111,50 +110,51 @@ public final class NavigationModel implements Runnable, Observer {
 			pipelineHandler = new Handler();
 			Looper.loop();
 		} catch (Throwable t) {
-			Log.d("Navigationmodel: Error in pipelineThread", t + "");
+			Log.d("NavigationModel: Error in pipelineThread", t + "");
 		}
 	}
 
 	/**
 	 * This method is used to find pauses in driving mode.
-	 *
-	 * @param category a category with what the user wants.
+	 * It will automatically send the found milestone to the handler passed when creating a NavigationModel.
+	 * If no milestone is found this an error message will be passed to the handler.
+	 * To Accept or decline the found milestone call "acceptMilestone". To Cancel the search call "cancelMilestoneSearch".
+	 * @param category the category the milestone to be search for has to have.
 	 */
-	public void getPauseSuggestions(final IMilestone.Category category) {
-		Log.d("NavigationModel", "entered getPauseSuggestions");
+	public void getMilestoneSuggestions(final IMilestone.Category category) {
+		Log.d("NavigationModel", "entered getMilestoneSuggestions");
 		milestoneCategory = category;
 
 		switch (milestoneCategory) {
 			case TOILET:
-				getPauses(TOILET_THRESHOLD);
+				findMilestone(TOILET_THRESHOLD);
 				break;
 			case GASSTATION:
-				getPauses(GAS_THRESHOLD);
+				findMilestone(GAS_THRESHOLD);
 				break;
 			case RESTAREA:
-				getPauses(REST_THRESHOLD);
+				findMilestone(REST_THRESHOLD);
 				break;
 			case RESTAURANT:
-				getPauses(FOOD_THRESHOLD);
+				findMilestone(FOOD_THRESHOLD);
 				break;
 			default:
-				Log.d("getPauseSuggestions()", "Passed an illegal category");
+				Log.d("getMilestoneSuggestions()", "Passed an illegal category");
 				break;
 		}
 	}
 
 	/**
-	 * This method is called to tell the navigationModel if a suggested milestone was accepted or not.
-	 *
-	 * @param accepted
+	 * Call this method to accept or decline a milestone posted to the caller after calling "getMilestoneSuggestions".
+	 * @param accepted true if the milestone was accepted. False otherwise.
 	 */
 	public void acceptMilestone(final boolean accepted) {
 		Log.d("NavigationModel", "entered acceptMilestone");
 
-		// Remove marker from map.
-		marker.remove();
-
 		synchronized (mapLock) {
+			// Remove marker from map.
+			marker.remove();
+
 			// If milestone was accepted by the user.
 			if (accepted) {
 				setMapState(Map.MapState.MOVING);
@@ -174,23 +174,26 @@ public final class NavigationModel implements Runnable, Observer {
 
 			// If milestone was not accepted by the user.
 			} else{
-				getPauseSuggestions(milestoneCategory);
+				// Get next milestone
+				getMilestoneSuggestions(milestoneCategory);
 			}
 		}
 	}
 
-	/** Call this method to reset initial values for the pause suggestion algorithm.
-	 * Call only if algorithm is cancelled by the UI
+	/**
+	 * Call this method to cancel a search for milestones intiated with "getMilestoneSuggestions".
 	 */
-	public void cancelMilestone() {
+	public void cancelMilestoneSearch() {
 		// Reset the search range.
 		searchRange.set(STANDARD_SEARCH_RANGE);
+		// Set the map state to moving.
 		setMapState(Map.MapState.MOVING);
+		// Null out the milestones list.
+		this.milestones = null;
 	}
 
 	/**
 	 * Returns a map object.
-	 *
 	 * @return a Map
 	 */
 	public Map getMap() {
@@ -202,7 +205,6 @@ public final class NavigationModel implements Runnable, Observer {
 
 	/**
 	 * Add milestones to the route.
-	 *
 	 * @param list a list of milestones to be added.
 	 */
 	public void addMilestones(List<IMilestone> list) {
@@ -213,8 +215,7 @@ public final class NavigationModel implements Runnable, Observer {
 	}
 
 	/**
-	 * Sets the route in the map.
-	 *
+	 * Set the route.
 	 * @param newRoute the route to be set.
 	 */
 	public void setRoute(final Route newRoute) {
@@ -230,8 +231,8 @@ public final class NavigationModel implements Runnable, Observer {
 	 * @param searchString the string to match a result with
 	 * @return a list of strings with results.
 	 */
-	public List<String> getMatchedStringResults(final String searchString) {
-		Log.d("NavigationModel", "entered getMatchedStringResults");
+	public List<String> getMatchedSearchResults(final String searchString) {
+		Log.d("NavigationModel", "entered getMatchedSearchResults");
 		Suggestion suggestion = new Suggestion(suggestionListener);
 		suggestion.searchForAddresses(searchString);
 		return searchResults;
@@ -248,12 +249,6 @@ public final class NavigationModel implements Runnable, Observer {
 		map.setDemoMode(demo);
 	}
 
-	/**
-	 * Do not call this method. It is called automatically when the observable changes.
-	 *
-	 * @param observable Not used
-	 * @param data       The id of the signal that initiated this update.
-	 */
 	@Override
 	public void update(Observable observable, final Object data) {
 		pipelineHandler.post(new Runnable() {
@@ -266,18 +261,6 @@ public final class NavigationModel implements Runnable, Observer {
 					Route route = map.getRoute();
 
 					switch ((Integer) data) {
-
-						// If vehicle stopped or started
-						case SignalType.VEHICLE_STOPPED_OR_STARTED:
-							Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
-							Log.d("GET", "Vehicle State: " + vehicleSystem.getVehicleState());
-
-							// Send the MovingState to the UI.
-							message.obj = vehicleSystem.getVehicleState();
-							message.what = SignalType.VEHICLE_STOPPED_OR_STARTED;
-							mainHandler.sendMessage(message);
-							break;
-
 						// If fuel changes
 						case SignalType.FUEL_UPDATE:
 							Log.d("UPDATE", "TYPE: FUEL_UPDATE");
@@ -359,6 +342,22 @@ public final class NavigationModel implements Runnable, Observer {
 							});
 							break;
 
+						// If vehicle distraction level changes.
+						case SignalType.DISTRACTION_LEVEL:
+							Log.d("UPDATE", "TYPE: DISTRACTION_LEVEL");
+
+							message.what = SignalType.DISTRACTION_LEVEL;
+							message.obj = vehicleSystem.getDistractionLevel();
+							mainHandler.sendMessage(message);
+							break;
+
+						// If vehicle stopped or started
+						case SignalType.VEHICLE_STOPPED_OR_STARTED:
+							// This signal basically does the same thing as the distractionlevel
+							// and is not used in the current version of this program.
+							Log.d("UPDATE", "TYPE: VEHICLE_STOPPED_OR_STARTED");
+							break;
+
 						// If the tank size has been calculated
 						case SignalType.TANK_SIZE_CALCULATED:
 							// This signal is not used in the current version of this program.
@@ -401,7 +400,7 @@ public final class NavigationModel implements Runnable, Observer {
 	}
 
 	// Method that gets best-matched milestones
-	private void getPauses(final int threshold) {
+	private void findMilestone(final int threshold) {
 		final Route route = map.getRoute();
 		final List<Leg> legs = route.getLegs();
 		final LatLng pointerLocation = route.getPointerLocation();
@@ -410,8 +409,8 @@ public final class NavigationModel implements Runnable, Observer {
 			@Override
 			public void run() {
 				synchronized (mapLock) {
-					if (inThreshold(threshold) && hasCategory(milestoneCategory)) {
-						notifyUISuccess(legs.get(0).getMilestone());
+					if (milestoneInThreshold(threshold) && milestoneHasCategory(milestoneCategory)) {
+						milestoneSuccess(legs.get(0).getMilestone());
 					} else {
 						LatLng start;
 						LatLng end = route.getLocation(searchRange.get());
@@ -428,8 +427,8 @@ public final class NavigationModel implements Runnable, Observer {
 	}
 
 	// This method determines if a milestone is in a threshold
-	private boolean inThreshold(final int threshold) {
-		Log.d("NavigationModel", "entered inThreshold");
+	private boolean milestoneInThreshold(final int threshold) {
+		Log.d("NavigationModel", "entered milestoneInThreshold");
 
 		boolean inThreshold = false;
 		List<Leg> legs = map.getRoute().getLegs();
@@ -440,8 +439,8 @@ public final class NavigationModel implements Runnable, Observer {
 	}
 
 	// This method determines if a milestone has a category
-	private boolean hasCategory(IMilestone.Category category) {
-		Log.d("NavigationModel", "entered hasCategory");
+	private boolean milestoneHasCategory(IMilestone.Category category) {
+		Log.d("NavigationModel", "entered milestoneHasCategory");
 
 		boolean hasCategory = false;
 		List<Leg> legs = map.getRoute().getLegs();
@@ -451,9 +450,41 @@ public final class NavigationModel implements Runnable, Observer {
 		return hasCategory;
 	}
 
-	// This method notifies the UI with the found milestone.
-	private void notifyUISuccess(IMilestone milestone) {
-		Log.d("NavigationModel", "entered notifyUISuccess");
+	// This method updates the list of milestones.
+	private void updateMilestonesList() {
+		// List of milestones is empty
+		if (this.milestones.size() == 0) {
+			this.milestones = null;
+			// Extend search range.
+			searchRange.getAndAdd(STANDARD_SEARCH_RANGE);
+			// Searchrange is longer in the route range
+			if(map.getRoute().getLocation(searchRange.get()) == null) {
+				searchRange.set(STANDARD_SEARCH_RANGE);
+				// Notify ui that no more milestons are available.
+				milestoneFail();
+			} else {
+				// Get new pause suggestions with bigger search range
+				getMilestoneSuggestions(this.milestoneCategory);
+			}
+			// List of milestones contains only one object
+		} else if(this.milestones.size() == 1) {
+			// Extend search range.
+			searchRange.getAndAdd(STANDARD_SEARCH_RANGE);
+			IMilestone milestone = this.milestones.get(0);
+			milestones.remove(0);
+			this.milestones = null;
+			milestoneSuccess(milestone);
+			// List of milestones contains more than one object
+		} else {
+			IMilestone mStone = this.milestones.get(0);
+			milestones.remove(0);
+			milestoneSuccess(mStone);
+		}
+	}
+
+	// This method notifies the handler with the found milestone.
+	private void milestoneSuccess(IMilestone milestone) {
+		Log.d("NavigationModel", "entered milestoneSuccess");
 		this.milestone = milestone;
 		this.marker = map.showMilestone(this.milestone);
 
@@ -463,49 +494,17 @@ public final class NavigationModel implements Runnable, Observer {
 		mainHandler.sendMessage(message);
 	}
 
-	// This method notifies UI that algorithm failed to find stops.
-	private void notifyUIFail() {
-		Log.d("NavigationModel", "entered notifyUIFail");
+	// This method notifies handler that algorithm failed to find stops.
+	private void milestoneFail() {
+		Log.d("NavigationModel", "entered milestoneFail");
 		setMapState(Map.MapState.MOVING);
+
 		Message message = mainHandler.obtainMessage();
 		message.what = SignalType.MILESTONE_FAIL;
 		mainHandler.sendMessage(message);
 	}
 
-	// This method updates the list of milestones.
-	private void updateMilestonesList() {
-		// List of milestones is empty
-		if (this.milestones.size() == 0) {
-			this.milestones = null;
-			// Extend search range.
-			searchRange.getAndAdd(STANDARD_SEARCH_RANGE);
-			// Searchrange is longer tha route
-			if(map.getRoute().getLocation(searchRange.get()) == null) {
-				searchRange.set(STANDARD_SEARCH_RANGE);
-				//milestoneAlgorithmStage.set(0);
-				// Notify ui that no more milestons are available.
-				notifyUIFail();
-			} else {
-				// Get new pause suggestions with bigger search range
-				getPauseSuggestions(this.milestoneCategory);
-			}
-		// List of milestones contains only one object
-		} else if(this.milestones.size() == 1) {
-			// Extend search range.
-			searchRange.getAndAdd(STANDARD_SEARCH_RANGE);
-			IMilestone milestone = this.milestones.get(0);
-			milestones.remove(0);
-			this.milestones = null;
-			notifyUISuccess(milestone);
-		// List of milestones contains more than one object
-		} else {
-			IMilestone m = this.milestones.get(0);
-			milestones.remove(0);
-			notifyUISuccess(m);
-		}
-	}
-
-	// Private method that sets mapstate via UI thread
+	// Method that sets mapstate via the UI thread. Nessecary for google maps.
 	private void setMapState(final Map.MapState mapState) {
 		mainHandler.post(new Runnable() {
 			@Override
