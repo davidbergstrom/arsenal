@@ -28,8 +28,6 @@ public class RouteFragment extends Fragment {
 	private static final String ARG_ID = "Route";
 	private String mId;
 
-
-
 	private AutoCompleteTextView actFrom;
 	private AutoCompleteTextView actTo;
 	private ToggleButton tbCurLoc;
@@ -41,8 +39,6 @@ public class RouteFragment extends Fragment {
 	private ImageButton ibNext;
 	private Button btNext;
 	private boolean myCurrentLocationActivated;
-
-
 
 	/**
 	 * Use this factory method to create a new instance of
@@ -212,7 +208,6 @@ public class RouteFragment extends Fragment {
 		actTo.setText(to);
 	}
 
-
 	//Kan behövas för att dynamiskt lägga till fler textfält för del-destinationer
 	private LinearLayout linearLayout (int _intID){
 		LinearLayout ll = new LinearLayout(getActivity());
@@ -231,5 +226,4 @@ public class RouteFragment extends Fragment {
 		actFrom.setAdapter(adapter);
         actTo.setAdapter(adapter);
 	}
-
 }

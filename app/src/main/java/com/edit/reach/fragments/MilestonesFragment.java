@@ -46,8 +46,6 @@ public class MilestonesFragment extends Fragment {
 	private	TextView mToTextView;
     private LinearLayout cardList;
 
-
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -64,6 +62,7 @@ public class MilestonesFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     public MilestonesFragment() {
         // Required empty public constructor
     }
@@ -76,8 +75,6 @@ public class MilestonesFragment extends Fragment {
 			mTo = getArguments().getString(ARG_TO);
             mMilestonesList = getArguments().getStringArrayList(ARG_LIST);
 			mMilestonesType = getArguments().getStringArrayList(ARG_TYPE);
-
-
         }
     }
 
@@ -131,9 +128,6 @@ public class MilestonesFragment extends Fragment {
         return view;
     }
 
-
-
-
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -147,7 +141,6 @@ public class MilestonesFragment extends Fragment {
         }
 		mToTextView.setText(mTo);
 	}
-
 
 	/**
 	 * To remove the milestonecard from the list in MilestonesFragment and from the GUI
@@ -177,7 +170,4 @@ public class MilestonesFragment extends Fragment {
         cardList.addView(mc);
 
     }
-
-
-
 }
