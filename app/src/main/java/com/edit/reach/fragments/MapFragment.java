@@ -41,6 +41,7 @@ public class MapFragment extends Fragment {
 		fragment.setArguments(args);
 		return fragment;
 	}
+
 	public MapFragment() {
 		// Required empty public constructor
 	}
@@ -61,7 +62,7 @@ public class MapFragment extends Fragment {
 	}
 
 	// TODO: Rename method, update argument and hook method into UI event
-	public void onButtonPressed(Uri uri) {
+	public void onBttonPressed(Uri uri) {
 		if (mListener != null) {
 			mListener.onMapInteraction(uri);
 		}
@@ -97,5 +98,4 @@ public class MapFragment extends Fragment {
 		// TODO: Update argument type and name
 		public void onMapInteraction(Uri uri);
 	}
-
 }

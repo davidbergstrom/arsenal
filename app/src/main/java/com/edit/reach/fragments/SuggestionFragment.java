@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.model.IMilestone;
@@ -37,15 +39,75 @@ public class SuggestionFragment extends Fragment {
 
 	private IMilestone milestone;
 
+    public SuggestionFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mId = getArguments().getString(ARG_ID);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        Log.d("SuggestionFragment", "onCreateView");
+        View view = inflater.inflate(R.layout.fragment_suggestion, container, false);
+
+        //Get Suggestion Info
+        textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
+        textRating = (TextView) view.findViewById(R.id.tv_navigation_info_rating);
+        textDescription = (TextView) view.findViewById(R.id.tv_navigation_info_description);
+
+        //Get ImageViews
+        ivFood = (ImageView) view.findViewById(R.id.navigation_info_icon_type_food);
+        ivGasstation = (ImageView) view.findViewById(R.id.navigation_info_icon_type_gasstation);
+        ivRestArea = (ImageView) view.findViewById(R.id.navigation_info_icon_type_restarea);
+        ivToilet = (ImageView) view.findViewById(R.id.navigation_info_icon_type_toilet);
+
+        //Get Suggestion Buttons
+        Button buttonConfirm = (Button) view.findViewById(R.id.button_confirm);
+        buttonConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MultiPaneActivity)getActivity()).suggestionAcceptMilestone(true);
+            }
+        });
+        Button buttonNext = (Button) view.findViewById(R.id.button_next);
+        buttonNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MultiPaneActivity)getActivity()).suggestionAcceptMilestone(false);
+            }
+        });
+        Button cancel = (Button) view.findViewById(R.id.button_cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MultiPaneActivity)getActivity()).goBackToControlFragment();
+            }
+        });
+
+        if(milestone != null){
+            setMilestone(milestone);
+        }
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
 	/**
 	 * Sets the suggested Milestone information to the GUI
 	 * @param milestone A IMilestone-object we get from the handler
 	 */
     public void setMilestone(IMilestone milestone) {
 	    this.milestone = milestone;
-	    Log.d("SuggestionFragment", "setMilestone");
-	    Log.d("SuggestionFragment", "" + milestone.getName());
-	    Log.d("SuggestionFragment", "" + milestone.getRank());
 
         String nextStopName = milestone.getName();
         int rating = milestone.getRank();
@@ -84,9 +146,7 @@ public class SuggestionFragment extends Fragment {
 			    }
 		    }
 		    ((MultiPaneActivity)getActivity()).setSgsFragmentHasBeenCreated(true);
-
 	    }
-
     }
 
 	/**
@@ -101,70 +161,5 @@ public class SuggestionFragment extends Fragment {
 		args.putString(ARG_ID, id);
 		fragment.setArguments(args);
 		return fragment;
-	}
-	public SuggestionFragment() {
-		// Required empty public constructor
-	}
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		if (getArguments() != null) {
-			mId = getArguments().getString(ARG_ID);
-		}
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	                         Bundle savedInstanceState) {
-		Log.d("SuggestionFragment", "onCreateView");
-		View view = inflater.inflate(R.layout.fragment_suggestion, container, false);
-
-        //Get Suggestion Info
-        textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
-        textRating = (TextView) view.findViewById(R.id.tv_navigation_info_rating);
-        textDescription = (TextView) view.findViewById(R.id.tv_navigation_info_description);
-
-        //Get ImageViews
-        ivFood = (ImageView) view.findViewById(R.id.navigation_info_icon_type_food);
-        ivGasstation = (ImageView) view.findViewById(R.id.navigation_info_icon_type_gasstation);
-        ivRestArea = (ImageView) view.findViewById(R.id.navigation_info_icon_type_restarea);
-        ivToilet = (ImageView) view.findViewById(R.id.navigation_info_icon_type_toilet);
-
-        //Get Suggestion Buttons
-        Button buttonConfirm = (Button) view.findViewById(R.id.button_confirm);
-		buttonConfirm.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				((MultiPaneActivity)getActivity()).suggestionAcceptMilestone(true);
-			}
-		});
-        Button buttonNext = (Button) view.findViewById(R.id.button_next);
-		buttonNext.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				((MultiPaneActivity)getActivity()).suggestionAcceptMilestone(false);
-			}
-		});
-		Button cancel = (Button) view.findViewById(R.id.button_cancel);
-		cancel.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				((MultiPaneActivity)getActivity()).goBackToControlFragment();
-			}
-		});
-
-		if(milestone != null){
-			setMilestone(milestone);
-		}
-		return view;
-	}
-
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-
 	}
 }

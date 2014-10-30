@@ -28,8 +28,6 @@ public class RouteFragment extends Fragment {
 	private static final String ARG_ID = "Route";
 	private String mId;
 
-
-
 	private AutoCompleteTextView actFrom;
 	private AutoCompleteTextView actTo;
 	private ToggleButton tbCurLoc;
@@ -41,8 +39,6 @@ public class RouteFragment extends Fragment {
 	private ImageButton ibNext;
 	private Button btNext;
 	private boolean myCurrentLocationActivated;
-
-
 
 	/**
 	 * Use this factory method to create a new instance of
@@ -69,7 +65,6 @@ public class RouteFragment extends Fragment {
 		if (getArguments() != null) {
 			mId = getArguments().getString(ARG_ID);
 		}
-
 	}
 
 	@Override
@@ -165,8 +160,6 @@ public class RouteFragment extends Fragment {
 				}
 			}
 		});
-/*		Button btGetNearestRoute = (Button) view.findViewById(R.id.btSubmitNearestRoute);
-		btGetNearestRoute.setOnClickListener(getNearestRouteListener);*/
 
 		return view;
 	}
@@ -212,8 +205,6 @@ public class RouteFragment extends Fragment {
 		actTo.setText(to);
 	}
 
-
-	//Kan behövas för att dynamiskt lägga till fler textfält för del-destinationer
 	private LinearLayout linearLayout (int _intID){
 		LinearLayout ll = new LinearLayout(getActivity());
 		ll.setId(_intID);
@@ -231,5 +222,4 @@ public class RouteFragment extends Fragment {
 		actFrom.setAdapter(adapter);
         actTo.setAdapter(adapter);
 	}
-
 }

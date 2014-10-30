@@ -3,20 +3,15 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import com.edit.reach.activities.MultiPaneActivity;
 import com.edit.reach.app.R;
 import com.edit.reach.constants.UniversalConstants;
-import com.edit.reach.model.Leg;
 import com.edit.reach.model.IMilestone;
+import com.edit.reach.model.Leg;
 import com.edit.reach.utils.TimeConvert;
 
 import java.util.List;
@@ -63,7 +58,84 @@ public class ControlFragment extends Fragment{
 
 	private LinearLayout navigationInfoContainer;
 
-	/**
+
+    public ControlFragment() {
+        // Required empty public constructor
+    }
+
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+
+        View view = inflater.inflate(R.layout.fragment_control, container, false);
+        View totalTimeContainer = inflater.inflate(R.layout.total_time_window, null);
+
+        textTotalTime = (TextView) totalTimeContainer.findViewById(R.id.tv_navigation_info_total_time_left);
+
+        //Get Layout Containers to easily handle states
+        navigationInfoContainer = (LinearLayout) view.findViewById(R.id.navigation_info_container);
+
+        //Get TextViews
+        textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
+        textTimeToNextStop = (TextView) view.findViewById(R.id.navigation_info_time);
+        textDistanceToTextStop = (TextView) view.findViewById(R.id.navigation_info_distance);
+
+        //Get ImageViews
+        ivFood = (ImageView) view.findViewById(R.id.navigation_info_icon_type_food);
+        ivGasstation = (ImageView) view.findViewById(R.id.navigation_info_icon_type_gasstation);
+        ivRestArea = (ImageView) view.findViewById(R.id.navigation_info_icon_type_restarea);
+        ivToilet = (ImageView) view.findViewById(R.id.navigation_info_icon_type_toilet);
+
+        //Get progressbars
+        barFuel = (ProgressBar) view.findViewById(R.id.progress_gas);
+        barTimeClock = (ProgressBar) view.findViewById(R.id.progress_time_clock);
+
+        //Get and set Input buttons
+        ibRestArea = (ImageButton) view.findViewById(R.id.button_control_input_restarea);
+        isRestArea = ImageState.ORIGINAL;
+        ibRestArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.RESTAREA);
+            }
+        });
+        ibFood = (ImageButton) view.findViewById(R.id.button_control_input_restaurant);
+        isFood = ImageState.ORIGINAL;
+        ibFood.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MultiPaneActivity) getActivity()).getPauseSuggestions(IMilestone.Category.FOOD);
+            }
+        });
+        ibRestroom = (ImageButton) view.findViewById(R.id.button_control_input_toilet);
+        isRestroom = ImageState.ORIGINAL;
+        ibRestroom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.TOILET);
+            }
+        });
+        ibGasStation = (ImageButton) view.findViewById(R.id.button_control_input_gasstation);
+        isGasStation = ImageState.ORIGINAL;
+        ibGasStation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.GASSTATION);
+            }
+        });
+
+        return view;
+    }
+
+    /**
 	 * Sets the indicator value on the progressbar for time clock
 	 * @param timeClock the time to a obligatory pause
 	 */
@@ -102,7 +174,6 @@ public class ControlFragment extends Fragment{
             float nextStopClock = leg.getDuration();
             String nextStopName = milestone.getName();
             float distanceToNextStop = leg.getDistance();
-            Log.d("ControlFragment", "Mile :"+milestone.toString() + ", cat :"+milestone.getCategories());
             List<IMilestone.Category> categories = milestone.getCategories();
 
             textNextStop.setText(nextStopName);
@@ -116,30 +187,22 @@ public class ControlFragment extends Fragment{
             ivToilet.setVisibility(ImageView.GONE);
 
             for (IMilestone.Category cat : categories) {
-
-                Log.d("ControlFragment:", "" + cat);
-
                 switch (cat) {
                     case FOOD:
                         ivFood.setVisibility(ImageView.VISIBLE);
-                        Log.d("ControlFragment:", "Set FOOD Visible");
                         break;
 
                     case GASSTATION:
                         ivGasstation.setVisibility(ImageView.VISIBLE);
-                        Log.d("ControlFragment:", "Set GASSTATION Visible");
                         break;
 
                     case RESTAREA:
                         ivRestArea.setVisibility(ImageView.VISIBLE);
-                        Log.d("ControlFragment:", "Set RESTAREA Visible");
                         break;
 
                     case TOILET:
                         ivToilet.setVisibility(ImageView.VISIBLE);
-                        Log.d("ControlFragment:", "Set TOILET Visible");
                         break;
-
                 }
             }
         }
@@ -166,87 +229,4 @@ public class ControlFragment extends Fragment{
 		fragment.setArguments(args);
 		return fragment;
 	}
-
-	public ControlFragment() {
-		// Required empty public constructor
-	}
-
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		if (getArguments() != null) {
-
-		}
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	                         Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-
-		View view = inflater.inflate(R.layout.fragment_control, container, false);
-        View totalTimeContainer = inflater.inflate(R.layout.total_time_window, null);
-
-        textTotalTime = (TextView) totalTimeContainer.findViewById(R.id.tv_navigation_info_total_time_left);
-
-		//Get Layout Containers to easily handle states
-		navigationInfoContainer = (LinearLayout) view.findViewById(R.id.navigation_info_container);
-
-        //Get TextViews
-        textNextStop = (TextView) view.findViewById(R.id.tv_navigation_info_title);
-        textTimeToNextStop = (TextView) view.findViewById(R.id.navigation_info_time);
-        textDistanceToTextStop = (TextView) view.findViewById(R.id.navigation_info_distance);
-
-        //Get ImageViews
-        ivFood = (ImageView) view.findViewById(R.id.navigation_info_icon_type_food);
-        ivGasstation = (ImageView) view.findViewById(R.id.navigation_info_icon_type_gasstation);
-        ivRestArea = (ImageView) view.findViewById(R.id.navigation_info_icon_type_restarea);
-        ivToilet = (ImageView) view.findViewById(R.id.navigation_info_icon_type_toilet);
-
-        //Get progressbars
-        barFuel = (ProgressBar) view.findViewById(R.id.progress_gas);
-        barTimeClock = (ProgressBar) view.findViewById(R.id.progress_time_clock);
-
-		//Get and set Input buttons
-		ibRestArea = (ImageButton) view.findViewById(R.id.button_control_input_restarea);
-		isRestArea = ImageState.ORIGINAL;
-		ibRestArea.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.RESTAREA);
-				Log.d("INPUTBUTTON", "Restarea");
-			}
-		});
-		ibFood = (ImageButton) view.findViewById(R.id.button_control_input_restaurant);
-		isFood = ImageState.ORIGINAL;
-		ibFood.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				((MultiPaneActivity) getActivity()).getPauseSuggestions(IMilestone.Category.FOOD);
-				Log.d("INPUTBUTTON", "Food");
-			}
-		});
-		ibRestroom = (ImageButton) view.findViewById(R.id.button_control_input_toilet);
-		isRestroom = ImageState.ORIGINAL;
-		ibRestroom.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.TOILET);
-				Log.d("INPUTBUTTON", "Toilet");
-			}
-		});
-		ibGasStation = (ImageButton) view.findViewById(R.id.button_control_input_gasstation);
-		isGasStation = ImageState.ORIGINAL;
-		ibGasStation.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				((MultiPaneActivity)getActivity()).getPauseSuggestions(IMilestone.Category.GASSTATION);
-				Log.d("INPUTBUTTON", "Gas Station");
-			}
-		});
-
-		return view;
-	}
-
-
-
 }
