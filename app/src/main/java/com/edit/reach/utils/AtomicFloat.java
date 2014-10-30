@@ -31,7 +31,7 @@ public class AtomicFloat extends Number {
 	}
 
 	public double doubleValue() {
-		return (double) floatValue();
+		return (double) get();
 	}
 
 	public int intValue() {
