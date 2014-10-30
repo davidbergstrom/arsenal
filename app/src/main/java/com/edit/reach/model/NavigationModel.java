@@ -172,7 +172,7 @@ public final class NavigationModel implements Runnable, Observer {
 					map.getRoute().addMilestone(this.milestone);
 				}
 
-			// If milestone was not accepted by the user.
+				// If milestone was not accepted by the user.
 			} else{
 				// Get next milestone
 				getMilestoneSuggestions(milestoneCategory);

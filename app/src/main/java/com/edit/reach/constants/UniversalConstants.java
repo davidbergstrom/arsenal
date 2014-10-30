@@ -20,9 +20,9 @@ public class UniversalConstants {
 	// The time in seconds that a break has to be after a 16200 second drive.
 	public static final long BREAKTIME_IN_SECONDS = 2700;
 
-    // 10% fuel left.
-    public static final float FUEL_THRESHOLD = 10f;
+	// 10% fuel left.
+	public static final float FUEL_THRESHOLD = 10f;
 
-    // 15 minutes before timestop.
-    public static final int TIME_THRESHOLD = 900;
+	// 15 minutes before timestop.
+	public static final int TIME_THRESHOLD = 900;
 }

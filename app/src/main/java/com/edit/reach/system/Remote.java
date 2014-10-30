@@ -19,20 +19,20 @@ public class Remote {
 	private Remote() {
 	}
 
-    /**
-     * Starting an asynchronous GET request.
-     * @param url The URL to request against.
-     * @param responseHandler The object that will receive the response.
-     */
+	/**
+	 * Starting an asynchronous GET request.
+	 * @param url The URL to request against.
+	 * @param responseHandler The object that will receive the response.
+	 */
 	public static void get(URL url, ResponseHandler responseHandler) {
 		new GetDataTask(responseHandler).execute(url);
 	}
 
-    /**
-     * An asynchronous task that performs a GET request.
-     * The ResponseHandler will be notified of the response
-     * in a suitable method.
-     */
+	/**
+	 * An asynchronous task that performs a GET request.
+	 * The ResponseHandler will be notified of the response
+	 * in a suitable method.
+	 */
 	private static class GetDataTask extends AsyncTask<URL, Void, String> {
 		private final ResponseHandler responseHandler;
 
@@ -64,12 +64,12 @@ public class Remote {
 			}
 		}
 
-        /**
-         * Responsible of actually downloading the data from the server.
-         * @param url The URL to read from.
-         * @return A string with the server response.
-         * @throws IOException
-         */
+		/**
+		 * Responsible of actually downloading the data from the server.
+		 * @param url The URL to read from.
+		 * @return A string with the server response.
+		 * @throws IOException
+		 */
 		private String getData(URL url) throws IOException {
 			InputStream inputStream = null;
 
@@ -97,11 +97,11 @@ public class Remote {
 			}
 		}
 
-        /**
-         * Parsing an InputStream to a String and returns it.
-         * @param stream The InputStream containing the HTTP response.
-         * @return The parsed HTTP response as a String.
-         */
+		/**
+		 * Parsing an InputStream to a String and returns it.
+		 * @param stream The InputStream containing the HTTP response.
+		 * @return The parsed HTTP response as a String.
+		 */
 		public String readHttpResponse(InputStream stream) {
 			return new Scanner(stream).useDelimiter("\\A").next();
 		}

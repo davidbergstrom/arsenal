@@ -5,5 +5,5 @@ package com.edit.reach.constants;
  * of requesting data from some external API
  */
 public enum GetStatus {
-    PENDING, RUNNING, SUCCEEDED, FAILED
+	PENDING, RUNNING, SUCCEEDED, FAILED
 }

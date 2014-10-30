@@ -7,5 +7,5 @@ import java.util.List;
  */
 public interface SuggestionListener {
 
-    public void onGetSuccess(List<String> results);
+	public void onGetSuccess(List<String> results);
 }

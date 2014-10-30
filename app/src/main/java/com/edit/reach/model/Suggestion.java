@@ -18,50 +18,50 @@ import java.util.List;
  */
 public class Suggestion implements ResponseHandler {
 
-    private final SuggestionListener suggestionListener;
-    private String searchString;
+	private final SuggestionListener suggestionListener;
+	private String searchString;
 
-    public Suggestion(SuggestionListener suggestionListener) {
-        this.suggestionListener = suggestionListener;
-    }
+	public Suggestion(SuggestionListener suggestionListener) {
+		this.suggestionListener = suggestionListener;
+	}
 
-    /** Handler for receiving the search result as a JSON Object */
-    @Override
-    public void onGetSuccess(JSONObject json) {
-        try {
-            JSONArray predictions = json.getJSONArray("predictions");
+	/** Handler for receiving the search result as a JSON Object */
+	@Override
+	public void onGetSuccess(JSONObject json) {
+		try {
+			JSONArray predictions = json.getJSONArray("predictions");
 
-            Log.d("Suggestion", " " + predictions);
+			Log.d("Suggestion", " " + predictions);
 
-            List<String> resultList = new ArrayList<String>();
+			List<String> resultList = new ArrayList<String>();
 
-                for (int i = 0; i < predictions.length(); i++) {
-                    resultList.add(((JSONObject)predictions.get(i)).getString("description"));
-                    Log.d("Suggestion", " " + ((JSONObject)predictions.get(i)).getString("description"));
-                }
+			for (int i = 0; i < predictions.length(); i++) {
+				resultList.add(((JSONObject)predictions.get(i)).getString("description"));
+				Log.d("Suggestion", " " + ((JSONObject)predictions.get(i)).getString("description"));
+			}
 
-            suggestionListener.onGetSuccess(resultList);
+			suggestionListener.onGetSuccess(resultList);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-        }
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 
-    }
+	}
 
-    @Override
-    public void onGetFail() {
-	    Log.d("Suggestion", "Suggestion failed");
-    }
+	@Override
+	public void onGetFail() {
+		Log.d("Suggestion", "Suggestion failed");
+	}
 
-    /**
-     * Search in the Google Places API for the given String
-     * @param str, search String
-     */
-    public void searchForAddresses(String str) {
-        Log.d("Suggestion", " " + str);
-        searchString = str.toLowerCase();
-        URL url = GoogleMapsEndpoints.makeURLPlaces(searchString);
-        Remote.get(url, this);
-    }
+	/**
+	 * Search in the Google Places API for the given String
+	 * @param str, search String
+	 */
+	public void searchForAddresses(String str) {
+		Log.d("Suggestion", " " + str);
+		searchString = str.toLowerCase();
+		URL url = GoogleMapsEndpoints.makeURLPlaces(searchString);
+		Remote.get(url, this);
+	}
 }
 

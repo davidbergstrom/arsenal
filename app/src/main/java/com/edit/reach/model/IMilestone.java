@@ -30,23 +30,23 @@ public interface IMilestone {
 	 */
 	public String getDescription();
 
-    /**
-     * Returns a 'snippet' of the milestone, which is the rank followed by the description.
-     * @return the snippet
-     */
-    public String getSnippet();
+	/**
+	 * Returns a 'snippet' of the milestone, which is the rank followed by the description.
+	 * @return the snippet
+	 */
+	public String getSnippet();
 
-    /**
-     * Checks wether the milestone has the requested categories or not
-     * @return true if the milestone has the requested categories
-     */
-    public boolean hasCategories(ArrayList<Category> requestedCategories);
+	/**
+	 * Checks wether the milestone has the requested categories or not
+	 * @return true if the milestone has the requested categories
+	 */
+	public boolean hasCategories(ArrayList<Category> requestedCategories);
 
-    /**
-     * Checks wether the milestone has the requested category or not
-     * @return true if the milestone has the requested category
-     */
-    public boolean hasCategory(Category requestedCategory);
+	/**
+	 * Checks wether the milestone has the requested category or not
+	 * @return true if the milestone has the requested category
+	 */
+	public boolean hasCategory(Category requestedCategory);
 
 	/**
 	 * Returns the categories associated with the milestone

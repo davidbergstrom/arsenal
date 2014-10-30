@@ -20,101 +20,101 @@ import java.util.List;
  * A step is a part of route with instructions.
  */
 public class Step {
-    private float distancePerSubStep, durationPerSubStep;
-    private String instructions;
-    private Polyline polyline;
-    private List<LatLng> subSteps;
-    private final String DEBUG_TAG = "Step";
+	private float distancePerSubStep, durationPerSubStep;
+	private String instructions;
+	private Polyline polyline;
+	private List<LatLng> subSteps;
+	private final String DEBUG_TAG = "Step";
 
-    /**
-     * Constructs a step with the information retrieved from the provided JSONObject.
-     * @param stepJSON the JSONObject to get information from
-     */
-    public Step(JSONObject stepJSON){
-        Log.d(DEBUG_TAG, "Creating step.");
-        try {
-            try {
-                instructions = URLDecoder.decode(Html.fromHtml(stepJSON.getString("html_instructions")).toString(), "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            JSONObject polyline = stepJSON.getJSONObject("polyline");
-            String encodedString = polyline.getString("points");
-            subSteps = PolyUtil.decode(encodedString);
-            distancePerSubStep = (float)stepJSON.getJSONObject("distance").getDouble("value") / (subSteps.size()-1);
-            durationPerSubStep = (float)stepJSON.getJSONObject("duration").getDouble("value") / (subSteps.size()-1);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
+	/**
+	 * Constructs a step with the information retrieved from the provided JSONObject.
+	 * @param stepJSON the JSONObject to get information from
+	 */
+	public Step(JSONObject stepJSON){
+		Log.d(DEBUG_TAG, "Creating step.");
+		try {
+			try {
+				instructions = URLDecoder.decode(Html.fromHtml(stepJSON.getString("html_instructions")).toString(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			JSONObject polyline = stepJSON.getJSONObject("polyline");
+			String encodedString = polyline.getString("points");
+			subSteps = PolyUtil.decode(encodedString);
+			distancePerSubStep = (float)stepJSON.getJSONObject("distance").getDouble("value") / (subSteps.size()-1);
+			durationPerSubStep = (float)stepJSON.getJSONObject("duration").getDouble("value") / (subSteps.size()-1);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
 
-    /**
-     * Draw the step on the provided map
-     * @param map, the map to draw on
-     */
-    void draw(GoogleMap map){
-        this.erase();
-        polyline = map.addPolyline(new PolylineOptions()
-                .addAll(subSteps)
-                .width(14)
-                .color(0xff0066ff));
-    }
+	/**
+	 * Draw the step on the provided map
+	 * @param map, the map to draw on
+	 */
+	void draw(GoogleMap map){
+		this.erase();
+		polyline = map.addPolyline(new PolylineOptions()
+				.addAll(subSteps)
+				.width(14)
+				.color(0xff0066ff));
+	}
 
-    /**
-     * Erase the step from all of its maps
-     */
-    void erase(){
-        if(polyline != null){
-            polyline.remove();
-        }
-    }
+	/**
+	 * Erase the step from all of its maps
+	 */
+	void erase(){
+		if(polyline != null){
+			polyline.remove();
+		}
+	}
 
-    /**
-     * Returns the sub steps of this step.
-     * @return the sub steps
-     */
-    public List<LatLng> getSubSteps() {
-        return subSteps;
-    }
+	/**
+	 * Returns the sub steps of this step.
+	 * @return the sub steps
+	 */
+	public List<LatLng> getSubSteps() {
+		return subSteps;
+	}
 
-    /**
-     * Returns the instructions of this step. These will help you get to the next step.
-     * @return the instuctions
-     */
-    public String getInstructions() {
-        return instructions;
-    }
+	/**
+	 * Returns the instructions of this step. These will help you get to the next step.
+	 * @return the instuctions
+	 */
+	public String getInstructions() {
+		return instructions;
+	}
 
-    /**
-     * Returns the start location of this step.
-     * @return the location at the start
-     */
-    public LatLng getStartLocation() {
-        return subSteps.get(0);
-    }
+	/**
+	 * Returns the start location of this step.
+	 * @return the location at the start
+	 */
+	public LatLng getStartLocation() {
+		return subSteps.get(0);
+	}
 
-    /**
-     * Returns the end location of this step.
-     * @return the location at the end
-     */
-    public LatLng getEndLocation() {
-        return subSteps.get(subSteps.size()-1);
-    }
+	/**
+	 * Returns the end location of this step.
+	 * @return the location at the end
+	 */
+	public LatLng getEndLocation() {
+		return subSteps.get(subSteps.size()-1);
+	}
 
-    /**
-     * Returns the duration of this step.
-     * @return the duration in seconds
-     */
-    public float getDuration() {
-        return durationPerSubStep * (subSteps.size()-1);
-    }
+	/**
+	 * Returns the duration of this step.
+	 * @return the duration in seconds
+	 */
+	public float getDuration() {
+		return durationPerSubStep * (subSteps.size()-1);
+	}
 
-    /**
-     * Returns the distance of this step.
-     * @return the distance in metres
-     */
-    public float getDistance() {
-        return distancePerSubStep * (subSteps.size()-1);
-    }
+	/**
+	 * Returns the distance of this step.
+	 * @return the distance in metres
+	 */
+	public float getDistance() {
+		return distancePerSubStep * (subSteps.size()-1);
+	}
 
 }

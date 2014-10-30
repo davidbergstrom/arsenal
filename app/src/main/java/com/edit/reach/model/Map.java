@@ -18,325 +18,325 @@ import java.util.Observable;
  */
 public class Map extends Observable {
 
-    private static final int UPDATE_INTERVAL = NavigationUtil.UPDATE_INTERVAL_SLOW;
+	private static final int UPDATE_INTERVAL = NavigationUtil.UPDATE_INTERVAL_SLOW;
 
-    // The map which modifies the map view in the activity
-    private final GoogleMap map;
+	// The map which modifies the map view in the activity
+	private final GoogleMap map;
 
-    // The handler for navigation loop
-    private final Handler handler;
+	// The handler for navigation loop
+	private final Handler handler;
 
-    private Route currentRoute;
+	private Route currentRoute;
 
-    // The state which is used internally in a state pattern
-    private MapState mapState;
+	// The state which is used internally in a state pattern
+	private MapState mapState;
 
-    private boolean demoMode;
+	private boolean demoMode;
 
-    // Class name for logging
-    private final String DEBUG_TAG = "Map";
+	// Class name for logging
+	private final String DEBUG_TAG = "Map";
 
-    /** Enum class for internal state pattern */
-    public enum MapState {
-        STATIONARY, MOVING, OVERVIEW_MOVING
-    }
-
-    /** A listener for a route */
-    private final RouteListener routeListener = new RouteListener(){
-
-        @Override
-        public void onInitialization(boolean success) {
-            // When the route has been initialized, draw it
-            if(success){
-                updateState();  // Update all the state specific changes when route initialized.
-                Log.d(DEBUG_TAG, "Notified observers that the initialization succeeded!");
-
-                setChanged();
-                notifyObservers(SignalType.ROUTE_INITIALIZATION_SUCCEDED);
-
-	            setChanged();
-                notifyObservers(SignalType.LEG_UPDATE);
-
-	            setChanged();
-                notifyObservers(SignalType.ROUTE_TOTAL_TIME_UPDATE);
-            }else{
-                setChanged();
-                notifyObservers(SignalType.ROUTE_INITIALIZATION_FAILED);
-            }
-        }
-
-        @Override
-        public void onPauseAdded(Pause pause) {
-            Log.d(DEBUG_TAG, "Pause added");
-            setChanged();
-            notifyObservers(SignalType.PAUSE_ADDED);
-            if(mapState == MapState.STATIONARY){
-                // If the current state is overview, draw the pause circle and add the markers to the map
-                pause.draw(map);
-            }else if(mapState == MapState.MOVING){
-                pause.drawNavigation(map);
-            }
-
-        }
-
-        @Override
-        public void onRouteFinished(Route finishedRoute) {
-            // When the route has finished
-            setMapState(MapState.STATIONARY);
-        }
-
-        @Override
-        public void onLegFinished(Leg finishedLeg) {
-            setChanged();
-            notifyObservers(SignalType.LEG_FINISHED);
-        }
-
-        @Override
-        public void onStepFinished(Step finishedStep) {
-            setChanged();
-            notifyObservers(SignalType.LEG_UPDATE);
-        }
-    };
-
-    /* A runnable for navigation */
-    private final Runnable navigationRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if(mapState == MapState.MOVING || mapState == MapState.OVERVIEW_MOVING){
-                if(isRouteSet() && currentRoute.isInitialized()){
-                    Location myLocation = map.getMyLocation();
-	                LatLng position;
-	                if(myLocation != null){
-		                position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-	                }else{
-		                position = new LatLng(0, 0);
-	                }
-
-                    // Move the route pointer to the new position
-                    currentRoute.goTo(position);
-
-                    if(mapState == MapState.MOVING){
-                        CameraPosition lastPosition = map.getCameraPosition();
-                        CameraPosition currentPlace = new CameraPosition.Builder().target(currentRoute.getPointerLocation()).bearing(currentRoute.getPointerBearing())
-                                .tilt(lastPosition.tilt).zoom(lastPosition.zoom).build();
-                        map.animateCamera(CameraUpdateFactory.newCameraPosition(currentPlace), UPDATE_INTERVAL,
-                                new GoogleMap.CancelableCallback() {
-                            @Override
-                            public void onFinish() {
-
-                            }
-
-                            @Override
-                            public void onCancel() {
-
-                            }
-                        });
-                    }
-
-                }else if(!isRouteSet()){
-                    Location myLocation = map.getMyLocation();
-                    LatLng position;
-                    if(myLocation != null){
-                        position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-                    }else{
-                        position = new LatLng(0, 0);
-                    }
-
-                    moveCameraTo(position, map.getCameraPosition().zoom);
-                }else{
-                    Log.d(DEBUG_TAG, "Current route not initialized!");
-                }
-                handler.postDelayed(this, UPDATE_INTERVAL);
-            }else{
-                Log.d(DEBUG_TAG, "Not in moving mode, NavigationRunnable is aborting.");
-            }
-
-        }
-    };
-
-    /* Runnable for alerting observers of the route. */
-    private final Runnable routeUpdate = new Runnable() {
-        @Override
-        public void run() {
-            if((mapState == MapState.MOVING || mapState == MapState.OVERVIEW_MOVING) && isRouteSet() && currentRoute.isInitialized()) {
-                setChanged();
-                notifyObservers(SignalType.LEG_UPDATE);
-                handler.postDelayed(this, NavigationUtil.ROUTE_INTERVAL_DEMO);
-                Log.d(DEBUG_TAG, "LEG_UPDATE, d: "+currentRoute.getLegs().get(0).getDuration());
-            }
-        }
-    };
-
-    /**
-     * Construct a Map by providing a google map
-     * @param map, the GoogleMap to use
-     */
-	Map(GoogleMap map){
-		this.map = map;
-        this.handler = new Handler();
-        this.mapState = MapState.STATIONARY;
-        demoMode = true;
+	/** Enum class for internal state pattern */
+	public enum MapState {
+		STATIONARY, MOVING, OVERVIEW_MOVING
 	}
 
-    /**
-     * Set the current route to the provided route, this will also initiate an overview of the route.
-     * @param newRoute, the new route
-     */
-    void setRoute(Route newRoute){
-        Log.d(DEBUG_TAG, "Erasing old route and adding a new.");
-        if(currentRoute != null){
-            currentRoute.erase();
-            currentRoute.removeListeners();
-        }
-        currentRoute = newRoute;
-        currentRoute.setDemoMode(demoMode);
-        currentRoute.addListener(routeListener);
-        // Set the mode to Overview
-        mapState = MapState.STATIONARY;
-    }
+	/** A listener for a route */
+	private final RouteListener routeListener = new RouteListener(){
 
-    /**
-     * Get the current route.
-     * @return the route the map is currently on
-     */
-    Route getRoute() {
-        return currentRoute;
-    }
+		@Override
+		public void onInitialization(boolean success) {
+			// When the route has been initialized, draw it
+			if(success){
+				updateState();  // Update all the state specific changes when route initialized.
+				Log.d(DEBUG_TAG, "Notified observers that the initialization succeeded!");
 
-    /**
-     * Set demonstration mode on
-     * @param on true
-     */
-    void setDemoMode(boolean on){
-        demoMode = on;
-        if(currentRoute != null){
-            currentRoute.setDemoMode(on);
-        }
-    }
+				setChanged();
+				notifyObservers(SignalType.ROUTE_INITIALIZATION_SUCCEDED);
 
-    /**
-     * Move the camera for the map to the new location.
-     * @param location, the location to move to.
-     */
-    void moveCameraTo(LatLng location, float zoom){
-        CameraPosition newCameraLocation = new CameraPosition.Builder().target(location).zoom(zoom).build();
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(newCameraLocation));
-    }
+				setChanged();
+				notifyObservers(SignalType.LEG_UPDATE);
 
-    /**
-     * Move the camera for the map to the milestone and add it as a marker.
-     * @param milestone, the milestone to add to the map and move the camera to.
-     */
-    Marker showMilestone(IMilestone milestone){
-        mapState = MapState.OVERVIEW_MOVING;
-        LatLng milestoneLocation = milestone.getLocation();
-        Marker tempMarker = map.addMarker(new MarkerOptions().position(milestoneLocation).icon(NavigationUtil.getMilestoneIcon(milestone)).snippet(milestone.getSnippet()).title(milestone.getName()));
-        moveCameraTo(milestoneLocation, 13);
-        return tempMarker;
-    }
+				setChanged();
+				notifyObservers(SignalType.ROUTE_TOTAL_TIME_UPDATE);
+			}else{
+				setChanged();
+				notifyObservers(SignalType.ROUTE_INITIALIZATION_FAILED);
+			}
+		}
 
-    /**
-     * Sets the state of the map. Available states are:
-     *      STATIONARY    -   Will zoom so the whole route is visible and with pauses and milestones added.
-     *      NAVIGATION  -   Zoom to the ground and starts a automatic update of the route to follow the users current location.
-     * @param newMapState, the new state of the map
-     */
-    public void setMapState(MapState newMapState){
-        if(newMapState == MapState.STATIONARY){
-            startStationary();
+		@Override
+		public void onPauseAdded(Pause pause) {
+			Log.d(DEBUG_TAG, "Pause added");
+			setChanged();
+			notifyObservers(SignalType.PAUSE_ADDED);
+			if(mapState == MapState.STATIONARY){
+				// If the current state is overview, draw the pause circle and add the markers to the map
+				pause.draw(map);
+			}else if(mapState == MapState.MOVING){
+				pause.drawNavigation(map);
+			}
 
-            Log.d(DEBUG_TAG, "State: Stationary");
-        }else if(newMapState == MapState.MOVING){
-            startMoving();
+		}
 
-            Log.d(DEBUG_TAG, "State: Moving");
-        }
-        this.mapState = newMapState;
-    }
+		@Override
+		public void onRouteFinished(Route finishedRoute) {
+			// When the route has finished
+			setMapState(MapState.STATIONARY);
+		}
 
-    private void startStationary(){
-        if(currentRoute != null){
-            LatLng routeOrigin = currentRoute.getOrigin();
-            LatLng routeDestination = currentRoute.getDestination();
-            if(routeOrigin != null && routeDestination != null){
-                // Zoom and move camera so the whole route is visible.
-                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                builder.include(routeDestination).include(routeOrigin);
-                map.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
-            }
+		@Override
+		public void onLegFinished(Leg finishedLeg) {
+			setChanged();
+			notifyObservers(SignalType.LEG_FINISHED);
+		}
 
-            if(currentRoute.isInitialized()){
-                currentRoute.drawOverview(map);
-            }
+		@Override
+		public void onStepFinished(Step finishedStep) {
+			setChanged();
+			notifyObservers(SignalType.LEG_UPDATE);
+		}
+	};
 
-            List<Pause> pauses = currentRoute.getPauses();
-            for (Pause p : pauses) {
-                p.draw(map);
-            }
+	/* A runnable for navigation */
+	private final Runnable navigationRunnable = new Runnable() {
+		@Override
+		public void run() {
+			if(mapState == MapState.MOVING || mapState == MapState.OVERVIEW_MOVING){
+				if(isRouteSet() && currentRoute.isInitialized()){
+					Location myLocation = map.getMyLocation();
+					LatLng position;
+					if(myLocation != null){
+						position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+					}else{
+						position = new LatLng(0, 0);
+					}
 
-            map.getUiSettings().setAllGesturesEnabled(true);
-        }
-    }
+					// Move the route pointer to the new position
+					currentRoute.goTo(position);
 
-    private void startMoving(){
-        // Disable all interactions the user is not allowed to do.
-        map.getUiSettings().setScrollGesturesEnabled(false);
-        map.getUiSettings().setTiltGesturesEnabled(false);
-        map.getUiSettings().setCompassEnabled(false);
-        map.getUiSettings().setRotateGesturesEnabled(false);
+					if(mapState == MapState.MOVING){
+						CameraPosition lastPosition = map.getCameraPosition();
+						CameraPosition currentPlace = new CameraPosition.Builder().target(currentRoute.getPointerLocation()).bearing(currentRoute.getPointerBearing())
+								.tilt(lastPosition.tilt).zoom(lastPosition.zoom).build();
+						map.animateCamera(CameraUpdateFactory.newCameraPosition(currentPlace), UPDATE_INTERVAL,
+								new GoogleMap.CancelableCallback() {
+									@Override
+									public void onFinish() {
 
-        if(isRouteSet()){
-            // Set camera to right tilt and zoom
-            CameraPosition currentPlace = new CameraPosition.Builder().target(currentRoute.getOrigin()).tilt(65.5f).zoom(17).build();
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
+									}
+
+									@Override
+									public void onCancel() {
+
+									}
+								});
+					}
+
+				}else if(!isRouteSet()){
+					Location myLocation = map.getMyLocation();
+					LatLng position;
+					if(myLocation != null){
+						position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+					}else{
+						position = new LatLng(0, 0);
+					}
+
+					moveCameraTo(position, map.getCameraPosition().zoom);
+				}else{
+					Log.d(DEBUG_TAG, "Current route not initialized!");
+				}
+				handler.postDelayed(this, UPDATE_INTERVAL);
+			}else{
+				Log.d(DEBUG_TAG, "Not in moving mode, NavigationRunnable is aborting.");
+			}
+
+		}
+	};
+
+	/* Runnable for alerting observers of the route. */
+	private final Runnable routeUpdate = new Runnable() {
+		@Override
+		public void run() {
+			if((mapState == MapState.MOVING || mapState == MapState.OVERVIEW_MOVING) && isRouteSet() && currentRoute.isInitialized()) {
+				setChanged();
+				notifyObservers(SignalType.LEG_UPDATE);
+				handler.postDelayed(this, NavigationUtil.ROUTE_INTERVAL_DEMO);
+				Log.d(DEBUG_TAG, "LEG_UPDATE, d: "+currentRoute.getLegs().get(0).getDuration());
+			}
+		}
+	};
+
+	/**
+	 * Construct a Map by providing a google map
+	 * @param map, the GoogleMap to use
+	 */
+	Map(GoogleMap map){
+		this.map = map;
+		this.handler = new Handler();
+		this.mapState = MapState.STATIONARY;
+		demoMode = true;
+	}
+
+	/**
+	 * Set the current route to the provided route, this will also initiate an overview of the route.
+	 * @param newRoute, the new route
+	 */
+	void setRoute(Route newRoute){
+		Log.d(DEBUG_TAG, "Erasing old route and adding a new.");
+		if(currentRoute != null){
+			currentRoute.erase();
+			currentRoute.removeListeners();
+		}
+		currentRoute = newRoute;
+		currentRoute.setDemoMode(demoMode);
+		currentRoute.addListener(routeListener);
+		// Set the mode to Overview
+		mapState = MapState.STATIONARY;
+	}
+
+	/**
+	 * Get the current route.
+	 * @return the route the map is currently on
+	 */
+	Route getRoute() {
+		return currentRoute;
+	}
+
+	/**
+	 * Set demonstration mode on
+	 * @param on true
+	 */
+	void setDemoMode(boolean on){
+		demoMode = on;
+		if(currentRoute != null){
+			currentRoute.setDemoMode(on);
+		}
+	}
+
+	/**
+	 * Move the camera for the map to the new location.
+	 * @param location, the location to move to.
+	 */
+	void moveCameraTo(LatLng location, float zoom){
+		CameraPosition newCameraLocation = new CameraPosition.Builder().target(location).zoom(zoom).build();
+		map.moveCamera(CameraUpdateFactory.newCameraPosition(newCameraLocation));
+	}
+
+	/**
+	 * Move the camera for the map to the milestone and add it as a marker.
+	 * @param milestone, the milestone to add to the map and move the camera to.
+	 */
+	Marker showMilestone(IMilestone milestone){
+		mapState = MapState.OVERVIEW_MOVING;
+		LatLng milestoneLocation = milestone.getLocation();
+		Marker tempMarker = map.addMarker(new MarkerOptions().position(milestoneLocation).icon(NavigationUtil.getMilestoneIcon(milestone)).snippet(milestone.getSnippet()).title(milestone.getName()));
+		moveCameraTo(milestoneLocation, 13);
+		return tempMarker;
+	}
+
+	/**
+	 * Sets the state of the map. Available states are:
+	 *      STATIONARY    -   Will zoom so the whole route is visible and with pauses and milestones added.
+	 *      NAVIGATION  -   Zoom to the ground and starts a automatic update of the route to follow the users current location.
+	 * @param newMapState, the new state of the map
+	 */
+	public void setMapState(MapState newMapState){
+		if(newMapState == MapState.STATIONARY){
+			startStationary();
+
+			Log.d(DEBUG_TAG, "State: Stationary");
+		}else if(newMapState == MapState.MOVING){
+			startMoving();
+
+			Log.d(DEBUG_TAG, "State: Moving");
+		}
+		this.mapState = newMapState;
+	}
+
+	private void startStationary(){
+		if(currentRoute != null){
+			LatLng routeOrigin = currentRoute.getOrigin();
+			LatLng routeDestination = currentRoute.getDestination();
+			if(routeOrigin != null && routeDestination != null){
+				// Zoom and move camera so the whole route is visible.
+				LatLngBounds.Builder builder = new LatLngBounds.Builder();
+				builder.include(routeDestination).include(routeOrigin);
+				map.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
+			}
+
+			if(currentRoute.isInitialized()){
+				currentRoute.drawOverview(map);
+			}
+
+			List<Pause> pauses = currentRoute.getPauses();
+			for (Pause p : pauses) {
+				p.draw(map);
+			}
+
+			map.getUiSettings().setAllGesturesEnabled(true);
+		}
+	}
+
+	private void startMoving(){
+		// Disable all interactions the user is not allowed to do.
+		map.getUiSettings().setScrollGesturesEnabled(false);
+		map.getUiSettings().setTiltGesturesEnabled(false);
+		map.getUiSettings().setCompassEnabled(false);
+		map.getUiSettings().setRotateGesturesEnabled(false);
+
+		if(isRouteSet()){
+			// Set camera to right tilt and zoom
+			CameraPosition currentPlace = new CameraPosition.Builder().target(currentRoute.getOrigin()).tilt(65.5f).zoom(17).build();
+			map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
 
-            List<Pause> pauses = currentRoute.getPauses();
-            for (Pause p : pauses) {
-                p.erase();
-            }
-            if(currentRoute.isInitialized() && mapState != MapState.OVERVIEW_MOVING){
-                currentRoute.drawNavigation(map);
-            }
-        }else{
-            // Start moving without route.
-            Location myLocation = map.getMyLocation();
-            LatLng position;
-            if(myLocation != null){
-                position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-            }else{
-                position = new LatLng(0, 0);
-            }
+			List<Pause> pauses = currentRoute.getPauses();
+			for (Pause p : pauses) {
+				p.erase();
+			}
+			if(currentRoute.isInitialized() && mapState != MapState.OVERVIEW_MOVING){
+				currentRoute.drawNavigation(map);
+			}
+		}else{
+			// Start moving without route.
+			Location myLocation = map.getMyLocation();
+			LatLng position;
+			if(myLocation != null){
+				position = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+			}else{
+				position = new LatLng(0, 0);
+			}
 
-            CameraPosition currentPlace = new CameraPosition.Builder().target(position).zoom(17).build();
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
-        }
+			CameraPosition currentPlace = new CameraPosition.Builder().target(position).zoom(17).build();
+			map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
+		}
 
-        // Start navigation runnable
-        handler.post(navigationRunnable);
-        handler.post(routeUpdate);
-    }
+		// Start navigation runnable
+		handler.post(navigationRunnable);
+		handler.post(routeUpdate);
+	}
 
 
 
-    private void updateState(){
-        setMapState(mapState);
-    }
+	private void updateState(){
+		setMapState(mapState);
+	}
 
-    /**
-     * Returns if map has a route.
-     * @return true if the map has a route and false otherwise
-     */
-    public boolean isRouteSet(){
-        return currentRoute != null;
-    }
+	/**
+	 * Returns if map has a route.
+	 * @return true if the map has a route and false otherwise
+	 */
+	public boolean isRouteSet(){
+		return currentRoute != null;
+	}
 
-    /**
-     * Returns the Milestone at the specified coordinate.
-     * @param location, the LatLng to find a milestone on
-     * @return the milestone, null if there is no milestones at that coordinate
-     */
-    public IMilestone getMilestone(LatLng location){
-        return currentRoute.getMilestone(location);
-    }
+	/**
+	 * Returns the Milestone at the specified coordinate.
+	 * @param location, the LatLng to find a milestone on
+	 * @return the milestone, null if there is no milestones at that coordinate
+	 */
+	public IMilestone getMilestone(LatLng location){
+		return currentRoute.getMilestone(location);
+	}
 }
