@@ -8,6 +8,11 @@ public class BoundingBox {
     private final LatLng bottomLeft;
     private final LatLng topRight;
 
+    /**
+     * A square representing a geographical area.
+     * @param center The middle of the square
+     * @param sideLength The square's side length
+     */
     public BoundingBox(LatLng center, double sideLength) {
         double d = sideLength / 2;
 
@@ -15,6 +20,11 @@ public class BoundingBox {
         topRight = new LatLng(center.latitude + d, center.longitude + d);
     }
 
+    /**
+     * A square representing a geographical area within a certain distance.
+     * @param driverPoint The driver's location
+     * @param maxPoint The maximum distance away from the driver
+     */
     public BoundingBox(LatLng driverPoint, LatLng maxPoint) {
         if (driverPoint.latitude < maxPoint.latitude) {
             if (driverPoint.longitude < maxPoint.longitude) {
