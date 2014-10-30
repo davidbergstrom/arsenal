@@ -7,20 +7,17 @@ package com.edit.reach.utils;
  * Date: 14-10-22
  * Time: 19.16
  */
-public class TimeConvert {
+public final class TimeConvert {
 
-	public TimeConvert() {}
+	private TimeConvert() {}
 
 	/**
 	 * Divides minutes into hours and minutes.
-	 * @param inTime Minutes to convert.
+	 * @param minutesToConvert Minutes to convert.
 	 */
-	public static String convertTime(int inTime) {
-		int hours;
-		int minutes;
-
-		hours = inTime / 60;
-		minutes = inTime % 60;
+	public static final String convertToHoursAndMinutes(int minutesToConvert) {
+		int hours = minutesToConvert / 60;
+		int minutes = minutesToConvert % 60;
 
 		return  hours + " h " + minutes + " min";
 	}
