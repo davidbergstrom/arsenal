@@ -313,6 +313,8 @@ public class Map extends Observable {
 		}
 
 		// Start navigation runnable
+        handler.removeCallbacks(navigationRunnable);
+        handler.removeCallbacks(routeUpdate);
 		handler.post(navigationRunnable);
 		handler.post(routeUpdate);
 	}
