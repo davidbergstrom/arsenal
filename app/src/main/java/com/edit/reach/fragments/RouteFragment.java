@@ -18,10 +18,8 @@ import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link RouteFragment#newInstance} factory method to
- * create an instance of this fragment.
- *
+ * This fragment is used when vehicle is standing still.
+ * The used can add "from and to" to set a route.
  */
 public class RouteFragment extends Fragment {
 

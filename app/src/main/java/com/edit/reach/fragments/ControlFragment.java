@@ -18,10 +18,9 @@ import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ControlFragment#newInstance} factory method to
- * create an instance of this fragment.
- *
+ * This fragment is used for when the vehicle is moving. It shows a status bar and
+ * details about the next milestone.
+ * The user is able to press buttons representing a certain milestone to add it.
  */
 public class ControlFragment extends Fragment{
 

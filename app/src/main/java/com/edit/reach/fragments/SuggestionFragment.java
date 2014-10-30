@@ -16,10 +16,9 @@ import com.edit.reach.model.IMilestone;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link SuggestionFragment#newInstance} factory method to
- * create an instance of this fragment.
- *
+ * When a button has been clicked in the controlfragment this fragment
+ * gives the user a way to choose a milestone. The user can skip to get next milestone
+ * or add the milestone to the route.
  */
 public class SuggestionFragment extends Fragment {
 

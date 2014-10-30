@@ -10,13 +10,7 @@ import android.view.ViewGroup;
 import com.edit.reach.app.R;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MapFragment.OnMapInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MapFragment#newInstance} factory method to
- * create an instance of this fragment.
- *
+ * This fragment displays a map.
  */
 public class MapFragment extends Fragment {
 

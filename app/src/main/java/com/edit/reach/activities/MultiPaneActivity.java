@@ -35,6 +35,10 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is a class used as a controller recieving data from the backend.
+ * It also starts different UI fragments to display to the user.
+ */
 public class MultiPaneActivity extends FragmentActivity {
 
 	private GoogleMap mMap; // Might be null if Google Play services APK is not available.

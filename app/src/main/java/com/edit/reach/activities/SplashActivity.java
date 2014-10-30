@@ -9,6 +9,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.edit.reach.app.R;
 
+/**
+ * This activity displays a launch-screen for the application.
+ */
 public class SplashActivity extends Activity {
 
 	/** Duration of wait on splash_land screen in milliseconds**/

@@ -9,7 +9,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import com.edit.reach.app.R;
 
-/** This class is the top level UI activity.
+/**
+ * This class is the top level UI activity.
  * It Only starts the MultiPaneActivity which then decides which fragment to start based on
  * what button the user clicks in this activity.
  * The class is only for demo purposes it makes the use able to choose which state to start with.

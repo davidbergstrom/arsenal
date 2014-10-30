@@ -17,10 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link MilestonesFragment#newInstance} factory method to
- * create an instance of this fragment.
- *
+ * This fragment allows the user to add milestones to a chosen route in the stationary mode.
  */
 public class MilestonesFragment extends Fragment {
 
