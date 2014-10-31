@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Class that merges data from the vehicle and the map.
@@ -33,8 +32,7 @@ public final class NavigationModel implements Runnable, Observer {
 	private final Thread pipelineThread;
 	private final Handler mainHandler;
 
-	// Using AtomicLong for thread safety
-	private final AtomicLong searchRange = new AtomicLong(STANDARD_SEARCH_RANGE);
+	private long searchRange = STANDARD_SEARCH_RANGE;
 
 	private Handler pipelineHandler;
 
@@ -45,7 +43,6 @@ public final class NavigationModel implements Runnable, Observer {
 	private List<String> searchResults;
 	private List<IMilestone> milestones;
 
-	// Using AtomicInteger for thread safety
 	private final MilestonesReceiver milestonesReceiver = new MilestonesReceiver() {
 
 		@Override
@@ -158,7 +155,7 @@ public final class NavigationModel implements Runnable, Observer {
 		// If milestone was accepted by the user.
 		if (accepted) {
 			map.setMapState(Map.MapState.MOVING);
-			searchRange.set(STANDARD_SEARCH_RANGE);
+			searchRange = STANDARD_SEARCH_RANGE;
 
 			boolean milestoneExists = false;
 			// Check if milestone already exists
@@ -184,8 +181,10 @@ public final class NavigationModel implements Runnable, Observer {
 	 */
 	public void cancelMilestoneSearch() {
 		Log.d("NavigationModel", "entered cancelMilestoneSearch");
+		// Remove marker
+		marker.remove();
 		// Reset the search range.
-		searchRange.set(STANDARD_SEARCH_RANGE);
+		searchRange = STANDARD_SEARCH_RANGE;
 		// Set the map state to moving.
 		map.setMapState(Map.MapState.MOVING);
 		// Null out the milestones list.
@@ -400,11 +399,11 @@ public final class NavigationModel implements Runnable, Observer {
 			milestoneSuccess(legMilestone);
 		} else {
 			final LatLng start;
-			final LatLng end = route.getLocation(searchRange.get());
-			if (searchRange.get() == STANDARD_SEARCH_RANGE) {
+			final LatLng end = route.getLocation(searchRange);
+			if (searchRange == STANDARD_SEARCH_RANGE) {
 				start = pointerLocation;
 			} else {
-				start = route.getLocation(searchRange.get() - (STANDARD_SEARCH_RANGE));
+				start = route.getLocation(searchRange - (STANDARD_SEARCH_RANGE));
 			}
 
 			new Thread(new Runnable() {
@@ -446,10 +445,10 @@ public final class NavigationModel implements Runnable, Observer {
 		if (this.milestones.size() == 0) {
 			this.milestones = null;
 			// Extend search range.
-			searchRange.getAndAdd(STANDARD_SEARCH_RANGE);
+			searchRange += STANDARD_SEARCH_RANGE;
 			// Searchrange is longer in the route range
-			if(map.getRoute().getLocation(searchRange.get()) == null) {
-				searchRange.set(STANDARD_SEARCH_RANGE);
+			if(map.getRoute().getLocation(searchRange) == null) {
+				searchRange = (STANDARD_SEARCH_RANGE);
 				// Notify ui that no more milestons are available.
 				milestoneFail();
 			} else {
@@ -459,7 +458,7 @@ public final class NavigationModel implements Runnable, Observer {
 			// List of milestones contains only one object
 		} else if(this.milestones.size() == 1) {
 			// Extend search range.
-			searchRange.getAndAdd(STANDARD_SEARCH_RANGE);
+			searchRange += STANDARD_SEARCH_RANGE;
 			IMilestone milestone = this.milestones.get(0);
 			milestones.remove(0);
 			this.milestones = null;

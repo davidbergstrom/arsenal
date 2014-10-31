@@ -342,7 +342,6 @@ public class MultiPaneActivity extends FragmentActivity {
 	 */
 	public void goBackToRouteFragment(){
 		Log.d("MultiPaneActivity", "goBackFragment");
-		//msFragmentHasBeenCreated = false;
 		getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, routeFragment).commit();
 		preliminaryMilestones.clear();
 	}
@@ -353,8 +352,6 @@ public class MultiPaneActivity extends FragmentActivity {
 	public void goBackToControlFragment(){
 		getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment_left, controlFragment).commit();
 		navigationModel.cancelMilestoneSearch();
-
-
 	}
 
 	/**
